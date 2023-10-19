@@ -366,6 +366,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Indicator2 = this.ViewModel.Indicator2,
                     Indicator3 = this.ViewModel.Indicator3,
                     Stop = this.ViewModel.Stop,
+                    Screener = this.ViewModel.Screener,
                     Theme = this.ViewModel.Theme
                 };
 
@@ -406,6 +407,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
                     this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
                     this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
+                    this.ViewModel.Screener = palmaresSettings.Screener;
                     this.ViewModel.Stop = palmaresSettings.Stop;
                     this.ViewModel.Theme = palmaresSettings.Theme;
                     this.GenerateColumns();
