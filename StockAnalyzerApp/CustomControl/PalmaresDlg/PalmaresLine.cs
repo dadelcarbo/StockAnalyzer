@@ -9,9 +9,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public string Group { get; set; }
         public string Symbol { get; set; }
         public string Name { get; set; }
+        public bool Match { get; set; }
         public float Value { get; set; }
-        [DisplayName("Period %")]
-        public float PeriodVariation { get; set; }
         [DisplayName("Bar %")]
         public float BarVariation { get; set; }
         [DisplayName("Volume M€")]

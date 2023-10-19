@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockClasses.StockViewableItems.StockScreeners;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzerSettings;
 using System;
@@ -104,6 +105,19 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+        private string screener;
+        public string Screener
+        {
+            get { return screener; }
+            set
+            {
+                if (value != screener)
+                {
+                    screener = value;
+                    OnPropertyChanged("Screener");
+                }
+            }
+        }
 
         private string theme;
         public string Theme
@@ -115,35 +129,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     theme = value;
                     OnPropertyChanged("Theme");
-                }
-            }
-        }
-
-
-        private DateTime fromDate;
-        public DateTime FromDate
-        {
-            get { return fromDate; }
-            set
-            {
-                if (value != fromDate)
-                {
-                    fromDate = value;
-                    OnPropertyChanged("FromDate");
-                }
-            }
-        }
-
-        private DateTime toDate;
-        public DateTime ToDate
-        {
-            get { return toDate; }
-            set
-            {
-                if (value != toDate)
-                {
-                    toDate = value;
-                    OnPropertyChanged("ToDate");
                 }
             }
         }
@@ -173,6 +158,20 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     nbStocks = value;
                     OnPropertyChanged("NbStocks");
+                }
+            }
+        }
+
+        private string runStatus = "Run";
+        public string RunStatus
+        {
+            get { return runStatus; }
+            set
+            {
+                if (value != runStatus)
+                {
+                    runStatus = value;
+                    OnPropertyChanged("RunStatus");
                 }
             }
         }
@@ -208,14 +207,12 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         public bool DownloadIntraday { get; set; }
 
-        public List<PalmaresLine> Lines { get; set; }
+        public ObservableCollection<PalmaresLine> Lines { get; set; }
 
         public IEnumerable<string> Themes { get; set; }
         public PalmaresViewModel()
         {
-            this.Lines = new List<PalmaresLine>();
-            this.ToDate = DateTime.Now;
-            this.FromDate = new DateTime(this.ToDate.Year, 1, 1);
+            this.Lines = new ObservableCollection<PalmaresLine>();
 
             string path = Folders.Palmares;
             this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(path).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
@@ -229,9 +226,22 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             DownloadIntraday = false;
             ProgressVisibility = Visibility.Collapsed;
         }
+
+        private bool canceled = false;
         public async Task CalculateAsync()
         {
+            if (ProgressVisibility == Visibility.Visible)
+            {
+                canceled = true;
+                return;
+            }
+            else
+            {
+                this.RunStatus = "Cancel";
+                canceled = false;
+            }
             ProgressVisibility = Visibility.Visible;
+
             #region Sanity Check
             IStockIndicator viewableSeries1 = null;
             if (!string.IsNullOrEmpty(this.indicator1))
@@ -269,6 +279,15 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
                 catch { }
             }
+            IStockScreener screenerSerie = null;
+            if (!string.IsNullOrEmpty(this.screener))
+            {
+                try
+                {
+                    screenerSerie = StockScreenerManager.CreateScreener(this.screener);
+                }
+                catch { }
+            }
             #endregion
             if (this.DownloadIntraday)
             {
@@ -279,13 +298,18 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
 
-            Lines = new List<PalmaresLine>();
+            Lines = new ObservableCollection<PalmaresLine>();
+            OnPropertyChanged("Lines");
             var stockList = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
             this.Progress = 0;
             this.NbStocks = stockList.Count;
             int count = 0;
             foreach (var stockSerie in stockList)
             {
+                if (canceled)
+                {
+                    break;
+                }
                 if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
                 {
                     StockDataProviderBase.DownloadSerieData(stockSerie);
@@ -305,21 +329,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
-                var startIndex = stockSerie.IndexOfFirstGreaterOrEquals(this.FromDate);
-                if (startIndex == -1)
-                {
-                    continue;
-                }
-                var endIndex = stockSerie.IndexOfFirstLowerOrEquals(this.ToDate);
-                if (endIndex < 50)
-                {
-                    continue;
-                }
+                var endIndex = stockSerie.LastIndex;
 
                 float lastValue = closeSerie[endIndex];
-                float firstValue = closeSerie[startIndex];
-                float periodVariation = (lastValue - firstValue) / firstValue;
-                firstValue = closeSerie[endIndex - 1];
+                var firstValue = closeSerie[endIndex - 1];
                 float barVariation = (lastValue - firstValue) / firstValue;
                 var lastBar = stockSerie.Values.ElementAt(endIndex);
                 var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
@@ -367,10 +380,17 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     }
                     catch { }
                 }
+                bool match = true;
+                if (screenerSerie != null)
+                {
+                    screenerSerie.ApplyTo(stockSerie);
+                    match = screenerSerie.Match[endIndex];
+                }
                 #endregion
 
                 Lines.Add(new PalmaresLine
                 {
+                    Match = match,
                     Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId).Sector,
                     Group = stockSerie.StockGroup.ToString(),
                     Symbol = stockSerie.Symbol,
@@ -383,7 +403,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Indicator2 = stockIndicator2,
                     Indicator3 = stockIndicator3,
                     Stop = stopValue,
-                    PeriodVariation = periodVariation,
                     BarVariation = barVariation,
                     LastDate = lastBar.DATE
                     // Link = stockSerie.DataProvider == StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.ABC ? $"https://www.abcbourse.com/graphes/eod/{stockSerie.ShortName}p" : null
@@ -392,11 +411,13 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 stockSerie.BarDuration = previousDuration;
             }
 
+
             OnPropertyChanged("Lines");
             OnPropertyChanged("ExportEnabled");
             await Task.Delay(0);
 
             ProgressVisibility = Visibility.Collapsed;
+            this.RunStatus = "Run";
         }
     }
 }

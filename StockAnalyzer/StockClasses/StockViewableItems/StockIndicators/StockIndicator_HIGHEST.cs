@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.series[0] = indexSerie;
             this.Series[0].Name = this.Name;
 
-            int trigger = (int)this.Parameters[0];
+            int trigger = Math.Max(1,(int)this.Parameters[0]);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 

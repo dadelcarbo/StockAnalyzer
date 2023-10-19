@@ -19,54 +19,53 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Margin="2">
+        <StackPanel Orientation="Horizontal">
             <GroupBox Header="Config">
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <Label Content="Group " Width="56"/>
-                    <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center"/>
-                    <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="Stop" >
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <TextBox Text="{Binding Stop}" Width="200" Margin="2" VerticalContentAlignment="Center"/>
-                    <Label Content="Theme"/>
-                    <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Group " Width="50"/>
+                        <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="120" VerticalAlignment="Center"/>
+                        <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
+                        <Label Content="Theme"/>
+                        <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Stop " Width="50"/>
+                        <TextBox Text="{Binding Stop}" Width="200" VerticalContentAlignment="Center" Margin="1" />
+                        <Label Content="Screener" Width="60"/>
+                        <TextBox Text="{Binding Screener}" Width="202" VerticalContentAlignment="Center" Margin="1" />
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Settings">
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <ComboBox ItemsSource="{Binding Settings}" SelectedValue="{Binding Setting}" Width="140" Margin="2" VerticalAlignment="Center"/>
-                    <Button x:Name="saveFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="2" Click="saveFilters_Click">
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding Settings}" SelectedValue="{Binding Setting}" Width="140" VerticalAlignment="Center"/>
+                    <Button x:Name="saveFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="1" Click="saveFilters_Click">
                         <Image Source="../../Resources/SaveAnalysis.png" />
                     </Button>
-                    <Button x:Name="clearFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="2" Click="clearFilters_Click">
+                    <Button x:Name="clearFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="1" Click="clearFilters_Click">
                         <Image Source="../../Resources/ClearFilters.png" />
                     </Button>
                 </StackPanel>
             </GroupBox>
-            <StackPanel Orientation="Horizontal" Margin="2">
+            <StackPanel Orientation="Horizontal" Margin="1">
                 <Label Content="{Binding Items.Count, ElementName=gridView, Mode=OneWay}" VerticalContentAlignment="Center"/>
                 <Label Content="/" VerticalContentAlignment="Center"/>
                 <Label Content="{Binding Lines.Count}" VerticalContentAlignment="Center"/>
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
             <GroupBox Header="Speed Indicators" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <TextBox Text="{Binding Indicator1}" Width="140" Margin="2"  VerticalContentAlignment="Center"/>
-                    <TextBox Text="{Binding Indicator2}" Width="144" Margin="2"  VerticalContentAlignment="Center"/>
-                    <TextBox Text="{Binding Indicator3}" Width="140" Margin="2"  VerticalContentAlignment="Center"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Text="{Binding Indicator1}" Width="140" Margin="1"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator2}" Width="140" Margin="1"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator3}" Width="140" Margin="1"  VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Date Range" HorizontalAlignment="Right">
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <Label Content="From " VerticalAlignment="Center"/>
-                    <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding FromDate, Mode=TwoWay}"/>
-                    <Label Content="To " VerticalAlignment="Center"/>
-                    <telerik:RadDatePicker DateSelectionMode="Day" SelectedDate="{Binding ToDate, Mode=TwoWay}"/>
-                    <Button Content="Apply" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
-                    <telerik:RadProgressBar Minimum="0" Maximum="{Binding NbStocks}" Value="{Binding Progress}" Width="100" Height="10" Margin="2"
+            <GroupBox Header="Execute" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" Margin="1">
+                    <Button Content="{Binding RunStatus}" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
+                    <telerik:RadProgressBar Minimum="0" Maximum="{Binding NbStocks}" Value="{Binding Progress}" Width="100" Height="10" Margin="1"
                     Visibility="{Binding ProgressVisibility, Mode=OneWay}" ></telerik:RadProgressBar>
                     <CheckBox Content="Intraday" VerticalAlignment="Center" IsChecked="{Binding DownloadIntraday}" ToolTip="Download intraday data from ABC Bourse"/>
                 </StackPanel>
@@ -77,7 +76,7 @@
                 <Image Source="../../Resources/Excel.png" />
             </Button>
         </StackPanel>
-        <telerik:RadGridView FontSize="9" Name="gridView" Grid.Row="2" Margin="2" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
+        <telerik:RadGridView FontSize="9" Name="gridView" Grid.Row="2" Margin="1" ShowGroupPanel="False" RowIndicatorVisibility="Collapsed"
                              ItemsSource="{Binding Lines}" IsReadOnly="True"
                              SelectionChanged="RadGridView_SelectionChanged"
                              ElementExportingToDocument="gridView_ElementExportingToDocument">

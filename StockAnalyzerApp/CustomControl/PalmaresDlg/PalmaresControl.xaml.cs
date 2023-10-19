@@ -125,10 +125,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             column.IsVisible = true;
             column.DataFormatString = "F2";
 
-            column = gridView.Columns["PeriodVariation"] as GridViewDataColumn;
-            column.IsVisible = true;
-            column.DataFormatString = "P2";
-
             column = gridView.Columns["BarVariation"] as GridViewDataColumn;
             column.IsVisible = true;
             column.DataFormatString = "P2";
@@ -175,11 +171,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             {
                 var currentCulture = CultureInfo.CurrentCulture;
                 var weekNo = currentCulture.Calendar.GetWeekOfYear(
-                                ViewModel.ToDate,
+                                DateTime.Today,
                                 currentCulture.DateTimeFormat.CalendarWeekRule,
                                 currentCulture.DateTimeFormat.FirstDayOfWeek);
 
-                string exportFile = Path.Combine(Folders.Palmares, $@"Palmares_{ViewModel.Group}_{ViewModel.ToDate.Year}_{weekNo}.xlsx");
+                string exportFile = Path.Combine(Folders.Palmares, $@"Palmares_{ViewModel.Group}_{DateTime.Today.Year}_{weekNo}.xlsx");
 
                 using (FileStream fileStream = new FileStream(exportFile, FileMode.Create, FileAccess.Write))
                 {
