@@ -27,13 +27,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     this.Underlyings = result?.entries?.FirstOrDefault(e => e.key == "underlyings")?.entries;
 
                     // Load config file
-                    var underlyingFile = File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).ToList();
+                    List<string> underlyingFile = File.Exists(SaxoIntradayDataProvider.SaxoUnderlyingFile) ? File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).ToList() : new List<string>();
                     var ids = underlyingFile.Select(l => l.Split(',')[0]).ToList();
 
-                    var newIds = this.Underlyings.Where(u => !ids.Contains(u.key)).Select(u => u.key + "," + u.value.ToUpper()).ToList();
+                    var newIds = this.Underlyings.Where(u => !ids.Contains(u.key)).Select(u => u.key + "," + u.value + ",").ToList();
                     if (newIds.Count > 0)
                     {
-                        underlyingFile.AddRange(newIds);
+                        foreach (var newId in newIds)
+                        {
+                            var stockName = newId.Split(',')[1].ToUpper();
+                            if (stockDico.ContainsKey(stockName))
+                            {
+                                underlyingFile.Add(newId + stockName);
+                            }
+                            else
+                            {
+                                underlyingFile.Add(newId);
+                            }
+                        }
+
                         File.WriteAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile, underlyingFile);
 
                         MessageBox.Show("New Uderlying detected: " + Environment.NewLine + newIds.Aggregate((i, j) => i + Environment.NewLine + j));
@@ -79,11 +91,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                             Type = p.type.value,
                             Ratio = p.ratioCalculated.value
                         };
-                        if (double.TryParse(p.ask.value.value, out parsed))
+                        if (p.ask.value != null && double.TryParse(p.ask.value.value, out parsed))
                         {
                             product.Ask = parsed;
                         }
-                        if (double.TryParse(p.bid.value.value, out parsed))
+                        if (p.bid.value != null && double.TryParse(p.bid.value.value, out parsed))
                         {
                             product.Bid = parsed;
                         }

@@ -30,10 +30,10 @@
                         <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="Stop " Width="50"/>
-                        <TextBox Text="{Binding Stop}" Width="200" VerticalContentAlignment="Center" Margin="1" />
-                        <Label Content="Screener" Width="60"/>
-                        <TextBox Text="{Binding Screener}" Width="202" VerticalContentAlignment="Center" Margin="1" />
+                        <CheckBox Content="Stop" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="50" IsChecked="{Binding BullOnly}"/>
+                        <TextBox Text="{Binding Stop}" Width="200" Height="20" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
+                        <CheckBox Content="Screener" VerticalAlignment="Center"  VerticalContentAlignment="Center" Width="68" IsChecked="{Binding ScreenerOnly}"/>
+                        <TextBox Text="{Binding Screener}" Width="200" Height="20" VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
@@ -57,9 +57,9 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <GroupBox Header="Speed Indicators" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
-                    <TextBox Text="{Binding Indicator1}" Width="140" Margin="1"  VerticalContentAlignment="Center"/>
-                    <TextBox Text="{Binding Indicator2}" Width="140" Margin="1"  VerticalContentAlignment="Center"/>
-                    <TextBox Text="{Binding Indicator3}" Width="140" Margin="1"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator1}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator2}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                    <TextBox Text="{Binding Indicator3}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Execute" HorizontalAlignment="Right">

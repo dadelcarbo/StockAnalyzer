@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             // Init Saxo ID
-            InitSaxoIds(stockDictionary, Path.Combine(Folders.PersonalFolder, SAXO_ID_FILE));
+            InitSaxoIds(stockDictionary, SaxoIntradayDataProvider.SaxoUnderlyingFile);
 
             // Parse SaxoIntradayDownload.cfg file
             this.needDownload = download;
@@ -62,14 +62,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
 
                         var row = line.Split(',');
-                        var stockName = row[1].ToUpper();
-                        if (stockDictionary.ContainsKey(stockName))
+                        var stockName = row[2];
+                        if (!string.IsNullOrEmpty(stockName) && stockDictionary.ContainsKey(stockName))
                         {
                             stockDictionary[stockName].SaxoId = long.Parse(row[0]);
                         }
                         else
                         {
-                            Console.WriteLine($"Saxo Underlying {stockName} not found in stockDictionary");
+                            StockLog.Write($"Saxo Underlying {row[1]} not found in stockDictionary");
                         }
                     }
                 }

@@ -92,6 +92,20 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+
+        private bool bullOnly;
+        public bool BullOnly
+        {
+            get { return bullOnly; }
+            set
+            {
+                if (value != bullOnly)
+                {
+                    bullOnly = value;
+                    OnPropertyChanged("BullOnly");
+                }
+            }
+        }
         private string stop;
         public string Stop
         {
@@ -102,6 +116,19 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     stop = value;
                     OnPropertyChanged("Stop");
+                }
+            }
+        }
+        private bool screenerOnly;
+        public bool ScreenerOnly
+        {
+            get { return screenerOnly; }
+            set
+            {
+                if (value != screenerOnly)
+                {
+                    screenerOnly = value;
+                    OnPropertyChanged("ScreenerOnly");
                 }
             }
         }
@@ -324,18 +351,47 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 var previousDuration = stockSerie.BarDuration;
                 stockSerie.BarDuration = this.barDuration;
 
-                #region Calculate variation
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                 var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
                 var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
                 var endIndex = stockSerie.LastIndex;
 
-                float lastValue = closeSerie[endIndex];
+                var lastBar = stockSerie.Values.ElementAt(endIndex);
+                float lastValue = lastBar.CLOSE;
                 var firstValue = closeSerie[endIndex - 1];
                 float barVariation = (lastValue - firstValue) / firstValue;
-                var lastBar = stockSerie.Values.ElementAt(endIndex);
                 var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
+
+                float stopValue = float.NaN;
+                if (trailStopSerie != null)
+                {
+                    try
+                    {
+                        trailStopSerie.ApplyTo(stockSerie);
+                        stopValue = trailStopSerie.Series[0][endIndex];
+                        if (float.IsNaN(stopValue))
+                        {
+                            if (bullOnly)
+                                continue;
+                            stopValue = trailStopSerie.Series[1][endIndex];
+                        }
+                        stopValue = (lastValue - stopValue) / lastValue;
+                    }
+                    catch { }
+                }
+                bool match = true;
+                if (screenerSerie != null)
+                {
+                    screenerSerie.ApplyTo(stockSerie);
+                    match = screenerSerie.Match[endIndex];
+                    if (screenerOnly && !match)
+                    {
+                        continue;
+                    }
+                }
+
+                #region Calculate variation
 
                 int highest = 0;
                 for (int i = endIndex - 1; i > 0; i--)
@@ -366,25 +422,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 if (viewableSeries3 != null)
                 {
                     try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
-                }
-                float stopValue = float.NaN;
-                if (trailStopSerie != null)
-                {
-                    try
-                    {
-                        trailStopSerie.ApplyTo(stockSerie);
-                        stopValue = trailStopSerie.Series[0][endIndex];
-                        if (float.IsNaN(stopValue))
-                            stopValue = trailStopSerie.Series[1][endIndex];
-                        stopValue = (lastValue - stopValue) / lastValue;
-                    }
-                    catch { }
-                }
-                bool match = true;
-                if (screenerSerie != null)
-                {
-                    screenerSerie.ApplyTo(stockSerie);
-                    match = screenerSerie.Match[endIndex];
                 }
                 #endregion
 
