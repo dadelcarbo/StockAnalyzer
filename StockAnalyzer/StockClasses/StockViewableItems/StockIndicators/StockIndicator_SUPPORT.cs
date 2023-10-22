@@ -74,6 +74,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
                 }
+                else
+                {
+                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(di => !di.IsPersistent);
+                }
                 DrawingItem.CreatePersistent = false;
                 float supportGradient = float.MinValue;
                 Line2D support = null;

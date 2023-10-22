@@ -80,13 +80,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 // Detecting events
                 this.CreateEventSeries(stockSerie.Count);
 
-                if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+                if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
                 {
-                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Clear();
+                    stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
                 }
                 else
                 {
-                    stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
+                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(di => !di.IsPersistent);
                 }
                 StockDrawingItems drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration];
 

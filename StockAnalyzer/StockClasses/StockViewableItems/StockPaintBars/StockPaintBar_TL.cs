@@ -77,6 +77,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 {
                     stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
                 }
+                else
+                {
+                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(di => !di.IsPersistent);
+                }
                 DrawingItem.CreatePersistent = false;
 
                 var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
@@ -170,6 +174,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
                 {
                     stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
+                }
+                else
+                {
+                    stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(di => !di.IsPersistent);
                 }
                 DrawingItem.CreatePersistent = false;
 

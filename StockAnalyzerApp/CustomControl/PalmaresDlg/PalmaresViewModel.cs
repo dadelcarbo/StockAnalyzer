@@ -331,13 +331,14 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.Progress = 0;
             this.NbStocks = stockList.Count;
             int count = 0;
+            // TRAILCUPEMA(3,True,12)
             foreach (var stockSerie in stockList)
             {
                 if (canceled)
                 {
                     break;
                 }
-                if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
+                if (this.DownloadIntraday && (this.group == StockSerie.Groups.INT_EURONEXT || this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
                 {
                     StockDataProviderBase.DownloadSerieData(stockSerie);
                 }
@@ -349,7 +350,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     this.Progress = count;
 
                 var previousDuration = stockSerie.BarDuration;
-                stockSerie.BarDuration = this.barDuration;
+                stockSerie.BarDuration = this.barDuration.Duration;
 
                 var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                 var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
@@ -368,7 +369,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     try
                     {
-                        trailStopSerie.ApplyTo(stockSerie);
+                        trailStopSerie = stockSerie.GetTrailStop(this.stop);
                         stopValue = trailStopSerie.Series[0][endIndex];
                         if (float.IsNaN(stopValue))
                         {
@@ -376,7 +377,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                                 continue;
                             stopValue = trailStopSerie.Series[1][endIndex];
                         }
-                        stopValue = (lastValue - stopValue) / lastValue;
+                        else
+                        {
+                            stopValue = (lastValue - stopValue) / lastValue;
+                        }
                     }
                     catch { }
                 }
@@ -431,7 +435,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId).Sector,
                     Group = stockSerie.StockGroup.ToString(),
                     Symbol = stockSerie.Symbol,
-                    //ShortName = "=HYPERLINK(\"https://www.abcbourse.com/graphes/eod/" + stockSerie.ShortName + "p\";\"" + stockSerie.StockName + "\")",
                     Name = stockSerie.StockName,
                     Value = lastValue,
                     Highest = highest,
@@ -442,7 +445,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Stop = stopValue,
                     BarVariation = barVariation,
                     LastDate = lastBar.DATE
-                    // Link = stockSerie.DataProvider == StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.ABC ? $"https://www.abcbourse.com/graphes/eod/{stockSerie.ShortName}p" : null
                 });
 
                 stockSerie.BarDuration = previousDuration;

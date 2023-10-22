@@ -82,13 +82,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         }
         static public void GetSR(StockSerie stockSerie, int startIndex, int endIndex)
         {
-            if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+            if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {
-                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Clear();
+                stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
             }
             else
             {
-                stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
+                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(di => !di.IsPersistent);
             }
             StockDrawingItems drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration];
 
@@ -110,13 +110,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
         static public void GetConvexCull(bool convex, StockSerie stockSerie, int startIndex, int endIndex, out HalfLine2D resistance, out HalfLine2D support, Pen resistancePen, Pen supportPen)
         {
-            if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+            if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {
-                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(d => !d.IsPersistent);
+                stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
             }
             else
             {
-                stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
+                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(di => !di.IsPersistent);
             }
             StockDrawingItems drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration];
 

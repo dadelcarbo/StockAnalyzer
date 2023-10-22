@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             this.needDownload = download;
 
             // Create serie from EURO_A
-            foreach (var stockSerie in stockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.EURO_A) || s.BelongsToGroup(StockSerie.Groups.EURO_B) || s.BelongsToGroup(StockSerie.Groups.EURO_C)).ToArray())
+            foreach (var stockSerie in stockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD)).ToArray())
             {
                 stockDictionary.Add("INT_" + stockSerie.StockName,
                     new StockSerie("INT_" + stockSerie.StockName,

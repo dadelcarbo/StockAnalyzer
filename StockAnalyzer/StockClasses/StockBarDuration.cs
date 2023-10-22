@@ -54,16 +54,16 @@ namespace StockAnalyzer.StockClasses
             this.LineBreak = duration.LineBreak;
         }
 
-        public static StockBarDuration Daily = new StockBarDuration(BarDuration.Daily);
-        public static StockBarDuration H_1 = new StockBarDuration(BarDuration.H_1);
-        public static StockBarDuration H_2 = new StockBarDuration(BarDuration.H_2);
-        public static StockBarDuration H_4 = new StockBarDuration(BarDuration.H_4);
-        public static StockBarDuration M_5 = new StockBarDuration(BarDuration.M_5);
-        public static StockBarDuration M_10 = new StockBarDuration(BarDuration.M_10);
-        public static StockBarDuration M_15 = new StockBarDuration(BarDuration.M_15);
-        public static StockBarDuration M_30 = new StockBarDuration(BarDuration.M_30);
-        public static StockBarDuration Weekly = new StockBarDuration(BarDuration.Weekly);
-        public static StockBarDuration Monthly = new StockBarDuration(BarDuration.Monthly);
+        public static StockBarDuration Daily => new StockBarDuration(BarDuration.Daily);
+        public static StockBarDuration H_1 => new StockBarDuration(BarDuration.H_1);
+        public static StockBarDuration H_2 => new StockBarDuration(BarDuration.H_2);
+        public static StockBarDuration H_4 => new StockBarDuration(BarDuration.H_4);
+        public static StockBarDuration M_5 => new StockBarDuration(BarDuration.M_5);
+        public static StockBarDuration M_10 => new StockBarDuration(BarDuration.M_10);
+        public static StockBarDuration M_15 => new StockBarDuration(BarDuration.M_15);
+        public static StockBarDuration M_30 => new StockBarDuration(BarDuration.M_30);
+        public static StockBarDuration Weekly => new StockBarDuration(BarDuration.Weekly);
+        public static StockBarDuration Monthly => new StockBarDuration(BarDuration.Monthly);
 
         public static IList<StockBarDuration> Values = new List<StockBarDuration>() {
             StockBarDuration.Daily,
