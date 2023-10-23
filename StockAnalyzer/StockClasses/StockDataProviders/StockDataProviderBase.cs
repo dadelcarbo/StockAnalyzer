@@ -151,6 +151,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public static bool DownloadSerieData(StockSerie serie)
         {
+            if (serie == null)
+                return false;
+
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
             if (dataProvider == null)
             {

@@ -98,11 +98,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                 File.Delete(fileName);
             }
             stockSerie.IsInitialised = false;
-            first = true;
             return this.DownloadDailyData(stockSerie);
         }
 
-        static bool first = true;
+        static SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
             StockLog.Write("DownloadDailyData for " + stockSerie.StockName);
@@ -112,25 +111,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
                 var fileName = DataFolder + FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
 
-                if (File.Exists(fileName))
+                if (DownloadHistory.ContainsKey(stockSerie.ISIN) && DownloadHistory[stockSerie.ISIN] > DateTime.Now.AddMinutes(-2))
                 {
-                    var lastWriteTime = File.GetLastWriteTime(fileName);
-                    if (first && (lastWriteTime > DateTime.Now.AddHours(-2)
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1))
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today)))
-                    {
-                        if (stockSerie != RefSerie)
-                        {
-                            first = false;
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        if (File.GetLastWriteTime(fileName) > DateTime.Now.AddMinutes(-2))
-                            return false;
-                    }
+                    return false;  // Do not download more than every 2 minutes.
                 }
+
                 using (var wc = new WebClient())
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
@@ -158,6 +143,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                             {
                                 if (response.StartsWith("{"))
                                 {
+                                    var date = DateTime.Now.TimeOfDay > new TimeSpan(17, 40, 0) ? DateTime.Today.AddMinutes(1439) : DateTime.Now; // Set to 23h59 efter 17h40 to prevent for download
+                                    if (DownloadHistory.ContainsKey(stockSerie.ISIN))
+                                    {
+                                        DownloadHistory[stockSerie.ISIN] = date;
+                                    }
+                                    else
+                                    {
+                                        DownloadHistory.Add(stockSerie.ISIN, date);
+                                    }
                                     File.WriteAllText(fileName, response);
                                     stockSerie.IsInitialised = false;
                                     return true;

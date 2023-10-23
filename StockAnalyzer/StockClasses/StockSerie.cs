@@ -3347,7 +3347,7 @@ namespace StockAnalyzer.StockClasses
                             case "H":
                                 if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
                                 {
-                                    if (this.BelongsToGroup(Groups.EURO_A))
+                                    if (!string.IsNullOrEmpty(this.ISIN) && this.ISIN.StartsWith("FR"))
                                     {
                                         var intradaySerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == this.ISIN && s.DataProvider == StockDataProvider.BoursoIntraday);
                                         if (StockDataProviderBase.DownloadSerieData(intradaySerie))
@@ -3364,7 +3364,7 @@ namespace StockAnalyzer.StockClasses
                             case "M":
                                 if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
                                 {
-                                    if (this.BelongsToGroup(Groups.EURO_A))
+                                    if (!string.IsNullOrEmpty(this.ISIN) && this.ISIN.StartsWith("FR"))
                                     {
                                         var intradaySerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == this.ISIN && s.DataProvider == StockDataProvider.BoursoIntraday);
                                         if (StockDataProviderBase.DownloadSerieData(intradaySerie))
