@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             var brokenDownEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenDown")];
             var bullEvents = this.Events[Array.IndexOf<string>(this.EventNames, "Bullish")];
 
-            var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
+            var bodyHighSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
             bool isBull = false;

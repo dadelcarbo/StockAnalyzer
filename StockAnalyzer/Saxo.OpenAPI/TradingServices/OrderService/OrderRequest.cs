@@ -1,4 +1,6 @@
-﻿namespace Saxo.OpenAPI.TradingServices
+﻿using System;
+
+namespace Saxo.OpenAPI.TradingServices
 {
     public enum SaxoOrderType
     {
@@ -34,6 +36,7 @@
     public class OrderDuration
     {
         public string DurationType { get; set; }
+        public DateTime? ExpirationDateTime { get; set; }
     }
     public class OrderRequest
     {
