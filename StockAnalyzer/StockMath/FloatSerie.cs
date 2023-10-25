@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockDrawing;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -1331,54 +1332,6 @@ namespace StockAnalyzer.StockMath
             }
             return result;
         }
-        public BoolSerie GetHighPivotSerie(int leftStrength, int rightStrength)
-        {
-            BoolSerie pivotSerie = new BoolSerie(this.Count, "TopPivot");
-            float pivotValue;
-            bool isPivotCandidate;
-            for (int i = leftStrength; i < (this.Count - rightStrength); i++)
-            {
-                isPivotCandidate = IsHighestInDays(i, leftStrength);
-                if (isPivotCandidate)
-                {
-                    pivotValue = this[i];
-                    for (int j = i + 1; j <= i + rightStrength; j++)
-                    {
-                        if (this[j] > pivotValue)
-                        {
-                            isPivotCandidate = false;
-                            break;
-                        }
-                    }
-                }
-                pivotSerie[i] = isPivotCandidate;
-            }
-            return pivotSerie;
-        }
-        public BoolSerie GetLowPivotSerie(int leftStrength, int rightStrength)
-        {
-            BoolSerie pivotSerie = new BoolSerie(this.Count, "BottomPivot");
-            float pivotValue;
-            bool isPivotCandidate;
-            for (int i = leftStrength; i < (this.Count - rightStrength); i++)
-            {
-                isPivotCandidate = IsLowestInDays(i, leftStrength);
-                if (isPivotCandidate)
-                {
-                    pivotValue = this[i];
-                    for (int j = i + 1; j <= i + rightStrength; j++)
-                    {
-                        if (this[j] < pivotValue)
-                        {
-                            isPivotCandidate = false;
-                            break;
-                        }
-                    }
-                }
-                pivotSerie[i] = isPivotCandidate;
-            }
-            return pivotSerie;
-        }
         #endregion
         #region statistic function
         #endregion
@@ -1530,9 +1483,31 @@ namespace StockAnalyzer.StockMath
             }
             return highest;
         }
+        public int GetHighestIn(int index)
+        {
+            int highest = 0;
+            float refValue = this[index];
+            for (int i = index - 1; i >= 0; i--, highest++)
+            {
+                if (refValue <= this[i])
+                    break;
+            }
+            return highest;
+        }
         public int GetLowestIn(int index, float refValue)
         {
             int lowest = 0;
+            for (int i = index - 1; i >= 0; i--, lowest++)
+            {
+                if (refValue >= this[i])
+                    break;
+            }
+            return lowest;
+        }
+        public int GetLowestIn(int index)
+        {
+            int lowest = 0;
+            float refValue = this[index];
             for (int i = index - 1; i >= 0; i--, lowest++)
             {
                 if (refValue >= this[i])
@@ -1661,6 +1636,82 @@ namespace StockAnalyzer.StockMath
                 }
             }
             return trailSerie;
+        }
+
+
+        public CupHandle2D DetectCupHandle(int index, int period, bool higherRightLow)
+        {
+            if (period < 2 || index < period * 2 || index > LastIndex)
+                return null;
+
+            // Check latest is highest in period
+            if (this.Values[index] < this.GetMax(index - period, index - 1))
+                return null;
+
+            var highestIn = GetHighestIn(index); // Get nb bar from previous high
+            if (highestIn < period * 2)
+                return null;
+
+            var previousHighestIn = GetHighestIn(index - 1);
+
+            if (highestIn - previousHighestIn < period + 1) // No resistance broken, no Cup & Handle
+                return null;
+
+
+            int startIndex = index - highestIn;
+            //if (startIndex == 0) // All time high
+            //    return null;
+
+            // Find pivot (Highest Top in range)
+            float pivot = float.MinValue;
+            int pivotIndex = -1;
+            for (int i = startIndex; i < index - 1; i++)
+            {
+                if (IsTop(i)) // Is local High
+                {
+                    if (pivot < this[i])
+                    {
+                        pivot = this[i];
+                        pivotIndex = i;
+                    }
+                    i++;
+                }
+            }
+            if (pivotIndex == -1 || pivotIndex < startIndex + period || pivotIndex > index - period)
+                return null;
+
+            float leftLow = float.MaxValue;
+            int leftLowIndex = -1;
+            for (int i = startIndex + 1; i < pivotIndex - 1; i++)
+            {
+                if (leftLow > this[i])
+                {
+                    leftLow = this[i];
+                    leftLowIndex = i;
+                }
+            }
+
+            float rightLow = float.MaxValue;
+            int rightLowIndex = -1;
+            for (int i = pivotIndex + 1; i < index - 1; i++)
+            {
+                if (rightLow > this[i])
+                {
+                    rightLow = this[i];
+                    rightLowIndex = i;
+                }
+            }
+            if (higherRightLow && rightLow < leftLow)
+                return null;
+
+            return new CupHandle2D()
+            {
+                Point1 = new PointF(startIndex, pivot),
+                Point2 = new PointF(index, pivot),
+                Pivot = new PointF(pivotIndex, pivot),
+                LeftLow = new PointF(leftLowIndex, leftLow),
+                RightLow = new PointF(rightLowIndex, rightLow),
+            };
         }
 
         public IEnumerator<float> GetEnumerator()

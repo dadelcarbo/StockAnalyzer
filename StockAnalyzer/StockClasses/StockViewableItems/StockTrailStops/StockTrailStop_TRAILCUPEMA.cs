@@ -35,7 +35,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
-            var highestInSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
             this.series[0] = new FloatSerie(stockSerie.Count, SerieNames[0], float.NaN);
             this.series[0].Name = this.SerieNames[0];
             this.series[1] = new FloatSerie(stockSerie.Count, SerieNames[1], float.NaN);
@@ -52,7 +51,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
             bool isBull = false;
             float trailStop = float.NaN;
-            float highestInBars = float.MaxValue; // Reference for trailing stop
             for (int i = period * 2; i < stockSerie.Count; i++)
             {
                 if (isBull) // Trail Stop
@@ -72,56 +70,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 }
                 else
                 {
-                    if (highestInSerie[i] <= (period * 2)) // Smaller than period
-                        continue;
-
-                    // Find Pivot
-                    int startIndex = i - (int)highestInSerie[i];
-                    var pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 2, i - 1);
-                    while (pivotIndex - startIndex + 1 < period && i - pivotIndex > (period * 2))
+                    var cupHandle = closeSerie.DetectCupHandle(i, period, rightHigherLow);
+                    if (cupHandle != null)
                     {
-                        startIndex = pivotIndex;
-                        pivotIndex = bodyHighSerie.FindMaxIndex(startIndex + 1, i - 1);
-                    }
-                    if (pivotIndex - startIndex + 1 < period || i - pivotIndex < period) // Pivot distance smaller than period
-                        continue;
-
-                    var pivot = new PointF { X = pivotIndex, Y = bodyHighSerie[pivotIndex] };
-                    var startPoint = new PointF { X = startIndex - 1, Y = pivot.Y };
-                    var endPoint = new PointF { X = i, Y = pivot.Y };
-
-                    // Calculate  right and left lows
-                    var leftLow = new PointF();
-                    var rightLow = new PointF();
-                    var low = float.MaxValue;
-                    for (int k = startIndex; k < pivotIndex; k++)
-                    {
-                        var bodyLow = bodyLowSerie[k];
-                        if (low >= bodyLow)
-                        {
-                            leftLow.X = k;
-                            leftLow.Y = low = bodyLow;
-                        }
-                    }
-                    low = float.MaxValue;
-                    for (int k = pivotIndex + 1; k < i; k++)
-                    {
-                        var bodyLow = bodyLowSerie[k];
-                        if (low > bodyLow)
-                        {
-                            rightLow.X = k;
-                            rightLow.Y = low = bodyLow;
-                        }
-                    }
-                    if (!rightHigherLow || (rightHigherLow && rightLow.Y > leftLow.Y))
-                    {
-                        this.series[0][i] = trailStop = rightLow.Y;
-                        highestInBars = highestInSerie[i];
-                        isBull = trailPeriod > 0;
+                        this.series[0][i] = trailStop = cupHandle.RightLow.Y;
+                        isBull = true;
                         brokenUpEvents[i] = bullEvents[i] = true;
 
-                        // Draw open cup and handle
-                        var cupHandle = new CupHandle2D(startPoint, endPoint, pivot, leftLow, rightLow, Pens.Black, false, false);
                         cupHandle.IsPersistent = false;
                         stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(cupHandle);
                     }

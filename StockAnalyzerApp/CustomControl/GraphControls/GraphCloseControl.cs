@@ -1069,14 +1069,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Calculate Highest in bars.
             if (this.lastMouseIndex > 0)
             {
-                var bodyHighSerie = this.serie.GetSerie(StockDataType.BODYHIGH);
-                int highest = bodyHighSerie.GetHighestIn(lastMouseIndex, closeValue);
+                var bodyHighSerie = this.serie.GetSerie(StockDataType.CLOSE);
+                int highest = bodyHighSerie.GetHighestIn(lastMouseIndex);
                 if (highest > 0)
                 {
                     value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
                 }
-                var bodyLowSerie = this.serie.GetSerie(StockDataType.BODYLOW);
-                int lowest = bodyLowSerie.GetLowestIn(lastMouseIndex, closeValue);
+                var bodyLowSerie = this.serie.GetSerie(StockDataType.CLOSE);
+                int lowest = bodyLowSerie.GetLowestIn(lastMouseIndex);
                 if (lowest > 0)
                 {
                     value += BuildTabbedString("LowestIn", lowest.ToString(), 12) + "\r\n";
@@ -1790,119 +1790,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         private CupHandle2D DetectCupHandle(PointF mouseValuePoint)
         {
-            if (mouseValuePoint.Y > Math.Max(openCurveType.DataSerie[(int)mouseValuePoint.X], closeCurveType.DataSerie[(int)mouseValuePoint.X]))
-            {
-                PointF pivot = PointF.Empty;
-                for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
-                {
-                    var startBody = Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]);
-                    if (pivot == PointF.Empty) // Search for pivot
-                    {
-                        var prevBody = Math.Max(openCurveType.DataSerie[i - 1], closeCurveType.DataSerie[i - 1]);
-                        if (startBody > prevBody && (startBody > mouseValuePoint.Y))
-                        {
-                            pivot.X = i;
-                            pivot.Y = startBody;
-                        }
-                    }
-                    else if (startBody > pivot.Y) // Cup Handle start
-                    {
-                        var startPoint = new PointF(i, pivot.Y);
-                        int j;
-                        for (j = (int)mouseValuePoint.X + 1; j <= EndIndex; j++)
-                        {
-                            var endBody = Math.Max(openCurveType.DataSerie[j], closeCurveType.DataSerie[j]);
-                            if (endBody > pivot.Y) // Look for Cup Handle end
-                            {
-                                break;
-                            }
-                        }
-                        // Calculate indices of right and left lows
-                        var leftLow = new PointF();
-                        var rightLow = new PointF();
-                        var low = float.MaxValue;
-                        for (int k = (int)startPoint.X + 1; k < pivot.X; k++)
-                        {
-                            var bodyLow = Math.Min(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
-                            if (low >= bodyLow)
-                            {
-                                leftLow.X = k;
-                                leftLow.Y = low = bodyLow;
-                            }
-                        }
-                        low = float.MaxValue;
-                        for (int k = (int)pivot.X + 1; k < j; k++)
-                        {
-                            var bodyLow = Math.Min(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
-                            if (low > bodyLow)
-                            {
-                                rightLow.X = k;
-                                rightLow.Y = low = bodyLow;
-                            }
-                        }
-                        // Draw open cup and handle (not completed yet)
-                        bool opened = j > EndIndex && closeCurveType.DataSerie[EndIndex] < pivot.Y;
-                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftLow, rightLow, DrawingPen, false, opened);
-                    }
-                }
-            }
-            else
-            {
-                PointF pivot = PointF.Empty;
-                for (int i = (int)mouseValuePoint.X - 1; i > StartIndex + 1; i--)
-                {
-                    var startBody = Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]);
-                    if (pivot == PointF.Empty) // Search for pivot
-                    {
-                        var prevBody = Math.Min(openCurveType.DataSerie[i - 1], closeCurveType.DataSerie[i - 1]);
-                        if (startBody < prevBody && (startBody < mouseValuePoint.Y))
-                        {
-                            pivot.X = i;
-                            pivot.Y = startBody;
-                        }
-                    }
-                    else if (startBody < pivot.Y) // Cup Handle start
-                    {
-                        var startPoint = new PointF(i, pivot.Y);
-                        int j;
-                        for (j = (int)mouseValuePoint.X + 1; j <= EndIndex; j++)
-                        {
-                            var endBody = Math.Min(openCurveType.DataSerie[j], closeCurveType.DataSerie[j]);
-                            if (endBody < pivot.Y) // Look for Cup Handle end
-                            {
-                                break;
-                            }
-                        }
-                        // Calculate indices of right and left lows
-                        var leftHigh = new PointF();
-                        var rightHigh = new PointF();
-                        var high = float.MinValue;
-                        for (int k = (int)startPoint.X + 1; k < pivot.X; k++)
-                        {
-                            var bodyHigh = Math.Max(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
-                            if (high <= bodyHigh)
-                            {
-                                leftHigh.X = k;
-                                leftHigh.Y = high = bodyHigh;
-                            }
-                        }
-                        high = float.MinValue;
-                        for (int k = (int)pivot.X + 1; k < j; k++)
-                        {
-                            var bodyHigh = Math.Max(openCurveType.DataSerie[k], closeCurveType.DataSerie[k]);
-                            if (high < bodyHigh)
-                            {
-                                rightHigh.X = k;
-                                rightHigh.Y = high = bodyHigh;
-                            }
-                        }
-                        // Draw open cup and handle (not completed yet)
-                        bool opened = j > EndIndex && closeCurveType.DataSerie[EndIndex] > pivot.Y;
-                        return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftHigh, rightHigh, DrawingPen, true, opened);
-                    }
-                }
-            }
-            return null;
+            return closeCurveType.DataSerie.DetectCupHandle((int)mouseValuePoint.X, 3, true);
+
+            // if (mouseValuePoint.Y > Math.Max(openCurveType.DataSerie[(int)mouseValuePoint.X], closeCurveType.DataSerie[(int)mouseValuePoint.X])) // Upside CupHandle
+            //return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftHigh, rightHigh, DrawingPen, true, opened); // Inverse CUP & Handle
         }
         protected void DrawTmpCupHandle(Graphics graph, Pen pen, CupHandle2D cupHandle, bool useTransform)
         {
@@ -1927,7 +1818,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 // Calculate upper body high
                 for (int i = start; i < end; i++)
                 {
-                    polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                    polygonPoints[i - start] = GetScreenPointFromValuePoint(i, closeCurveType.DataSerie[i]);
+                    //polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
                 }
             }
             polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);

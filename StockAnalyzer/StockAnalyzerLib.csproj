@@ -589,7 +589,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_EMA3Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_TRENDLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_MACD.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_PIVOT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_RSI.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBarIndicatorEventBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBars.Designer.cs">
@@ -598,7 +597,6 @@
       <DependentUpon>StockPaintBars.resx</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLEINV.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLETRAIL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMACD.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMATF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFW.cs" />
