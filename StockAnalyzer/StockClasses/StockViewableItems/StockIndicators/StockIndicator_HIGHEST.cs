@@ -50,18 +50,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.series[0] = indexSerie;
             this.Series[0].Name = this.Name;
 
-            int trigger = Math.Max(1,(int)this.Parameters[0]);
+            int trigger = Math.Max(1, (int)this.Parameters[0]);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);
-
-            var bodyHighSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             for (int i = trigger; i < stockSerie.Count; i++)
             {
                 int count = 0;
                 for (int j = i - 1; j >= 0; j--)
                 {
-                    if (closeSerie[i] > bodyHighSerie[j])
+                    if (closeSerie[i] > closeSerie[j])
                     {
                         count++;
                     }

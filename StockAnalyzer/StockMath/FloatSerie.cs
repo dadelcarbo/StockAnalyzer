@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Documents;
 
 namespace StockAnalyzer.StockMath
 {
@@ -1199,6 +1200,17 @@ namespace StockAnalyzer.StockMath
             }
             return false;
         }
+
+        public bool IsTop(int index, int period)
+        {
+            if (index >= period && index < this.Count - period)
+            {
+                float value = this[index];
+                return value == GetMax(index - period, index + period);
+            }
+            return false;
+        }
+
         public bool IsBottom(int index)
         {
             if (index > 0 && index < this.Count - 1)
@@ -1648,36 +1660,40 @@ namespace StockAnalyzer.StockMath
             if (this.Values[index] < this.GetMax(index - period, index - 1))
                 return null;
 
-            var highestIn = GetHighestIn(index); // Get nb bar from previous high
-            if (highestIn < period * 2)
-                return null;
-
-            var previousHighestIn = GetHighestIn(index - 1);
-
-            if (highestIn - previousHighestIn < period + 1) // No resistance broken, no Cup & Handle
-                return null;
-
-
-            int startIndex = index - highestIn;
-            //if (startIndex == 0) // All time high
-            //    return null;
-
-            // Find pivot (Highest Top in range)
+            // Find pivot (first broken resistance looking backwards)
             float pivot = float.MinValue;
             int pivotIndex = -1;
-            for (int i = startIndex; i < index - 1; i++)
+            float rangeLow = this[index - 1]; //this.GetMin(index - period, index - 1);
+            for (int i = index - period; i > index / 2; i--)
             {
-                if (IsTop(i)) // Is local High
+                if (this[i] > this[index]) // No pivot found
+                    break;
+                if (this[i] > rangeLow && this[i] > pivot && IsTop(i, period)) // Is local High
                 {
-                    if (pivot < this[i])
-                    {
-                        pivot = this[i];
-                        pivotIndex = i;
-                    }
-                    i++;
+                    pivot = this[i];
+                    pivotIndex = i;
+                    break;
                 }
             }
-            if (pivotIndex == -1 || pivotIndex < startIndex + period || pivotIndex > index - period)
+            if (pivotIndex == -1 || index - pivotIndex < period)
+                return null;
+
+            for (int i = pivotIndex + 1; i < index; i++)
+            {
+                if (this[i] > pivot)
+                    return null;
+            }
+
+            // Find Start of the Cup Handle
+            int startIndex = 0;
+            for (int i = pivotIndex; i > 0; i--)
+            {
+                if (this[i] > pivot)
+                {
+                    startIndex = i; break;
+                }
+            }
+            if (pivotIndex - startIndex < period)
                 return null;
 
             float leftLow = float.MaxValue;
@@ -1690,6 +1706,8 @@ namespace StockAnalyzer.StockMath
                     leftLowIndex = i;
                 }
             }
+            if (leftLowIndex == -1)
+                return null;
 
             float rightLow = float.MaxValue;
             int rightLowIndex = -1;
@@ -1701,6 +1719,8 @@ namespace StockAnalyzer.StockMath
                     rightLowIndex = i;
                 }
             }
+            if (rightLowIndex == -1)
+                return null;
             if (higherRightLow && rightLow < leftLow)
                 return null;
 

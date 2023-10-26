@@ -1790,7 +1790,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         private CupHandle2D DetectCupHandle(PointF mouseValuePoint)
         {
-            return closeCurveType.DataSerie.DetectCupHandle((int)mouseValuePoint.X, 3, true);
+            return closeCurveType.DataSerie.DetectCupHandle((int)mouseValuePoint.X, 3, false);
 
             // if (mouseValuePoint.Y > Math.Max(openCurveType.DataSerie[(int)mouseValuePoint.X], closeCurveType.DataSerie[(int)mouseValuePoint.X])) // Upside CupHandle
             //return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftHigh, rightHigh, DrawingPen, true, opened); // Inverse CUP & Handle
