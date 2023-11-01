@@ -1231,7 +1231,7 @@ namespace StockAnalyzerApp
             {
                 try
                 {
-                    this.startIndex = startIndex;
+                    this.startIndex = Math.Max(0, startIndex);
                     this.endIndex = endIndex;
                     this.graphScrollerControl.InitZoom(this.startIndex, this.endIndex);
                 }
@@ -2426,13 +2426,18 @@ namespace StockAnalyzerApp
             return snapshot;
         }
 
-        public string GetStockSnapshotAsHtml(StockSerie stockSerie, string theme)
+        public string GetStockSnapshotAsHtml(StockSerie stockSerie, string theme, int nbBars = 0)
         {
             this.CurrentStockSerie = stockSerie;
             if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
             {
                 this.CurrentTheme = theme;
             }
+            if (nbBars > 0)
+            {
+                this.ChangeZoom(stockSerie.LastIndex - nbBars, stockSerie.LastIndex);
+            }
+
             return SnapshotAsHtml();
         }
 
@@ -3123,6 +3128,17 @@ namespace StockAnalyzerApp
                 }
             }
             htmlBody += htmlAlerts;
+
+            // Generate EURO_A Summation Index
+            if (StockDictionary.ContainsKey("McClellanSum.EURO_A"))
+            {
+                this.Size = new Size(950, 800);
+
+                this.ViewModel.BarDuration = StockBarDuration.Daily;
+                                
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary["McClellanSum.EURO_A"], "EUROA_SUM", 770);
+                htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
+            }
 
             StockSplashScreen.CloseForm(true);
             #endregion
