@@ -50,6 +50,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             if (!stockDictionary.ContainsKey(longName))
                             {
                                 stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
+                                if (longName.StartsWith("AD."))
+                                {
+                                    var stockName = longName.Replace("AD.", "McClellan.");
+                                    stockDictionary.Add(stockName, new StockSerie(stockName, stockName, StockSerie.Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
+                                    stockName = longName.Replace("AD.", "McClellanSum.");
+                                    stockDictionary.Add(stockName, new StockSerie(stockName, stockName, StockSerie.Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
+                                }
                             }
                         }
                     }
@@ -102,34 +109,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 case "AD":
                     return stockDictionary.GenerateAdvDeclSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                case "McClellan":
+                    return stockDictionary.GenerateMcClellanSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                case "McClellanSum":
+                    return stockDictionary.GenerateMcClellanSumSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "EQW":
                     return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "ROC":
                     return stockDictionary.GenerateIndiceBestROC(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "OSC":
                     return stockDictionary.GenerateIndiceBestOSC(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                case "BBTF":
-                    return stockDictionary.GenerateIndiceBBTF(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "HL":
                     return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                case "ER":
-                    return stockDictionary.GenerateERBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "EMA":
                     return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "STOKF":
                     return stockDictionary.GenerateSTOKFBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "STOKS":
                     return stockDictionary.GenerateSTOKSBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                case "McClellan":
-                    return stockDictionary.GenerateMcClellanSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                case "McClellanSum":
-                    return stockDictionary.GenerateMcClellanSumSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                case "BBWIDTH":
-                    return stockDictionary.GenerateBBWidthBreadth(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "MM":
                     return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                case "MYOSC":
-                    return stockDictionary.GenerateMyOscBreadth(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 default:
                     StockLog.Write($"BREADTH Not Found: {stockSerie.StockName}");
                     break;

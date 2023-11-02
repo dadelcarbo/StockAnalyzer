@@ -3111,7 +3111,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlAlerts = string.Empty;
-            foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group).OrderBy(a => a.Rank))
+            foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group && a.Title != "Watchlist").OrderBy(a => a.Rank))
             {
                 htmlAlerts += GenerateAlertTable(alertDef, "ROC(50)", nbLeaders);
             }
