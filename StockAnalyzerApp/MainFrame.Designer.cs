@@ -128,8 +128,7 @@ namespace StockAnalyzerApp
             this.barLineBreakComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.barHeikinAshiCheckBox = new ToolStripCheckedBox();
             this.downloadBtn = new System.Windows.Forms.ToolStripButton();
-            this.searchText = new System.Windows.Forms.ToolStripTextBox();
-            this.goBtn = new System.Windows.Forms.ToolStripButton();
+            this.searchCombo = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.rewindBtn = new System.Windows.Forms.ToolStripButton();
             this.fastForwardBtn = new System.Windows.Forms.ToolStripButton();
@@ -952,8 +951,7 @@ namespace StockAnalyzerApp
             this.barSmoothingComboBox,
             this.barHeikinAshiCheckBox,
             this.downloadBtn,
-            this.searchText,
-            this.goBtn,
+            this.searchCombo,
             this.toolStripSeparator6,
             this.zoomOutBtn,
             this.zoomInBtn,
@@ -1025,22 +1023,12 @@ namespace StockAnalyzerApp
             this.downloadBtn.Text = "Download";
             this.downloadBtn.Click += new System.EventHandler(this.downloadBtn_Click);
             // 
-            // searchText
+            // searchCombo
             // 
-            this.searchText.Name = "searchText";
-            this.searchText.Size = new System.Drawing.Size(200, 23);
-            this.searchText.TextChanged += new System.EventHandler(this.goBtn_Click);
-            // 
-            // goBtn
-            // 
-            this.goBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.goBtn.Image = global::StockAnalyzerApp.Properties.Resources.search;
-            this.goBtn.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.goBtn.Name = "goBtn";
-            this.goBtn.Size = new System.Drawing.Size(23, 20);
-            this.goBtn.Text = "Go to stock";
-            this.goBtn.ToolTipText = "Go to stock";
-            this.goBtn.Click += new System.EventHandler(this.goBtn_Click);
+            this.searchCombo.Name = "searchCombo";
+            this.searchCombo.Size = new System.Drawing.Size(200, 23);
+            this.searchCombo.SelectedIndexChanged += new System.EventHandler(this.goToStock);
+            this.searchCombo.TextChanged += SearchCombo_TextChanged;
             // 
             // toolStripSeparator6
             // 
@@ -1555,6 +1543,7 @@ namespace StockAnalyzerApp
 
         }
 
+
         #endregion
 
         private System.Windows.Forms.MenuStrip mainMenu;
@@ -1685,9 +1674,8 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator18;
         private ToolStripMenuItem saveThemeMenuItem;
         private ToolStripMenuItem newAnalysisMenuItem;
-        private ToolStripTextBox searchText;
+        private ToolStripComboBox searchCombo;
         private ToolStripLabel smoothingLabel;
         private ToolStripLabel lineBreakLabel;
-        private ToolStripButton goBtn;
     }
 }

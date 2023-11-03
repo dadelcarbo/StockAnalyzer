@@ -3,6 +3,7 @@ using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -632,32 +633,73 @@ namespace StockAnalyzerApp
             }
             //  ProcessStrategies(new List<StockBarDuration> { StockBarDuration.Daily, StockBarDuration.Weekly });
 
-            AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
-            allowedTypes.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key.ToUpper()).ToArray());
-            searchText.AutoCompleteCustomSource = allowedTypes;
-            searchText.AutoCompleteMode = AutoCompleteMode.Suggest;
-            searchText.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            searchCombo.Items.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
 
             // Ready to start
             StockSplashScreen.CloseForm(true);
             this.Focus();
+        }
 
+        string typedSearch = null;
+        private void SearchCombo_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(searchCombo.Text) || searchCombo.Text == typedSearch)
+                    return;
+                else
+                    typedSearch = searchCombo.Text.ToUpper();
+
+                if (!string.IsNullOrEmpty(searchCombo.Text) && searchCombo.Text.Length > 1)
+                {
+                    if (this.searchCombo.Items.Count == 1 && this.searchCombo.Items[0].ToString() == searchCombo.Text)
+                        return; // Prevent infinite loop
+                    var name = searchCombo.Text.ToUpper();
+                    var match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && p.Key.ToUpper().Contains(name)).Select(p => p.Key).ToArray();
+
+                    this.searchCombo.Items.Clear();
+                    this.searchCombo.Items.AddRange(match);
+                    if (match.Length == 1)
+                    {
+                        this.searchCombo.SelectedIndex = 0;
+                        this.searchCombo.DroppedDown = false;
+                    }
+                    else
+                    {
+                        this.searchCombo.DroppedDown = true;
+                        this.searchCombo.SelectedIndex = -1;
+                        searchCombo.Text = name;
+                        this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
+                        Cursor = Cursors.Default;
+                        // Automatically pop up drop-down
+                    }
+                }
+                else
+                {
+                    var match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray();
+                    this.searchCombo.Items.Clear();
+                    this.searchCombo.Items.AddRange(match);
+                    this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
+                }
+            }
+            catch (Exception exception)
+            {
+                StockLog.Write(exception);
+            }
         }
 
         private bool showTimerDebug = true;
 
-        private void goBtn_Click(object sender, EventArgs e)
+        private void goToStock(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(searchText.Text)) return;
+            if (searchCombo.SelectedItem == null) return;
 
-            var text = searchText.Text.ToUpper();
+            var text = searchCombo.SelectedItem.ToString().ToUpper();
             if (text == this.currentStockSerie.StockName.ToUpper()) return;
 
             var serie = this.StockDictionary.Values.FirstOrDefault(s => s.StockName.ToUpper() == text);
 
             if (serie == null) return;
-            searchText.Text = serie.StockName;
-            searchText.Select(0, serie.StockName.Length);
 
             // Update Group
             if (this.selectedGroup != serie.StockGroup)
@@ -3135,7 +3177,7 @@ namespace StockAnalyzerApp
                 this.Size = new Size(950, 800);
 
                 this.ViewModel.BarDuration = StockBarDuration.Daily;
-                                
+
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary["McClellanSum.EURO_A"], "EUROA_SUM", 770);
                 htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
             }
@@ -3446,7 +3488,7 @@ namespace StockAnalyzerApp
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (searchText.Focused) return false;
+            if (searchCombo.Focused) return false;
 
             if (this.currentStockSerie == null) return false;
 
