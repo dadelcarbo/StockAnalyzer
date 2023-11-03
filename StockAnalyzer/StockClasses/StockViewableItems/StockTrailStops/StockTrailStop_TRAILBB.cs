@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         {
             get { return new Object[] { 20, 2.0f, -2.0f, "MA" }; }
         }
-        static List<string> emaTypes = new List<string>() { "EMA", "HMA", "MA", "EA", "MID" };
+        static List<string> emaTypes = new List<string>() { "EMA", "MA", "EA", "MID" };
         public override ParamRange[] ParameterRanges
         {
             get

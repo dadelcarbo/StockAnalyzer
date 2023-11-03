@@ -3527,8 +3527,8 @@ namespace StockAnalyzerApp
                         this.magnetStripBtn.Checked = !this.magnetStripBtn.Checked;
                         magnetStripBtn_Click(null, null);
                         break;
-                    case Keys.P:
-                        this.currentPortfolioMenuItem_Click(null, null);
+                    case Keys.X:
+                        this.excludeButton_Click(null, null);
                         break;
                     case Keys.Control | Keys.C:
                         ClearSecondarySerie();

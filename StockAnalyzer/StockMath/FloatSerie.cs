@@ -385,30 +385,6 @@ namespace StockAnalyzer.StockMath
             serie.Name = "EMA_" + emaPeriod.ToString();
             return serie;
         }
-        public FloatSerie CalculateER(int period)
-        {
-            float volatility = 0;
-            float direction;
-            FloatSerie erSerie = new FloatSerie(this.Count, "ER");
-
-            int i = 0;
-            for (i = 1; i <= period; i++)
-            {
-                volatility += Math.Abs(this[i] - this[i - 1]);
-            }
-            for (i = period + 1; i < this.Count; i++)
-            {
-                volatility += Math.Abs(this[i] - this[i - 1]) - Math.Abs(this[i - period] - this[i - period - 1]);
-                if (volatility == 0) { erSerie[i] = 0; }
-                else
-                {
-                    direction = this[i] - this[i - period];
-                    erSerie[i] = direction / volatility;
-                }
-            }
-
-            return erSerie;
-        }
         public FloatSerie ShiftForward(int length)
         {
             FloatSerie newSerie = new FloatSerie(this.Count);
@@ -492,40 +468,6 @@ namespace StockAnalyzer.StockMath
             }
 
             return new FloatSerie(serie, "STOK_" + period);
-        }
-        public FloatSerie CalculateFisher(int smoothing)
-        {
-            float[] serie = new float[Values.Count()];
-            float alpha = 2.0f / (float)(smoothing + 1);
-
-            double fisher = 0, val;
-            for (int i = 1; i < this.Count; i++)
-            {
-                val = Math.Min(0.9999, Math.Max(-0.9999, this[i]));
-
-                fisher = Math.Log((1.0f + val) / (1.0f - val));
-
-                serie[i] = serie[i - 1] + alpha * ((float)fisher - serie[i - 1]);
-            }
-
-            return new FloatSerie(serie, "FISHER_" + smoothing);
-        }
-        public FloatSerie CalculateFisherInv(int smoothing)
-        {
-            FloatSerie normalisedSerie = this.Normalise(-1.0f, 1.0f);
-            float[] serie = new float[Values.Count()];
-            float alpha = 2.0f / (float)(smoothing + 1);
-
-            double fisherInv = 0;
-            for (int i = 1; i < this.Count; i++)
-            {
-
-                fisherInv = (Math.Exp(2.0 * normalisedSerie[i]) - 1.0) / (Math.Exp(2.0 * normalisedSerie[i]) + 1.0);
-
-                serie[i] = serie[i - 1] + alpha * ((float)fisherInv - serie[i - 1]);
-            }
-
-            return new FloatSerie(serie, "FISHER_" + smoothing);
         }
 
         public FloatSerie CalculateSigmoid(float max, float lambda)
@@ -1362,14 +1304,6 @@ namespace StockAnalyzer.StockMath
             }
 
             return volatilitySerie;
-        }
-
-        public FloatSerie CalculateHMA(int period)
-        {
-            FloatSerie EMASerie1 = this.CalculateEMA(period / 2);
-            FloatSerie EMASerie2 = this.CalculateEMA(period);
-
-            return ((EMASerie1 * 2.0f) - EMASerie2).CalculateEMA((int)Math.Sqrt(period));
         }
 
         internal FloatSerie CalculateSARTrail(float accelerationFactorInit, float accelerationFactorStep)

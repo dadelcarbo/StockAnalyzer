@@ -53,11 +53,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override void ApplyTo(StockSerie stockSerie)
         {
-            var fastMA = stockSerie.GetIndicator($"MA({this.parameters[1]})").Series[0];
-            var slowMA = stockSerie.GetIndicator($"MA({this.parameters[0]})").Series[0];
+            var fastMA = stockSerie.GetIndicator($"EMA({this.parameters[1]})").Series[0];
+            var slowMA = stockSerie.GetIndicator($"EMA({this.parameters[0]})").Series[0];
 
             FloatSerie MACDSerie = (fastMA - slowMA) / fastMA;
-            FloatSerie signalSerie = MACDSerie.CalculateMA((int)this.parameters[2]);
+            FloatSerie signalSerie = MACDSerie.CalculateEMA((int)this.parameters[2]);
             this.series[0] = MACDSerie;
             this.series[0].Name = this.SerieNames[1];
             this.series[1] = signalSerie;

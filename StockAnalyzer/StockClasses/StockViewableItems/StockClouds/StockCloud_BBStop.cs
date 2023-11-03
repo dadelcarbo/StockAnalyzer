@@ -22,7 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         {
             get { return new Object[] { 20, 2.0f, -2.0f, "EMA" }; }
         }
-        static List<string> emaTypes = new List<string>() { "EMA", "HMA", "MA", "EA", "MID" };
+        static List<string> emaTypes = new List<string>() { "EMA", "MA", "EA", "MID" };
         public override ParamRange[] ParameterRanges
         {
             get
