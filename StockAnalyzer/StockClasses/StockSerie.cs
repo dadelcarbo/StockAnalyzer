@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockClasses
             EUROPE,
             ITALIA,
             GERMANY,
-            //SPAIN,
+            SPAIN,
             USA,
             SAXO,
             INDICES,
@@ -2954,8 +2954,8 @@ namespace StockAnalyzer.StockClasses
                 case Groups.PEA:
                     return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT
                         || StockGroup == Groups.BELGIUM || StockGroup == Groups.HOLLAND || StockGroup == Groups.PORTUGAL
-                        || StockGroup == Groups.ITALIA || StockGroup == Groups.GERMANY;
-                //  ||  (this.StockGroup == Groups.SPAIN) || 
+                        || StockGroup == Groups.ITALIA || StockGroup == Groups.GERMANY || this.StockGroup == Groups.SPAIN;
+                //  ) || 
                 case Groups.SAXO:
                     return this.SaxoId > 0;
                 case Groups.SRD:
