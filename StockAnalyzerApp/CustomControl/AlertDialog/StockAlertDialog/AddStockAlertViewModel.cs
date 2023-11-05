@@ -35,6 +35,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.BarDuration = alertDef.BarDuration;
             this.Theme = alertDef.Theme;
             this.Stop = alertDef.Stop;
+            this.Speed = alertDef.Speed;
             this.MinLiquidity = alertDef.MinLiquidity;
             switch (this.alertType)
             {
@@ -91,8 +92,12 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         public IEnumerable<string> IndicatorNames { get; set; }
         public IEnumerable<string> StopNames => IndicatorNames.Where(i => i.StartsWith("TRAILSTOP|")).Select(i => i.Replace("TRAILSTOP|", ""));
 
-        private string stop;
+        private string stop = "ROR(35)";
         public string Stop { get => stop; set => SetProperty(ref stop, value); }
+
+        private string speed;
+        public string Speed { get => speed; set => SetProperty(ref speed, value); }
+
         private float minLiquidity;
         public float MinLiquidity { get => minLiquidity; set => SetProperty(ref minLiquidity, value); }
 
@@ -300,6 +305,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             alertDef.Theme = this.Theme;
             alertDef.CreationDate = DateTime.Now;
             alertDef.Stop = this.Stop;
+            alertDef.Speed = this.Speed;
 
             this.OnPropertyChanged("AlertDefs");
 

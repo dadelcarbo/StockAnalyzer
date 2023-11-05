@@ -45,7 +45,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             FloatSerie volume = stockSerie.GetSerie(StockDataType.EXCHANGED) / 1000000.0f;
 
-            this.Series[0] = volume.CalculateEMA((int)parameters[0]);
+            this.Series[0] = volume.CalculateMA((int)parameters[0]);
             this.Series[0].Name = SerieNames[0];
 
             // Detecting events

@@ -68,6 +68,8 @@
                         <StackPanel Orientation="Horizontal" Margin="1">
                             <Label Width="80">Stop</Label>
                             <telerik:RadComboBox SelectedItem="{Binding Stop}"  ItemsSource="{Binding StopNames}"  Width="250"/>
+                            <Label>Speed</Label>
+                            <TextBox Text="{Binding Speed, Mode=TwoWay}" Width="250" VerticalAlignment="Center"/>
                             <Label>Min Liquidity (M€)</Label>
                             <TextBox Text="{Binding MinLiquidity, Mode=TwoWay}" Width="40" VerticalAlignment="Center"/>
                         </StackPanel>

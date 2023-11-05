@@ -44,7 +44,10 @@ namespace StockAnalyzer.StockClasses
         public float AlertClose { get; set; }
         public float Speed { get; set; }
 
-        public long ExchangedMoney { get; set; }
+        /// <summary>
+        /// Exchanged Money (M€)
+        /// </summary>
+        public float ExchangedMoney { get; set; }
 
         private StockAlertDef alertDef;
         public void SetAlertDef()
@@ -52,7 +55,7 @@ namespace StockAnalyzer.StockClasses
             this.alertDef = StockAlertConfig.AllAlertDefs.FirstOrDefault(alertDef => alertDef.Id == this.AlertDefId);
         }
 
-        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, float alertStop, long volume, float speed)
+        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, float alertStop, float exchanged, float speed)
         {
             this.alertDef = alertDef;
             this.AlertDefId = alertDef.Id;
@@ -62,7 +65,7 @@ namespace StockAnalyzer.StockClasses
             AlertClose = alertClose;
             StopValue = alertStop;
             Speed = speed;
-            ExchangedMoney = (int)Math.Round(alertClose * (float)volume / 1000.0f);
+            ExchangedMoney = exchanged;
         }
         public static bool operator ==(StockAlert a, StockAlert b)
         {

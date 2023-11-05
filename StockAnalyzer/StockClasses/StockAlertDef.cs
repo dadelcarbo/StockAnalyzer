@@ -52,6 +52,7 @@ namespace StockAnalyzer.StockClasses
         public string FilterFullName { get { return FilterType == null || FilterName == null ? null : FilterType + "|" + FilterName; } }
 
         public string Stop { get; set; }
+        public string Speed { get; set; }
 
         public override string ToString()
         {

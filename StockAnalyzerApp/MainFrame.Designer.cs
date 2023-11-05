@@ -1025,8 +1025,8 @@ namespace StockAnalyzerApp
             // 
             // searchCombo
             // 
-            this.searchCombo.Name = "searchCombo";
-            this.searchCombo.Size = new System.Drawing.Size(200, 23);
+            this.searchCombo.Name = "searchCombo"; 
+            this.searchCombo.Size = new System.Drawing.Size(250, 23);
             this.searchCombo.SelectedIndexChanged += new System.EventHandler(this.goToStock);
             this.searchCombo.TextChanged += SearchCombo_TextChanged;
             // 

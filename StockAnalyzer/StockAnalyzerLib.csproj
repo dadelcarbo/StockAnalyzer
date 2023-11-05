@@ -459,7 +459,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADJUSTED.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTOPEMAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_XMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NATR.cs" />
@@ -483,9 +482,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDH.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DISTTRAILEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FIBOCHANNEL.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LEADER.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBOSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBWIDTH.cs" />

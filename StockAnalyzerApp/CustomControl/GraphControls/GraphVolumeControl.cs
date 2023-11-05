@@ -175,8 +175,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         {
                             var volume = this.serie.GetSerie(StockAnalyzer.StockClasses.StockDataType.VOLUME)[this.lastMouseIndex];
                             var exchanged = curveType.DataSerie[this.lastMouseIndex];
-                            value += BuildTabbedString(curveType.DataSerie.Name, volume, 12) + "\r\n";
-                            value += BuildTabbedString(curveType.DataSerie.Name + " €", exchanged, 12) + "\r\n";
+                            value += BuildTabbedString("VOLUME", volume, 12) + "\r\n";
+                            value += BuildTabbedString("EXCHANGED", exchanged / 1000000, 12) + "\r\n";
+                            if (this.lastMouseIndex == this.serie.LastIndex)
+                            {
+                                value += BuildTabbedString("EXCHANGED AVG", this.serie.GetExchanged(10), 12) + "\r\n";
+                            }
                         }
                         else
                         {
