@@ -68,7 +68,6 @@ namespace StockAnalyzer.StockClasses
             BOND,
             INTRADAY,
             TURBO,
-            INT_EURONEXT,
             Portfolio,
             Replay,
             ALL
@@ -3269,9 +3268,9 @@ namespace StockAnalyzer.StockClasses
                             case "H":
                                 if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
                                 {
-                                    if (!string.IsNullOrEmpty(this.ISIN) && this.ISIN.StartsWith("FR"))
+                                    if (!string.IsNullOrEmpty(this.ISIN))
                                     {
-                                        var intradaySerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == this.ISIN && s.DataProvider == StockDataProvider.BoursoIntraday);
+                                        var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday};
                                         if (StockDataProviderBase.DownloadSerieData(intradaySerie))
                                         {
                                             newBarList = GenerateHourBar(intradaySerie.Values.ToList(), period);
@@ -3286,9 +3285,9 @@ namespace StockAnalyzer.StockClasses
                             case "M":
                                 if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
                                 {
-                                    if (!string.IsNullOrEmpty(this.ISIN) && this.ISIN.StartsWith("FR"))
+                                    if (!string.IsNullOrEmpty(this.ISIN))
                                     {
-                                        var intradaySerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == this.ISIN && s.DataProvider == StockDataProvider.BoursoIntraday);
+                                        var intradaySerie = new StockSerie { Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
                                         if (StockDataProviderBase.DownloadSerieData(intradaySerie))
                                         {
                                             newBarList = GenerateMinuteBar(intradaySerie.Values.ToList(), period);

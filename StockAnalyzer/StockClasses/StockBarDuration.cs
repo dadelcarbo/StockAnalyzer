@@ -14,6 +14,7 @@ namespace StockAnalyzer.StockClasses
         M_30,
         H_1,
         H_2,
+        H_3,
         H_4
     }
 
@@ -57,6 +58,7 @@ namespace StockAnalyzer.StockClasses
         public static StockBarDuration Daily => new StockBarDuration(BarDuration.Daily);
         public static StockBarDuration H_1 => new StockBarDuration(BarDuration.H_1);
         public static StockBarDuration H_2 => new StockBarDuration(BarDuration.H_2);
+        public static StockBarDuration H_3 => new StockBarDuration(BarDuration.H_3);
         public static StockBarDuration H_4 => new StockBarDuration(BarDuration.H_4);
         public static StockBarDuration M_5 => new StockBarDuration(BarDuration.M_5);
         public static StockBarDuration M_10 => new StockBarDuration(BarDuration.M_10);
@@ -71,18 +73,21 @@ namespace StockAnalyzer.StockClasses
             StockBarDuration.Monthly,
             StockBarDuration.H_1,
             StockBarDuration.H_2,
+            StockBarDuration.H_3,
             StockBarDuration.H_4,
             StockBarDuration.M_5,
             StockBarDuration.M_10,
             StockBarDuration.M_15,
             StockBarDuration.M_30
         };
+
         public static IList<BarDuration> BarDurations = new List<BarDuration>() {
             BarDuration.Daily,
             BarDuration.Weekly,
             BarDuration.Monthly,
             BarDuration.H_1,
             BarDuration.H_2,
+            BarDuration.H_3,
             BarDuration.H_4,
             BarDuration.M_5,
             BarDuration.M_10,
@@ -99,6 +104,7 @@ namespace StockAnalyzer.StockClasses
         public static IList<StockBarDuration> IntradayValues = new List<StockBarDuration>() {
             StockBarDuration.H_1,
             StockBarDuration.H_2,
+            StockBarDuration.H_3,
             StockBarDuration.H_4,
             StockBarDuration.M_5,
             StockBarDuration.M_10,

@@ -1469,7 +1469,7 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO) || currentStockSerie.BelongsToGroup(StockSerie.Groups.INT_EURONEXT)) && currentStockSerie.IsMarketOpened())
+                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO) ) && currentStockSerie.IsMarketOpened())
                 {
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();
@@ -2682,13 +2682,6 @@ namespace StockAnalyzerApp
                         this.logScaleBtn_Click(null, null);
                     }
                     this.ViewModel.BarDuration = StockBarDuration.H_1;
-                    break;
-                case StockSerie.Groups.INT_EURONEXT:
-                    if (this.logScaleBtn.CheckState == CheckState.Checked)
-                    {
-                        this.logScaleBtn_Click(null, null);
-                    }
-                    this.ViewModel.BarDuration = StockBarDuration.M_15;
                     break;
                 default:
                     if (this.ViewModel.BarDuration.Duration > BarDuration.Monthly)

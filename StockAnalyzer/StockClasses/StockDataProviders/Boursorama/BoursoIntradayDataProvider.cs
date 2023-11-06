@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 {
@@ -30,20 +31,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             }
 
             this.needDownload = download;
-
-            // Create serie from EURO_A
-            foreach (var stockSerie in stockDictionary.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SRD)).ToArray())
-            {
-                stockDictionary.Add("INT_" + stockSerie.StockName,
-                    new StockSerie("INT_" + stockSerie.StockName,
-                        stockSerie.Symbol,
-                        StockSerie.Groups.INT_EURONEXT,
-                        StockDataProvider.BoursoIntraday,
-                        BarDuration.Daily) // 1 Minute
-                    {
-                        ISIN = stockSerie.ISIN
-                    });
-            }
         }
 
         public override bool SupportsIntradayDownload => true;
@@ -79,9 +66,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             return res;
         }
 
-        public string FormatURL(string symbol)
+        public string FormatURL(StockSerie stockSerie)
         {
-            return $"https://www.boursorama.com/bourse/action/graph/ws/GetTicksEOD?symbol=1rP{symbol}&length=5&period=-1&guid=";
+            if (string.IsNullOrEmpty(stockSerie.Symbol) || string.IsNullOrEmpty(stockSerie.ISIN) || stockSerie.ISIN.Length < 2)
+                return null;
+            var prefix = stockSerie.ISIN.Substring(0, 2);
+            var symbol = prefix switch
+            {
+                "FR" => $"1rP{stockSerie.Symbol}",
+                "DE" => $"1z{stockSerie.Symbol}",
+                "BE" => $"FF11-{stockSerie.Symbol}",
+                "NL" => $"1rA{stockSerie.Symbol}",
+                "PT" => $"1rL{stockSerie.Symbol}",
+                "IT" => $"1g{stockSerie.Symbol}",
+                "ES" => $"FF55-{stockSerie.Symbol}",
+                "US" => $"{stockSerie.Symbol}",
+                _ => null
+            };
+            if (symbol == null)
+                return null;
+            return $"https://www.boursorama.com/bourse/action/graph/ws/GetTicksEOD?symbol={symbol}&length=5&period=-1&guid=";
         }
 
         public override bool ForceDownloadData(StockSerie stockSerie)
@@ -109,6 +113,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             {
                 NotifyProgress("Downloading daily data for " + stockSerie.StockName);
 
+                var url = FormatURL(stockSerie);
+                if (url == null)
+                    return false;
+
                 var fileName = DataFolder + FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
 
                 if (DownloadHistory.ContainsKey(stockSerie.ISIN) && DownloadHistory[stockSerie.ISIN] > DateTime.Now.AddMinutes(-2))
@@ -120,17 +128,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                    var url = string.Empty;
-                    var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
-                    if (stockSerie.Initialise() && stockSerie.Count > 0)
-                    {
-                        lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
-                        url = FormatURL(stockSerie.Symbol);
-                    }
-                    else
-                    {
-                        url = FormatURL(stockSerie.Symbol);
-                    }
+                    //var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
+                    //if (stockSerie.Initialise() && stockSerie.Count > 0)
+                    //{
+                    //    lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
+                    //}
 
                     int nbTries = 2;
                     while (nbTries > 0)

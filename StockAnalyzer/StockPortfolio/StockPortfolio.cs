@@ -522,13 +522,13 @@ namespace StockAnalyzer.StockPortfolio
             // Find StockSerie by ISIN
             if (!string.IsNullOrEmpty(instrument.Isin))
             {
-                stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == instrument.Isin && s.StockGroup != StockSerie.Groups.INT_EURONEXT);
+                stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == instrument.Isin);
                 if (stockSerie != null)
                 {
                     UicToSerieCache.Add(uic, stockSerie);
                     return stockSerie;
                 }
-                stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == instrument.Isin && s.StockGroup == StockSerie.Groups.INT_EURONEXT);
+                stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == instrument.Isin);
                 if (stockSerie != null)
                 {
                     UicToSerieCache.Add(uic, stockSerie);
@@ -539,7 +539,7 @@ namespace StockAnalyzer.StockPortfolio
             // Find instrument in stock Dictionnary by Symbol
             var symbol = instrument.Symbol.Split(':')[0];
             var stockName = instrument.Description.ToUpper().Replace("SA", "").Replace("SCA", "").Trim();
-            stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => (s.Symbol == symbol && s.StockGroup != StockSerie.Groups.INT_EURONEXT) || s.StockName == stockName);
+            stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => (s.Symbol == symbol) || s.StockName == stockName);
             if (stockSerie == null)
             {
                 if (instrument.ExchangeId == "CATS_SAXO" || instrument.AssetType == "WarrantOpenEndKnockOut")

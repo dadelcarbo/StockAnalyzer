@@ -338,11 +338,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     break;
                 }
-                if (this.group == StockSerie.Groups.INT_EURONEXT)
-                {
-                    StockDataProviderBase.DownloadSerieData(stockSerie);
-                }
-                else if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
+                if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
                 {
                     StockDataProviderBase.DownloadSerieData(stockSerie);
                 }
