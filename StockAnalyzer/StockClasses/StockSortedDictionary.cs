@@ -63,10 +63,20 @@ namespace StockAnalyzer.StockClasses
 
         public void InitRange(IEnumerable<StockDailyValue> dailyValues)
         {
-            allocatedSize = dailyValues.Count();
-            values = dailyValues.ToArray();
-            keys = dailyValues.Select(dv => dv.DATE).ToArray();
-            size = allocatedSize;
+            if (dailyValues == null)
+            {
+                values = new StockDailyValue[BUCKET_SIZE];
+                keys = new DateTime[BUCKET_SIZE];
+                allocatedSize = BUCKET_SIZE;
+                size = 0;
+            }
+            else
+            {
+                allocatedSize = dailyValues.Count();
+                values = dailyValues.ToArray();
+                keys = dailyValues.Select(dv => dv.DATE).ToArray();
+                size = allocatedSize;
+            }
         }
 
         //

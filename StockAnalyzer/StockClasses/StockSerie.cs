@@ -3270,8 +3270,9 @@ namespace StockAnalyzer.StockClasses
                                 {
                                     if (!string.IsNullOrEmpty(this.ISIN))
                                     {
-                                        var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday};
-                                        if (StockDataProviderBase.DownloadSerieData(intradaySerie))
+                                        var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
+                                        intradaySerie.ResetAllCache();
+                                        if (StockDataProviderBase.DownloadSerieData(intradaySerie) && intradaySerie.Initialise())
                                         {
                                             newBarList = GenerateHourBar(intradaySerie.Values.ToList(), period);
                                         }
@@ -3287,8 +3288,9 @@ namespace StockAnalyzer.StockClasses
                                 {
                                     if (!string.IsNullOrEmpty(this.ISIN))
                                     {
-                                        var intradaySerie = new StockSerie { Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
-                                        if (StockDataProviderBase.DownloadSerieData(intradaySerie))
+                                        var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
+                                        intradaySerie.ResetAllCache();
+                                        if (StockDataProviderBase.DownloadSerieData(intradaySerie) && intradaySerie.Initialise())
                                         {
                                             newBarList = GenerateMinuteBar(intradaySerie.Values.ToList(), period);
                                         }

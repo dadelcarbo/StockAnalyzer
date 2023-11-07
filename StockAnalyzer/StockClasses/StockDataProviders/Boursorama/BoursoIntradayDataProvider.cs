@@ -121,6 +121,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
                 if (DownloadHistory.ContainsKey(stockSerie.ISIN) && DownloadHistory[stockSerie.ISIN] > DateTime.Now.AddMinutes(-2))
                 {
+                    stockSerie.IsInitialised = false;
                     return false;  // Do not download more than every 2 minutes.
                 }
 
