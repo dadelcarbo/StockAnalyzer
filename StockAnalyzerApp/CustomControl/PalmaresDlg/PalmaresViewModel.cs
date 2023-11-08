@@ -5,6 +5,7 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockScreeners;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -327,129 +328,136 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             Lines = new ObservableCollection<PalmaresLine>();
             OnPropertyChanged("Lines");
-            var stockList = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
-            this.Progress = 0;
-            this.NbStocks = stockList.Count;
-            int count = 0;
-            // TRAILCUPEMA(3,True,12)
-            foreach (var stockSerie in stockList)
+
+            try
             {
-                if (canceled)
+                var stockList = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
+                this.Progress = 0;
+                this.NbStocks = stockList.Count;
+                int count = 0;
+                foreach (var stockSerie in stockList)
                 {
-                    break;
-                }
-                if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
-                {
-                    StockDataProviderBase.DownloadSerieData(stockSerie);
-                }
-                if (!stockSerie.Initialise() || stockSerie.Count < 50)
-                    continue;
-
-                count++;
-                if (count % 10 == 0)
-                    this.Progress = count;
-
-                var previousDuration = stockSerie.BarDuration;
-                stockSerie.BarDuration = this.barDuration.Duration;
-
-                var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-                var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
-
-                var endIndex = stockSerie.LastIndex;
-
-                var lastBar = stockSerie.Values.ElementAt(endIndex);
-                float lastValue = lastBar.CLOSE;
-                var firstValue = closeSerie[endIndex - 1];
-                float barVariation = (lastValue - firstValue) / firstValue;
-                var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
-
-                float stopValue = float.NaN;
-                if (trailStopSerie != null)
-                {
-                    try
-                    {
-                        trailStopSerie = stockSerie.GetTrailStop(this.stop);
-                        stopValue = trailStopSerie.Series[0][endIndex];
-                        if (float.IsNaN(stopValue))
-                        {
-                            if (bullOnly)
-                                continue;
-                            stopValue = trailStopSerie.Series[1][endIndex];
-                        }
-                        else
-                        {
-                            stopValue = (lastValue - stopValue) / lastValue;
-                        }
-                    }
-                    catch { }
-                }
-                bool match = true;
-                if (screenerSerie != null)
-                {
-                    screenerSerie.ApplyTo(stockSerie);
-                    match = screenerSerie.Match[endIndex];
-                    if (screenerOnly && !match)
-                    {
-                        continue;
-                    }
-                }
-
-                #region Calculate variation
-
-                int highest = 0;
-                for (int i = endIndex - 1; i > 0; i--)
-                {
-                    if (lastValue >= bodyHigh[i])
-                    {
-                        highest++;
-                    }
-                    else
+                    if (canceled)
                     {
                         break;
                     }
-                }
+                    if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
+                    {
+                        StockDataProviderBase.DownloadSerieData(stockSerie);
+                    }
+                    if (!stockSerie.Initialise() || stockSerie.Count < 50)
+                        continue;
 
-                #endregion
-                #region Calculate Indicators
-                float stockIndicator1 = float.NaN;
-                if (viewableSeries1 != null)
-                {
-                    try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
-                }
-                float stockIndicator2 = float.NaN;
-                if (viewableSeries2 != null)
-                {
-                    try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
-                }
-                float stockIndicator3 = float.NaN;
-                if (viewableSeries3 != null)
-                {
-                    try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
-                }
-                #endregion
+                    count++;
+                    if (count % 10 == 0)
+                        this.Progress = count;
 
-                Lines.Add(new PalmaresLine
-                {
-                    Match = match,
-                    Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId).Sector,
-                    Group = stockSerie.StockGroup.ToString(),
-                    Symbol = stockSerie.Symbol,
-                    Name = stockSerie.StockName,
-                    Value = lastValue,
-                    Highest = highest,
-                    Volume = lastBar.EXCHANGED / 1000000f,
-                    Indicator1 = stockIndicator1,
-                    Indicator2 = stockIndicator2,
-                    Indicator3 = stockIndicator3,
-                    Stop = stopValue,
-                    BarVariation = barVariation,
-                    LastDate = lastBar.DATE
-                });
+                    var previousDuration = stockSerie.BarDuration;
+                    stockSerie.BarDuration = this.barDuration.Duration;
 
-                stockSerie.BarDuration = previousDuration;
+                    var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+                    var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+                    var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+
+                    var endIndex = stockSerie.LastIndex;
+
+                    var lastBar = stockSerie.Values.ElementAt(endIndex);
+                    float lastValue = lastBar.CLOSE;
+                    var firstValue = closeSerie[endIndex - 1];
+                    float barVariation = (lastValue - firstValue) / firstValue;
+                    var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
+
+                    float stopValue = float.NaN;
+                    if (trailStopSerie != null)
+                    {
+                        try
+                        {
+                            trailStopSerie = stockSerie.GetTrailStop(this.stop);
+                            stopValue = trailStopSerie.Series[0][endIndex];
+                            if (float.IsNaN(stopValue))
+                            {
+                                if (bullOnly)
+                                    continue;
+                                stopValue = trailStopSerie.Series[1][endIndex];
+                            }
+                            else
+                            {
+                                stopValue = (lastValue - stopValue) / lastValue;
+                            }
+                        }
+                        catch { }
+                    }
+                    bool match = true;
+                    if (screenerSerie != null)
+                    {
+                        screenerSerie.ApplyTo(stockSerie);
+                        match = screenerSerie.Match[endIndex];
+                        if (screenerOnly && !match)
+                        {
+                            continue;
+                        }
+                    }
+
+                    #region Calculate variation
+
+                    int highest = 0;
+                    for (int i = endIndex - 1; i > 0; i--)
+                    {
+                        if (lastValue >= bodyHigh[i])
+                        {
+                            highest++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    #endregion
+                    #region Calculate Indicators
+                    float stockIndicator1 = float.NaN;
+                    if (viewableSeries1 != null)
+                    {
+                        try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
+                    }
+                    float stockIndicator2 = float.NaN;
+                    if (viewableSeries2 != null)
+                    {
+                        try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
+                    }
+                    float stockIndicator3 = float.NaN;
+                    if (viewableSeries3 != null)
+                    {
+                        try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
+                    }
+                    #endregion
+
+                    Lines.Add(new PalmaresLine
+                    {
+                        Match = match,
+                        Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId).Sector,
+                        Group = stockSerie.StockGroup.ToString(),
+                        Symbol = stockSerie.Symbol,
+                        Name = stockSerie.StockName,
+                        Value = lastValue,
+                        Highest = highest,
+                        Volume = lastBar.EXCHANGED / 1000000f,
+                        Indicator1 = stockIndicator1,
+                        Indicator2 = stockIndicator2,
+                        Indicator3 = stockIndicator3,
+                        Stop = stopValue,
+                        BarVariation = barVariation,
+                        LastDate = lastBar.DATE
+                    });
+
+                    stockSerie.BarDuration = previousDuration;
+                }
             }
-
+            catch (Exception exception)
+            {
+                StockLog.Write(exception);
+                StockAnalyzerException.MessageBox(exception);
+            }
 
             OnPropertyChanged("Lines");
             OnPropertyChanged("ExportEnabled");

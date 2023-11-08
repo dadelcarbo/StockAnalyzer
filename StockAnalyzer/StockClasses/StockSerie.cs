@@ -3268,7 +3268,7 @@ namespace StockAnalyzer.StockClasses
                             case "H":
                                 if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
                                 {
-                                    if (!string.IsNullOrEmpty(this.ISIN))
+                                    if (!string.IsNullOrEmpty(this.ISIN) && this.DataProvider == StockDataProvider.ABC)
                                     {
                                         var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
                                         intradaySerie.ResetAllCache();
@@ -3286,7 +3286,7 @@ namespace StockAnalyzer.StockClasses
                             case "M":
                                 if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
                                 {
-                                    if (!string.IsNullOrEmpty(this.ISIN))
+                                    if (!string.IsNullOrEmpty(this.ISIN) && this.DataProvider == StockDataProvider.ABC)
                                     {
                                         var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
                                         intradaySerie.ResetAllCache();
