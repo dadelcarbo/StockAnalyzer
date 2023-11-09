@@ -4,7 +4,8 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_STOKFBODY : StockIndicatorBase, IRange
+
+    public class StockIndicator_STOK : StockIndicatorBase, IRange
     {
         public override IndicatorDisplayTarget DisplayTarget
         {
@@ -12,75 +13,63 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public float Max
         {
-            get { return 105.0f; }
+            get { return 100.0f; }
         }
-
         public float Min
         {
-            get { return -5.0f; }
+            get { return 0.0f; }
         }
-
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastKPeriod" }; }
+            get { return new string[] { "FastKPeriod", "Overbought", "Oversold" }; }
         }
-
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 14 }; }
+            get { return new Object[] { 14, 75f, 25f }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 100f), new ParamRangeFloat(0f, 100f) }; }
         }
 
-        public override string[] SerieNames { get { return new string[] { "FastK(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames { get { return new string[] { $"STOK({this.Parameters[0]})" }; } }
 
 
-        public override Pen[] SeriePens
+        public override System.Drawing.Pen[] SeriePens
         {
             get
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green) };
+                    seriePens = new Pen[] { new Pen(Color.Black) };
                 }
                 return seriePens;
             }
         }
+
         HLine[] lines;
         public override HLine[] HorizontalLines => lines ??= new HLine[] {
             new HLine(50, new Pen(Color.LightGray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
             new HLine(25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
             new HLine(75f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
         };
+
         public override void ApplyTo(StockSerie stockSerie)
         {
-            //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
-            //  %D = MA3(%K)
-            int period = (int)this.parameters[0];
-            FloatSerie fastK = stockSerie.CalculateFastBodyOscillator(period);
+            FloatSerie fastK = stockSerie.CalculateFastOscillator((int)this.parameters[0]);
             this.series[0] = fastK;
             this.series[0].Name = this.SerieNames[0];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-
-            for (int i = period + 1; i < fastK.Count; i++)
-            {
-                this.eventSeries[0][i] = (fastK[i - 1] < 50f && fastK[i] > 50f);
-                this.eventSeries[1][i] = (fastK[i - 1] > 50f && fastK[i] < 50f);
-                this.eventSeries[2][i] = fastK[i] >= 50f;
-                this.eventSeries[3][i] = fastK[i] < 50f;
-            }
         }
 
-        static string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "Bullish", "Bearish" };
+        static string[] eventNames = new string[] { };
         public override string[] EventNames
         {
             get { return eventNames; }
         }
-        static readonly bool[] isEvent = new bool[] { true, true, false, false };
+        static readonly bool[] isEvent = new bool[] { };
         public override bool[] IsEvent
         {
             get { return isEvent; }

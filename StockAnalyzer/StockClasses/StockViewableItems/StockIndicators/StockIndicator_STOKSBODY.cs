@@ -48,17 +48,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-        public override HLine[] HorizontalLines
-        {
-            get
-            {
-                HLine[] lines = new HLine[] { new HLine(50, new Pen(Color.LightGray)), new HLine(75f, new Pen(Color.Gray)), new HLine(25f, new Pen(Color.Gray)) };
-                lines[0].LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                lines[1].LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                lines[2].LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                return lines;
-            }
-        }
+        HLine[] lines;
+        public override HLine[] HorizontalLines => lines ??= new HLine[] {
+            new HLine(50, new Pen(Color.LightGray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
+            new HLine(25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
+            new HLine(75f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
+        };
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie slowK = stockSerie.CalculateFastBodyOscillator((int)this.parameters[0]).CalculateEMA((int)this.parameters[1]);

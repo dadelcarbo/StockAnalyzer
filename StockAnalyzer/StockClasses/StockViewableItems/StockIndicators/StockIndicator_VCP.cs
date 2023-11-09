@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -41,6 +40,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
+        HLine[] lines;
+        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -57,7 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 var shortRangeHigh = highSerie.GetMax(i - shortPeriod, i);
                 var shortRangeLow = lowSerie.GetMin(i - shortPeriod, i);
 
-                vcpSerie[i] = (shortRangeHigh - shortRangeLow) / (longRangeHigh - longRangeLow);
+                vcpSerie[i] = 100f * (shortRangeHigh - shortRangeLow) / (longRangeHigh - longRangeLow);
             }
 
             this.Series[0] = vcpSerie;
