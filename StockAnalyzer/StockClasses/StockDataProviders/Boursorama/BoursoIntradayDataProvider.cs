@@ -77,12 +77,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                 "DE" => $"1z{stockSerie.Symbol}",
                 "BE" => $"FF11-{stockSerie.Symbol}",
                 "NL" => $"1rA{stockSerie.Symbol}",
+                "LU" => $"1rA{stockSerie.Symbol}",
                 "PT" => $"1rL{stockSerie.Symbol}",
                 "IT" => $"1g{stockSerie.Symbol}",
                 "ES" => $"FF55-{stockSerie.Symbol}",
                 "US" => $"{stockSerie.Symbol}",
                 _ => null
             };
+            if (stockSerie.BelongsToGroup(StockSerie.Groups.EURO_A_B_C) && prefix != "LU")
+            {
+                symbol = $"1rP{stockSerie.Symbol}";
+            }
             if (symbol == null)
                 return null;
             return $"https://www.boursorama.com/bourse/action/graph/ws/GetTicksEOD?symbol={symbol}&length=5&period=-1&guid=";
@@ -105,6 +110,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             return this.DownloadDailyData(stockSerie);
         }
 
+        static TimeSpan marketClose = new TimeSpan(17, 35, 00);
         static SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
@@ -113,27 +119,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             {
                 NotifyProgress("Downloading daily data for " + stockSerie.StockName);
 
+                if (DownloadHistory.ContainsKey(stockSerie.ISIN) && DownloadHistory[stockSerie.ISIN] > DateTime.Now.AddMinutes(-2))
+                {
+                    return false;  // Do not download more than every 2 minutes.
+                }
+
+                if (stockSerie.Initialise() && stockSerie.Count > 0)
+                {
+                    if (stockSerie.LastValue.DATE.Date == DateTime.Today && stockSerie.LastValue.DATE.TimeOfDay >= marketClose)
+                    {
+                        return false; // uptodate for today
+                    }
+                }
+
                 var url = FormatURL(stockSerie);
                 if (url == null)
                     return false;
-
                 var fileName = DataFolder + FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
-
-                if (DownloadHistory.ContainsKey(stockSerie.ISIN) && DownloadHistory[stockSerie.ISIN] > DateTime.Now.AddMinutes(-2))
-                {
-                    stockSerie.IsInitialised = false;
-                    return false;  // Do not download more than every 2 minutes.
-                }
 
                 using (var wc = new WebClient())
                 {
                     wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-
-                    //var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
-                    //if (stockSerie.Initialise() && stockSerie.Count > 0)
-                    //{
-                    //    lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
-                    //}
 
                     int nbTries = 2;
                     while (nbTries > 0)
@@ -146,7 +152,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                             {
                                 if (response.StartsWith("{"))
                                 {
-                                    var date = DateTime.Now.TimeOfDay > new TimeSpan(17, 40, 0) ? DateTime.Today.AddMinutes(1439) : DateTime.Now; // Set to 23h59 efter 17h40 to prevent for download
+                                    var date = DateTime.Now.TimeOfDay > new TimeSpan(17, 40, 0) ? DateTime.Today.AddMinutes(1439) : DateTime.Now; // Set to 23h59 after 17h40 to prevent for download
                                     if (DownloadHistory.ContainsKey(stockSerie.ISIN))
                                     {
                                         DownloadHistory[stockSerie.ISIN] = date;
@@ -189,7 +195,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
             return new DateTime(year, month, day).AddMinutes(minutes);
         }
-        static private IEnumerable<StockDailyValue> Fix1MinuteBars(IEnumerable<StockDailyValue> bars)
+        static private List<StockDailyValue> Fix1MinuteBars(IEnumerable<StockDailyValue> bars)
         {
             var previousBar = bars.First();
             var newBars = new List<StockDailyValue>() { previousBar };
@@ -233,12 +239,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
                     DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last() : DateTime.MinValue;
 
-                    var bars = boursoData?.d?.QuoteTab?.Select(d => new StockDailyValue(d.o, d.h, d.l, d.c, d.v, BoursoIntradayDateToDateTime(d.d)));
-                    bars = Fix1MinuteBars(bars.Where(b => b.DATE >= lastDate));
-
-                    foreach (var bar in bars.Where(b => b.DATE > lastDate))
+                    var bars = boursoData?.d?.QuoteTab?.Select(d => new StockDailyValue(d.o, d.h, d.l, d.c, d.v, BoursoIntradayDateToDateTime(d.d))).Where(b => b.DATE >= lastDate).ToList();
+                    if (bars.Count > 0)
                     {
-                        stockSerie.Add(bar.DATE, bar);
+                        bars = Fix1MinuteBars(bars);
+
+                        foreach (var bar in bars)
+                        {
+                            stockSerie.Add(bar.DATE, bar);
+                        }
                     }
                     stockSerie.ClearBarDurationCache();
                     res = true;

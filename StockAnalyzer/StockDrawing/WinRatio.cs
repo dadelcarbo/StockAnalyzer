@@ -20,6 +20,7 @@ namespace StockAnalyzer.StockDrawing
             this.Stop = stop;
             this.Entry = entry;
             this.Exit = exit;
+            this.IsPersistent = false;
         }
 
         public WinRatio(float startX, float endX, float entry, float stop, float exit)
@@ -27,6 +28,7 @@ namespace StockAnalyzer.StockDrawing
             this.Stop = new PointF(startX, stop);
             this.Entry = new PointF(startX, entry);
             this.Exit = new PointF(endX, exit);
+            this.IsPersistent = false;
         }
         public bool Contains(PointF point)
         {

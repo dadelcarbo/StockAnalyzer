@@ -94,7 +94,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
-        private bool bullOnly;
+        private bool bullOnly = true;
         public bool BullOnly
         {
             get { return bullOnly; }
@@ -341,19 +341,24 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     {
                         break;
                     }
+                    count++;
+                    if (count % 10 == 0)
+                        this.Progress = count;
                     if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
                     {
                         StockDataProviderBase.DownloadSerieData(stockSerie);
                     }
-                    if (!stockSerie.Initialise() || stockSerie.Count < 50)
+                    if (!stockSerie.Initialise())
                         continue;
 
-                    count++;
-                    if (count % 10 == 0)
-                        this.Progress = count;
 
                     var previousDuration = stockSerie.BarDuration;
                     stockSerie.BarDuration = this.barDuration.Duration;
+                    if (stockSerie.Count < 40)
+                    {
+                        stockSerie.BarDuration = previousDuration;
+                        continue;
+                    }
 
                     var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                     var lowSerie = stockSerie.GetSerie(StockDataType.LOW);

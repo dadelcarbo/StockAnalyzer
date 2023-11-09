@@ -2846,7 +2846,7 @@ namespace StockAnalyzer.StockClasses
 
         public bool BelongsToGroup(Groups group)
         {
-            if (StockAnalysis.Excluded) return false;
+            if (StockAnalysis != null && StockAnalysis.Excluded) return false;
             switch (group)
             {
                 case Groups.ALL:

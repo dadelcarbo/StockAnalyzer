@@ -9,7 +9,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string Definition => $"Calculate the ratio between a long term and short range, it's usefull to find volatility contraction.";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.RangedIndicator;
 
-        public float Max => 100.0f;
+        public float Max => 1.0f;
         public float Min => 0.0f;
 
         public override bool RequiresVolumeData { get { return false; } }
@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 35, 12 }; }
+            get { return new Object[] { 35, 3 }; }
         }
         public override ParamRange[] ParameterRanges
         {
@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
         HLine[] lines;
-        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }) };
+        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(.25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -53,12 +53,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie vcpSerie = new FloatSerie(stockSerie.Count);
             for (int i = longPeriod; i < stockSerie.Count; i++)
             {
-                var longRangeHigh = highSerie.GetMax(i - longPeriod, i);
-                var longRangeLow = lowSerie.GetMin(i - longPeriod, i);
-                var shortRangeHigh = highSerie.GetMax(i - shortPeriod, i);
-                var shortRangeLow = lowSerie.GetMin(i - shortPeriod, i);
+                var longRangeHigh = highSerie.GetMax(i - longPeriod + 1, i);
+                var longRangeLow = lowSerie.GetMin(i - longPeriod + 1, i);
+                var shortRangeHigh = highSerie.GetMax(i - shortPeriod + 1, i);
+                var shortRangeLow = lowSerie.GetMin(i - shortPeriod + 1, i);
 
-                vcpSerie[i] = 100f * (shortRangeHigh - shortRangeLow) / (longRangeHigh - longRangeLow);
+                vcpSerie[i] = (shortRangeHigh - shortRangeLow) / (longRangeHigh - longRangeLow);
             }
 
             this.Series[0] = vcpSerie;

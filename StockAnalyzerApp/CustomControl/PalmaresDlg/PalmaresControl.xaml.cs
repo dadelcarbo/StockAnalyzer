@@ -64,8 +64,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             else
             {
                 column.IsVisible = true;
-                column.Header = ViewModel.Indicator1.Split('(')[0];
-                if (column.Header.ToString() == "ROR" || column.Header.ToString() == "ROD" || column.Header.ToString() == "ROC")
+                var header = ViewModel.Indicator1.Split('(')[0];
+                column.Header = header;
+                if (header == "ROR" || header == "ROD" || header == "ROC" || header == "VCP")
                 {
                     column.DataFormatString = "P2";
                 }
@@ -82,8 +83,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             else
             {
                 column.IsVisible = true;
-                column.Header = ViewModel.Indicator2.Split('(')[0];
-                if (column.Header.ToString() == "ROR" || column.Header.ToString() == "ROD" || column.Header.ToString() == "ROC")
+                var header = ViewModel.Indicator2.Split('(')[0];
+                column.Header = header;
+                if (header == "ROR" || header == "ROD" || header == "ROC" || header == "VCP")
                 {
                     column.DataFormatString = "P2";
                 }
@@ -100,8 +102,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             else
             {
                 column.IsVisible = true;
-                column.Header = ViewModel.Indicator3.Split('(')[0];
-                if (column.Header.ToString() == "ROR" || column.Header.ToString() == "ROD" || column.Header.ToString() == "ROC")
+                var header = ViewModel.Indicator3.Split('(')[0];
+                column.Header = header;
+                if (header == "ROR" || header == "ROD" || header == "ROC" || header == "VCP")
                 {
                     column.DataFormatString = "P2";
                 }
@@ -136,7 +139,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             GenerateColumns();
 
-            await Task.Run(async() => await this.ViewModel.CalculateAsync());
+            await Task.Run(async () => await this.ViewModel.CalculateAsync());
 
             this.Cursor = Cursors.Arrow;
         }
