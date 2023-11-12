@@ -50,7 +50,11 @@ namespace StockAnalyzer.StockAgent
 
         protected float EntryStopValue { get; private set; }
         protected IStockEntryStop EntryStopAgent { get; private set; }
-        public bool Initialize(StockSerie stockSerie, StockBarDuration duration, IStockEntryStop entryStopAgent)
+
+        protected float EntryTargetValue { get; private set; }
+        protected IStockEntryTarget EntryTargetAgent { get; private set; }
+
+        public bool Initialize(StockSerie stockSerie, StockBarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent)
         {
             try
             {
@@ -66,6 +70,7 @@ namespace StockAnalyzer.StockAgent
                 volumeEuroSerie = stockSerie.GetSerie(StockDataType.VOLUME).CalculateEMA(10);
                 this.Trade = null;
                 this.EntryStopAgent = entryStopAgent;
+                this.EntryTargetAgent = entryTargetAgent;
 
                 return Init(stockSerie);
             }
@@ -88,6 +93,10 @@ namespace StockAnalyzer.StockAgent
                 {
                     this.EntryStopValue = this.EntryStopAgent.GetStop(index);
                 }
+                if (action == TradeAction.Buy && this.EntryTargetAgent != null)
+                {
+                    this.EntryTargetValue = this.EntryTargetAgent.GetTarget(index);
+                }
                 return action;
             }
             else
@@ -95,6 +104,13 @@ namespace StockAnalyzer.StockAgent
                 if (lowSerie[index] < this.EntryStopValue)
                 {
                     this.Trade.Close(index, Math.Min(this.EntryStopValue, this.openSerie[index]), true);
+                    this.Trade = null;
+
+                    return TradeAction.Nothing;
+                }
+                if (highSerie[index] > this.EntryTargetValue)
+                {
+                    this.Trade.Close(index, Math.Max(this.EntryTargetValue, this.openSerie[index]), true);
                     this.Trade = null;
 
                     return TradeAction.Nothing;

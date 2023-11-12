@@ -472,6 +472,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                     "BE" => "g",
                                     "NL" => "n",
                                     "DE" => "f",
+                                    "DK" => "f",
                                     "IT" => "i",
                                     "ES" => "m",
                                     "PT" => "I",
@@ -553,7 +554,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.ITALIA:
                     return line.StartsWith("IT");
                 case StockSerie.Groups.GERMANY:
-                    return line.StartsWith("DE");
+                    return line.StartsWith("DE") || line.StartsWith("DK") || line.StartsWith("AT");
                 case StockSerie.Groups.SPAIN:
                     return line.StartsWith("ES");
             }

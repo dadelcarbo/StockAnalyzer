@@ -365,6 +365,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public void Clear()
         {
+            this.ClosedPositions.Clear();
             this.Positions.Clear();
             this.TradeOperations.Clear();
             this.Balance = this.InitialBalance;

@@ -53,6 +53,15 @@
                     <telerik:RadGridView FontSize="9" ItemsSource="{Binding EntryStopParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
                 </StackPanel>
             </GroupBox>
+            <GroupBox Header="Entry Target"  Grid.Column="2" >
+                <StackPanel Margin="2">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label>Entry Target</Label>
+                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding EntryTargets}" SelectedItem="{Binding EntryTarget}" ToolTip="{Binding EntryTargetDescription}"/>
+                    </StackPanel>
+                    <telerik:RadGridView FontSize="9" ItemsSource="{Binding EntryTargetParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                </StackPanel>
+            </GroupBox>
         </Grid>
         <TabControl Grid.Row="2">
             <TabItem Header="Report">

@@ -12,10 +12,10 @@ namespace StockAnalyzer.StockAgent.Agents
             Width = 2.0f;
         }
 
-        [StockAgentParam(5, 80, 5)]
+        [StockAgentParam(35, 35, 5)]
         public int Period { get; set; }
 
-        [StockAgentParam(0.5f, 4.0f, 0.5f)]
+        [StockAgentParam(3f, 3f, 0.5f)]
         public float Width { get; set; }
 
         public override string Description => "Buy when closing above ATR band and sell when closing below ATR band";

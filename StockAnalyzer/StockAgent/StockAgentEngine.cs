@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace StockAnalyzer.StockAgent
 {
-    public delegate void AgentPerformedHandler(IStockAgent agent, IStockEntryStop entryStop);
+    public delegate void AgentPerformedHandler(IStockAgent agent, IStockEntryStop entryStop, IStockEntryTarget entryTarget);
     public class StockAgentEngine
     {
         public IStockAgent Agent { get; set; }
@@ -15,13 +15,16 @@ namespace StockAnalyzer.StockAgent
 
 
         public IStockEntryStop EntryStop { get; set; }
-
         public Type EntryStopType { get; private set; }
+
+        public IStockEntryTarget EntryTarget { get; set; }
+        public Type EntryTargetType { get; private set; }
 
 
         public StockTradeSummary BestTradeSummary { get; private set; }
         public IStockAgent BestAgent { get; private set; }
         public IStockEntryStop BestEntryStop { get; set; }
+        public IStockEntryTarget BestEntryTarget { get; set; }
 
         public event ProgressChangedEventHandler ProgressChanged;
 
@@ -29,10 +32,11 @@ namespace StockAnalyzer.StockAgent
 
         public event AgentPerformedHandler AgentPerformed;
 
-        public StockAgentEngine(Type agentType, Type entryStopType)
+        public StockAgentEngine(Type agentType, Type entryStopType, Type entryTargetType)
         {
             this.AgentType = agentType;
             this.EntryStopType = entryStopType;
+            this.EntryTargetType = entryTargetType;
         }
 
 
@@ -44,16 +48,17 @@ namespace StockAnalyzer.StockAgent
             // Calcutate Parameters Ranges
             IStockAgent bestAgent = null;
             IStockEntryStop bestEntryStop = null;
+            IStockEntryTarget bestEntryTarget = null;
             var agentParameters = StockAgentBase.GetParamRanges(this.AgentType);
             var entryStopParameters = StockAgentBase.GetParamRanges(this.EntryStopType);
-            var allParameters = agentParameters.Union(entryStopParameters);
+            var entryTargetParameters = StockAgentBase.GetParamRanges(this.EntryTargetType);
+            var allParameters = agentParameters.Union(entryStopParameters).Union(entryTargetParameters);
 
             var stockSeries = new List<StockSerie>();
             if (ProgressChanged != null)
             {
                 this.ProgressChanged(this, new ProgressChangedEventArgs(0, null));
             }
-
 
             int nbSteps = series.Count();
             int modulo = Math.Max(1, nbSteps / 100);
@@ -112,6 +117,12 @@ namespace StockAnalyzer.StockAgent
                     param.Key.SetValue(this.EntryStop, param.Value[indexes[p]], null);
                     p++;
                 }
+                this.EntryTarget = (IStockEntryTarget)Activator.CreateInstance(this.EntryTargetType);
+                foreach (var param in entryTargetParameters)
+                {
+                    param.Key.SetValue(this.EntryTarget, param.Value[indexes[p]], null);
+                    p++;
+                }
 
                 // Perform calculation
                 this.Perform(series, minIndex, duration);
@@ -119,13 +130,14 @@ namespace StockAnalyzer.StockAgent
                 // Select Best (after cleaning outliers)
                 this.Agent.TradeSummary.CleanOutliers();
                 var tradeSummary = this.Agent.TradeSummary;
-                this.AgentPerformed?.Invoke(this.Agent, this.EntryStop);
+                this.AgentPerformed?.Invoke(this.Agent, this.EntryStop, this.EntryTarget);
                 if (bestAgent == null || selector(tradeSummary) > selector(bestAgent.TradeSummary))
                 {
                     bestAgent = this.Agent;
                     bestEntryStop = this.EntryStop;
+                    bestEntryTarget = this.EntryTarget;
 
-                    this.BestAgentDetected?.Invoke(bestAgent, this.EntryStop);
+                    this.BestAgentDetected?.Invoke(bestAgent, this.EntryStop, this.EntryTarget);
                 }
             }
             stopWatch.Stop();
@@ -136,12 +148,14 @@ namespace StockAnalyzer.StockAgent
             string msg = bestAgent.TradeSummary.ToLog(duration) + Environment.NewLine;
             msg += bestAgent.ToLog() + Environment.NewLine;
             msg += bestEntryStop.ToLog() + Environment.NewLine;
+            msg += bestEntryTarget.ToLog() + Environment.NewLine;
             msg += "NB Series: " + series.Count() + Environment.NewLine;
             msg += "Duration: " + elapsedTime;
 
             this.BestTradeSummary = bestAgent.TradeSummary;
             this.BestAgent = bestAgent;
             this.BestEntryStop = bestEntryStop;
+            this.BestEntryTarget = bestEntryTarget;
 
             this.Report = msg;
         }
@@ -162,36 +176,47 @@ namespace StockAnalyzer.StockAgent
 
         public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
         {
-            foreach (var serie in series.Where(s => s.Count > minIndex))
+            try
             {
-                if (!this.Agent.Initialize(serie, duration, this.EntryStop))
+                foreach (var serie in series.Where(s => s.Count > minIndex))
                 {
-                    continue;
-                }
-                if (!this.EntryStop.Initialize(serie, duration))
-                {
-                    continue;
-                }
-
-                var size = serie.Count - 1;
-                for (int i = minIndex; i < size; i++)
-                {
-                    switch (this.Agent.Decide(i))
+                    if (!this.Agent.Initialize(serie, duration, this.EntryStop, this.EntryTarget))
                     {
-                        case TradeAction.Nothing:
-                            break;
-                        case TradeAction.Buy:
-                            this.Agent.OpenTrade(serie, i + 1);
-                            break;
-                        case TradeAction.Sell:
-                            this.Agent.CloseTrade(i + 1);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        continue;
                     }
-                }
+                    if (!this.EntryStop.Initialize(serie, duration))
+                    {
+                        continue;
+                    }
+                    if (!this.EntryTarget.Initialize(serie, duration))
+                    {
+                        continue;
+                    }
 
-                this.Agent.EvaluateOpenedPositions();
+                    var size = serie.Count - 1;
+                    for (int i = minIndex; i < size; i++)
+                    {
+                        switch (this.Agent.Decide(i))
+                        {
+                            case TradeAction.Nothing:
+                                break;
+                            case TradeAction.Buy:
+                                this.Agent.OpenTrade(serie, i + 1);
+                                break;
+                            case TradeAction.Sell:
+                                this.Agent.CloseTrade(i + 1);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+
+                    this.Agent.EvaluateOpenedPositions();
+                }
+            }
+            catch (Exception exception)
+            {
+                StockAnalyzerException.MessageBox(exception);
             }
         }
     }

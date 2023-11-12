@@ -357,7 +357,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         ExitEvent = this.ExitEvent,
                         PositionManagement = this.PositionManagement,
                     };
-                    if (agent.Initialize(serie, this.Duration, null /*this.PositionManagement.StopATR*/)) // Need to implement entry stop management.
+                    if (agent.Initialize(serie, this.Duration, null,null /*this.PositionManagement.StopATR*/)) // Need to implement entry stop management.
                     {
                         agents.Add(agent);
                     }
