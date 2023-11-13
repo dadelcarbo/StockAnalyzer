@@ -190,6 +190,7 @@
     <Compile Include="StockAgent\Agents\ATRCloudAgent.cs" />
     <Compile Include="StockAgent\Agents\EMAAgent.cs" />
     <Compile Include="StockAgent\Agents\PortfolioAgent.cs" />
+    <Compile Include="StockAgent\Agents\TrailCUPHANDLEAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailFIBOAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopReentryAgent.cs" />
     <Compile Include="StockAgent\Agents\ATRStopAgent.cs" />
@@ -216,7 +217,8 @@
     <Compile Include="StockAgent\EntryStops\StockEntryStop_Percent.cs" />
     <Compile Include="StockAgent\EntryStops\StockEntryStop_None.cs" />
     <Compile Include="StockAgent\EntryStops\StockEntryStop_BarLow.cs" />
-    <Compile Include="StockAgent\EntyTargets\StockEntryTarget_ATR.cs" />
+    <Compile Include="StockAgent\EntryTargets\StockEntryTarget_None.cs" />
+    <Compile Include="StockAgent\EntryTargets\StockEntryTarget_ATR.cs" />
     <Compile Include="StockAgent\EquityValue.cs" />
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />
     <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />

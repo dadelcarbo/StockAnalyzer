@@ -35,6 +35,7 @@ namespace StockAnalyzer.StockClasses
             PEA_EURONEXT,
             CAC40,
             SBF120,
+            CAC_AT,
             CACALL,
             EURO_A,
             EURO_A_B,
@@ -2855,6 +2856,8 @@ namespace StockAnalyzer.StockClasses
                     return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
                 case Groups.SBF120:
                     return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSBF120(this);
+                case Groups.CAC_AT:
+                    return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsTo_CAC_AT(this);
                 case Groups.EURO_A:
                     return StockGroup == Groups.EURO_A;
                 case Groups.EURO_B:

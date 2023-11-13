@@ -335,6 +335,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SPAIN);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120, false);
+            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC_AT, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
             //DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.USA);
 
@@ -735,6 +736,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     break;
                 case StockSerie.Groups.SBF120:
                     abcGroup = "xsbf120p";
+                    break;
+                case StockSerie.Groups.CAC_AT:
+                    abcGroup = "xcacatp";
                     break;
                 case StockSerie.Groups.USA:
                     abcGroup = "usau";
@@ -1204,6 +1208,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return success;
         }
+
         private void DownloadLibelleFromABC(string destFolder, StockSerie.Groups group, bool initLibelle = true)
         {
             string groupName = GetABCGroup(group);
@@ -1377,6 +1382,37 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             return sbf120List.Contains(stockSerie.StockName);
+        }
+
+        private static List<string> cacatList = null;
+        public static bool BelongsTo_CAC_AT(StockSerie stockSerie)
+        {
+            if (cacatList == null)
+            {
+                cacatList = new List<string>();
+
+                // parse CAC_AT list
+                string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + @"\CAC_AT.txt";
+                if (File.Exists(fileName))
+                {
+                    using (StreamReader sr = new StreamReader(fileName, true))
+                    {
+                        string line;
+                        sr.ReadLine(); // Skip first line
+                        while (!sr.EndOfStream)
+                        {
+                            line = sr.ReadLine();
+                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                            {
+                                string[] row = line.Split(';');
+                                cacatList.Add(row[1].ToUpper());
+                            }
+                        }
+                    }
+                }
+            }
+
+            return cacatList.Contains(stockSerie.StockName);
         }
 
         public static void DownloadAgenda(StockSerie stockSerie)
