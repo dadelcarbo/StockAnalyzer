@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.CitiFirst;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -10,7 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Windows.Forms;
 
-namespace StockAnalyzer.StockClasses.StockDataProviders
+namespace StockAnalyzer.StockClasses.StockDataProviders.CitiFirst
 {
     public class CitifirstDataProvider : StockDataProviderBase, IConfigDialog
     {
@@ -22,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #region HttpClient
 
         static private HttpClient httpClient = null;
-        static public HttpResponseMessage HttpGet(string productUrl)
+        static public HttpResponseMessage HttpGet(string isin)
         {
             try
             {
@@ -33,75 +32,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     // If you are using .NET Core 3.0+ you can replace `~DecompressionMethods.None` to `DecompressionMethods.All`
                     handler.AutomaticDecompression = ~DecompressionMethods.None;
+
                     httpClient = new HttpClient(handler);
-                }
-                using (var request = new HttpRequestMessage(new HttpMethod("GET"), productUrl))
-                {
-                    request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
-                    request.Headers.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
-                    request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36 Edg/94.0.992.38");
-                    request.Headers.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-                    request.Headers.TryAddWithoutValidation("Sec-Fetch-Site", "none");
-                    request.Headers.TryAddWithoutValidation("Sec-Fetch-Mode", "navigate");
-                    request.Headers.TryAddWithoutValidation("Sec-Fetch-User", "?1");
-                    request.Headers.TryAddWithoutValidation("Sec-Fetch-Dest", "document");
-                    request.Headers.TryAddWithoutValidation("Accept-Language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-                    request.Headers.TryAddWithoutValidation("Cookie", "_ga=GA1.2.942508426.1591082115; _gid=GA1.2.396338001.1633183129; DisclaimerAccepted=True; noMoreCookieWarning=true");
 
-                    var response = httpClient.SendAsync(request).Result;
-                    var productPage = response.Content.ReadAsStringAsync().Result;
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + productPage);
-                        return null;
-                    }
+                    // Retrieves 15 minutes data.
+                    var url = $"https://fr.citifirst.com/citi/v1/theq/api/Charts/fr-FR/GetProduct?period=Month&timeZone=CET&symbol={isin}&pointInterval=900&timeFrom=28800&timeTo=79200&series=Bid";
+                  //  var url = $"https://fr.citifirst.com/citi/v1/theq/api/Charts/fr-FR/GetProduct?period=Week&timeZone=CET&symbol={isin}&pointInterval=60&timeFrom=28800&timeTo=79200&series=Bid";
+                    return httpClient.GetAsync(url).Result;
 
-                    var index = productPage.IndexOf("/Data/Json/Chart?");
-                    if (index == -1)
-                    {
-                        StockLog.Write("DataSource not found !!!");
-                        return null;
-                    }
-
-                    var aspNetSessionId = string.Empty;
-                    var antiXsrfToken = string.Empty;
-                    foreach (var cookie in response.Headers.SingleOrDefault(header => header.Key == "Set-Cookie").Value)
-                    {
-                        var str = cookie.Split(';')[0].Split('=');
-                        if (str[0] == "ASP.NET_SessionId")
-                        {
-                            aspNetSessionId = str[1];
-                        }
-                        if (str[0] == "__AntiXsrfToken")
-                        {
-                            antiXsrfToken = str[1];
-                        }
-                    }
-
-                    var chartDataUrl = productPage.Substring(index);
-                    chartDataUrl = "https://fr.citifirst.com" + chartDataUrl.Substring(0, chartDataUrl.IndexOf("}") - 2).Replace("\\u0026", "&");
-
-                    using (var chartRequest = new HttpRequestMessage(new HttpMethod("GET"), chartDataUrl))
-                    {
-                        chartRequest.Headers.TryAddWithoutValidation("Connection", "keep-alive");
-                        chartRequest.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
-                        chartRequest.Headers.TryAddWithoutValidation("Accept", "application/json, text/javascript, */*; q=0.01");
-                        chartRequest.Headers.TryAddWithoutValidation("X-Requested-With", "XMLHttpRequest");
-                        chartRequest.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                        chartRequest.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36 Edg/94.0.992.38");
-                        chartRequest.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
-                        chartRequest.Headers.TryAddWithoutValidation("Sec-Fetch-Site", "same-origin");
-                        chartRequest.Headers.TryAddWithoutValidation("Sec-Fetch-Mode", "cors");
-                        chartRequest.Headers.TryAddWithoutValidation("Sec-Fetch-Dest", "empty");
-                        chartRequest.Headers.TryAddWithoutValidation("Referer", productUrl);
-                        chartRequest.Headers.TryAddWithoutValidation("Accept-Language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-                        chartRequest.Headers.TryAddWithoutValidation("Cookie", $"_ga=GA1.2.942508426.1591082115; _gid=GA1.2.396338001.1633183129; DisclaimerAccepted=True; noMoreCookieWarning=true; ASP.NET_SessionId={aspNetSessionId}; __AntiXsrfToken={antiXsrfToken}; _gat=1");
-
-                        return httpClient.SendAsync(chartRequest).Result;
-                    }
                 }
             }
             catch (Exception e)
@@ -127,7 +65,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             // Parse cfg file
-            this.needDownload = download;
+            needDownload = download;
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
         }
@@ -182,7 +120,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     File.Delete(fileName);
 
                 stockSerie.IsInitialised = false;
-                this.DownloadIntradayData(stockSerie);
+                DownloadIntradayData(stockSerie);
             }
             return true;
         }
@@ -200,8 +138,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     var lastWriteTime = File.GetLastWriteTime(fileName);
                     if (first && lastWriteTime > DateTime.Now.AddHours(-2)
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1))
-                       || (DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today))
+                       || DateTime.Today.DayOfWeek == DayOfWeek.Sunday && lastWriteTime.Date >= DateTime.Today.AddDays(-1)
+                       || DateTime.Today.DayOfWeek == DayOfWeek.Saturday && lastWriteTime.Date >= DateTime.Today)
                     {
                         if (!stockSerie.StockName.Contains("CC_"))
                         {
@@ -227,7 +165,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         try
                         {
-                            var response = HttpGet(stockSerie.Url);
+                            var response = HttpGet(stockSerie.ISIN);
                             var content = response.Content.ReadAsStringAsync().Result;
                             if (response.IsSuccessStatusCode)
                             {
@@ -269,15 +207,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var row = line.Split(',');
                         if (!stockDictionary.ContainsKey(row[0]))
                         {
-                            var fields = row[1].Split('/');
-
-                            var stockSerie = new StockSerie(row[0], row[0],
+                            var stockSerie = new StockSerie(row[0], row[1],
                                 StockSerie.Groups.TURBO,
                                 StockDataProvider.Citifirst, BarDuration.M_10);
-                            stockSerie.ProductType = fields[5];
-                            stockSerie.Underlying = fields[6];
-                            stockSerie.ISIN = fields[7];
-                            stockSerie.Url = row[1];
+                            stockSerie.ISIN = row[2];
+                            stockSerie.Url = row[3];
 
                             var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.Symbol == stockSerie.Symbol);
                             if (dailySerie != null)
@@ -285,14 +219,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 stockSerie.ISIN = dailySerie.ISIN;
                             }
                             stockDictionary.Add(row[0], stockSerie);
-                            if (download && this.needDownload)
+                            if (download && needDownload)
                             {
-                                this.needDownload = this.DownloadDailyData(stockSerie);
+                                needDownload = DownloadDailyData(stockSerie);
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
+                            Console.WriteLine("Investing Intraday Entry: " + row[0] + " already in stockDictionary");
                         }
                     }
                 }
@@ -308,13 +242,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 using (var sr = new StreamReader(fileName))
                 {
                     var citifirstJson = CitiFirstSeries.FromJson(sr.ReadToEnd());
-                    if (citifirstJson?.series == null || citifirstJson.series.Count == 0)
+                    if (citifirstJson?.Bid == null || citifirstJson.Bid.Length == 0)
                         return false;
                     StockDailyValue previousValue = null;
-                    foreach (var data in citifirstJson.series.First().data.Where(d => d.y != null))
+                    foreach (var data in citifirstJson.Bid)
                     {
                         var openDate = refDate.AddSeconds(data.x / 1000);
-                        var value = data.y.Value;
+                        var value = data.y;
                         if (!stockSerie.ContainsKey(openDate))
                         {
                             var dailyValue = new StockDailyValue(value, value, value, value,
@@ -384,5 +318,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         public override string DisplayName => "Citifirst";
+
+        public override void OpenInDataProvider(StockSerie stockSerie)
+        {
+            if (stockSerie.Url != null)
+            {
+                Process.Start(stockSerie.Url);
+            }
+        }
     }
 }

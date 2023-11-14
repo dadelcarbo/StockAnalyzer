@@ -117,6 +117,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                         {
                             IndicatorNames = IndicatorNames.Prepend(value);
                             OnPropertyChanged("IndicatorNames");
+                            OnPropertyChanged("StopNames");
                         }
                         var viewableSeries = StockViewableItemsManager.GetViewableItem(this.triggerName);
 
@@ -168,6 +169,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                         {
                             IndicatorNames = IndicatorNames.Prepend(value);
                             OnPropertyChanged("IndicatorNames");
+                            OnPropertyChanged("StopNames");
                         }
                         var viewableSeries = StockViewableItemsManager.GetViewableItem(this.filterName);
 

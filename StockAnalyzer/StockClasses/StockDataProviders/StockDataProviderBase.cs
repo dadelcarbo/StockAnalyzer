@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
+using StockAnalyzer.StockClasses.StockDataProviders.CitiFirst;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
 using StockAnalyzer.StockLogging;
