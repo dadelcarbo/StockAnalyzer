@@ -915,9 +915,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.BELGIUM);
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.HOLLAND);
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.PORTUGAL);
-                            DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.ITALIA);
-                            DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.GERMANY);
-                            DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastLoadedCAC40Date, DateTime.Today, StockSerie.Groups.SPAIN);
+
+                            var allianzSerie = stockDictionary["ALLIANZ SE"];
+                            var lastGermanyDate = allianzSerie.Initialise() ? allianzSerie.LastValue.DATE : lastLoadedCAC40Date;
+                            DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastGermanyDate, DateTime.Today, StockSerie.Groups.ITALIA);
+                            DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastGermanyDate, DateTime.Today, StockSerie.Groups.GERMANY);
+                            DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, lastGermanyDate, DateTime.Today, StockSerie.Groups.SPAIN);
                             return true;
                         }
                     }

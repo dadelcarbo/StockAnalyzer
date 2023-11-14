@@ -34,13 +34,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CitiFirst
                     handler.AutomaticDecompression = ~DecompressionMethods.None;
 
                     httpClient = new HttpClient(handler);
-
-                    // Retrieves 15 minutes data.
-                    var url = $"https://fr.citifirst.com/citi/v1/theq/api/Charts/fr-FR/GetProduct?period=Month&timeZone=CET&symbol={isin}&pointInterval=900&timeFrom=28800&timeTo=79200&series=Bid";
-                  //  var url = $"https://fr.citifirst.com/citi/v1/theq/api/Charts/fr-FR/GetProduct?period=Week&timeZone=CET&symbol={isin}&pointInterval=60&timeFrom=28800&timeTo=79200&series=Bid";
-                    return httpClient.GetAsync(url).Result;
-
                 }
+                // Retrieves 15 minutes data.
+                var url = $"https://fr.citifirst.com/citi/v1/theq/api/Charts/fr-FR/GetProduct?period=Month&timeZone=CET&symbol={isin}&pointInterval=900&timeFrom=28800&timeTo=79200&series=Bid";
+                //  var url = $"https://fr.citifirst.com/citi/v1/theq/api/Charts/fr-FR/GetProduct?period=Week&timeZone=CET&symbol={isin}&pointInterval=60&timeFrom=28800&timeTo=79200&series=Bid";
+                return httpClient.GetAsync(url).Result;
             }
             catch (Exception e)
             {
@@ -209,7 +207,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CitiFirst
                         {
                             var stockSerie = new StockSerie(row[0], row[1],
                                 StockSerie.Groups.TURBO,
-                                StockDataProvider.Citifirst, BarDuration.M_10);
+                                StockDataProvider.Citifirst, BarDuration.M_15);
                             stockSerie.ISIN = row[2];
                             stockSerie.Url = row[3];
 
