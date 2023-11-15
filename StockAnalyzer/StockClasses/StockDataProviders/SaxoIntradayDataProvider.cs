@@ -258,6 +258,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
                         }
                         var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
+                        if (string.IsNullOrEmpty(jsonData))
+                            return false;
                         var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
                         if (saxoData?.series?[0]?.data == null)
                             return false;

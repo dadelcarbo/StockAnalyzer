@@ -113,6 +113,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public string EntryComment { get; set; }
         public IEnumerable<string> Themes { get; set; }
         public StockPortfolio Portfolio { get; set; }
+        public string Symbol { get; set; }
 
         #region Tick Size Management
         private float smallChange = 0.01f;
@@ -150,6 +151,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.SmallChange = (float)instrumentDetails.GetTickSize(this.StopValue);
             this.StopValue = (float)instrumentDetails.RoundToTickSize(this.StopValue);
             this.EntryValue = (float)instrumentDetails.RoundToTickSize(this.EntryValue);
+            this.Symbol = instrumentDetails.Symbol;
         }
         public void Refresh()
         {

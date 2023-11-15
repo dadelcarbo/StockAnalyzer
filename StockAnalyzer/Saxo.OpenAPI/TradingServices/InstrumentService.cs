@@ -39,7 +39,16 @@ namespace Saxo.OpenAPI.TradingServices
                 {
                     var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes={ASSET_TYPES}";
                     var instruments = Get<Instruments>(method);
-                    if (instruments.Data.Length > 0)
+                    if (instruments.Data.Length > 1)
+                    {
+                        instrument = instruments.Data.FirstOrDefault(i => i.ExchangeId.StartsWith("PAR"));
+                        if (instrument == null)
+                        {
+                            instrument = instruments.Data.First();
+                        }
+                        InstrumentCache.Add(instrument);
+                    }
+                    else if (instruments.Data.Length == 1)
                     {
                         instrument = instruments.Data.First();
 

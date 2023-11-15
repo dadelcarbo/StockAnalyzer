@@ -53,13 +53,18 @@
             <GroupBox Header="Trade Entry">
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Label Width="45">Name:</Label>
+                        <Label Width="55">Name:</Label>
                         <TextBox Text="{Binding StockSerie.StockName, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
                     </StackPanel>
+                    <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Label Width="55">Symbol:</Label>
+                        <TextBox Text="{Binding Symbol, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
+                    </StackPanel>
+
                     <StackPanel Margin="1" Orientation="Horizontal">
-                        <Label Width="45">Qty:</Label>
+                        <Label Width="55">Qty:</Label>
                         <telerik:RadNumericUpDown Value="{Binding EntryQty}" NumberDecimalDigits="0" Width="50" HorizontalAlignment="Left" SmallChange="1" LargeChange="10"/>
-                        <Label Width="45" Content="Value:" Margin="15,0,0,0"/>
+                        <Label Width="40" Content="Value:" Margin="15,0,0,0"/>
                         <telerik:RadNumericUpDown Value="{Binding EntryValue}" IsEnabled="{Binding IsValueEditable}" Width="80" HorizontalAlignment="Left" Padding="4"
                                                   NumberDecimalDigits="{Binding NbDecimals}" SmallChange="{Binding SmallChange}" LargeChange="{Binding LargeChange}" Minimum="0"/>
                     </StackPanel>
@@ -114,7 +119,7 @@
                     <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="70">Comment:</Label>
                         <telerik:RadWatermarkTextBox WatermarkContent="Entry comment" Text="{Binding EntryComment}" VerticalContentAlignment="Top"
-                                                 Padding="4" MaxLines="5" MinLines="5" Width="350" />
+                                                 Padding="4" MaxLines="3" MinLines="3" Width="350" />
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
