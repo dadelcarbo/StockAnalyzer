@@ -1469,7 +1469,7 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO) ) && currentStockSerie.IsMarketOpened())
+                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO)) && currentStockSerie.IsMarketOpened())
                 {
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();
@@ -3372,6 +3372,11 @@ namespace StockAnalyzerApp
                         this.hideIndicatorsStockMenuItem.Checked = !this.hideIndicatorsStockMenuItem.Checked;
                         this.hideIndicatorsStockMenuItem_Click(null, null);
                         break;
+                    //case Keys.Control | Keys.P:
+                    //    this.graphCloseControl.Focus();
+                    //    this.showPositionsMenuItem.Checked = !this.showPositionsMenuItem.Checked;
+                    //    this.showPositionsMenuItem_Click(null, null);
+                    //    break;
                     case Keys.Control | Keys.I:
                         selectDisplayedIndicatorMenuItem_Click(null, null);
                         break;

@@ -227,7 +227,7 @@ namespace StockAnalyzerApp
             // 
             this.loadAnalysisFileMenuItem.Image = global::StockAnalyzerApp.Properties.Resources.OpenAnalysis;
             this.loadAnalysisFileMenuItem.Name = "loadAnalysisFileMenuItem";
-            this.loadAnalysisFileMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            //this.loadAnalysisFileMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.loadAnalysisFileMenuItem.Size = new System.Drawing.Size(262, 22);
             this.loadAnalysisFileMenuItem.Text = "Load Analysis File";
             this.loadAnalysisFileMenuItem.Click += new System.EventHandler(this.loadAnalysisFileMenuItem_Click);
@@ -278,7 +278,6 @@ namespace StockAnalyzerApp
             // 
             this.optionsMenuItem.Image = global::StockAnalyzerApp.Properties.Resources.Options;
             this.optionsMenuItem.Name = "optionsMenuItem";
-            this.optionsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.optionsMenuItem.Size = new System.Drawing.Size(262, 22);
             this.optionsMenuItem.Text = "Preferences";
             this.optionsMenuItem.Click += new System.EventHandler(this.folderPrefMenuItem_Click);
@@ -421,6 +420,7 @@ namespace StockAnalyzerApp
             this.showOrdersMenuItem.CheckOnClick = true;
             this.showOrdersMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showOrdersMenuItem.Name = "showOrdersMenuItem";
+            this.showOrdersMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.showOrdersMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showOrdersMenuItem.Text = "Show Orders";
             this.showOrdersMenuItem.Click += new System.EventHandler(this.showOrdersMenuItem_Click);
@@ -430,6 +430,7 @@ namespace StockAnalyzerApp
             this.showPositionsMenuItem.Checked = true;
             this.showPositionsMenuItem.CheckOnClick = true;
             this.showPositionsMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showPositionsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.showPositionsMenuItem.Name = "showPositionsMenuItem";
             this.showPositionsMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showPositionsMenuItem.Text = "Show Positions";
@@ -491,6 +492,7 @@ namespace StockAnalyzerApp
             this.showIndicatorTextMenuItem.Checked = true;
             this.showIndicatorTextMenuItem.CheckOnClick = true;
             this.showIndicatorTextMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showIndicatorTextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
             this.showIndicatorTextMenuItem.Name = "showIndicatorTextMenuItem";
             this.showIndicatorTextMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showIndicatorTextMenuItem.Text = "Show Indicator Text";
@@ -638,7 +640,6 @@ namespace StockAnalyzerApp
             this.tweetMenuItem.Name = "tweetMenuItem";
             this.tweetMenuItem.Size = new System.Drawing.Size(240, 22);
             this.tweetMenuItem.Text = "Send a tweet";
-            this.tweetMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
             this.tweetMenuItem.Click += new System.EventHandler(this.tweetMenuItem_Click);
             // 
             // bestTrendMenuItem
@@ -1025,7 +1026,7 @@ namespace StockAnalyzerApp
             // 
             // searchCombo
             // 
-            this.searchCombo.Name = "searchCombo"; 
+            this.searchCombo.Name = "searchCombo";
             this.searchCombo.Size = new System.Drawing.Size(250, 23);
             this.searchCombo.SelectedIndexChanged += new System.EventHandler(this.goToStock);
             this.searchCombo.TextChanged += SearchCombo_TextChanged;
