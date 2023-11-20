@@ -87,6 +87,12 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public bool ThresholdOrder { get => thresholdOrder; set { thresholdOrder = value; if (value) this.EntryValue = this.StockSerie.LastValue.HIGH; this.OnPropertyChanged("IsValueEditable"); } }
         public bool IsValueEditable => !this.marketOrder;
 
+        /// <summary>
+        /// Indicates if sell 50% at T1
+        /// </summary>
+        public bool T1 { get; set; }
+
+
         public float EntryCost => EntryQty * EntryValue + Fee;
         public float Fee => (EntryQty * EntryValue) < 1000f ? 2.5f : 5.0f;
         public float StopValue

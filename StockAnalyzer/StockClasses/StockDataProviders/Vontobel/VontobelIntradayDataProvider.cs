@@ -111,6 +111,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
                             DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
                         }
                         var jsonData = VontobelIntradayDataProvider.HttpGetFromVontobel(url);
+                        if (jsonData == null)
+                            return false;
                         var vontobelData = JsonConvert.DeserializeObject<VontobelJSon>(jsonData, Converter.Settings);
                         if (!vontobelData.isSuccess)
                         {

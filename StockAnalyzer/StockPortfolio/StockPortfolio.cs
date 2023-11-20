@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -834,7 +835,7 @@ namespace StockAnalyzer.StockPortfolio
             }
         }
 
-        public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0)
+        public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = true)
         {
             try
             {
@@ -864,7 +865,7 @@ namespace StockAnalyzer.StockPortfolio
                         break;
                     case OrderType.Limit:
                         decimal limit = instrumentDetail.RoundToTickSize(orderValue);
-                        orderResponse = orderService.BuyLimitOrder(account, instrument, qty, limit, stop);
+                        orderResponse = orderService.BuyLimitOrder(account, instrument, qty, limit, stop, t1);
                         break;
                     case OrderType.Threshold:
                         decimal threshold = instrumentDetail.RoundToTickSize(orderValue);
@@ -878,6 +879,10 @@ namespace StockAnalyzer.StockPortfolio
                     this.Refresh();
                     return long.Parse(orderResponse?.OrderId);
                 }
+            }
+            catch (SaxoApiException ex)
+            {
+                MessageBox.Show(ex.ErrorInfo.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {

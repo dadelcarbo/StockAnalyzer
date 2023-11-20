@@ -112,6 +112,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
         static TimeSpan marketClose = new TimeSpan(17, 35, 00);
         static SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
+
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
             StockLog.Write("DownloadDailyData for " + stockSerie.StockName);
@@ -181,7 +182,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             }
             return false;
         }
-
 
         static private DateTime BoursoIntradayDateToDateTime(long d)
         {

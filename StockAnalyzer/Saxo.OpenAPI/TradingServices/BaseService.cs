@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.Models;
 using StockAnalyzer.StockLogging;
 using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -167,7 +169,11 @@ namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
         }
 
 
-
+        protected static readonly JsonSerializerSettings jsonSerializerSettingsSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented,
+        };
         /// <summary>
         /// Send out POST request
         /// </summary>
@@ -179,9 +185,10 @@ namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
             try
             {
                 var url = new Uri(LoginService.App.OpenApiBaseUrl + method);
+                var stringData = JsonConvert.SerializeObject(data, jsonSerializerSettingsSettings);
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url)
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
+                    Content = new StringContent(stringData, Encoding.UTF8, "application/json")
                 };
                 request.Headers.Authorization = GetAuthorizationHeader(LoginService.Token);
 

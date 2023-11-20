@@ -52,4 +52,10 @@ namespace Saxo.OpenAPI.TradingServices
         public OrderRequest[] Orders { get; set; }
         public bool ManualOrder { get; set; }
     }
+
+    public class SlaveOrderRequest
+    {
+        //public string OrderId { get; set; }
+        public OrderRequest[] Orders { get; set; }
+    }
 }

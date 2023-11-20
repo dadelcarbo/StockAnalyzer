@@ -58,7 +58,7 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-        public OrderResponse BuyLimitOrder(Account account, Instrument instrument, int qty, decimal limitValue, decimal stopValue)
+        public OrderResponse BuyLimitOrder(Account account, Instrument instrument, int qty, decimal limitValue, decimal stopValue, bool T1)
         {
             var orderRequest = new OrderRequest
             {
@@ -71,7 +71,12 @@ namespace Saxo.OpenAPI.TradingServices
                 OrderPrice = limitValue,
                 OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() }
             };
-            if (stopValue > 0)
+            if (stopValue == 0)
+            {
+                return PostOrder(orderRequest);
+            }
+
+            if (!T1)
             {
                 orderRequest.Orders = new OrderRequest[]
                 {
@@ -88,8 +93,39 @@ namespace Saxo.OpenAPI.TradingServices
                         ManualOrder = false
                     }
                 };
+                return PostOrder(orderRequest);
             }
-            return PostOrder(orderRequest);
+            else
+            {
+                orderRequest.Orders = new OrderRequest[]
+                {
+                    new OrderRequest
+                    {
+                        AccountKey = account.AccountKey,
+                        Uic = instrument.Identifier,
+                        AssetType = instrument.AssetType,
+                        Amount = qty,
+                        BuySell =   "Sell",
+                        OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() },
+                        OrderPrice = stopValue,
+                        OrderType = SaxoOrderType.StopIfTraded.ToString(),
+                        ManualOrder = false
+                    },
+                    new OrderRequest
+                    {
+                        AccountKey = account.AccountKey,
+                        Uic = instrument.Identifier,
+                        AssetType = instrument.AssetType,
+                        Amount = qty,
+                        BuySell =   "Sell",
+                        OrderDuration = new OrderDuration { DurationType = OrderDurationType.GoodTillCancel.ToString() },
+                        OrderPrice = limitValue + limitValue -  stopValue,
+                        OrderType = SaxoOrderType.Limit.ToString(),
+                        ManualOrder = false
+                    }
+                };
+                return PostOrder(orderRequest);
+            }
         }
 
         public OrderResponse BuyTresholdOrder(Account account, Instrument instrument, int qty, decimal thresholdValue, decimal stopValue)
@@ -180,6 +216,10 @@ namespace Saxo.OpenAPI.TradingServices
         }
 
         private OrderResponse PostOrder(OrderRequest order)
+        {
+            return Post<OrderResponse>("trade/v2/orders", order);
+        }
+        private OrderResponse PostSlaveOrder(SlaveOrderRequest order)
         {
             return Post<OrderResponse>("trade/v2/orders", order);
         }
