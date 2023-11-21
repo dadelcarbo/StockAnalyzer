@@ -978,7 +978,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             }
 
                             var allianzSerie = stockDictionary["ALLIANZ SE"];
-                            if (allianzSerie.Initialise() && allianzSerie.LastValue.DATE < lastLoadedCAC40Date)
+                            if (allianzSerie.Initialise() && allianzSerie.LastValue.DATE < lastDownloadedCAC40Date)
                             {
                                 var startDate = allianzSerie.LastValue.DATE.AddDays(1);
                                 DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.ITALIA);
