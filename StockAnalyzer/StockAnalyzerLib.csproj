@@ -305,6 +305,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VCP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EXCHANGED.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_WMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HLBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\IStockScreener.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreenerManager.cs" />

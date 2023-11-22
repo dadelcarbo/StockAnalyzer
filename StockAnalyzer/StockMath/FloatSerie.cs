@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Windows.Documents;
 
 namespace StockAnalyzer.StockMath
@@ -383,6 +384,38 @@ namespace StockAnalyzer.StockMath
                 }
             }
             serie.Name = "EMA_" + emaPeriod.ToString();
+            return serie;
+        }
+        public FloatSerie CalculateWMA(int emaPeriod)
+        {
+            FloatSerie serie = new FloatSerie(Values.Length, $"WMA_{emaPeriod}");
+            if (emaPeriod <= 1)
+            {
+                for (int i = 0; i < this.Count; i++)
+                {
+                    serie[i] = this[i];
+                }
+                return serie;
+            }
+
+            int count = 1;
+            float sum = serie[0] = Values[0];
+            for (int i = 1; i < emaPeriod; i++)
+            {
+                sum += Values[i] * (i + 1);
+                count += i + 1;
+
+                serie[i] = sum / count;
+            }
+            for (int i = emaPeriod; i < Values.Length; i++)
+            {
+                sum = 0;
+                for (int j = emaPeriod; j > 0; j--)
+                {
+                    sum += Values[i - (emaPeriod - j)] * j;
+                }
+                serie[i] = sum / count;
+            }
             return serie;
         }
         public FloatSerie ShiftForward(int length)
