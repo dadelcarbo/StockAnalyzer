@@ -184,6 +184,7 @@ namespace StockAnalyzer.StockMath
             }
             return variance;
         }
+
         public FloatSerie CalculateAutoCovariance(int period, int lag)
         {
             FloatSerie ma1 = this.CalculateMA(period);
@@ -209,6 +210,7 @@ namespace StockAnalyzer.StockMath
             }
             return variance;
         }
+
         public FloatSerie CalculateStdev(int period)
         {
             FloatSerie ema = this.CalculateMA(period);

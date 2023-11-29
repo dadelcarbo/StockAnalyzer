@@ -524,7 +524,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWDAYS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BROKENSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRAILHLSR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MYOSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_PERF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SAR2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NBUPBARS.cs" />
