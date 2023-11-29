@@ -650,7 +650,7 @@ namespace StockAnalyzerApp
                 else
                     typedSearch = searchCombo.Text.ToUpper();
 
-                if (!string.IsNullOrEmpty(searchCombo.Text) && searchCombo.Text.Length > 1)
+                if (!string.IsNullOrEmpty(searchCombo.Text) && searchCombo.Text.Length > 2)
                 {
                     if (this.searchCombo.Items.Count == 1 && this.searchCombo.Items[0].ToString() == searchCombo.Text)
                         return; // Prevent infinite loop
