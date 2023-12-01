@@ -313,6 +313,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_TRAILATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_ATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreenerBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMONTREUX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILADR.cs" />

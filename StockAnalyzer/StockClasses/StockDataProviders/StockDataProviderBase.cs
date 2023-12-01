@@ -178,6 +178,28 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
+        public static bool DownloadIntadaySerieData(StockSerie serie, StockBarDuration barDuration)
+        {
+            if (serie == null)
+                return false;
+
+            IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);
+            if (dataProvider == null)
+            {
+                return false;
+            }
+            else
+            {
+                using (new StockSerieLocker(serie))
+                {
+                    if (serie.DataProvider != StockDataProvider.Saxo)
+                        serie.BarDuration = barDuration;
+                    bool res = dataProvider.DownloadDailyData(serie);
+
+                    return res;
+                }
+            }
+        }
         public static bool ForceDownloadSerieData(StockSerie serie)
         {
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);

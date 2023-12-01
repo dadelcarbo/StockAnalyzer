@@ -1243,6 +1243,16 @@ namespace StockAnalyzerApp
         {
             if (this.currentStockSerie == null) return;
 
+            if (this.currentStockSerie.StockName.EndsWith("_DIV"))
+            {
+                this.OnSelectedStockChanged(this.currentStockSerie.StockName.Replace("_DIV", ""), false);
+                return;
+            }
+            if (StockDictionary.ContainsKey(this.currentStockSerie.StockName + "_DIV"))
+            {
+                this.OnSelectedStockChanged(this.currentStockSerie.StockName + "_DIV", false);
+                return;
+            }
             if (!this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie, true) || this.CurrentStockSerie.Dividend.Entries.Count == 0)
             {
                 return;
@@ -1694,6 +1704,7 @@ namespace StockAnalyzerApp
 
         private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            this.searchCombo.Text = "";
             StockSerie selectedSerie = null;
             if (this.StockDictionary.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
             {
