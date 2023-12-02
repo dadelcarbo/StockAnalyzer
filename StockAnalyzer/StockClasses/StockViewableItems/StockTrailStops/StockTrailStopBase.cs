@@ -56,8 +56,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                     seriePens = new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2), new Pen(Color.DarkRed, 2), new Pen(Color.DarkGreen, 2) };
                     seriePens[0].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                     seriePens[1].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                    seriePens[2].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-                    seriePens[3].DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                 }
                 return seriePens;
             }
@@ -239,7 +237,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             float alpha = 2.0f / (ReentryPeriod + 1f);
             var longReentrySerie = new FloatSerie(stockSerie.Count, this.SerieNames[2], float.NaN);
             this.Series[2] = longReentrySerie;
-
             var reentryRangeSerie = new FloatSerie(stockSerie.Count, this.ExtraNames[0], float.NaN);
             this.Extras[0] = reentryRangeSerie;
             var distToReentrySerie = new FloatSerie(stockSerie.Count, this.ExtraNames[1], float.NaN);
@@ -249,8 +246,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
             if (this.ReentryPeriod == 0)
                 return;
+
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
             float longReentry = float.NaN;
             float previousResistance = float.MinValue;

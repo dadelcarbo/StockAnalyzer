@@ -1704,7 +1704,9 @@ namespace StockAnalyzerApp
 
         private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.searchCombo.Text = "";
+            if (this.searchCombo.Text != stockNameComboBox.SelectedItem.ToString())
+                this.searchCombo.Text = "";
+
             StockSerie selectedSerie = null;
             if (this.StockDictionary.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
             {
