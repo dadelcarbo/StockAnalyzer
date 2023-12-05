@@ -369,6 +369,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Indicator2 = this.ViewModel.Indicator2,
                     Indicator3 = this.ViewModel.Indicator3,
                     Stop = this.ViewModel.Stop,
+                    BullOnly = this.ViewModel.BullOnly,
                     Screener = this.ViewModel.Screener,
                     Theme = this.ViewModel.Theme
                 };
@@ -412,6 +413,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
                     this.ViewModel.Screener = palmaresSettings.Screener;
                     this.ViewModel.Stop = palmaresSettings.Stop;
+                    this.ViewModel.BullOnly = palmaresSettings.BullOnly;
                     this.ViewModel.Theme = palmaresSettings.Theme;
                     this.GenerateColumns();
                     LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);

@@ -12,6 +12,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public string Indicator2 { get; set; }
         public string Indicator3 { get; set; }
         public string Stop { get; set; }
+        public bool BullOnly { get; set; }
         public string Screener { get; set; }
         public string Theme { get; set; }
     }

@@ -55,6 +55,8 @@ namespace StockAnalyzer.StockClasses
             this.LineBreak = duration.LineBreak;
         }
 
+        public bool IsIntraday => this.Duration >= BarDuration.M_5;
+
         public static StockBarDuration Daily => new StockBarDuration(BarDuration.Daily);
         public static StockBarDuration H_1 => new StockBarDuration(BarDuration.H_1);
         public static StockBarDuration H_2 => new StockBarDuration(BarDuration.H_2);
