@@ -3,7 +3,6 @@ using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -614,6 +613,7 @@ namespace StockAnalyzerApp
                 if (reportDate < cac40.LastValue.DATE)
                 {
                     generateDailyReportToolStripBtn_Click(null, null);
+                    this.GeneratePortfolioReports();
                     File.WriteAllText(fileName, cac40.LastValue.DATE.ToString());
                 }
             }
@@ -638,6 +638,14 @@ namespace StockAnalyzerApp
             // Ready to start
             StockSplashScreen.CloseForm(true);
             this.Focus();
+        }
+
+        private void GeneratePortfolioReports()
+        {
+            foreach (var portfolio in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoClientId) & p.Positions.Any(pp => !pp.IsClosed)))
+            {
+                this.GeneratePortfolioReportFile(portfolio);
+            }
         }
 
         string typedSearch = null;
@@ -2868,7 +2876,8 @@ namespace StockAnalyzerApp
          <tr>
              <td>%COL1%</td>
              <td>%COL2%</td>
-             <td>%COL3%</td>
+             <td>%COL3.1%</td>
+             <td>%COL3.2%</td>
              <td>%COL4%</td>
              <td>%COL5%</td>
              <td>%COL6%</td>
@@ -2880,12 +2889,13 @@ namespace StockAnalyzerApp
                 <thead>
                 <tr>
                     <th style=""font-size:20px;"" rowspan=""1""></th>
-                    <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {portfolio.Name}: {portfolio.TotalValue} </th>
+                    <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {portfolio.Name}: {portfolio.TotalValue}€ </th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>
                     <th>Duration</th>
                     <th>Stop</th>
+                    <th>TrailStop</th>
                     <th>Risk %</th>
                     <th>Portfolio Risk %</th>
                     <th>Return %</th>
@@ -2923,15 +2933,16 @@ namespace StockAnalyzerApp
                     var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme);
                     var stockNameHtml = stockNameTemplate.Replace("%MSG%", stockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var lastValue = stockSerie.ValueArray.Last();
-                    var risk = (position.EntryValue - position.Stop) / position.EntryValue;
-                    var portfolioRisk = risk * position.EntryQty / portfolio.TotalValue;
+                    var risk = (position.Stop - position.EntryValue) / position.EntryValue;
+                    var portfolioRisk = (position.Stop - position.EntryValue) * position.EntryQty / portfolio.TotalValue;
                     var positionReturn = (lastValue.CLOSE - position.EntryValue) / position.EntryValue;
-                    var portfolioReturn = positionReturn * position.EntryQty / portfolio.TotalValue;
-                    var riskReward = positionReturn / risk;
+                    var portfolioReturn = (lastValue.CLOSE - position.EntryValue) * position.EntryQty / portfolio.TotalValue;
+                    var riskReward = (lastValue.CLOSE - position.EntryValue) / (position.EntryValue - position.Stop);
                     reportBody += rowTemplate.
                         Replace("%COL1%", stockNameHtml).
                         Replace("%COL2%", position.BarDuration.ToString()).
-                        Replace("%COL3%", position.Stop.ToString("#.##")).
+                        Replace("%COL3.1%", position.Stop.ToString("#.##")).
+                        Replace("%COL3.2%", position.TrailStop.ToString("#.##")).
                         Replace("%COL4%", risk.ToString("P2")).
                         Replace("%COL5%", portfolioRisk.ToString("P2")).
                         Replace("%COL6%", positionReturn.ToString("P2")).
@@ -2967,6 +2978,8 @@ namespace StockAnalyzerApp
 
         public void GeneratePortfolioReportFile(StockPortfolio portfolio)
         {
+            var previousPortfolio = this.Portfolio;
+            this.Portfolio = portfolio;
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;
             StockBarDuration previousBarDuration = previousStockSerie.BarDuration;
@@ -2991,6 +3004,7 @@ namespace StockAnalyzerApp
             this.CurrentTheme = previousTheme;
             this.ViewModel.BarDuration = previousBarDuration;
             this.ViewModel.IsHistoryActive = true;
+            this.Portfolio = previousPortfolio;
         }
         private void GenerateReport(string title, StockBarDuration duration, List<StockAlertDef> alertDefs)
         {
