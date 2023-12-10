@@ -21,15 +21,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override string[] ParameterNames
         {
-            get { return new string[] { "FastKPeriod", "Overbought", "Oversold" }; }
+            get { return new string[] { "Period" }; }
         }
         public override Object[] ParameterDefaultValues
         {
-            get { return new Object[] { 14, 75f, 25f }; }
+            get { return new Object[] { 14 }; }
         }
         public override ParamRange[] ParameterRanges
         {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 100f), new ParamRangeFloat(0f, 100f) }; }
+            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
         }
 
         public override string[] SerieNames { get { return new string[] { $"STOK({this.Parameters[0]})" }; } }

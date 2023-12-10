@@ -221,7 +221,6 @@
     <Compile Include="StockAgent\EntryTargets\StockEntryTarget_ATR.cs" />
     <Compile Include="StockAgent\EquityValue.cs" />
     <Compile Include="StockAgent\Agents\STOKFBODYAgent.cs" />
-    <Compile Include="StockAgent\Agents\STOKSTrendAgent.cs" />
     <Compile Include="StockAgent\Agents\TFMansfield.cs" />
     <Compile Include="StockAgent\Agents\TrailEMA2Agent.cs" />
     <Compile Include="StockAgent\Agents\HIGHLOWBARSAgent.cs" />
@@ -322,7 +321,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATRLONG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMABODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMACD.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILSTOKS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILFOLLOW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBRANDT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILNUP.cs" />

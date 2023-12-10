@@ -424,7 +424,7 @@ namespace StockAnalyzer.StockClasses
                 {
                     StockLog.Write($"{indicatorName} to {this.StockName} - {this.BarDuration}");
                     indicator.ApplyTo(this);
-                    AddIndicatorSerie(indicator);
+                    AddIndicatorSerie(indicator, indicatorName);
                     return indicator;
                 }
                 return null;
@@ -553,15 +553,15 @@ namespace StockAnalyzer.StockClasses
             throw new ArgumentException("No viewable item matching " + name + " has been found");
         }
 
-        public void AddIndicatorSerie(IStockIndicator indicator)
+        public void AddIndicatorSerie(IStockIndicator indicator, string name)
         {
-            if (this.IndicatorCache.ContainsKey(indicator.Name))
+            if (this.IndicatorCache.ContainsKey(name))
             {
-                this.IndicatorCache[indicator.Name] = indicator;
+                this.IndicatorCache[name] = indicator;
             }
             else
             {
-                this.IndicatorCache.Add(indicator.Name, indicator);
+                this.IndicatorCache.Add(name, indicator);
             }
         }
         public void AddCloudSerie(IStockCloud indicator)

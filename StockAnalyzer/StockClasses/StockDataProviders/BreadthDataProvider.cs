@@ -125,6 +125,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "STOKF":
                     return stockDictionary.GenerateSTOKFBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                case "STOK":
+                    return stockDictionary.GenerateSTOKBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                case "RSI":
+                    return stockDictionary.GenerateRSIBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "STOKS":
                     return stockDictionary.GenerateSTOKSBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "MM":
