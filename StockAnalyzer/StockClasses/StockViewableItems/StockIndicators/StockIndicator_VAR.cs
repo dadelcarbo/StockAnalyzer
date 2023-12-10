@@ -30,10 +30,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Black) };
-                }
+                seriePens ??= new Pen[] { new Pen(Color.Black) };
                 return seriePens;
             }
         }
@@ -42,10 +39,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                if (lines == null)
-                {
-                    lines = new HLine[] { new HLine(0f, new Pen(Color.DarkGray) { DashStyle = DashStyle.Dash }) };
-                }
+                lines ??= new HLine[] { new HLine(0f, new Pen(Color.DarkGray) { DashStyle = DashStyle.Dash }) };
                 return lines;
             }
         }

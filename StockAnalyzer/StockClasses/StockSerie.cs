@@ -109,10 +109,7 @@ namespace StockAnalyzer.StockClasses
         {
             get
             {
-                if (agenda == null)
-                {
-                    agenda = LoadAgenda();
-                }
+                agenda ??= LoadAgenda();
                 return agenda;
             }
             set { agenda = value; }
@@ -120,7 +117,7 @@ namespace StockAnalyzer.StockClasses
 
         private StockDividend dividend;
 
-        public StockDividend Dividend => dividend ?? (dividend = new StockDividend(this));
+        public StockDividend Dividend => dividend ??= new StockDividend(this);
         private StockAgenda LoadAgenda()
         {
             StockAgenda stockAgenda = null;
@@ -268,8 +265,7 @@ namespace StockAnalyzer.StockClasses
         {
             get
             {
-                if (valueArray == null)
-                    valueArray = this.StockDailyValuesAsArray();
+                valueArray ??= this.StockDailyValuesAsArray();
                 return valueArray;
             }
         }

@@ -22,10 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "Bullish", "LongEntry", "LongExit" };
-                }
+                eventNames ??= new string[] { "Bullish", "LongEntry", "LongExit" };
                 return eventNames;
             }
         }
@@ -39,10 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 1 }, new Pen(Color.Green) { Width = 2 }, new Pen(Color.Red) { Width = 2 } };
-                }
+                seriePens ??= new Pen[] { new Pen(Color.Green) { Width = 1 }, new Pen(Color.Green) { Width = 2 }, new Pen(Color.Red) { Width = 2 } };
                 return seriePens;
             }
         }

@@ -102,7 +102,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             get
             {
-                return _addCommand ?? (_addCommand = new CommandBase<InvestingConfigViewModel>(AddEntry, this, t => t.AddEnabled, "AddEnabled"));
+                return _addCommand ??= new CommandBase<InvestingConfigViewModel>(AddEntry, this, t => t.AddEnabled, "AddEnabled");
             }
         }
         public void AddEntry()

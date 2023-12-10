@@ -28,10 +28,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1) };
-                }
+                seriePens ??= new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1) };
                 return seriePens;
             }
         }

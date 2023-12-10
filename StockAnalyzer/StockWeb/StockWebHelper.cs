@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockWeb
         }
         public string DownloadHtml(string url, Encoding encoding)
         {
-            if (encoding == null) encoding = Encoding.GetEncoding("ISO-8859-15");
+            encoding ??= Encoding.GetEncoding("ISO-8859-15");
 
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
 

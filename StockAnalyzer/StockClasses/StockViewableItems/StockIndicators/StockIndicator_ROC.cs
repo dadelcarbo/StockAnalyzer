@@ -18,10 +18,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { $"ROC({this.Parameters[0]})" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ?? (seriePens = new Pen[] { new Pen(Color.Black) });
+        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
 
         static HLine[] lines = null;
-        public override HLine[] HorizontalLines => lines ?? (lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)) });
+        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie rocSerie = stockSerie.CalculateRateOfChange((int)this.parameters[0]);

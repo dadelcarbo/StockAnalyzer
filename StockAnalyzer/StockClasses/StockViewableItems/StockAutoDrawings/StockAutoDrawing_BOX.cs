@@ -22,10 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "BrokenUp" };
-                }
+                eventNames ??= new string[] { "BrokenUp" };
                 return eventNames;
             }
         }

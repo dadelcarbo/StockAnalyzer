@@ -173,10 +173,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         {
             get
             {
-                if (addCommand == null)
-                {
-                    addCommand = new CommandBase(AddEntry);
-                }
+                addCommand ??= new CommandBase(AddEntry);
 
                 return addCommand;
             }
@@ -200,10 +197,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         {
             get
             {
-                if (saveCommand == null)
-                {
-                    saveCommand = new CommandBase(Save);
-                }
+                saveCommand ??= new CommandBase(Save);
                 return saveCommand;
             }
         }

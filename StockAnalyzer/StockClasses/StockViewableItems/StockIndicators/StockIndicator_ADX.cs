@@ -45,10 +45,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Black), new Pen(Color.Green), new Pen(Color.Red) };
-                }
+                seriePens ??= new Pen[] { new Pen(Color.Black), new Pen(Color.Green), new Pen(Color.Red) };
                 return seriePens;
             }
         }
@@ -57,10 +54,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                if (lines == null)
-                {
-                    lines = new HLine[] { new HLine((float)this.ParameterDefaultValues[1], new Pen(Color.DarkGray) { DashStyle = DashStyle.Dash }) };
-                }
+                lines ??= new HLine[] { new HLine((float)this.ParameterDefaultValues[1], new Pen(Color.DarkGray) { DashStyle = DashStyle.Dash }) };
                 return lines;
             }
         }

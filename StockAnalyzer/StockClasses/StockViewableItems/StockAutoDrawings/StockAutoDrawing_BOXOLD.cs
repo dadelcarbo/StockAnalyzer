@@ -23,10 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "BrokenUp", "BrokenDown", "InBox" };
-                }
+                eventNames ??= new string[] { "BrokenUp", "BrokenDown", "InBox" };
                 return eventNames;
             }
         }
@@ -40,10 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Green) { Width = 2 }, new Pen(Color.DarkRed) { Width = 2 }, new Pen(Color.Black) { Width = 2 } };
-                }
+                seriePens ??= new Pen[] { new Pen(Color.Green) { Width = 2 }, new Pen(Color.DarkRed) { Width = 2 }, new Pen(Color.Black) { Width = 2 } };
                 return seriePens;
             }
         }

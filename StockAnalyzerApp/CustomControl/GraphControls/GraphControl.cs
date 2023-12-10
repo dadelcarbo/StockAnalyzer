@@ -1515,7 +1515,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             string trimmedText = text.Trim();
             Size size = TextRenderer.MeasureText(trimmedText, font);
-            if (pen == null) pen = textFramePen;
+            pen ??= textFramePen;
 
             RectangleF rect = new RectangleF(location.X, location.Y, size.Width, size.Height);
             if (drawFrame)

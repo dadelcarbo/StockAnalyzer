@@ -37,10 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "BrokenUp", "BrokenDown" };
-                }
+                eventNames ??= new string[] { "BrokenUp", "BrokenDown" };
                 return eventNames;
             }
         }

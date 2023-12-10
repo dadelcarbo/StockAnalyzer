@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public float Max => 1.0f;
         public float Min => 0.0f;
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ?? (seriePens = new Pen[] { new Pen(Color.Black) });
+        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
 
         public override HLine[] HorizontalLines => new HLine[] { new HLine((float)this.parameters[0], new Pen(Color.LightGray)) };
 
