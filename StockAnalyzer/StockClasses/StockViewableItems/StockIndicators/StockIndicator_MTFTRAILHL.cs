@@ -64,10 +64,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Black, 1) };
-                }
+                seriePens ??= new Pen[] { new Pen(Color.Black, 1) };
                 return seriePens;
             }
         }

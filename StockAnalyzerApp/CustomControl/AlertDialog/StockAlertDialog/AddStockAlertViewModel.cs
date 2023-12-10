@@ -239,10 +239,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             get
             {
-                if (addAlertCommand == null)
-                {
-                    addAlertCommand = new CommandBase(AddAlert);
-                }
+                addAlertCommand ??= new CommandBase(AddAlert);
 
                 return addAlertCommand;
             }
@@ -330,10 +327,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             get
             {
-                if (deleteAlertCommand == null)
-                {
-                    deleteAlertCommand = new CommandBase(DeleteAlert);
-                }
+                deleteAlertCommand ??= new CommandBase(DeleteAlert);
 
                 return deleteAlertCommand;
             }
@@ -362,10 +356,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             get
             {
-                if (newAlertCommand == null)
-                {
-                    newAlertCommand = new CommandBase(NewAlert);
-                }
+                newAlertCommand ??= new CommandBase(NewAlert);
 
                 return newAlertCommand;
             }

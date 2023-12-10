@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private static string dataFolder = null;
         public static string DataFolder
         {
-            get => dataFolder ?? (dataFolder = Folders.DataFolder);
+            get => dataFolder ??= Folders.DataFolder;
             set
             {
                 dataFolder = value;

@@ -33,14 +33,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] {
+                seriePens ??= new Pen[] {
                         new Pen(Color.DarkGreen, 2) { DashStyle = DashStyle.Custom },
                         new Pen(Color.DarkBlue, 1),
                         new Pen(Color.DarkBlue, 1),
                         new Pen(Color.DarkBlue, 1) };
-                }
                 return seriePens;
             }
         }

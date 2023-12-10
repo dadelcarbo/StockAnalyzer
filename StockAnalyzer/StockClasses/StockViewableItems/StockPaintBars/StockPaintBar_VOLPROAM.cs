@@ -8,10 +8,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Blue, 2), new Pen(Color.Purple, 2) };
-                }
+                seriePens ??= new Pen[] { new Pen(Color.Blue, 2), new Pen(Color.Purple, 2) };
                 return seriePens;
             }
         }

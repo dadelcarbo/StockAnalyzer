@@ -39,10 +39,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = Enum.GetNames(typeof(StockSerie.TLEvent));
-                }
+                eventNames ??= Enum.GetNames(typeof(StockSerie.TLEvent));
                 return eventNames;
             }
         }

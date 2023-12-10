@@ -29,10 +29,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "UpTrend", "DownTrend" };
-                }
+                eventNames ??= new string[] { "UpTrend", "DownTrend" };
                 return eventNames;
             }
         }

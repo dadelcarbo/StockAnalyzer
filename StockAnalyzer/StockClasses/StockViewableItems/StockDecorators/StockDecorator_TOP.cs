@@ -45,10 +45,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { };
-                }
+                seriePens ??= new Pen[] { };
                 return seriePens;
             }
         }
@@ -80,10 +77,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         {
             get
             {
-                if (eventPens == null)
-                {
-                    eventPens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
-                }
+                eventPens ??= new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
                 return eventPens;
             }
         }

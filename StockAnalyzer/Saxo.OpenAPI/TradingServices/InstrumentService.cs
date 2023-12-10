@@ -42,10 +42,7 @@ namespace Saxo.OpenAPI.TradingServices
                     if (instruments.Data.Length > 1)
                     {
                         instrument = instruments.Data.FirstOrDefault(i => i.ExchangeId.StartsWith("PAR"));
-                        if (instrument == null)
-                        {
-                            instrument = instruments.Data.First();
-                        }
+                        instrument ??= instruments.Data.First();
                         InstrumentCache.Add(instrument);
                     }
                     else if (instruments.Data.Length == 1)

@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockLogging
         public bool isConsoleLogging = false;
 
         static private StockLog logger = null;
-        static public StockLog Logger { get { if (logger == null) { logger = new StockLog(); } return logger; } }
+        static public StockLog Logger { get { logger ??= new StockLog(); return logger; } }
 
         private StreamWriter sw;
 

@@ -36,10 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "RANGE", "ReversedRANGE" };
-                }
+                eventNames ??= new string[] { "RANGE", "ReversedRANGE" };
                 return eventNames;
             }
         }

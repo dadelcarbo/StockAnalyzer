@@ -205,22 +205,22 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
 
         private ICommand stopCommand;
-        public ICommand StopCommand => stopCommand ?? (stopCommand = new CommandBase(StopReplay));
+        public ICommand StopCommand => stopCommand ??= new CommandBase(StopReplay);
 
         private ICommand forwardCommand;
-        public ICommand ForwardCommand => forwardCommand ?? (forwardCommand = new CommandBase(Forward));
+        public ICommand ForwardCommand => forwardCommand ??= new CommandBase(Forward);
 
         private ICommand fastForwardCommand;
-        public ICommand FastForwardCommand => fastForwardCommand ?? (fastForwardCommand = new CommandBase(FastForward));
+        public ICommand FastForwardCommand => fastForwardCommand ??= new CommandBase(FastForward);
 
         private ICommand skipForwardCommand;
-        public ICommand SkipForwardCommand => skipForwardCommand ?? (skipForwardCommand = new CommandBase(SkipForward));
+        public ICommand SkipForwardCommand => skipForwardCommand ??= new CommandBase(SkipForward);
 
         private ICommand buyCommand;
-        public ICommand BuyCommand => buyCommand ?? (buyCommand = new CommandBase<MarketReplayViewModel>(Buy, this, vm => vm.BuyEnabled, "BuyEnabled"));
+        public ICommand BuyCommand => buyCommand ??= new CommandBase<MarketReplayViewModel>(Buy, this, vm => vm.BuyEnabled, "BuyEnabled");
 
         private ICommand sellCommand;
-        public ICommand SellCommand => sellCommand ?? (sellCommand = new CommandBase<MarketReplayViewModel>(Sell, this, vm => vm.SellEnabled, "SellEnabled"));
+        public ICommand SellCommand => sellCommand ??= new CommandBase<MarketReplayViewModel>(Sell, this, vm => vm.SellEnabled, "SellEnabled");
 
         public void Closing()
         {

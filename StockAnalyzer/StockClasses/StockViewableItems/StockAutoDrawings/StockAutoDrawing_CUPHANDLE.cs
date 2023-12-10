@@ -23,10 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { };
-                }
+                seriePens ??= new Pen[] { };
                 return seriePens;
             }
         }
@@ -56,10 +53,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "BrokenUp" };
-                }
+                eventNames ??= new string[] { "BrokenUp" };
                 return eventNames;
             }
         }

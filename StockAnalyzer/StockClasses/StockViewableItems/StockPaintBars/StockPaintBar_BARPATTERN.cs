@@ -33,10 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                if (eventNames == null)
-                {
-                    eventNames = new string[] { "GapUp", "GapDown", "Large", "BullHammer", "BearHammer", "BullEngulfing", "BearEngulfing" };
-                }
+                eventNames ??= new string[] { "GapUp", "GapDown", "Large", "BullHammer", "BearHammer", "BullEngulfing", "BearEngulfing" };
                 return eventNames;
             }
         }

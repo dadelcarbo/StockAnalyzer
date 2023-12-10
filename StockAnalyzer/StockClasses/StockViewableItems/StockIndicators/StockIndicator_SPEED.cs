@@ -33,10 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                if (lines == null)
-                {
-                    lines = new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
-                }
+                lines ??= new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
                 return lines;
             }
         }

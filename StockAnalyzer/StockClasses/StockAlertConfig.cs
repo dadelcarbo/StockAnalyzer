@@ -31,10 +31,7 @@ namespace StockAnalyzer.StockClasses
         {
             get
             {
-                if (configs == null)
-                {
-                    configs = TimeFrames.Select(t => new StockAlertConfig(t)).ToList();
-                }
+                configs ??= TimeFrames.Select(t => new StockAlertConfig(t)).ToList();
                 return configs;
             }
         }
@@ -104,10 +101,7 @@ namespace StockAnalyzer.StockClasses
                         }
                     }
                 }
-                if (allAlertDefs == null)
-                {
-                    allAlertDefs = new List<StockAlertDef>();
-                }
+                allAlertDefs ??= new List<StockAlertDef>();
                 return allAlertDefs;
             }
         }

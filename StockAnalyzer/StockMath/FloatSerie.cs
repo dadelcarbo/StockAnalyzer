@@ -402,7 +402,7 @@ namespace StockAnalyzer.StockMath
 
             int count = 1;
             float sum = serie[0] = Values[0];
-            for (int i = 1; i < emaPeriod; i++)
+            for (int i = 1; i < Math.Min(Values.Length, emaPeriod); i++)
             {
                 sum += Values[i] * (i + 1);
                 count += i + 1;

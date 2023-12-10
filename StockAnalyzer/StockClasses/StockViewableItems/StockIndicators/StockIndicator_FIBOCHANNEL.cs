@@ -17,13 +17,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "HIGH", "FiboUp", "MID", "FiboLow", "LOW" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ?? (seriePens = new Pen[] {
+        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] {
             new Pen(Color.DarkGreen, 2),
             new Pen(Color.DarkGreen),
             new Pen(Color.Black) { DashStyle = DashStyle.Dash },
             new Pen(Color.DarkRed),
             new Pen(Color.DarkRed,2)
-        });
+        };
 
         public override void ApplyTo(StockSerie stockSerie)
         {

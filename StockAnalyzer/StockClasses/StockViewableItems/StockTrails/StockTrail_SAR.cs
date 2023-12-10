@@ -42,10 +42,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
         {
             get
             {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.DarkRed) };
-                }
+                seriePens ??= new Pen[] { new Pen(Color.DarkRed) };
                 return seriePens;
             }
         }
