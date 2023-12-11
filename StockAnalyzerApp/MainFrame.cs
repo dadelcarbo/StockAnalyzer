@@ -901,6 +901,8 @@ namespace StockAnalyzerApp
                                                 }
                                             }
                                             var date = dailyValue.DATE;
+                                            var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
+                                            var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
                                             var stockAlert = new StockAlert(alertDef,
                                                 date,
                                                 stockSerie.StockName,
@@ -908,7 +910,8 @@ namespace StockAnalyzerApp
                                                 dailyValue.CLOSE,
                                                 stop,
                                                 stockSerie.GetExchanged(10),
-                                                stockSerie.GetIndicator("ROR(50)").Series[0][lastIndex]);
+                                                stockSerie.GetIndicator(rankIndicator).Series[0][lastIndex],
+                                                stockSerie.GetIndicator(stokIndicator).Series[0][lastIndex]);
 
                                             if (!alertConfig.AlertLog.Alerts.Any(a => a == stockAlert))
                                             {
@@ -1058,6 +1061,7 @@ namespace StockAnalyzerApp
                                     var date = dailyValue.DATE;
 
                                     var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
+                                    var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
                                     var stockAlert = new StockAlert(alertDef,
                                         date,
                                         stockSerie.StockName,
@@ -1065,7 +1069,8 @@ namespace StockAnalyzerApp
                                         dailyValue.CLOSE,
                                         stop,
                                         stockSerie.GetExchanged(10),
-                                        stockSerie.GetIndicator(rankIndicator).Series[0][lastIndex]);
+                                        stockSerie.GetIndicator(rankIndicator).Series[0][lastIndex],
+                                        stockSerie.GetIndicator(stokIndicator).Series[0][lastIndex]);
 
                                     if (alertConfig.AlertLog.Alerts.All(a => a != stockAlert))
                                     {
@@ -2865,6 +2870,7 @@ namespace StockAnalyzerApp
         class ReportSerie
         {
             public float rank;
+            public float stok;
             public float trailStop;
             public StockSerie stockSerie;
             public int highest;
@@ -3132,7 +3138,8 @@ namespace StockAnalyzerApp
          <tr>
              <td style=""font-size:14px;"">%COL1%</td>
              <td style=""font-size:11px;"">%GROUP%</td>
-             <td>%COL2%</td>
+             <td>%COL2.1%</td>
+             <td>%COL2.2%</td>
              <td>%COL3%</td>
              <td>%COL4%</td>
              <td>%COL5%</td>
@@ -3157,6 +3164,7 @@ namespace StockAnalyzerApp
                 indexSerie.BarDuration = StockBarDuration.Daily;
 
                 var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
+                var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
 
                 foreach (StockSerie stockSerie in stockList)
                 {
@@ -3213,6 +3221,7 @@ namespace StockAnalyzerApp
                     <th>Stock Name</th>
                     <th>Group</th>
                     <th>{rankIndicator}</th>
+                    <th>{stokIndicator}</th>
                     <th>Trail Stop %</th>
                     <th>Trail Stop</th>
                     <th>{alertDef.BarDuration} %</th>
@@ -3233,12 +3242,14 @@ namespace StockAnalyzerApp
 
                     var stockName = stockNameTemplate.Replace("%MSG%", reportSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var lastValue = reportSerie.stockSerie.ValueArray[reportSerie.stockSerie.LastIndex];
+                    var stokValue = reportSerie.stockSerie.GetIndicator(stokIndicator).Series[0][reportSerie.stockSerie.LastIndex];
                     if (float.IsNaN(reportSerie.trailStop))
                     {
                         html += rowTemplate.
                             Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
                             Replace("%COL1%", stockName).
-                            Replace("%COL2%", reportSerie.rank.ToString("P2")).
+                            Replace("%COL2.1%", reportSerie.rank.ToString("P2")).
+                            Replace("%COL2.2%", stokValue.ToString("#.##")).
                             Replace("%COL3%", "").
                             Replace("%COL4%", "").
                             Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
@@ -3250,7 +3261,8 @@ namespace StockAnalyzerApp
                         html += rowTemplate.
                             Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
                             Replace("%COL1%", stockName).
-                            Replace("%COL2%", reportSerie.rank.ToString("P2")).
+                            Replace("%COL2.1%", reportSerie.rank.ToString("P2")).
+                            Replace("%COL2.2%", stokValue.ToString("#.##")).
                             Replace("%COL3%", ((lastValue.CLOSE - reportSerie.trailStop) / lastValue.CLOSE).ToString("P2")).
                             Replace("%COL4%", reportSerie.trailStop.ToString("#.##")).
                             Replace("%COL5%", lastValue.VARIATION.ToString("P2")).

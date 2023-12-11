@@ -43,6 +43,7 @@ namespace StockAnalyzer.StockClasses
         public float StopPercent => float.IsNaN(StopValue) ? float.NaN : (AlertClose - StopValue) / AlertClose;
         public float AlertClose { get; set; }
         public float Speed { get; set; }
+        public float Stok { get; set; }
 
         /// <summary>
         /// Exchanged Money (M€)
@@ -55,7 +56,7 @@ namespace StockAnalyzer.StockClasses
             this.alertDef = StockAlertConfig.AllAlertDefs.FirstOrDefault(alertDef => alertDef.Id == this.AlertDefId);
         }
 
-        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, float alertStop, float exchanged, float speed)
+        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, float alertStop, float exchanged, float speed, float stok)
         {
             this.alertDef = alertDef;
             this.AlertDefId = alertDef.Id;
@@ -64,8 +65,9 @@ namespace StockAnalyzer.StockClasses
             StockGroup = stockGroup;
             AlertClose = alertClose;
             StopValue = alertStop;
-            Speed = speed;
             ExchangedMoney = exchanged;
+            Speed = speed;
+            Stok = stok;
         }
         public static bool operator ==(StockAlert a, StockAlert b)
         {

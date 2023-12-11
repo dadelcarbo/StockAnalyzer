@@ -36,6 +36,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Theme = alertDef.Theme;
             this.Stop = alertDef.Stop;
             this.Speed = alertDef.Speed;
+            this.Stok = alertDef.Stok;
             this.MinLiquidity = alertDef.MinLiquidity;
             switch (this.alertType)
             {
@@ -97,6 +98,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private string speed;
         public string Speed { get => speed; set => SetProperty(ref speed, value); }
+
+        private int stok;
+        public int Stok { get => stok; set => SetProperty(ref stok, value); }
 
         private float minLiquidity;
         public float MinLiquidity { get => minLiquidity; set => SetProperty(ref minLiquidity, value); }
@@ -305,6 +309,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             alertDef.CreationDate = DateTime.Now;
             alertDef.Stop = this.Stop;
             alertDef.Speed = this.Speed;
+            alertDef.Stok = this.Stok;
 
             this.OnPropertyChanged("AlertDefs");
 
