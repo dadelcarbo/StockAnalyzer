@@ -1515,31 +1515,24 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public void SaveToCSV(StockSerie stockSerie, bool forceArchive = true)
         {
             string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
-            var values = stockSerie.Values.Where(v => v.DATE.Year < DateTime.Today.Year);
-            if (values.Count() > 0)
+            var pivotDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddDays(-1);
+            if (forceArchive || happyNewYear || !File.Exists(fileName))
             {
-                if (forceArchive || happyNewYear || !File.Exists(fileName))
+                using (StreamWriter sw = new StreamWriter(fileName))
                 {
-                    using (StreamWriter sw = new StreamWriter(fileName))
+                    foreach (var value in stockSerie.Values.Where(v => v.DATE <= pivotDate))
                     {
-                        foreach (var value in values)
-                        {
-                            sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
-                        }
+                        sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
                     }
                 }
             }
 
             fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
-            values = stockSerie.Values.Where(v => v.DATE.Year == DateTime.Today.Year && v.IsComplete);
-            if (values.Count() > 0)
+            using (StreamWriter sw = new StreamWriter(fileName))
             {
-                using (StreamWriter sw = new StreamWriter(fileName))
+                foreach (var value in stockSerie.Values.Where(v => v.DATE > pivotDate && v.IsComplete))
                 {
-                    foreach (var value in values)
-                    {
-                        sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
-                    }
+                    sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
                 }
             }
         }
