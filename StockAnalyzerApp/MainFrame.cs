@@ -1807,12 +1807,12 @@ namespace StockAnalyzerApp
             {
                 try
                 {
-                    if (MessageBox.Show($"Are you sure you want to force downloading the full group {currentStockSerie.StockGroup} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    if (MessageBox.Show($"Are you sure you want to force downloading the full group {this.selectedGroup} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     {
                         return;
                     }
                     StockSplashScreen.FadeInOutSpeed = 0.25;
-                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.currentStockSerie.StockName;
+                    StockSplashScreen.ProgressText = "Downloading " + this.selectedGroup + " - " + this.currentStockSerie.StockName;
 
                     var stockSeries =
                        this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
@@ -1824,18 +1824,18 @@ namespace StockAnalyzerApp
 
                     foreach (var stockSerie in stockSeries)
                     {
-                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
+                        StockSplashScreen.ProgressText = "Downloading " + this.selectedGroup + " - " + stockSerie.StockName;
                         StockDataProviderBase.ForceDownloadSerieData(stockSerie);
 
-                        try
-                        {
-                            StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                            this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            StockLog.Write(ex);
-                        }
+                        //try
+                        //{
+                        //StockSplashScreen.ProgressText = "Downloading Dividend " + selectedGroup + " - " + stockSerie.StockName;
+                        //this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie, true);
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    StockLog.Write(ex);
+                        //}
                         StockSplashScreen.ProgressVal++;
                     }
 
