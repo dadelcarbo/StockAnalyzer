@@ -8,24 +8,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop that is initated when MACD histogram turns positive and trails at each next positive turn of the histogram.";
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "LongPeriod", "ShortPeriod", "SignalPeriod" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
+        public override string[] ParameterNames => new string[] { "LongPeriod", "ShortPeriod", "SignalPeriod" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 26, 12, 9 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 26, 12, 9 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {

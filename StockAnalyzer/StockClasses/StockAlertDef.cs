@@ -39,17 +39,14 @@ namespace StockAnalyzer.StockClasses
 
         public string IndicatorType { get; set; }
         public string IndicatorName { get; set; }
-        public string IndicatorFullName { get { return IndicatorType + "|" + IndicatorName; } }
+        public string IndicatorFullName => IndicatorType + "|" + IndicatorName;
         public string EventName { get; set; }
-        public string EventFullName
-        {
-            get { return EventName + "=>" + IndicatorFullName; }
-        }
+        public string EventFullName => EventName + "=>" + IndicatorFullName;
 
         public string FilterType { get; set; }
         public string FilterName { get; set; }
         public string FilterEventName { get; set; }
-        public string FilterFullName { get { return FilterType == null || FilterName == null ? null : FilterType + "|" + FilterName; } }
+        public string FilterFullName => FilterType == null || FilterName == null ? null : FilterType + "|" + FilterName;
 
         public string Stop { get; set; }
         public string Speed { get; set; }

@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockClasses
         private string selectedStock;
         public string SelectedStock { get { return selectedStock; } set { if (value != selectedStock) { selectedStock = value; NotifyPropertyChanged("SelectedStock"); } } }
 
-        public IEnumerable<string> StockNames { get { return this.Alerts.Select(a => a.StockName).Distinct(); } }
+        public IEnumerable<string> StockNames => this.Alerts.Select(a => a.StockName).Distinct();
 
         private int progressValue;
         public int ProgressValue { get { return progressValue; } set { if (value != progressValue) { progressValue = value; NotifyPropertyChanged("ProgressValue"); } } }

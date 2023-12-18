@@ -8,24 +8,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop based on first body above the or below the ATR Band.";
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "UseBody", "AtrEntryWidth", "AtrExitWidth" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
+        public override string[] ParameterNames => new string[] { "Period", "UseBody", "AtrEntryWidth", "AtrExitWidth" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 30, true, 0.5f, -0.5f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeBool(), new ParamRangeFloat(-10f, 10f), new ParamRangeFloat(-10f, 10f) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 30, true, 0.5f, -0.5f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeBool(), new ParamRangeFloat(-10f, 10f), new ParamRangeFloat(-10f, 10f) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {

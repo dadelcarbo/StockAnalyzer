@@ -24,16 +24,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = false) ;
         }
 
-        public override string Name
-        {
-            get { return ((IStockViewableSeries)baseIndicator).Name; }
-        }
+        public override string Name => ((IStockViewableSeries)baseIndicator).Name;
 
-        public IndicatorDisplayTarget DisplayTarget { get { return baseIndicator.DisplayTarget; } }
-        public IndicatorDisplayStyle DisplayStyle { get { return IndicatorDisplayStyle.PaintBar; } }
-        public ViewableItemType Type { get { return ViewableItemType.PaintBar; } }
+        public IndicatorDisplayTarget DisplayTarget => baseIndicator.DisplayTarget;
+        public IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.PaintBar;
+        public ViewableItemType Type => ViewableItemType.PaintBar;
 
-        public virtual bool RequiresVolumeData { get { return baseIndicator.RequiresVolumeData; } }
+        public virtual bool RequiresVolumeData => baseIndicator.RequiresVolumeData;
 
         public string ToThemeString()
         {
@@ -45,15 +42,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             return themeString;
         }
 
-        public override string Definition
-        {
-            get { return this.baseIndicator.Definition; }
-        }
+        public override string Definition => this.baseIndicator.Definition;
 
-        public override string[] ParameterNames
-        {
-            get { return this.baseIndicator.ParameterNames; }
-        }
+        public override string[] ParameterNames => this.baseIndicator.ParameterNames;
         public override object[] ParameterDefaultValues
         {
             get
@@ -71,17 +62,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
         }
 
-        public override ParamRange[] ParameterRanges
-        {
-            get { return this.baseIndicator.ParameterRanges; }
-        }
+        public override ParamRange[] ParameterRanges => this.baseIndicator.ParameterRanges;
 
-        public override string[] SerieNames { get { return EventNames; } }
+        public override string[] SerieNames => EventNames;
 
         abstract public Pen[] SeriePens { get; }
 
         protected bool[] serieVisibility;
-        public bool[] SerieVisibility { get { return this.serieVisibility; } }
+        public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
         {

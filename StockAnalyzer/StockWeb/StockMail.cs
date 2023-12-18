@@ -6,15 +6,9 @@ namespace StockAnalyzer.StockWeb
 {
     public class StockMail
     {
-        private static string SMTPServer
-        {
-            get { return StockAnalyzerSettings.Properties.Settings.Default.UserSMTP; }
-        }
+        private static string SMTPServer => StockAnalyzerSettings.Properties.Settings.Default.UserSMTP;
 
-        private static string To
-        {
-            get { return StockAnalyzerSettings.Properties.Settings.Default.UserEMail; }
-        }
+        private static string To => StockAnalyzerSettings.Properties.Settings.Default.UserEMail;
 
         public static void SendEmail(string subject, string alert)
         {

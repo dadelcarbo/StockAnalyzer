@@ -20,13 +20,7 @@ namespace StockAnalyzerApp.CustomControl
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
         public event StockAnalyzerForm.SelectedStockGroupChangedEventHandler SelectStockGroupChanged;
 
-        public IEnumerable<string> SelectedStocks
-        {
-            get
-            {
-                return this.selectedStockListBox.Items.Cast<string>();
-            }
-        }
+        public IEnumerable<string> SelectedStocks => this.selectedStockListBox.Items.Cast<string>();
 
         public StockScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, StockBarDuration barDuration, Dictionary<string, List<string>> theme)
         {

@@ -6,24 +6,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
     public class StockCloud_EMA2Lines : StockCloudBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string Definition => "Paint a cloud base on two EMA lines";
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "FastPeriod", "SlowPeriod", "SignalPeriod" }; }
-        }
+        public override string[] ParameterNames => new string[] { "FastPeriod", "SlowPeriod", "SignalPeriod" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20, 50, 3 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 50, 3 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override Pen[] SeriePens
         {
             get
@@ -32,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 return seriePens;
             }
         }
-        public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "Signal" }; } }
+        public override string[] SerieNames => new string[] { "Bull", "Bear", "Signal" };
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie bullSerie = stockSerie.GetIndicator($"EMA({(int)this.parameters[0]})").Series[0];

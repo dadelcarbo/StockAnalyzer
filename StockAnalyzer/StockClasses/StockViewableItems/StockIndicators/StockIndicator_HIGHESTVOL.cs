@@ -7,27 +7,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_HIGHESTVOL : StockIndicatorBase
     {
         public override string Definition => "Calculate the number of bars the current bar volume is the highest.\r\nEvent is raised when gap with previous value exceeds the trigger parameter.";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
         public override bool RequiresVolumeData => true;
 
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Trigger" }; }
-        }
+        public override object[] ParameterDefaultValues => new Object[] { 20 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
+        public override string[] ParameterNames => new string[] { "Trigger" };
 
-        public override string[] SerieNames { get { return new string[] { "HIGHEST(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames => new string[] { "HIGHEST(" + this.Parameters[0].ToString() + ")" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -37,10 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-        public override HLine[] HorizontalLines
-        {
-            get { return null; }
-        }
+        public override HLine[] HorizontalLines => null;
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -76,14 +61,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
         static string[] eventNames = new string[] { "NewHighVolume" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

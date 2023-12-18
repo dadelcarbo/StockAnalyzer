@@ -6,35 +6,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_STOKFBODY : StockIndicatorBase, IRange
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.RangedIndicator; }
-        }
-        public float Max
-        {
-            get { return 105.0f; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.RangedIndicator;
+        public float Max => 105.0f;
 
-        public float Min
-        {
-            get { return -5.0f; }
-        }
+        public float Min => -5.0f;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "FastKPeriod" }; }
-        }
+        public override string[] ParameterNames => new string[] { "FastKPeriod" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 14 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 14 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames { get { return new string[] { "FastK(" + this.Parameters[0].ToString() + ")" }; } }
+        public override string[] SerieNames => new string[] { "FastK(" + this.Parameters[0].ToString() + ")" };
 
 
         public override Pen[] SeriePens
@@ -73,14 +55,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "Bullish", "Bearish" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

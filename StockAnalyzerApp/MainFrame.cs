@@ -122,15 +122,9 @@ namespace StockAnalyzerApp
 
         public List<StockPortfolio> Portfolios => PortfolioDataProvider.Portfolios;
 
-        public ToolStripProgressBar ProgressBar
-        {
-            get { return this.progressBar; }
-        }
+        public ToolStripProgressBar ProgressBar => this.progressBar;
 
-        public GraphCloseControl GraphCloseControl
-        {
-            get { return this.graphCloseControl; }
-        }
+        public GraphCloseControl GraphCloseControl => this.graphCloseControl;
 
         private StockSerie currentStockSerie = null;
 

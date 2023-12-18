@@ -9,29 +9,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_CCI()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override string Definition
-        {
-            get { return "CCI(int Period, int SmoothPeriod1, int SmoothPeriod2)"; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "SmoothPeriod1", "SmoothPeriod2" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 14, 1, 10 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override string Definition => "CCI(int Period, int SmoothPeriod1, int SmoothPeriod2)";
+        public override string[] ParameterNames => new string[] { "Period", "SmoothPeriod1", "SmoothPeriod2" };
+        public override Object[] ParameterDefaultValues => new Object[] { 14, 1, 10 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames { get { return new string[] { "CCI(" + this.Parameters[0].ToString() + ")", "Signal" }; } }
+        public override string[] SerieNames => new string[] { "CCI(" + this.Parameters[0].ToString() + ")", "Signal" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -81,14 +66,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BullishCrossing", "BearishCrossing" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

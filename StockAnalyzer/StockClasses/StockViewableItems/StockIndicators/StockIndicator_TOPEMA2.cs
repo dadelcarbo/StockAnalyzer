@@ -6,35 +6,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_TOPEMA2 : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
 
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.SimpleCurve; }
-        }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SimpleCurve;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "UpPeriod", "DownPeriod" }; }
-        }
+        public override string[] ParameterNames => new string[] { "UpPeriod", "DownPeriod" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 175, 35 }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 175, 35 };
 
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames
-        {
-            get { return new string[] { "TOPEMA2.Sup", "TOPEMA2.Res" }; }
-        }
+        public override string[] SerieNames => new string[] { "TOPEMA2.Sup", "TOPEMA2.Res" };
 
         public override System.Drawing.Pen[] SeriePens
         {

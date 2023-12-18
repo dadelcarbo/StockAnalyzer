@@ -5,24 +5,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     class StockPaintBar_HLBODY : StockPaintBarBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
+        public override string[] ParameterNames => new string[] { "Period" };
+        public override Object[] ParameterDefaultValues => new Object[] { 20 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
 
         static string[] eventNames = null;
         public override string[] EventNames
@@ -34,10 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
         }
         static readonly bool[] isEvent = new bool[] { false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
 
         public override System.Drawing.Pen[] SeriePens
         {

@@ -25,15 +25,9 @@ namespace StockAnalyzer.StockAgent
         public bool IsClosed { get; private set; }
         public bool IsStopped { get; private set; }
 
-        public int Duration
-        {
-            get
-            {
-                return IsClosed ?
+        public int Duration => IsClosed ?
                     ExitIndex - EntryIndex :
                     Serie.LastIndex - EntryIndex;
-            }
-        }
 
         public float Gain { get; private set; }
         public float Drawdown { get; private set; }

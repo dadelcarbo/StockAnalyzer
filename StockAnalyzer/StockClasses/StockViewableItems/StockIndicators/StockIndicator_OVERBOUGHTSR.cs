@@ -6,30 +6,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_OVERBOUGHTSR : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.SupportResistance; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SupportResistance;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Indicator", "Overbought", "Oversold" }; }
-        }
+        public override string[] ParameterNames => new string[] { "Indicator", "Overbought", "Oversold" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { "STOKS(30_3_3)", 75f, 25f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeFloat(-100f, 100f), new ParamRangeFloat(-100f, 100f) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { "STOKS(30_3_3)", 75f, 25f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeFloat(-100f, 100f), new ParamRangeFloat(-100f, 100f) };
 
-        public override string[] SerieNames { get { return new string[] { "OVERBOUGHT.S", "OVERBOUGHT.R" }; } }
+        public override string[] SerieNames => new string[] { "OVERBOUGHT.S", "OVERBOUGHT.R" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -190,10 +175,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             "Bullish", "Bearish",
             "HigherHigh", "LowerLow"
         };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] {
             true, true,
             true, true,
@@ -201,9 +183,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             true, true,
             false, false,
             true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

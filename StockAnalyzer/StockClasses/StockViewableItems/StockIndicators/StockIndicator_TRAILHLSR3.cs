@@ -9,28 +9,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_TRAILHLSR3()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.SupportResistance; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SupportResistance;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
+        public override string[] ParameterNames => new string[] { "Period" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 3 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(0, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 3 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
 
         public override string[] SerieNames
         {
@@ -82,14 +67,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "Bullish", "Bearish" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

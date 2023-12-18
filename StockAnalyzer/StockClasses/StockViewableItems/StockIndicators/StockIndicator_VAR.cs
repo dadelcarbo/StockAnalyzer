@@ -7,24 +7,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_VAR : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 0.04f, 0.2f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeFloat(0.0f, 1f), new ParamRangeFloat(0.0f, 10f) }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "LowThreshold", "HighThreshold" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
+        public override object[] ParameterDefaultValues => new Object[] { 0.04f, 0.2f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.0f, 1f), new ParamRangeFloat(0.0f, 10f) };
+        public override string[] ParameterNames => new string[] { "LowThreshold", "HighThreshold" };
 
-        public override string[] SerieNames { get { return new string[] { "VAR" }; } }
+        public override string[] SerieNames => new string[] { "VAR" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -77,14 +65,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "Low", "InRange", "High" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

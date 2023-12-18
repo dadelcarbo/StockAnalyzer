@@ -5,30 +5,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     public class StockPaintBar_DOWLINE : StockPaintBarBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
-        public override bool HasTrendLine { get { return true; } }
+        public override bool HasTrendLine => true;
 
-        public override string Definition
-        {
-            get { return "DOWLINE(int hlPeriod)"; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "hlPeriod" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 3 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 100) }; }
-        }
+        public override string Definition => "DOWLINE(int hlPeriod)";
+        public override string[] ParameterNames => new string[] { "hlPeriod" };
+        public override Object[] ParameterDefaultValues => new Object[] { 3 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 100) };
 
         static string[] eventNames = null;
         public override string[] EventNames
@@ -40,10 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
         }
         static readonly bool[] isEvent = new bool[] { false, false, false, true, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
 
         public override System.Drawing.Pen[] SeriePens
         {

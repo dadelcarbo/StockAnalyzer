@@ -32,10 +32,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             }
         }
 
-        static public IList<StockBarDuration> BarDurations
-        {
-            get { return StockBarDuration.Values; }
-        }
+        static public IList<StockBarDuration> BarDurations => StockBarDuration.Values;
         private StockBarDuration barDuration;
         public StockBarDuration BarDuration
         {

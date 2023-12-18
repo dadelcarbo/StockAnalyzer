@@ -170,9 +170,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             }
         }
         static readonly bool[] isEvent = new bool[] { true, true, true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

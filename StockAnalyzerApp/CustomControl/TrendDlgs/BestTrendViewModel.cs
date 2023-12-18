@@ -28,10 +28,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             }
         }
 
-        static public IList<StockBarDuration> BarDurations
-        {
-            get { return StockBarDuration.Values; }
-        }
+        static public IList<StockBarDuration> BarDurations => StockBarDuration.Values;
         private StockBarDuration barDuration;
         public StockBarDuration BarDuration
         {
@@ -46,7 +43,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             }
         }
 
-        public List<string> Groups { get { return StockDictionary.Instance.GetValidGroupNames(); } }
+        public List<string> Groups => StockDictionary.Instance.GetValidGroupNames();
 
         private int period;
 

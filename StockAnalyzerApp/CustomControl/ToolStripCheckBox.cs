@@ -9,9 +9,6 @@ namespace StockAnalyzerApp.CustomControl
         {
         }
 
-        public CheckBox CheckBox
-        {
-            get { return (CheckBox)this.Control; }
-        }
+        public CheckBox CheckBox => (CheckBox)this.Control;
     }
 }

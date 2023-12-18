@@ -23,24 +23,24 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public float MaxDrawdown { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Drawdown) : 0f; } }
-        public float TotalGain { get { return this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Sum(t => t.Gain) : 0f; } }
-        public float TotalLoss { get { return this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Sum(t => t.Gain) : 0f; } }
-        public float AvgGain { get { return this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Average(t => t.Gain) : 0f; } }
-        public float AvgLoss { get { return this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Average(t => t.Gain) : 0f; } }
-        public int AvgDuration { get { return this.Trades.Count > 0 ? (int)this.Trades.Average(t => t.Duration) : 0; } }
-        public float MaxGain { get { return this.Trades.Count > 0 ? this.Trades.Max(t => t.Gain) : 0f; } }
-        public float MaxLoss { get { return this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f; } }
-        public float ExpectedReturn { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f; } }
-        public float ExpectedGainPerBar { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) / this.Trades.Average(t => (float)t.Duration) : 0f; } }
-        public float CumulGain { get { return this.Trades.Count > 0 ? this.Trades.Sum(t => t.Gain) : 0f; } }
+        public float MaxDrawdown => this.Trades.Count > 0 ? this.Trades.Min(t => t.Drawdown) : 0f;
+        public float TotalGain => this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Sum(t => t.Gain) : 0f;
+        public float TotalLoss => this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Sum(t => t.Gain) : 0f;
+        public float AvgGain => this.Trades.Any(t => t.Gain >= 0) ? this.Trades.Where(t => t.Gain >= 0).Average(t => t.Gain) : 0f;
+        public float AvgLoss => this.Trades.Any(t => t.Gain < 0) ? this.Trades.Where(t => t.Gain < 0).Average(t => t.Gain) : 0f;
+        public int AvgDuration => this.Trades.Count > 0 ? (int)this.Trades.Average(t => t.Duration) : 0;
+        public float MaxGain => this.Trades.Count > 0 ? this.Trades.Max(t => t.Gain) : 0f;
+        public float MaxLoss => this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f;
+        public float ExpectedReturn => this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f;
+        public float ExpectedGainPerBar => this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) / this.Trades.Average(t => (float)t.Duration) : 0f;
+        public float CumulGain => this.Trades.Count > 0 ? this.Trades.Sum(t => t.Gain) : 0f;
 
         public int NbTrades => this.Trades.Count;
         public int NbWinTrade => Trades.Count(t => t.Gain >= 0);
         public int NbLostTrade => Trades.Count(t => t.Gain < 0);
 
         public float WinTradeRatio => NbLostTrade != 0 ? NbWinTrade / (float)NbTrades : 0f;
-        public float RiskRewardRatio { get { return this.Trades.Count > 0 ? this.Trades.Average(t => t.RiskRewardRatio) : 0f; } }
+        public float RiskRewardRatio => this.Trades.Count > 0 ? this.Trades.Average(t => t.RiskRewardRatio) : 0f;
 
         public float WinLossRatio => NbLostTrade != 0 ? this.AvgGain / -AvgLoss : 0f;
         public float Kelly => WinTradeRatio - (1.0f - WinTradeRatio) / WinLossRatio;

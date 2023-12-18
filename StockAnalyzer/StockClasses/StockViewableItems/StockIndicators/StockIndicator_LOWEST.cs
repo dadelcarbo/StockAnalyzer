@@ -20,10 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-        public override HLine[] HorizontalLines
-        {
-            get { return null; }
-        }
+        public override HLine[] HorizontalLines => null;
         public override void ApplyTo(StockSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
@@ -60,14 +57,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
         static string[] eventNames = new string[] { "NewLow" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

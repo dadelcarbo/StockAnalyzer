@@ -8,35 +8,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
     public class StockDecorator_TREND : StockDecoratorBase, IStockDecorator
     {
-        public override string Definition
-        {
-            get { return "Plots exhaustion points and divergences and provide signal events"; }
-        }
+        public override string Definition => "Plots exhaustion points and divergences and provide signal events";
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.DecoratorPlot; }
-        }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.DecoratorPlot;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "FadeOut" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 1.5f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f) }; }
-        }
+        public override string[] ParameterNames => new string[] { "FadeOut" };
+        public override Object[] ParameterDefaultValues => new Object[] { 1.5f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.1f, 10.0f) };
 
-        public override string[] SerieNames { get { return new string[] { "UpBand", "DownBand" }; } }
+        public override string[] SerieNames => new string[] { "UpBand", "DownBand" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -115,14 +97,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         }
 
         static string[] eventNames = new string[] { "Bullish", "Bearish" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

@@ -20,11 +20,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
         abstract public IndicatorDisplayTarget DisplayTarget { get; }
 
-        public ViewableItemType Type { get { return ViewableItemType.Cloud; } }
+        public ViewableItemType Type => ViewableItemType.Cloud;
 
-        public virtual IndicatorDisplayStyle DisplayStyle { get { return IndicatorDisplayStyle.SimpleCurve; } }
+        public virtual IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SimpleCurve;
 
-        public virtual bool RequiresVolumeData { get { return false; } }
+        public virtual bool RequiresVolumeData => false;
 
         public string ToThemeString()
         {
@@ -37,9 +37,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
 
         protected FloatSerie[] series;
-        public FloatSerie[] Series { get { return series; } }
+        public FloatSerie[] Series => series;
 
-        public override string[] SerieNames { get { return new string[] { "Bull", "Bear" }; } }
+        public override string[] SerieNames => new string[] { "Bull", "Bear" };
 
         abstract public Pen[] SeriePens { get; }
         public bool[] SerieVisibility { get; }
@@ -80,7 +80,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         protected static readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true, true, true };
         public virtual bool[] IsEvent => isEvent;
 
-        public BoolSerie[] Events { get { return eventSeries; } }
+        public BoolSerie[] Events => eventSeries;
 
         public FloatSerie BullSerie => this.Series[0];
 

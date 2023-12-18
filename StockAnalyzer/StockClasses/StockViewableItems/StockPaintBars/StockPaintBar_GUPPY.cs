@@ -5,13 +5,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     class StockPaintBar_GUPPY : StockPaintBarBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
-        public override bool HasTrendLine { get { return false; } }
+        public override bool HasTrendLine => false;
 
         public override string[] ParameterNames => new string[] { "FastPeriod1", "SlowPeriod1", "FastPeriod2", "SlowPeriod2" };
         public override Object[] ParameterDefaultValues => new Object[] { 3, 15, 30, 60 };
@@ -27,10 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
         }
         static readonly bool[] isEvent = new bool[] { false, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
 
         public override System.Drawing.Pen[] SeriePens
         {

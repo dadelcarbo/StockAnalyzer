@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 {
     public partial class AddAutoDrawingDlg : Form
     {
-        public string AutoDrawingName { get { return this.autoDrawingComboBox.SelectedItem.ToString(); } }
+        public string AutoDrawingName => this.autoDrawingComboBox.SelectedItem.ToString();
 
         public AddAutoDrawingDlg()
         {

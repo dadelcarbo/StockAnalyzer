@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,27 +8,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
     public class StockCloud_ATRStop : StockCloudBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string Definition => "Paint a cloud base on ATR Stop";
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType" }; }
-        }
+        public override string[] ParameterNames => new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20, 10, 2.0f, -2.0f, "EMA" }; }
-        }
-        static List<string> emaTypes = new List<string>() { "EMA", "MA", "EA", "MID" };
-        public override ParamRange[] ParameterRanges
-        {
-            get
-            {
-                return new ParamRange[]
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 10, 2.0f, -2.0f, "EMA" };
+        static List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
+        public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
                 new ParamRangeInt(1, 500),
@@ -35,8 +23,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 new ParamRangeFloat(-20.0f, 5.0f),
                 new ParamRangeMA()
                 };
-            }
-        }
         public override Pen[] SeriePens
         {
             get
@@ -45,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 return seriePens;
             }
         }
-        public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "MA" }; } }
+        public override string[] SerieNames => new string[] { "Bull", "Bear", "MA" };
         public override void ApplyTo(StockSerie stockSerie)
         {
             var bandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(int)this.parameters[1]},{(float)this.parameters[2]},{(float)this.parameters[3]},{this.parameters[4]})");

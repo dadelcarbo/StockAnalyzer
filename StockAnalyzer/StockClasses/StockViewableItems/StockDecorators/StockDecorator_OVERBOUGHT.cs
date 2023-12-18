@@ -10,39 +10,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
     public class StockDecorator_OVERBOUGHT : StockDecoratorBase, IStockDecorator
     {
-        public override string Definition
-        {
-            get { return "Plots exhaustion points and divergences and provide signal events based on oversold/overbought levels"; }
-        }
+        public override string Definition => "Plots exhaustion points and divergences and provide signal events based on oversold/overbought levels";
 
         public StockDecorator_OVERBOUGHT()
         {
         }
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.DecoratorPlot; }
-        }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.DecoratorPlot;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Smoothing", "Overbought", "Oversold", "LookBack", "SignalSmoothing" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 1, 0.75f, -0.75f, 30, 6 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0.0f, 1000.0f), new ParamRangeFloat(-1000.0f, 1000.0f), new ParamRangeInt(1, 500), new ParamRangeInt(0, 500) }; }
-        }
+        public override string[] ParameterNames => new string[] { "Smoothing", "Overbought", "Oversold", "LookBack", "SignalSmoothing" };
+        public override Object[] ParameterDefaultValues => new Object[] { 1, 0.75f, -0.75f, 30, 6 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0.0f, 1000.0f), new ParamRangeFloat(-1000.0f, 1000.0f), new ParamRangeInt(1, 500), new ParamRangeInt(0, 500) };
 
-        public override string[] SerieNames { get { return new string[] { "Data", "Overbought", "Oversold", "Signal" }; } }
+        public override string[] SerieNames => new string[] { "Data", "Overbought", "Oversold", "Signal" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -291,10 +273,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             "Bullish", "Bearish"
         };
 
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[]
         {
             true, true,
@@ -304,9 +283,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             false, false,
             false, false
         };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

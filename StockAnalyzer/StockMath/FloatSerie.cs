@@ -254,10 +254,7 @@ namespace StockAnalyzer.StockMath
             get { return this.Values[index]; }
             set { this.Values[index] = value; }
         }
-        public int Count
-        {
-            get { return this.Values.Count(); }
-        }
+        public int Count => this.Values.Count();
 
         #region Constructors
         public FloatSerie(int size)
@@ -1020,7 +1017,7 @@ namespace StockAnalyzer.StockMath
             return new FloatSerie(serie);
         }
 
-        public float Last { get { return this.Values.Last(); } }
+        public float Last => this.Values.Last();
         public float LastNonNaN
         {
             get
@@ -1032,7 +1029,7 @@ namespace StockAnalyzer.StockMath
                 return float.NaN;
             }
         }
-        public int LastIndex { get { return this.Values.Count() - 1; } }
+        public int LastIndex => this.Values.Count() - 1;
 
 
         #region MIN_MAX Functions

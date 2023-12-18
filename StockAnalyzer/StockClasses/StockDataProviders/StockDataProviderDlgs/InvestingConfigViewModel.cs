@@ -98,13 +98,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             Settings.Default.Save();
         }
         private ICommand _addCommand;
-        public ICommand AddCommand
-        {
-            get
-            {
-                return _addCommand ??= new CommandBase<InvestingConfigViewModel>(AddEntry, this, t => t.AddEnabled, "AddEnabled");
-            }
-        }
+        public ICommand AddCommand => _addCommand ??= new CommandBase<InvestingConfigViewModel>(AddEntry, this, t => t.AddEnabled, "AddEnabled");
         public void AddEntry()
         {
             var prefix = isIntraday ? "INT_" : string.Empty;

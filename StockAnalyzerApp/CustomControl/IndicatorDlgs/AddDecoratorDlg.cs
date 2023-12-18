@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 {
     public partial class AddDecoratorDlg : Form
     {
-        public string DecoratorName { get { return this.decoratorComboBox.SelectedItem.ToString(); } }
+        public string DecoratorName => this.decoratorComboBox.SelectedItem.ToString();
 
         public AddDecoratorDlg()
         {

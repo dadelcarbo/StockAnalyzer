@@ -308,14 +308,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         #endregion
 
-        public string UserConfigFileName { get { return CONFIG_FILE_USER; } }
+        public string UserConfigFileName => CONFIG_FILE_USER;
 
         private static StockDictionary stockDictionary = null;
 
-        public override bool SupportsIntradayDownload
-        {
-            get { return Settings.Default.SupportIntraday; }
-        }
+        public override bool SupportsIntradayDownload => Settings.Default.SupportIntraday;
 
         static string defaultConfigFile = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
         public override void InitDictionary(StockDictionary dictionary, bool download)

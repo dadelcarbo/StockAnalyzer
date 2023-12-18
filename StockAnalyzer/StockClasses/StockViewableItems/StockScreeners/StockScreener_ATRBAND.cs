@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,24 +8,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockScreeners
 {
     public class StockScreener_ATRBAND : StockScreenerBase
     {
-        public override string Definition
-        {
-            get { return "Detect opportunities in stock higher than ATR BAND"; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType" }; }
-        }
-        public override object[] ParameterDefaultValues
-        {
-            get { return new object[] { 20, 10, 3.0f, -3.0f, "EMA" }; }
-        }
-        static List<string> emaTypes = new List<string>() { "EMA", "MA", "EA" };
-        public override ParamRange[] ParameterRanges
-        {
-            get
-            {
-                return new ParamRange[]
+        public override string Definition => "Detect opportunities in stock higher than ATR BAND";
+        public override string[] ParameterNames => new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType" };
+        public override object[] ParameterDefaultValues => new object[] { 20, 10, 3.0f, -3.0f, "EMA" };
+        static List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
+        public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
                 new ParamRangeInt(1, 500),
@@ -32,8 +20,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockScreeners
                 new ParamRangeFloat(-20.0f, 5.0f),
                 new ParamRangeMA()
                 };
-            }
-        }
 
         public override void ApplyTo(StockSerie stockSerie)
         {

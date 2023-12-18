@@ -8,9 +8,6 @@ namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
             return false;
         }
 
-        public string Suffix
-        {
-            get { return "BarUp"; }
-        }
+        public string Suffix => "BarUp";
     }
 }

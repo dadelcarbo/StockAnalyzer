@@ -78,8 +78,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                 return name;
             }
         }
-        public string ShortName { get { return this.GetType().Name.Split('_')[1]; } }
-        public int ParameterCount { get { return ParameterNames.Length; } }
+        public string ShortName => this.GetType().Name.Split('_')[1];
+        public int ParameterCount => ParameterNames.Length;
         abstract public string[] ParameterNames { get; }
 
 
@@ -106,12 +106,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         virtual public Object[] Parameters { get { return parameters; } protected set { parameters = value; } }
         abstract public ParamRange[] ParameterRanges { get; }
 
-        virtual public bool HasTrendLine { get { return false; } }
+        virtual public bool HasTrendLine => false;
 
-        public int SeriesCount
-        {
-            get { return SerieNames.Length; }
-        }
+        public int SeriesCount => SerieNames.Length;
         abstract public string[] SerieNames { get; }
 
         public void ParseInputParameters(string[] parameters)

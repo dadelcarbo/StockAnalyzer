@@ -9,29 +9,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_EMA3Lines()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "FastPeriod", "MediumPeriod", "SlowPeriod", "FastShift", "MediumShift", "SlowShift" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override string[] ParameterNames => new string[] { "FastPeriod", "MediumPeriod", "SlowPeriod", "FastShift", "MediumShift", "SlowShift" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 5, 8, 13, 3, 5, 8 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get
-            {
-                return new ParamRange[] {
+        public override Object[] ParameterDefaultValues => new Object[] { 5, 8, 13, 3, 5, 8 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] {
              new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500),
              new ParamRangeInt(0, 500), new ParamRangeInt(0, 500), new ParamRangeInt(0, 500)   };
-            }
-        }
-        public override string[] SerieNames { get { return new string[] { "EMA(" + this.Parameters[0].ToString() + ")", "EMA(" + this.Parameters[1].ToString() + ")", "EMA(" + this.Parameters[2].ToString() + ")" }; } }
+        public override string[] SerieNames => new string[] { "EMA(" + this.Parameters[0].ToString() + ")", "EMA(" + this.Parameters[1].ToString() + ")", "EMA(" + this.Parameters[2].ToString() + ")" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -70,14 +55,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "UpTrend", "DownTrend" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

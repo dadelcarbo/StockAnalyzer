@@ -67,8 +67,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockScreeners
                 return name;
             }
         }
-        public string ShortName { get { return this.GetType().Name.Split('_')[1]; } }
-        public int ParameterCount { get { return ParameterNames.Length; } }
+        public string ShortName => this.GetType().Name.Split('_')[1];
+        public int ParameterCount => ParameterNames.Length;
         abstract public string[] ParameterNames { get; }
 
 
@@ -186,7 +186,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockScreeners
             this.Match = new BoolSerie(count, "Match");
         }
 
-        public virtual bool RequiresVolumeData { get { return false; } }
+        public virtual bool RequiresVolumeData => false;
 
 
         public void Initialise(string[] parameters)

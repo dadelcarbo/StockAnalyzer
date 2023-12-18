@@ -10,39 +10,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
     public class StockDecorator_TARGET : StockDecoratorBase, IStockDecorator
     {
-        public override string Definition
-        {
-            get { return "Plots provide signal events based on oversold/overbought levels"; }
-        }
+        public override string Definition => "Plots provide signal events based on oversold/overbought levels";
 
         public StockDecorator_TARGET()
         {
         }
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.DecoratorPlot; }
-        }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.DecoratorPlot;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Overbought", "Oversold" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 75f, 25f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeFloat(0.0f, 1000.0f), new ParamRangeFloat(-1000.0f, 1000.0f) }; }
-        }
+        public override string[] ParameterNames => new string[] { "Overbought", "Oversold" };
+        public override Object[] ParameterDefaultValues => new Object[] { 75f, 25f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.0f, 1000.0f), new ParamRangeFloat(-1000.0f, 1000.0f) };
 
-        public override string[] SerieNames { get { return new string[] { "Data" }; } }
+        public override string[] SerieNames => new string[] { "Data" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -116,19 +98,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             "EndOverbought", "EndOversold"
         };
 
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[]
         {
             false, false,
             true, true,
             true, true
         };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

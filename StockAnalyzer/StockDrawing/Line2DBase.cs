@@ -13,13 +13,13 @@ namespace StockAnalyzer.StockDrawing
     }
     public abstract class Line2DBase : DrawingItem
     {
-        public bool IsHorizontal { get { return VY == 0.0f; } }
-        public bool IsVertical { get { return VX == 0.0f; } }
+        public bool IsHorizontal => VY == 0.0f;
+        public bool IsVertical => VX == 0.0f;
         public PointF Point1 { get; set; }
         public PointF Point2 { get; set; }
 
-        public float VX { get { return Point2.X - Point1.X; } }
-        public float VY { get { return Point2.Y - Point1.Y; } }
+        public float VX => Point2.X - Point1.X;
+        public float VY => Point2.Y - Point1.Y;
 
         public float a
         {

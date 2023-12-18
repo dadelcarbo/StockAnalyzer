@@ -10,25 +10,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_BBOSC()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "FastPeriod", "SlowPeriod", "NbUpDev", "NbDownDev", "MAType" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override string[] ParameterNames => new string[] { "FastPeriod", "SlowPeriod", "NbUpDev", "NbDownDev", "MAType" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20, 50, 2.0f, -2.0f, "MA" }; }
-        }
-        static List<string> emaTypes = new List<string>() { "EMA", "MA", "EA" };
-        public override ParamRange[] ParameterRanges
-        {
-            get
-            {
-                return new ParamRange[]
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 50, 2.0f, -2.0f, "MA" };
+        static List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
+        public override ParamRange[] ParameterRanges => new ParamRange[]
             {
                 new ParamRangeInt(1, 500),
                 new ParamRangeInt(1, 500),
@@ -36,10 +23,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 new ParamRangeFloat(-20.0f, 5.0f),
                 new ParamRangeMA()
             };
-            }
-        }
 
-        public override string[] SerieNames { get { return new string[] { "BBOSC", this.parameters[4] + "(" + (int)this.parameters[1] + ")", this.parameters[4] + "(" + (int)this.parameters[0] + ")" }; } }
+        public override string[] SerieNames => new string[] { "BBOSC", this.parameters[4] + "(" + (int)this.parameters[1] + ")", this.parameters[4] + "(" + (int)this.parameters[0] + ")" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -93,15 +78,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "DownBandOvershot", "UpBandOvershot", "BullRun", "BearRun" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
 
         private static readonly bool[] isEvent = new bool[] { true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

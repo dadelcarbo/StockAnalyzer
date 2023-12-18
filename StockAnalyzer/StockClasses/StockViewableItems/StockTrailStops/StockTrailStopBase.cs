@@ -21,12 +21,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         }
 
         public abstract IndicatorDisplayTarget DisplayTarget { get; }
-        public IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.TrailStop; }
-        }
-        public ViewableItemType Type { get { return ViewableItemType.TrailStop; } }
-        public virtual bool RequiresVolumeData { get { return false; } }
+        public IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.TrailStop;
+        public ViewableItemType Type => ViewableItemType.TrailStop;
+        public virtual bool RequiresVolumeData => false;
 
         public string ToThemeString()
         {
@@ -37,15 +34,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             }
             return themeString;
         }
-        public sealed override string[] SerieNames { get { return new string[] { $"{this.ShortName}.LS", $"{this.ShortName}.SS", "LongReentry", "ShortReentry" }; } }
+        public sealed override string[] SerieNames => new string[] { $"{this.ShortName}.LS", $"{this.ShortName}.SS", "LongReentry", "ShortReentry" };
 
         protected FloatSerie[] series;
-        public FloatSerie[] Series { get { return series; } }
+        public FloatSerie[] Series => series;
 
-        public string[] ExtraNames { get { return new string[] { "ReentryRange", "DistToReentry", "BarsInReentry" }; } }
+        public string[] ExtraNames => new string[] { "ReentryRange", "DistToReentry", "BarsInReentry" };
 
         protected FloatSerie[] extras;
-        public FloatSerie[] Extras { get { return extras; } }
+        public FloatSerie[] Extras => extras;
 
         public virtual System.Drawing.Pen[] SeriePens
         {
@@ -61,7 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             }
         }
         private bool[] serieVisibility;
-        public bool[] SerieVisibility { get { return this.serieVisibility; } }
+        public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
         {
@@ -87,10 +84,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             }
         }
 
-        public BoolSerie[] Events
-        {
-            get { return eventSeries; }
-        }
+        public BoolSerie[] Events => eventSeries;
         public BoolSerie GetEvents(string eventName)
         {
             int index = Array.IndexOf(this.EventNames, eventName);

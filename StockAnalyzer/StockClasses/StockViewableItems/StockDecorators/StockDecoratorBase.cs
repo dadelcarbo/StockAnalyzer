@@ -18,14 +18,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             for (int i = 0; i < this.EventCount; this.eventVisibility[i++] = true) ;
         }
         public abstract IndicatorDisplayTarget DisplayTarget { get; }
-        public virtual IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.DecoratorPlot; }
-        }
+        public virtual IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.DecoratorPlot;
 
-        public ViewableItemType Type { get { return ViewableItemType.Decorator; } }
+        public ViewableItemType Type => ViewableItemType.Decorator;
 
-        public virtual bool RequiresVolumeData { get { return false; } }
+        public virtual bool RequiresVolumeData => false;
 
         public string DecoratedItem { get; set; }
 
@@ -48,12 +45,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         }
 
         protected FloatSerie[] series;
-        public FloatSerie[] Series { get { return series; } }
+        public FloatSerie[] Series => series;
 
         abstract public Pen[] SeriePens { get; }
 
         private bool[] serieVisibility;
-        public bool[] SerieVisibility { get { return this.serieVisibility; } }
+        public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
         {
@@ -63,17 +60,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         abstract public void ApplyTo(StockSerie stockSerie);
 
         protected BoolSerie[] eventSeries;
-        public int EventCount
-        {
-            get { return EventNames.Length; }
-        }
+        public int EventCount => EventNames.Length;
 
         abstract public string[] EventNames { get; }
 
-        public BoolSerie[] Events
-        {
-            get { return eventSeries; }
-        }
+        public BoolSerie[] Events => eventSeries;
 
         virtual protected void CreateEventSeries(int count)
         {
@@ -87,7 +78,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
 
         private bool[] eventVisibility;
-        public bool[] EventVisibility { get { return this.eventVisibility; } }
+        public bool[] EventVisibility => this.eventVisibility;
 
         protected Pen[] eventPens = null;
         abstract public Pen[] EventPens { get; }

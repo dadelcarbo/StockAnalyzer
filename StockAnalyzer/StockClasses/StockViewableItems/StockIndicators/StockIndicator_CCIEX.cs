@@ -9,29 +9,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_CCIEX()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.RangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.RangedIndicator;
 
-        public override string Definition
-        {
-            get { return "CCIEX(int Period, int SmoothPeriod1, int SmoothPeriod2, float SigmoidFactor, float Overbought, float Oversold)"; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "SmoothPeriod1", "SmoothPeriod2", "SigmoidFactor", "Overbought", "Oversold" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 14, 1, 10, 0.0195f, 75f, -75f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 1f), new ParamRangeFloat(0f, 100f), new ParamRangeFloat(-100f, 0f) }; }
-        }
+        public override string Definition => "CCIEX(int Period, int SmoothPeriod1, int SmoothPeriod2, float SigmoidFactor, float Overbought, float Oversold)";
+        public override string[] ParameterNames => new string[] { "Period", "SmoothPeriod1", "SmoothPeriod2", "SigmoidFactor", "Overbought", "Oversold" };
+        public override Object[] ParameterDefaultValues => new Object[] { 14, 1, 10, 0.0195f, 75f, -75f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 1f), new ParamRangeFloat(0f, 100f), new ParamRangeFloat(-100f, 0f) };
 
-        public override string[] SerieNames { get { return new string[] { "CCIEX(" + this.Parameters[0].ToString() + ")", "Signal" }; } }
+        public override string[] SerieNames => new string[] { "CCIEX(" + this.Parameters[0].ToString() + ")", "Signal" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -81,24 +66,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BullishCrossing", "BearishCrossing", "Positive", "Negative" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
 
-        public float Max
-        {
-            get { return 100f; }
-        }
+        public float Max => 100f;
 
-        public float Min
-        {
-            get { return -100f; }
-        }
+        public float Min => -100f;
     }
 }

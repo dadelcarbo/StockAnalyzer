@@ -10,27 +10,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override bool RequiresVolumeData => false;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "ATRPeriod", "NbStartDev", "NbTrailDev" }; }
-        }
+        public override string[] ParameterNames => new string[] { "ATRPeriod", "NbStartDev", "NbTrailDev" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 10, 2f, 2f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get
-            {
-                return new ParamRange[]
+        public override Object[] ParameterDefaultValues => new Object[] { 10, 2f, 2f };
+        public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
                 new ParamRangeFloat(0.0f, 20.0f),
                 new ParamRangeFloat(0.0f, 20.0f),
                 };
-            }
-        }
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStop = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);

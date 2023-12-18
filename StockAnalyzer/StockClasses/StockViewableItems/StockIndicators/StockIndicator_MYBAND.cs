@@ -6,29 +6,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_MYBAND : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override string Definition
-        {
-            get { return "MYBAND(int Period, float NbUpDev, float NbDownDev)"; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "NbUpDev", "NbDownDev" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override string Definition => "MYBAND(int Period, float NbUpDev, float NbDownDev)";
+        public override string[] ParameterNames => new string[] { "Period", "NbUpDev", "NbDownDev" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20, 2.0f, -2.0f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(-5.0f, 20.0f), new ParamRangeFloat(-20.0f, 5.0f) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 2.0f, -2.0f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(-5.0f, 20.0f), new ParamRangeFloat(-20.0f, 5.0f) };
 
-        public override string[] SerieNames { get { return new string[] { "MYBANDUp", "MYBANDDown", "EMA" }; } }
+        public override string[] SerieNames => new string[] { "MYBANDUp", "MYBANDDown", "EMA" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -83,14 +68,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "BrokenUp", "BrokenDown" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

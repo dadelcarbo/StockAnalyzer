@@ -9,25 +9,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
     public class StockAutoDrawing_DRAWING : StockAutoDrawingBase
     {
         public override string Definition => "Generate event in case on manual drawing is broken up or down";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { }; }
-        }
+        public override string[] ParameterNames => new string[] { };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { };
 
         static string[] eventNames = null;
         public override string[] EventNames
@@ -40,10 +28,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         }
 
         static readonly bool[] isEvent = new bool[] { true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
 
         public override System.Drawing.Pen[] SeriePens => new Pen[] { };
 

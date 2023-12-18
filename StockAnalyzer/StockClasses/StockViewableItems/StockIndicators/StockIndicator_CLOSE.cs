@@ -10,23 +10,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_CLOSE()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { }; }
-        }
-        public override string[] SerieNames { get { return new string[] { "ACTUALCLOSE()" }; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override object[] ParameterDefaultValues => new Object[] { };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { };
+        public override string[] ParameterNames => new string[] { };
+        public override string[] SerieNames => new string[] { "ACTUALCLOSE()" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -66,14 +54,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

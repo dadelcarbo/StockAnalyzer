@@ -19,10 +19,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
     public class PalmaresViewModel : NotifyPropertyChangedBase
     {
-        static public Array Groups
-        {
-            get { return Enum.GetValues(typeof(StockSerie.Groups)); }
-        }
+        static public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
 
         private StockSerie.Groups group;
         public StockSerie.Groups Group

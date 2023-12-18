@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.CloudDlgs
 {
     public partial class AddCloudDlg : Form
     {
-        public string CloudName { get { return this.cloudComboBox.SelectedItem.ToString(); } }
+        public string CloudName => this.cloudComboBox.SelectedItem.ToString();
 
         public AddCloudDlg()
         {

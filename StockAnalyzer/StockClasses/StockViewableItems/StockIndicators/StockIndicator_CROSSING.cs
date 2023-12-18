@@ -9,25 +9,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_CROSSING()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
 
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { "EMAL(20)", "EMA(200)" }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeIndicator() }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "FastIndicator", "SlowIndicator" }; }
-        }
+        public override object[] ParameterDefaultValues => new Object[] { "EMAL(20)", "EMA(200)" };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeIndicator() };
+        public override string[] ParameterNames => new string[] { "FastIndicator", "SlowIndicator" };
 
-        public override string[] SerieNames { get { return new string[] { this.Parameters[0].ToString(), this.Parameters[1].ToString() }; } }
+        public override string[] SerieNames => new string[] { this.Parameters[0].ToString(), this.Parameters[1].ToString() };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -62,15 +50,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "BullishCrossing", "BearishCrossing", "Bullish", "Bearish" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
 
         static readonly bool[] isEvent = new bool[] { true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

@@ -9,20 +9,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override bool RequiresVolumeData => false;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType", "ReentryPeriod" }; }
-        }
+        public override string[] ParameterNames => new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType", "ReentryPeriod" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 30, 10, 2f, -2f, "EMA", 6 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get
-            {
-                return new ParamRange[]
+        public override Object[] ParameterDefaultValues => new Object[] { 30, 10, 2f, -2f, "EMA", 6 };
+        public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
                 new ParamRangeInt(1, 500),
@@ -31,8 +21,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 new ParamRangeMA(),
                 new ParamRangeInt(0, 500)
                 };
-            }
-        }
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

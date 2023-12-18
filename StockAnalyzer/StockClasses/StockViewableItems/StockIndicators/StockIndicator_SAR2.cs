@@ -9,37 +9,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_SAR2()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get
-            {
-                return IndicatorDisplayStyle.SupportResistance;
-            }
-        }
-        public override string Definition
-        {
-            get { return "SAR2(float step, float maximum, float ratio)"; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SupportResistance;
+        public override string Definition => "SAR2(float step, float maximum, float ratio)";
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Step", "Max", "Ratio" }; }
-        }
+        public override string[] ParameterNames => new string[] { "Step", "Max", "Ratio" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 0.02f, 0.2f, 5.0f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeFloat(0.0001f, 10.0f), new ParamRangeFloat(0.001f, 10.0f), new ParamRangeFloat(0.001f, 100.0f) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 0.02f, 0.2f, 5.0f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.0001f, 10.0f), new ParamRangeFloat(0.001f, 10.0f), new ParamRangeFloat(0.001f, 100.0f) };
 
-        public override string[] SerieNames { get { return new string[] { "SAR1.S", "SAR1.R", "SAR2.S", "SAR2.R" }; } }
+        public override string[] SerieNames => new string[] { "SAR1.S", "SAR1.R", "SAR2.S", "SAR2.R" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -86,14 +65,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "UpTrend1", "DownTrend1", "UpTrend2", "DownTrend2", "UpTrend1", "DownTrend1", "UpTrend2", "DownTrend2" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, false, false, false, false, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

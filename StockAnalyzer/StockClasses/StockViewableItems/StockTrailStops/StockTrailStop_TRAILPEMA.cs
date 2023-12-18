@@ -8,24 +8,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop from the previous extremum that is parallel to the EMA.";
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "InputSmoothing" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
+        public override string[] ParameterNames => new string[] { "Period", "InputSmoothing" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 30, 1 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 30, 1 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

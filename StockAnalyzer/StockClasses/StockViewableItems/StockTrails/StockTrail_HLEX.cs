@@ -10,41 +10,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
         public StockTrail_HLEX()
         {
         }
-        public override string Name
-        {
-            get { return "HLEX(" + this.Parameters[0].ToString() + ")"; }
-        }
+        public override string Name => "HLEX(" + this.Parameters[0].ToString() + ")";
 
-        public override string Definition
-        {
-            get { return "Draws a trail upon an indicator"; }
-        }
+        public override string Definition => "Draws a trail upon an indicator";
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.TrailCurve; }
-        }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.TrailCurve;
 
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 10 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
+        public override object[] ParameterDefaultValues => new Object[] { 10 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
+        public override string[] ParameterNames => new string[] { "Period" };
 
 
-        public override string[] SerieNames { get { return new string[] { "Trail" }; } }
+        public override string[] SerieNames => new string[] { "Trail" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -85,15 +64,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
             }
         }
         static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown", "TrailedUp", "TrailedDown" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }
 

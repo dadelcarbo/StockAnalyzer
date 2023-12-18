@@ -7,11 +7,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     {
         public override string Definition => base.Definition + Environment.NewLine + "Trail stop calculated when exceeding a treeshold from previous low percentage and selling when falling below the highest minus percentage";
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
         public override string[] ParameterNames => new string[] { "BuyThreshold", "SellThreshold" };
         public override Object[] ParameterDefaultValues => new Object[] { 0.15f, 0.15f };

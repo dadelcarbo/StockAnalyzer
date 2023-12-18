@@ -9,10 +9,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_RANK : StockIndicatorBase, IRange
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.RangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.RangedIndicator;
         public override string Definition => "Display the rank in its group based on the specified indicator.";
 
         public override object[] ParameterDefaultValues => new Object[] { "ROR(100)" };
@@ -39,15 +36,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        public float Max
-        {
-            get { return 1.0f; }
-        }
+        public float Max => 1.0f;
 
-        public float Min
-        {
-            get { return 0.0f; }
-        }
+        public float Min => 0.0f;
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -91,14 +82,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "Overbought", "Oversold", "Bullish", "Bearish" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

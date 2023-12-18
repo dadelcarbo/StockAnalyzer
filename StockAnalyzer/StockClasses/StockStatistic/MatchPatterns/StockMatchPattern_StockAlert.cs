@@ -14,9 +14,6 @@
             return stockSerie.MatchEvent(Alert, index);
         }
 
-        public string Suffix
-        {
-            get { return this.Alert.ToString(); }
-        }
+        public string Suffix => this.Alert.ToString();
     }
 }

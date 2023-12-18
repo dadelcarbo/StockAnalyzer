@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 {
     public partial class AddTrailStopDlg : Form
     {
-        public string TrailStopName { get { return this.trailStopComboBox.SelectedItem.ToString(); } }
+        public string TrailStopName => this.trailStopComboBox.SelectedItem.ToString();
 
         public AddTrailStopDlg()
         {

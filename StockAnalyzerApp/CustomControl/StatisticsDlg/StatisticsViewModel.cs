@@ -11,15 +11,9 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
 {
     public class StatisticsViewModel : NotifyPropertyChangedBase
     {
-        public static List<String> IndicatorTypes
-        {
-            get { return indicatorTypes; }
-        }
+        public static List<String> IndicatorTypes => indicatorTypes;
 
-        static public Array Groups
-        {
-            get { return Enum.GetValues(typeof(StockSerie.Groups)); }
-        }
+        static public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
 
         private StockSerie.Groups group;
         public StockSerie.Groups Group
@@ -34,10 +28,7 @@ namespace StockAnalyzerApp.CustomControl.StatisticsDlg
                 }
             }
         }
-        static public Array BarDurations
-        {
-            get { return Enum.GetValues(typeof(BarDuration)); }
-        }
+        static public Array BarDurations => Enum.GetValues(typeof(BarDuration));
 
         private StockBarDuration barDuration1;
         public StockBarDuration BarDuration { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; OnPropertyChanged("BarDuration"); } } }

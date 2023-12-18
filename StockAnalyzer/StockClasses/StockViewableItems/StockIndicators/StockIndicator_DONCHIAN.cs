@@ -6,24 +6,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_DONCHIAN : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 60 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override string[] ParameterNames => new string[] { "Period" };
+        public override Object[] ParameterDefaultValues => new Object[] { 60 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames { get { return new string[] { "DONCHIANUp", "DONCHIANMidUp", "DONCHIANMid", "DONCHIANMidDown", "DONCHIANDown" }; } }
+        public override string[] SerieNames => new string[] { "DONCHIANUp", "DONCHIANMidUp", "DONCHIANMid", "DONCHIANMidDown", "DONCHIANDown" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -145,10 +133,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             "TouchedDownMidUpLine", "TouchedDownMidLine", "TouchedDownMidLowLine", "TouchedDownLowLine",
             "TouchedUpUpLine",   "TouchedUpMidUpLine", "TouchedUpMidLine", "TouchedUpMidLowLine"
           };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[]
           {
             false, false, true, true,
@@ -158,9 +143,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             true, true, true, true,
             true, true, true, true
           };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

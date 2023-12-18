@@ -73,10 +73,7 @@ namespace StockAnalyzer.StockMath
         /// 
         /// <remarks><para>Magnitude of the complex number, which equals to <b>Sqrt( Re * Re + Im * Im )</b>.</para></remarks>
         /// 
-        public double Magnitude
-        {
-            get { return System.Math.Sqrt(Re * Re + Im * Im); }
-        }
+        public double Magnitude => System.Math.Sqrt(Re * Re + Im * Im);
 
         /// <summary>
         /// Phase value of the complex number.
@@ -84,18 +81,12 @@ namespace StockAnalyzer.StockMath
         /// 
         /// <remarks><para>Phase of the complex number, which equals to <b>Atan( Im / Re )</b>.</para></remarks>
         /// 
-        public double Phase
-        {
-            get { return System.Math.Atan2(Im, Re); }
-        }
+        public double Phase => System.Math.Atan2(Im, Re);
 
         /// <summary>
         /// Squared magnitude value of the complex number.
         /// </summary>
-        public double SquaredMagnitude
-        {
-            get { return (Re * Re + Im * Im); }
-        }
+        public double SquaredMagnitude => (Re * Re + Im * Im);
 
 
         /// <summary>

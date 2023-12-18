@@ -9,32 +9,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_BBMA()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period1", "Period2" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override string[] ParameterNames => new string[] { "Period1", "Period2" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20, 3 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get
-            {
-                return new ParamRange[]
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 3 };
+        public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
                 new ParamRangeInt(1, 500)
                 };
-            }
-        }
 
-        public override string[] SerieNames { get { return new string[] { "BBMAUp", "BBMADown", "EMA(" + (int)this.parameters[0] + ")" }; } }
+        public override string[] SerieNames => new string[] { "BBMAUp", "BBMADown", "EMA(" + (int)this.parameters[0] + ")" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -127,14 +112,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "NewHigh", "NewLow", "Bullish", "Bearish", "EndOfBull", "EndOfBear" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, false, false, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

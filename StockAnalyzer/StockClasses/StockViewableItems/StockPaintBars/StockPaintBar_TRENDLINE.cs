@@ -8,31 +8,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         public StockPaintBar_TRENDLINE()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override bool RequiresVolumeData { get { return false; } }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override bool RequiresVolumeData => false;
 
-        public override bool HasTrendLine { get { return true; } }
+        public override bool HasTrendLine => true;
 
-        public override string Definition
-        {
-            get { return "TRENDLINE(int leftStrength, int rightStrength, int nbPivots)"; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "LeftStrenth", "RightStrength", "NbPivots" }; }
-        }
+        public override string Definition => "TRENDLINE(int leftStrength, int rightStrength, int nbPivots)";
+        public override string[] ParameterNames => new string[] { "LeftStrenth", "RightStrength", "NbPivots" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 3, 3, 10 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 10), new ParamRangeInt(1, 10), new ParamRangeInt(2, 50) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 3, 3, 10 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 10), new ParamRangeInt(1, 10), new ParamRangeInt(2, 50) };
 
         static string[] eventNames = null;
         public override string[] EventNames
@@ -44,10 +29,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             }
         }
         static readonly bool[] isEvent = new bool[] { true, true, true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
 
         public override System.Drawing.Pen[] SeriePens
         {

@@ -6,25 +6,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_HIGHLOWDAYS : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
 
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 10 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
+        public override object[] ParameterDefaultValues => new Object[] { 10 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
+        public override string[] ParameterNames => new string[] { "Period" };
 
-        public override string[] SerieNames { get { return new string[] { }; } }
+        public override string[] SerieNames => new string[] { };
 
         public override Pen[] SeriePens
         {
@@ -62,15 +50,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "NewHighest", "NewLowest", "Highest", "Lowest" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }
 

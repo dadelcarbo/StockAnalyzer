@@ -12,21 +12,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public float Max => 1.0f;
         public float Min => 0.0f;
 
-        public override bool RequiresVolumeData { get { return false; } }
+        public override bool RequiresVolumeData => false;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "LongPeriod", "ShortPeriod" }; }
-        }
+        public override string[] ParameterNames => new string[] { "LongPeriod", "ShortPeriod" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 35, 3 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 35, 3 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[] { "VCP(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" };
 
         public override System.Drawing.Pen[] SeriePens
@@ -66,14 +57,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static readonly string[] eventNames = new string[] { };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

@@ -20,14 +20,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
             for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
         }
         public abstract IndicatorDisplayTarget DisplayTarget { get; }
-        public virtual IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.SimpleCurve; }
-        }
+        public virtual IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SimpleCurve;
 
-        public ViewableItemType Type { get { return ViewableItemType.Trail; } }
+        public ViewableItemType Type => ViewableItemType.Trail;
 
-        public virtual bool RequiresVolumeData { get { return false; } }
+        public virtual bool RequiresVolumeData => false;
 
         public string TrailedItem { get; set; }
 
@@ -46,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
         }
 
         private bool[] serieVisibility;
-        public bool[] SerieVisibility { get { return this.serieVisibility; } }
+        public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
         {
@@ -57,13 +54,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
 
 
         protected FloatSerie[] series;
-        public FloatSerie[] Series { get { return series; } }
+        public FloatSerie[] Series => series;
 
         abstract public Pen[] SeriePens { get; }
-        public virtual HLine[] HorizontalLines
-        {
-            get { return null; }
-        }
+        public virtual HLine[] HorizontalLines => null;
         #region IStockEvent implementation
         protected BoolSerie[] eventSeries;
         public int EventCount
@@ -84,10 +78,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
         abstract public string[] EventNames { get; }
         abstract public bool[] IsEvent { get; }
 
-        public BoolSerie[] Events
-        {
-            get { return eventSeries; }
-        }
+        public BoolSerie[] Events => eventSeries;
         public BoolSerie GetEvents(string eventName)
         {
             int index = Array.IndexOf(this.EventNames, eventName);

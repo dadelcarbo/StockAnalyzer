@@ -9,8 +9,8 @@ namespace StockAnalyzer.StockDrawing
         private float Epsilon = 0.001f;
         public PointF TopLeft { get; set; }
         public PointF BottomRight { get; set; }
-        public PointF TopRight { get { return new PointF(BottomRight.X, TopLeft.Y); } }
-        public PointF BottomLeft { get { return new PointF(TopLeft.X, BottomRight.Y); } }
+        public PointF TopRight => new PointF(BottomRight.X, TopLeft.Y);
+        public PointF BottomLeft => new PointF(TopLeft.X, BottomRight.Y);
         public bool Fill { get; set; }
 
         public Rectangle2D(System.Drawing.RectangleF rectF)
@@ -23,22 +23,10 @@ namespace StockAnalyzer.StockDrawing
             this.TopLeft = new PointF(Math.Min(p1.X, p2.X), Math.Min(p1.Y, p2.Y));
             this.BottomRight = new PointF(Math.Max(p1.X, p2.X), Math.Max(p1.Y, p2.Y));
         }
-        public float Left
-        {
-            get { return TopLeft.X; }
-        }
-        public float Right
-        {
-            get { return BottomRight.X; }
-        }
-        public float Top
-        {
-            get { return TopLeft.Y; }
-        }
-        public float Bottom
-        {
-            get { return BottomRight.Y; }
-        }
+        public float Left => TopLeft.X;
+        public float Right => BottomRight.X;
+        public float Top => TopLeft.Y;
+        public float Bottom => BottomRight.Y;
         public bool Contains(PointF point)
         {
             return (point.X >= (Left - Epsilon) && point.X <= (Right + Epsilon) && point.Y >= (Top - Epsilon) && point.Y <= (Bottom + Epsilon));

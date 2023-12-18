@@ -166,13 +166,7 @@ namespace StockAnalyzer.StockClasses
         // Returns:
         //     A System.Collections.Generic.SortedDictionary`2.ValueCollection containing the
         //     values in the System.Collections.Generic.SortedDictionary`2.
-        public IEnumerable<StockDailyValue> Values
-        {
-            get
-            {
-                return this.values.Take(size);
-            }
-        }
+        public IEnumerable<StockDailyValue> Values => this.values.Take(size);
         //
         // Summary:
         //     Gets a collection containing the keys in the System.Collections.Generic.SortedDictionary`2.
@@ -180,13 +174,7 @@ namespace StockAnalyzer.StockClasses
         // Returns:
         //     A System.Collections.Generic.SortedDictionary`2.KeyCollection containing the
         //     keys in the System.Collections.Generic.SortedDictionary`2.
-        public IEnumerable<DateTime> Keys
-        {
-            get
-            {
-                return this.keys.Take(size);
-            }
-        }
+        public IEnumerable<DateTime> Keys => this.keys.Take(size);
         //
         // Summary:
         //     Gets the number of key/value pairs contained in the System.Collections.Generic.SortedDictionary`2.

@@ -9,10 +9,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class PortfolioDataProvider : StockDataProviderBase
     {
-        public override bool SupportsIntradayDownload
-        {
-            get { return false; }
-        }
+        public override bool SupportsIntradayDownload => false;
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {

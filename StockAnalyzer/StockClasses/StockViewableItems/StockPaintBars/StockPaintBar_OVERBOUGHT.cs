@@ -10,32 +10,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         }
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Indicator", "Overbought", "Oversold" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { "RSI(3_1)", 80f, 20f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeFloat(-100f, 100f), new ParamRangeFloat(-100f, 100f) }; }
-        }
+        public override string[] ParameterNames => new string[] { "Indicator", "Overbought", "Oversold" };
+        public override Object[] ParameterDefaultValues => new Object[] { "RSI(3_1)", 80f, 20f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeFloat(-100f, 100f), new ParamRangeFloat(-100f, 100f) };
 
         static string[] eventNames = new string[] {
             "Overbought", "Oversold"
         };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] {
             false, false};
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
 
 
         public override System.Drawing.Pen[] SeriePens

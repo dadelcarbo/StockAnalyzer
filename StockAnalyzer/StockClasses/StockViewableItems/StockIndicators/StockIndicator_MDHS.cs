@@ -7,24 +7,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_MDHS : StockIndicatorBase
     {
         public override string Definition => "Display the highest, lowest and mid lines for the specified period of a EMA.";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "EMAPeriod" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20, 3 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override string[] ParameterNames => new string[] { "Period", "EMAPeriod" };
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 3 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames { get { return new string[] { "Highest", "Mid", "Lowest" }; } }
+        public override string[] SerieNames => new string[] { "Highest", "Mid", "Lowest" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -107,17 +95,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
           {
             "Uptrend", "DownTrend", "BrokenUp","BrokenDown"
           };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[]
           {
             false, false, true, true
           };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

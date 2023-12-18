@@ -45,9 +45,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] EventNames => eventNames;
 
         static readonly bool[] isEvent = new bool[] { true, true, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

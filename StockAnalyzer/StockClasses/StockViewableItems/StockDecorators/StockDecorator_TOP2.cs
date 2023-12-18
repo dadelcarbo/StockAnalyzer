@@ -7,35 +7,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
     public class StockDecorator_TOP2 : StockDecoratorBase, IStockDecorator
     {
-        public override string Definition
-        {
-            get { return "Plots exhaustion points and divergences after waiting for price confirmation"; }
-        }
+        public override string Definition => "Plots exhaustion points and divergences after waiting for price confirmation";
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.DecoratorPlot; }
-        }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.DecoratorPlot;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 3 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
+        public override string[] ParameterNames => new string[] { "Period" };
+        public override Object[] ParameterDefaultValues => new Object[] { 3 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames { get { return new string[] { }; } }
+        public override string[] SerieNames => new string[] { };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -99,15 +81,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         }
 
         static string[] eventNames = new string[] { "Top", "Bottom" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }
 

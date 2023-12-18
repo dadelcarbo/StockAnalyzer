@@ -8,28 +8,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_GR : StockIndicatorBase
     {
         public override string Name => "GR(" + ((DateTime)this.Parameters[0]).ToShortDateString() + ")";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
 
-        public override string Definition
-        {
-            get { return "Adjust close value reinvesting dividends"; }
-        }
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { new DateTime(2000, 01, 01) }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeDateTime(new DateTime(2000, 01, 01), DateTime.Today.AddDays(1)) }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "StartDate" }; }
-        }
-        public override string[] SerieNames { get { return new string[] { "GR" }; } }
+        public override string Definition => "Adjust close value reinvesting dividends";
+        public override object[] ParameterDefaultValues => new Object[] { new DateTime(2000, 01, 01) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeDateTime(new DateTime(2000, 01, 01), DateTime.Today.AddDays(1)) };
+        public override string[] ParameterNames => new string[] { "StartDate" };
+        public override string[] SerieNames => new string[] { "GR" };
 
         public override Pen[] SeriePens
         {
@@ -76,14 +61,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

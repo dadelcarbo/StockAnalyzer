@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 {
     public partial class AddPaintBarDlg : Form
     {
-        public string PaintBarName { get { return this.paintBarComboBox.SelectedItem.ToString(); } }
+        public string PaintBarName => this.paintBarComboBox.SelectedItem.ToString();
 
         public AddPaintBarDlg()
         {

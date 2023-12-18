@@ -7,27 +7,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_EXCHANGED : StockIndicatorBase
     {
         public override string Definition => "Calculate the exchanged volume money, Price*Volume in M€.";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override bool RequiresVolumeData { get { return true; } }
+        public override bool RequiresVolumeData => true;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "Threshold" }; }
-        }
+        public override string[] ParameterNames => new string[] { "Period", "Threshold" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 10, 0.5f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 100), new ParamRangeFloat(0.0f, 1000f) }; }
-        }
-        public override string[] SerieNames { get { return new string[] { "Exchanged M€" }; } }
+        public override Object[] ParameterDefaultValues => new Object[] { 10, 0.5f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 100), new ParamRangeFloat(0.0f, 1000f) };
+        public override string[] SerieNames => new string[] { "Exchanged M€" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -56,14 +44,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static readonly string[] eventNames = new string[] { "HasLiquidity" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

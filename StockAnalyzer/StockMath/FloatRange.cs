@@ -66,10 +66,7 @@ namespace StockAnalyzer.StockMath
         /// <summary>
         /// Length of the range (deffirence between maximum and minimum values).
         /// </summary>
-        public float Length
-        {
-            get { return max - min; }
-        }
+        public float Length => max - min;
 
 
         /// <summary>

@@ -46,9 +46,6 @@ namespace StockAnalyzer.StockMath
         }
 
 
-        public int Count
-        {
-            get { return this.Values.Count(); }
-        }
+        public int Count => this.Values.Count();
     }
 }

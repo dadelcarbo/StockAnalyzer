@@ -6,24 +6,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
     public class StockCloud_TRENDBODY2 : StockCloudBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "UpPeriod", "DownPeriod" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override string[] ParameterNames => new string[] { "UpPeriod", "DownPeriod" };
         public override string Definition => "Paint cloud based on HL with different up and down periods";
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 50, 25 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 50, 25 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override Pen[] SeriePens
         {
             get
@@ -32,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 return seriePens;
             }
         }
-        public override string[] SerieNames { get { return new string[] { "Bull", "Bear", "Mid" }; } }
+        public override string[] SerieNames => new string[] { "Bull", "Bear", "Mid" };
         public override void ApplyTo(StockSerie stockSerie)
         {
             var upPeriod = (int)this.parameters[0];

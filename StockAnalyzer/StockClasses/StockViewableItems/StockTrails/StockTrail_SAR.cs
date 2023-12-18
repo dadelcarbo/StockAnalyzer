@@ -7,36 +7,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
 {
     public class StockTrail_SAR : StockTrailBase, IStockTrail
     {
-        public override string Definition
-        {
-            get { return "Draws a trail upon an indicator using SAR method"; }
-        }
+        public override string Definition => "Draws a trail upon an indicator using SAR method";
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.TrailCurve; }
-        }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.TrailCurve;
 
-        public override object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 0.01f, 0.01f }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeFloat(0.0f, 0.1f), new ParamRangeFloat(0.0f, 0.1f) }; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Start", "Step" }; }
-        }
+        public override object[] ParameterDefaultValues => new Object[] { 0.01f, 0.01f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0.0f, 0.1f), new ParamRangeFloat(0.0f, 0.1f) };
+        public override string[] ParameterNames => new string[] { "Start", "Step" };
 
 
-        public override string[] SerieNames { get { return new string[] { "TrailSAR" }; } }
+        public override string[] SerieNames => new string[] { "TrailSAR" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -77,15 +59,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
             }
         }
         static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown", "TrailedUp", "TrailedDown" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }
 

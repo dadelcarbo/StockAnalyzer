@@ -19,11 +19,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         abstract public IndicatorDisplayTarget DisplayTarget { get; }
 
-        public ViewableItemType Type { get { return ViewableItemType.Indicator; } }
+        public ViewableItemType Type => ViewableItemType.Indicator;
 
-        public virtual IndicatorDisplayStyle DisplayStyle { get { return IndicatorDisplayStyle.SimpleCurve; } }
+        public virtual IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SimpleCurve;
 
-        public virtual bool RequiresVolumeData { get { return false; } }
+        public virtual bool RequiresVolumeData => false;
 
         public string ToThemeString()
         {
@@ -36,16 +36,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         protected FloatSerie[] series;
-        public FloatSerie[] Series { get { return series; } }
+        public FloatSerie[] Series => series;
 
         abstract public Pen[] SeriePens { get; }
-        public virtual HLine[] HorizontalLines
-        {
-            get { return null; }
-        }
+        public virtual HLine[] HorizontalLines => null;
 
         private bool[] serieVisibility;
-        public bool[] SerieVisibility { get { return this.serieVisibility; } }
+        public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
         {
@@ -74,10 +71,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         abstract public string[] EventNames { get; }
         abstract public bool[] IsEvent { get; }
 
-        public BoolSerie[] Events
-        {
-            get { return eventSeries; }
-        }
+        public BoolSerie[] Events => eventSeries;
         public BoolSerie GetEvents(string eventName)
         {
             int index = Array.IndexOf(this.EventNames, eventName);

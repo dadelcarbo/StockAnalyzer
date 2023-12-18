@@ -48,19 +48,13 @@ namespace StockAnalyzer.StockMath
         /// Values of the histogram.
         /// </summary>
         /// 
-        public int[] Values
-        {
-            get { return values; }
-        }
+        public int[] Values => values;
 
         /// <summary>
         /// Range of random values.
         /// </summary>
         /// 
-        public FloatRange Range
-        {
-            get { return range; }
-        }
+        public FloatRange Range => range;
 
         /// <summary>
         /// Mean value.
@@ -78,10 +72,7 @@ namespace StockAnalyzer.StockMath
         /// </code>
         /// </remarks>
         /// 
-        public float Mean
-        {
-            get { return mean; }
-        }
+        public float Mean => mean;
 
         /// <summary>
         /// Standard deviation.
@@ -99,10 +90,7 @@ namespace StockAnalyzer.StockMath
         /// </code>
         /// </remarks>
         /// 
-        public float StdDev
-        {
-            get { return stdDev; }
-        }
+        public float StdDev => stdDev;
 
         /// <summary>
         /// Median value.
@@ -120,10 +108,7 @@ namespace StockAnalyzer.StockMath
         /// </code>
         /// </remarks>
         /// 
-        public float Median
-        {
-            get { return median; }
-        }
+        public float Median => median;
 
         /// <summary>
         /// Minimum value.
@@ -141,10 +126,7 @@ namespace StockAnalyzer.StockMath
         /// System.Diagnostics.Debug.WriteLine( "min = " + histogram.Min.ToString( "F3" ) );
         /// </code>
         /// </remarks>
-        public float Min
-        {
-            get { return min; }
-        }
+        public float Min => min;
 
         /// <summary>
         /// Maximum value.
@@ -163,10 +145,7 @@ namespace StockAnalyzer.StockMath
         /// </code>
         /// </remarks>
         /// 
-        public float Max
-        {
-            get { return max; }
-        }
+        public float Max => max;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Histogram"/> class.

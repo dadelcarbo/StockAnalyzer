@@ -10,39 +10,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 {
     public class StockDecorator_SIGNAL : StockDecoratorBase, IStockDecorator
     {
-        public override string Definition
-        {
-            get { return "Plots signal line and plots crossings"; }
-        }
+        public override string Definition => "Plots signal line and plots crossings";
 
         public StockDecorator_SIGNAL()
         {
         }
 
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.DecoratorPlot; }
-        }
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.DecoratorPlot;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Smoothing" }; }
-        }
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 6 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500) }; }
-        }
+        public override string[] ParameterNames => new string[] { "Smoothing" };
+        public override Object[] ParameterDefaultValues => new Object[] { 6 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames { get { return new string[] { $"Signal({(int)this.parameters[0]})" }; } }
+        public override string[] SerieNames => new string[] { $"Signal({(int)this.parameters[0]})" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -120,18 +102,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             "CrossAbove"
         };
 
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[]
         {
             false, false,
             true, true,
         };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

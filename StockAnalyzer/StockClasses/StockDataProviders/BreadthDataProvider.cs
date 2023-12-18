@@ -147,9 +147,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             return true;
         }
-        public override bool SupportsIntradayDownload
-        {
-            get { return false; }
-        }
+        public override bool SupportsIntradayDownload => false;
     }
 }

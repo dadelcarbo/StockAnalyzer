@@ -22,9 +22,6 @@ namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
             return ror[index] > Trigger;
         }
 
-        public string Suffix
-        {
-            get { return "ROR(" + lookback + ")"; }
-        }
+        public string Suffix => "ROR(" + lookback + ")";
     }
 }

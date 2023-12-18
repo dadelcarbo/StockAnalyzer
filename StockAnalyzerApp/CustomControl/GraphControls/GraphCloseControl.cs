@@ -58,7 +58,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected bool ShowCommentMarquee => Settings.Default.ShowCommentMarquee;
         protected bool ShowDividend => Settings.Default.ShowDividend;
 
-        protected AgendaEntryType ShowAgenda { get { return (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), Settings.Default.ShowAgenda); } }
+        protected AgendaEntryType ShowAgenda => (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), Settings.Default.ShowAgenda);
         protected bool ShowIndicatorDiv => Settings.Default.ShowIndicatorDiv;
         protected bool ShowIndicatorText => Settings.Default.ShowIndicatorText;
 

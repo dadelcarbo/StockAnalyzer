@@ -6,35 +6,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_BBWIDTH : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Period", "MAType" }; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
+        public override string[] ParameterNames => new string[] { "Period", "MAType" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 20, "MA" }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get
-            {
-                return new ParamRange[]
+        public override Object[] ParameterDefaultValues => new Object[] { 20, "MA" };
+        public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
                 new ParamRangeMA()
                 };
-            }
-        }
 
-        public override string[] SerieNames
-        {
-            get { return new string[] { "BBWIDTH" }; }
-        }
+        public override string[] SerieNames => new string[] { "BBWIDTH" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -79,14 +61,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

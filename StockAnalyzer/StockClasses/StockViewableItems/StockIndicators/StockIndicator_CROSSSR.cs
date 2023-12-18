@@ -9,30 +9,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public StockIndicator_CROSSSR()
         {
         }
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
-        public override IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.SupportResistance; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SupportResistance;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "Indicator", "Smoothing" }; }
-        }
+        public override string[] ParameterNames => new string[] { "Indicator", "Smoothing" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { "STOKS(30_3_3)", 3 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(1, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { "STOKS(30_3_3)", 3 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames { get { return new string[] { "CROSS.S", "CROSS.R" }; } }
+        public override string[] SerieNames => new string[] { "CROSS.S", "CROSS.R" };
 
         public override System.Drawing.Pen[] SeriePens
         {
@@ -191,14 +176,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             "ResistanceBroken", "SupportBroken",
             "Bullish", "Bearish",
             "HigherHigh", "LowerLow" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

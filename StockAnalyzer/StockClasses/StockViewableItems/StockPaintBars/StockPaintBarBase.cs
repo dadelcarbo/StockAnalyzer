@@ -15,13 +15,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
         }
         public abstract IndicatorDisplayTarget DisplayTarget { get; }
-        public IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.PaintBar; }
-        }
-        public ViewableItemType Type { get { return ViewableItemType.PaintBar; } }
+        public IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.PaintBar;
+        public ViewableItemType Type => ViewableItemType.PaintBar;
 
-        public virtual bool RequiresVolumeData { get { return false; } }
+        public virtual bool RequiresVolumeData => false;
 
         public string ToThemeString()
         {
@@ -36,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         abstract public Pen[] SeriePens { get; }
 
         private bool[] serieVisibility;
-        public bool[] SerieVisibility { get { return this.serieVisibility; } }
+        public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
         {
@@ -63,13 +60,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         }
 
         public abstract string[] EventNames { get; }
-        public override string[] SerieNames { get { return EventNames; } }
+        public override string[] SerieNames => EventNames;
         abstract public bool[] IsEvent { get; }
 
-        public BoolSerie[] Events
-        {
-            get { return eventSeries; }
-        }
+        public BoolSerie[] Events => eventSeries;
         public BoolSerie GetEvents(string eventName)
         {
             int index = Array.IndexOf(this.EventNames, eventName);

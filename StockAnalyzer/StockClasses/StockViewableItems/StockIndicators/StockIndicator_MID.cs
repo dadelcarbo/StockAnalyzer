@@ -5,10 +5,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_MID : StockIndicatorMovingAvgBase
     {
-        public override string Definition
-        {
-            get { return "Calculates the mid point from High and Low over the given period, it can be used as a moving average"; }
-        }
+        public override string Definition => "Calculates the mid point from High and Low over the given period, it can be used as a moving average";
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];

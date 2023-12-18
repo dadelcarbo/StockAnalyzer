@@ -7,10 +7,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_GUPPY : StockIndicatorBase
     {
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.PriceIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] {
                 "FastPeriod1", "FastPeriod2", "FastPeriod3", "FastPeriod4", "FastPeriod5", "FastPeriod6",
                 "SlowPeriod1", "SlowPeriod2", "SlowPeriod3", "SlowPeriod4", "SlowPeriod5", "SlowPeriod6"
@@ -65,14 +62,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static string[] eventNames = new string[] { "BullStart", "BearStart", "BullCrossing", "BearCrossing" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, true, true };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

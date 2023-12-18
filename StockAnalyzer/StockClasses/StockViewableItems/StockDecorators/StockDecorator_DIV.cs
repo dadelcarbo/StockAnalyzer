@@ -272,15 +272,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         }
 
         static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence", "ExhaustionTopOccured", "ExhaustionBottomOccured", "Positive", "Negative", "Bullish", "Bearish" };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, true, true, false, false, false, false, false, false };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }
 /*

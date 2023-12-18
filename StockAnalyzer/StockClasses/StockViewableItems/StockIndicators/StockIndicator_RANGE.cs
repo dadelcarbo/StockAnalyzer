@@ -8,26 +8,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_RANGE : StockIndicatorBase
     {
         public override string Definition => $"Calculate a long term and short range, it's usefull to find volatility contraction.";
-        public override IndicatorDisplayTarget DisplayTarget
-        {
-            get { return IndicatorDisplayTarget.NonRangedIndicator; }
-        }
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override bool RequiresVolumeData { get { return false; } }
+        public override bool RequiresVolumeData => false;
 
-        public override string[] ParameterNames
-        {
-            get { return new string[] { "LongPeriod", "ShortPeriod" }; }
-        }
+        public override string[] ParameterNames => new string[] { "LongPeriod", "ShortPeriod" };
 
-        public override Object[] ParameterDefaultValues
-        {
-            get { return new Object[] { 35, 12 }; }
-        }
-        public override ParamRange[] ParameterRanges
-        {
-            get { return new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) }; }
-        }
+        public override Object[] ParameterDefaultValues => new Object[] { 35, 12 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[] { $"RANGE1({Parameters[0]})", $"RANGE2({Parameters[1]})" };
 
         public override System.Drawing.Pen[] SeriePens
@@ -69,14 +57,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
 
         static readonly string[] eventNames = new string[] { };
-        public override string[] EventNames
-        {
-            get { return eventNames; }
-        }
+        public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { };
-        public override bool[] IsEvent
-        {
-            get { return isEvent; }
-        }
+        public override bool[] IsEvent => isEvent;
     }
 }

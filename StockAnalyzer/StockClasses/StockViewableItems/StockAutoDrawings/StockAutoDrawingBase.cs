@@ -21,12 +21,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         }
 
         public abstract IndicatorDisplayTarget DisplayTarget { get; }
-        public IndicatorDisplayStyle DisplayStyle
-        {
-            get { return IndicatorDisplayStyle.AutoDrawing; }
-        }
-        public ViewableItemType Type { get { return ViewableItemType.AutoDrawing; } }
-        public virtual bool RequiresVolumeData { get { return false; } }
+        public IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.AutoDrawing;
+        public ViewableItemType Type => ViewableItemType.AutoDrawing;
+        public virtual bool RequiresVolumeData => false;
 
         public string ToThemeString()
         {
@@ -41,13 +38,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public StockDrawingItems DrawingItems { get; private set; }
 
         protected FloatSerie[] series;
-        public FloatSerie[] Series { get { return series; } }
+        public FloatSerie[] Series => series;
         public override string[] SerieNames => new string[] { };
 
         public virtual System.Drawing.Pen[] SeriePens => new Pen[] { };
 
         private bool[] serieVisibility;
-        public bool[] SerieVisibility { get { return this.serieVisibility; } }
+        public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
         {
@@ -77,10 +74,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public abstract string[] EventNames { get; }
         abstract public bool[] IsEvent { get; }
 
-        public BoolSerie[] Events
-        {
-            get { return eventSeries; }
-        }
+        public BoolSerie[] Events => eventSeries;
         virtual protected void CreateEventSeries(int count)
         {
             for (int i = 0; i < this.EventCount; i++)

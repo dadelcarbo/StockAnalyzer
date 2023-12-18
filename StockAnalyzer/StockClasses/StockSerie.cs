@@ -157,8 +157,8 @@ namespace StockAnalyzer.StockClasses
         #endregion
 
         public bool IsPortfolioSerie { get; set; }
-        public int LastIndex { get { return this.ValueArray.Length - 1; } }
-        public int LastCompleteIndex { get { return this.ValueArray.Last().IsComplete ? this.Count - 1 : this.Count - 2; } }
+        public int LastIndex => this.ValueArray.Length - 1;
+        public int LastCompleteIndex => this.ValueArray.Last().IsComplete ? this.Count - 1 : this.Count - 2;
 
         public StockSerie SecondarySerie { get; set; }
         public StockDailyValue LastValue { get; private set; }

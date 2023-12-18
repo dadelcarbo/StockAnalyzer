@@ -477,8 +477,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DURATIONEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GUPPY.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFMA3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MID.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOWEST.cs" />
@@ -498,7 +496,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CLOSE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_OVERBOUGHTSR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_CROSSSR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MTFTRAILHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HLAVG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHEST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROR.cs" />
@@ -517,7 +514,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SARHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MYBAND.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_KeltnerBand.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADXDIFF.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANK.cs" />

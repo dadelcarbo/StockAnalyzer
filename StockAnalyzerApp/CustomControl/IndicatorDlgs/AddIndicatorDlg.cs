@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 {
     public partial class AddIndicatorDlg : Form
     {
-        public string IndicatorName { get { return this.indicatorComboBox.SelectedItem.ToString(); } }
+        public string IndicatorName => this.indicatorComboBox.SelectedItem.ToString();
 
         public AddIndicatorDlg(bool priceIndicator)
         {
