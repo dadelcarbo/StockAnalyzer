@@ -94,7 +94,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
 
         public float EntryCost => EntryQty * EntryValue + Fee;
-        public float Fee => (EntryQty * EntryValue) < 1000f ? 2.5f : 5.0f;
+        public float Fee => Math.Max(2f, EntryQty * EntryValue * 0.0008f);
+
         public float StopValue
         {
             get => stopValue;

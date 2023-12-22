@@ -64,7 +64,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public DateTime? ExitDate => position.ExitDate;
         public float? ExitValue => position.ExitValue;
 
-        public float? Return => ExitValue == null ? null : (ExitValue - EntryValue) / ExitValue;
+        public float? Return => ExitValue == null ? null : (ExitValue - EntryValue) / EntryValue;
         public float? RiskRewardRatio
         {
             get
