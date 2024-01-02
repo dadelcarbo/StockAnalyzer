@@ -101,8 +101,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         const string DOWNLOAD_ISIN_BODY =
-            "dateFrom=$START_DATE&" +
-            "dateTo=$END_DATE&" +
+            "dateFrom=$START_DATE&__Invariant=dateFrom&" +
+            "dateTo=$END_DATE&__Invariant=dateTo&" +
             "cbox=oneSico&" +
             "txtOneSico=$ISIN&" +
             "sFormat=x&" +
@@ -319,7 +319,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             CreateDirectories();
 
-            stockDictionary = dictionary; // Save dictionary for future use in daily download
+            stockDictionary = dictionary;
 
             // Init From LBL file
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_A);
@@ -617,7 +617,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             bool res = false;
             StockLog.Write("Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName + " - " + stockSerie.Count);
 
-            // Read from save CSV files Archive + current year.
+            // Read from CSV files Archive + current year.
             if (stockSerie.Count == 0)
             {
                 res = this.LoadFromCSV(stockSerie);
@@ -892,7 +892,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         DateTime lastLoadedCAC40Date = new DateTime(LOAD_START_YEAR, 1, 1);
         DateTime lastDownloadedCAC40Date;
-        bool happyNewYear = false;
+        bool happyNewMonth = false;
 
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
@@ -960,7 +960,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             lastDownloadedCAC40Date = stockSerie.Keys.Last();
                             this.needDownload = lastDownloadedCAC40Date > lastLoadedCAC40Date;
-                            happyNewYear = lastDownloadedCAC40Date.Year != lastLoadedCAC40Date.Year;
+                            happyNewMonth = lastDownloadedCAC40Date.Month != DateTime.Today.Month;
                             if (needDownload)
                             {
                                 var startDate = lastLoadedCAC40Date.AddDays(1);
@@ -984,7 +984,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             }
                         }
 
-                        this.SaveToCSV(stockSerie, happyNewYear);
+                        this.SaveToCSV(stockSerie, happyNewMonth);
 
                         File.Delete(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
                     }
@@ -994,7 +994,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             lastDownloadedCAC40Date = stockSerie.Keys.Last();
                             this.needDownload = false;
-                            happyNewYear = false;
+                            happyNewMonth = false;
                         }
                     }
                 }
@@ -1513,7 +1513,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
             var pivotDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddDays(-1);
-            if (forceArchive || happyNewYear || !File.Exists(fileName))
+            if (forceArchive || happyNewMonth || !File.Exists(fileName))
             {
                 using (StreamWriter sw = new StreamWriter(fileName))
                 {

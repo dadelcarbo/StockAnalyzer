@@ -4,13 +4,10 @@ using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_VCP : StockIndicatorBase, IRange
+    public class StockIndicator_VCP : StockIndicatorBase
     {
         public override string Definition => $"Calculate the ratio between a long term and short range, it's usefull to find volatility contraction.";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.RangedIndicator;
-
-        public float Max => 1.0f;
-        public float Min => 0.0f;
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
         public override bool RequiresVolumeData => false;
 
@@ -38,6 +35,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
+            var rorSerie = stockSerie.GetIndicator($"ROR({longPeriod})").Series[0];
+
             FloatSerie vcpSerie = new FloatSerie(stockSerie.Count);
             for (int i = longPeriod; i < stockSerie.Count; i++)
             {
@@ -46,7 +45,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 var shortRangeHigh = highSerie.GetMax(i - shortPeriod + 1, i);
                 var shortRangeLow = lowSerie.GetMin(i - shortPeriod + 1, i);
 
-                vcpSerie[i] = (shortRangeHigh - shortRangeLow) / (longRangeHigh - longRangeLow);
+                //vcpSerie[i] = (longRangeHigh - longRangeLow) / (shortRangeHigh - shortRangeLow);
+                vcpSerie[i] = rorSerie[i] / (shortRangeHigh - shortRangeLow);
             }
 
             this.Series[0] = vcpSerie;

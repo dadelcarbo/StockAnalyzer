@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
     public class PalmaresLine
     {
-        public string Sector { get; set; }
+        //public string Sector { get; set; }
         public string Group { get; set; }
         public string Symbol { get; set; }
         public string Name { get; set; }
