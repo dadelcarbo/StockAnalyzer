@@ -657,7 +657,6 @@
     <Compile Include="StockMath\FloatRandom.cs" />
     <Compile Include="StockMath\FloatRange.cs" />
     <Compile Include="StockMath\FloatSerie.cs" />
-    <Compile Include="StockMath\Histogram.cs" />
     <Compile Include="StockMath\StockMathToolkit.cs" />
     <Compile Include="StockPortfolio\StockOperation.cs" />
     <Compile Include="StockPortfolio\StockPortfolio.cs" />

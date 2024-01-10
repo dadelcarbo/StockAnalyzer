@@ -246,6 +246,53 @@ namespace StockAnalyzer.StockMath
             }
             return (float)Math.Sqrt(sum / (endIndex - startIndex));
         }
+
+        public class HistogramBucket
+        {
+            public int Index { get; set; }
+            public float Value { get; set; }
+            public int Count { get; set; }
+            public float Y { get; set; }
+        }
+        public List<HistogramBucket> Histogram(float width)
+        {
+            return Histogram(this.Values, width);
+        }
+
+        public static List<HistogramBucket> Histogram(float[] values, float width)
+        {
+            var buckets = values.GroupBy(i => (int)Math.Round(i / width)).OrderBy(g => g.Key).Select(g => new HistogramBucket { Index = g.Key, Value = g.Key * width, Count = g.Count() }).ToList();
+            //int previousIndex = buckets.First().Index;
+            //var missingIndexes = new List<int>();
+            //foreach (var bucket in buckets.Skip(1))
+            //{
+            //    while (previousIndex + 1 < bucket.Index)
+            //    {
+            //        missingIndexes.Add(++previousIndex);
+            //    }
+            //    previousIndex = bucket.Index;
+            //}
+            //buckets.AddRange(missingIndexes.Select(i => new HistogramBucket { Index = i, Value = i * width }));
+            //buckets.Sort((x, y) => x.Index.CompareTo(y.Index));
+
+            return buckets;
+        }
+
+        public float CalculateStdev()
+        {
+            return CalculateStdev(this.Values);
+        }
+        static public float CalculateStdev(float[] sequence)
+        {
+            float result = 0;
+            if (sequence != null && sequence.Length > 0)
+            {
+                float average = sequence.Average();
+                float sum = sequence.Sum(d => (d - average) * (d - average));
+                result = (float)Math.Sqrt(sum / sequence.Count());
+            }
+            return result;
+        }
         #endregion
 
         public float[] Values { get; set; }

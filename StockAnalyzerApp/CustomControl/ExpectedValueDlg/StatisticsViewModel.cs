@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Telerik.Windows.Controls.ChartView;
+using static StockAnalyzer.StockMath.FloatSerie;
 
 namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
 {
@@ -88,10 +90,12 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
         private ObservableCollection<StatisticsResult> results;
         public ObservableCollection<StatisticsResult> Results { get { return results; } set { if (value != results) { results = value; OnPropertyChanged("Results"); } } }
         public ObservableCollection<StatisticsResult> SummaryResults { get; set; }
+        public List<HistogramBucket> Histogram { get; private set; }
+        public List<HistogramBucket> Histogram2 { get; private set; }
 
-        public StatisticsViewModel(string indicator, string eventName, int lookbackPeriod)
+        public StatisticsViewModel(string indicator, string eventName)
         {
-            this.IndicatorType = "PaintBar";
+            this.IndicatorType = "Indicator";
             Indicator = indicator;
             this.Event = eventName;
             this.Results = new ObservableCollection<StatisticsResult>();
@@ -106,74 +110,34 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             this.SummaryResults.Clear();
             this.Results.Clear();
 
+            var variations = new List<float>();
+
             foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)))
             {
-                if (!stockSerie.Initialise()) return false;
-                var results = new List<float[]>();
-
-                stockSerie.BarDuration = new StockBarDuration(this.barDuration, this.smoothing);
-
-                IStockEvent stockEvent = StockViewableItemsManager.GetViewableItem(this.indicatorType.ToUpper() + "|" + this.Indicator, stockSerie) as IStockEvent;
-
+                if (!stockSerie.Initialise())
+                    return false;
                 FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-
-                for (int i = 0; i < stockSerie.Count - NbBars; i++)
-                {
-                    if (stockEvent.Events[eventIndex][i])
-                    {
-                        // Event detected
-                        var eventValue = closeSerie[i];
-                        var eventStat = new float[this.nbBars];
-                        for (int j = 0; j < NbBars; j++)
-                        {
-                            eventStat[j] = (closeSerie[i + j + 1] - eventValue) / eventValue;
-                        }
-                        results.Add(eventStat);
-                    }
-                }
-                if (results.Count == 0)
-                    continue;
-                for (int i = 0; i < nbBars; i++)
-                {
-                    float avg = 0;
-                    float max = float.MinValue;
-                    float min = float.MaxValue;
-                    for (int j = 0; j < results.Count; j++)
-                    {
-                        var val = results[j][i];
-                        avg += val;
-                        max = Math.Max(max, val);
-                        min = Math.Min(min, val);
-                    }
-                    this.Results.Add(new StatisticsResult()
-                    {
-                        Name = stockSerie.StockName,
-                        NbEvents = results.Count,
-                        Index = i,
-                        ExpectedValue = avg / results.Count,
-                        MaxReturnValue = max,
-                        MinReturnValue = min
-                    });
-                }
+                variations.AddRange(stockSerie.GetSerie(StockDataType.VARIATION));
             }
-            int nbEvents = this.Results.Where(r => r.Index == 0).Sum(r => r.NbEvents);
-            if (nbEvents > 0)
+
+            var varSerie = new FloatSerie(variations);
+            this.Histogram = varSerie.Histogram(0.001f);
+            var mean = varSerie.Average();
+            var stdev = varSerie.CalculateStdev();
+
+            var k = 1 / (stdev * Math.Sqrt(2 * Math.PI));
+            var scale = (float)k / this.Histogram.Max(h => h.Count);
+            var max = this.Histogram.Max(h => h.Count);
+
+            foreach (var item in Histogram)
             {
-                for (int i = 0; i < nbBars; i++)
-                {
-                    var indexResults = this.Results.Where(r => r.Index == i).ToList();
-
-                    this.SummaryResults.Add(new StatisticsResult()
-                    {
-                        Name = "Summary",
-                        NbEvents = nbEvents,
-                        Index = i + 1,
-                        ExpectedValue = indexResults.Sum(r => r.ExpectedValue * r.NbEvents) / nbEvents,
-                        MaxReturnValue = indexResults.Max(r => r.MaxReturnValue),
-                        MinReturnValue = indexResults.Min(r => r.MinReturnValue)
-                    });
-                }
+                item.Y = item.Count * scale;
             }
+            this.Histogram2 = this.Histogram.Select(h => new HistogramBucket { Y = (float)(k * Math.Exp(-0.5 * (Math.Pow((h.Value - mean) / stdev, 2)))), Value = h.Value }).ToList();
+
+            OnPropertyChanged("Histogram");
+            OnPropertyChanged("Histogram2");
+
             return true;
         }
 

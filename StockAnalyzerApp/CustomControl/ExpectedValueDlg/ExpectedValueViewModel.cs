@@ -141,7 +141,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             this.Event2 = "CloudDown";
             this.Results = new ObservableCollection<TradeResult>();
             this.BarDuration = BarDuration.Daily;
-            this.Group = StockSerie.Groups.COUNTRY;
+            this.Group = StockSerie.Groups.EURO_A;
         }
         public ExpectedValueViewModel(string indicator, string event1Name, string event2Name)
         {

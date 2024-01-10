@@ -56,6 +56,7 @@ using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
+using Tweetinvi.Models.V2;
 
 namespace StockAnalyzerApp
 {
@@ -2885,11 +2886,11 @@ namespace StockAnalyzerApp
              <td>%COL8%</td>
          </tr>";
             string html = $@"
-<table  class=""reportTable"">
+            <table  class=""reportTable"">
                 <thead>
                 <tr>
-                    <th style=""font-size:20px;"" rowspan=""1""></th>
-                    <th style=""font-size:20px;"" colspan=""6"" scope =""colgroup""> {portfolio.Name}: {portfolio.TotalValue}€ </th>
+                    <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}</th>
+                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€ Cash:{portfolio.Balance}€</th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>
@@ -3836,12 +3837,12 @@ namespace StockAnalyzerApp
         }
         #endregion
         #region Conditional Statistics
-        ConditionalStatisticsDlg statisticsDlg = null;
+        StatisticsDlg statisticsDlg = null;
         void statisticsMenuItem_Click(object sender, EventArgs e)
         {
             if (statisticsDlg == null)
             {
-                statisticsDlg = new ConditionalStatisticsDlg();
+                statisticsDlg = new StatisticsDlg();
                 statisticsDlg.Disposed += statisticsDlg_Disposed;
                 statisticsDlg.Show();
             }

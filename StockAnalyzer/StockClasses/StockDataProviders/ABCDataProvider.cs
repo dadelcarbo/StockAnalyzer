@@ -960,7 +960,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             lastDownloadedCAC40Date = stockSerie.Keys.Last();
                             this.needDownload = lastDownloadedCAC40Date > lastLoadedCAC40Date;
-                            happyNewMonth = lastDownloadedCAC40Date.Month != DateTime.Today.Month;
+                            happyNewMonth = lastDownloadedCAC40Date.Month != DateTime.Today.Month || lastDownloadedCAC40Date.Month != lastLoadedCAC40Date.Month;
                             if (needDownload)
                             {
                                 var startDate = lastLoadedCAC40Date.AddDays(1);

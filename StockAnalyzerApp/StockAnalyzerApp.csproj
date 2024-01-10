@@ -34,7 +34,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>259</ApplicationRevision>
+    <ApplicationRevision>262</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -477,17 +477,6 @@
     </Compile>
     <Compile Include="CustomControl\ExpectedValueDlg\StatisticsResult.cs" />
     <Compile Include="CustomControl\ExpectedValueDlg\StatisticsViewModel.cs" />
-    <Compile Include="CustomControl\StatisticsDlg\StatisticsControl.xaml.cs">
-      <DependentUpon>StatisticsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\StatisticsDlg\StatisticsDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\StatisticsDlg\StatisticsDlg.Designer.cs">
-      <DependentUpon>StatisticsDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\StatisticsDlg\StatisticsResult.cs" />
-    <Compile Include="CustomControl\StatisticsDlg\StatisticsViewModel.cs" />
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -773,9 +762,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\AgentSimulationDlg.resx">
       <DependentUpon>AgentSimulationDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\StatisticsDlg\StatisticsDlg.resx">
-      <DependentUpon>StatisticsDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\DrawingStyleForm.fr-FR.resx">
       <DependentUpon>DrawingStyleForm.cs</DependentUpon>
@@ -1162,10 +1148,6 @@
     <Page Include="CustomControl\ExpectedValueDlg\StatisticsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomControl\StatisticsDlg\StatisticsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\SectorDlg\SectorUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
