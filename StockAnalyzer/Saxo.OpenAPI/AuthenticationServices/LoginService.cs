@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace Saxo.OpenAPI.AuthenticationServices
@@ -103,14 +104,18 @@ namespace Saxo.OpenAPI.AuthenticationServices
 
                     // Verify clientId
                     var actualClientId = new ClientService().GetClient().ClientId;
+                    token.Serialize(actualClientId);
                     if (actualClientId != clientId)
                     {
-                        MessageBox.Show("Client ID mistmach, Are connection the right SAXO account ?", "Saxo Connection Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
                         Sessions.Remove(session);
                         CurrentSession = null;
+
+                        var res = MessageBox.Show("Client ID mismatch, do you want to retry ?", "Saxo Connection Error", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                        if (res == MessageBoxResult.OK)
+                        {
+                            Login(clientId, appFolder, isSimu);
+                        }
                     }
-                    token.Serialize(actualClientId);
                 }
                 else
                 {
