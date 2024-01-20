@@ -52,10 +52,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                     _value = value;
                     this.OnPropertyChanged("Value");
 
-                    if (this.openPosition != null)
-                    {
-                        this.openPosition.SetValue(value);
-                    }
+                    this.openPosition?.SetValue(value);
                 }
             }
         }

@@ -261,9 +261,11 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         public StockIndicatorSelectorDlg(Dictionary<string, List<string>> theme)
         {
             InitializeComponent();
-            colorDlg = new ColorDialog();
-            colorDlg.AllowFullOpen = true;
-            colorDlg.CustomColors = this.GetCustomColors();
+            colorDlg = new ColorDialog
+            {
+                AllowFullOpen = true,
+                CustomColors = this.GetCustomColors()
+            };
 
             this.theme = theme;
 
@@ -968,7 +970,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             }
             else if (parentNode.Type == NodeType.Cloud || (parentNode.Type == NodeType.Graph && parentNode.Text.ToUpper() == "CLOSEGRAPH" && ((GraphNode)parentNode).GraphMode == GraphChartMode.BarChart))
             {
-                PaintPreviewWithCloud(g, curveNode.CurvePen, parentNode);
+                PaintPreviewWithCloud(g, parentNode);
             }
             else
             {
@@ -990,35 +992,31 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     }
                     if (parentNode.Type == NodeType.Decorator && curveNode.Type == NodeType.Event)
                     {
-                        using (Brush brush = new SolidBrush(curveNode.CurvePen.Color))
+                        using Brush brush = new SolidBrush(curveNode.CurvePen.Color);
+                        g.DrawLines(Pens.Black, points);
+                        for (i = 5; i < points.Length - 5; i++)
                         {
-                            g.DrawLines(Pens.Black, points);
-                            for (i = 5; i < points.Length - 5; i++)
+                            if ((points[i - 1].Y > points[i].Y && points[i].Y <= points[i + 1].Y) || (points[i - 1].Y < points[i].Y && points[i].Y >= points[i + 1].Y))
                             {
-                                if ((points[i - 1].Y > points[i].Y && points[i].Y <= points[i + 1].Y) || (points[i - 1].Y < points[i].Y && points[i].Y >= points[i + 1].Y))
-                                {
-                                    g.FillEllipse(brush, points[i].X - curveNode.CurvePen.Width * 1.5f, points[i].Y - curveNode.CurvePen.Width * 1.5f, curveNode.CurvePen.Width * 3f, curveNode.CurvePen.Width * 3f);
+                                g.FillEllipse(brush, points[i].X - curveNode.CurvePen.Width * 1.5f, points[i].Y - curveNode.CurvePen.Width * 1.5f, curveNode.CurvePen.Width * 3f, curveNode.CurvePen.Width * 3f);
 
-                                }
                             }
                         }
                     }
                     else if (parentNode.Type == NodeType.Indicator && ((IndicatorNode)parentNode).ViewableItem.DisplayStyle == IndicatorDisplayStyle.SupportResistance)
                     {   // Show support/resistance
-                        using (Brush brush = new SolidBrush(curveNode.CurvePen.Color))
+                        using Brush brush = new SolidBrush(curveNode.CurvePen.Color);
+                        g.DrawLines(Pens.Black, points);
+                        float pointSize = curveNode.CurvePen.Width;
+                        for (i = 5; i < points.Length - 5; i++)
                         {
-                            g.DrawLines(Pens.Black, points);
-                            float pointSize = curveNode.CurvePen.Width;
-                            for (i = 5; i < points.Length - 5; i++)
+                            if ((points[i - 1].Y > points[i].Y && points[i].Y <= points[i + 1].Y) || (points[i - 1].Y < points[i].Y && points[i].Y >= points[i + 1].Y))
                             {
-                                if ((points[i - 1].Y > points[i].Y && points[i].Y <= points[i + 1].Y) || (points[i - 1].Y < points[i].Y && points[i].Y >= points[i + 1].Y))
+                                for (int j = 0; j < 6; j++)
                                 {
-                                    for (int j = 0; j < 6; j++)
-                                    {
-                                        g.FillEllipse(brush, points[i].X - pointSize + j * 3 * pointSize, points[i].Y - pointSize, 2 * pointSize, 2 * pointSize);
-                                    }
-                                    i += 6;
+                                    g.FillEllipse(brush, points[i].X - pointSize + j * 3 * pointSize, points[i].Y - pointSize, 2 * pointSize, 2 * pointSize);
                                 }
+                                i += 6;
                             }
                         }
                     }
@@ -1073,8 +1071,10 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
                 if (i % 8 == 0)
                 {
-                    bar = new OHLCBar((float)points[i].X, (float)open, (float)(min - (max - min) / 3), (float)(max + (max - min) / 3), (float)points[i].Y);
-                    bar.Width = 3f;
+                    bar = new OHLCBar((float)points[i].X, (float)open, (float)(min - (max - min) / 3), (float)(max + (max - min) / 3), (float)points[i].Y)
+                    {
+                        Width = 3f
+                    };
                     bar.Draw(g, pen);
                     open = points[i].Y; min = double.MaxValue;
                     max = double.MinValue;
@@ -1082,7 +1082,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 i++;
             }
         }
-        private static void PaintPreviewWithCloud(Graphics g, Pen pen, StockNode parentNode)
+        private static void PaintPreviewWithCloud(Graphics g, StockNode parentNode)
         {
             var tag = parentNode.Nodes[0] as StockNode;
             var bullColor = Color.FromArgb(127, tag.CurvePen.Color.R, tag.CurvePen.Color.G, tag.CurvePen.Color.B);
@@ -1177,8 +1177,10 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
                 if (i % 8 == 0)
                 {
-                    bar = new CandleStick((float)points[i].X, (float)open, (float)(min - (max - min) / 3), (float)(max + (max - min) / 3), (float)points[i].Y);
-                    bar.Width = 3;
+                    bar = new CandleStick((float)points[i].X, (float)open, (float)(min - (max - min) / 3), (float)(max + (max - min) / 3), (float)points[i].Y)
+                    {
+                        Width = 3
+                    };
                     bar.Draw(g, pen, null);
                     open = points[i].Y; min = double.MaxValue;
                     max = double.MinValue;
@@ -1236,21 +1238,19 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             Rectangle rect = e.Bounds;
             if (e.Index >= 0)
             {
-                using (Pen pen = new Pen(Color.Black, 2))
+                using Pen pen = new Pen(Color.Black, 2);
+                pen.DashStyle = (DashStyle)Enum.Parse(typeof(DashStyle), ((ComboBox)sender).Items[e.Index].ToString());
+                if (pen.DashStyle == DashStyle.Custom)
                 {
-                    pen.DashStyle = (DashStyle)Enum.Parse(typeof(DashStyle), ((ComboBox)sender).Items[e.Index].ToString());
-                    if (pen.DashStyle == DashStyle.Custom)
+                    int barWidth = rect.Width / 10 - 2;
+                    for (int x = rect.X + barWidth; x < rect.Width - barWidth; x += rect.Width / 10)
                     {
-                        int barWidth = rect.Width / 10 - 2;
-                        for (int x = rect.X + barWidth; x < rect.Width - barWidth; x += rect.Width / 10)
-                        {
-                            g.FillRectangle(Brushes.Black, x, rect.Y + 1, barWidth, rect.Height - 1);
-                        }
+                        g.FillRectangle(Brushes.Black, x, rect.Y + 1, barWidth, rect.Height - 1);
                     }
-                    else
-                    {
-                        g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2, rect.Width - 10, rect.Y + rect.Height / 2);
-                    }
+                }
+                else
+                {
+                    g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2, rect.Width - 10, rect.Y + rect.Height / 2);
                 }
             }
         }
@@ -1261,11 +1261,9 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             if (e.Index >= 0)
             {
                 int n = (int)((ComboBox)sender).Items[e.Index];
-                using (Pen pen = new Pen(Color.Black, n))
-                {
-                    g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2,
-                                    rect.Width - 10, rect.Y + rect.Height / 2);
-                }
+                using Pen pen = new Pen(Color.Black, n);
+                g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2,
+                                rect.Width - 10, rect.Y + rect.Height / 2);
             }
         }
         private void lineTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1408,7 +1406,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         {
             if (this.paramListView.SelectedIndices.Count != 0)
             {
-                int index = this.paramListView.SelectedIndices[0];
                 this.paramListView.SelectedItems[0].BeginEdit();
             }
         }
@@ -1417,7 +1414,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             ViewableItemNode ParamNode = (ViewableItemNode)this.treeView1.SelectedNode;
             if (ParamNode.ViewableItem == null || e.Label == null) return;
 
-            ListViewItem item = this.paramListView.Items[e.Item];
             string type = ParamNode.ViewableItem.ParameterTypes[e.Item].Name;
             if (ParamNode.ViewableItem.ParameterRanges[e.Item].isValidString(e.Label))
             {
@@ -1554,8 +1550,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
         void lineConfigBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            float lineLevel;
-            if (float.TryParse(this.lineValueTextBox.Text, out lineLevel))
+            if (float.TryParse(this.lineValueTextBox.Text, out float lineLevel))
             {
                 ((LineNode)this.treeView1.SelectedNode).LineValue = lineLevel;
                 ((LineNode)this.treeView1.SelectedNode).Text = "LINE_" + this.lineValueTextBox.Text;
@@ -1666,7 +1661,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 case NodeType.AutoDrawings:
                     {
                         ActivateIndicatorConfigPanel("AutoDrawingParam");
-                        ViewableItemNode viewableItemNode = (ViewableItemNode)treeNode;
                         this.removeStripMenuItem.Visible = true;
                         this.copyStripMenuItem.Visible = true;
                         this.addDecoratorToolStripMenuItem.Visible = false;
@@ -1802,69 +1796,61 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             g.Clear(graphNode.GraphBackgroundColor);
             g.DrawRectangle(Pens.Black, 0, 0, g.VisibleClipBounds.Width - 1, g.VisibleClipBounds.Height - 1);
 
-            using (Pen gridPen = new Pen(graphNode.GraphGridColor))
+            using Pen gridPen = new Pen(graphNode.GraphGridColor);
+            if (graphNode.GraphShowGrid)
             {
-                if (graphNode.GraphShowGrid)
-                {
 
-                    for (int xx = 0; xx < g.VisibleClipBounds.Width; xx += 33)
-                    {
-                        g.DrawLine(gridPen, xx, g.VisibleClipBounds.Bottom, xx, g.VisibleClipBounds.Top);
-                    }
-                    for (int yy = 0; yy < g.VisibleClipBounds.Height; yy += 33)
-                    {
-                        g.DrawLine(gridPen, g.VisibleClipBounds.Left, yy, g.VisibleClipBounds.Right, yy);
-                    }
+                for (int xx = 0; xx < g.VisibleClipBounds.Width; xx += 33)
+                {
+                    g.DrawLine(gridPen, xx, g.VisibleClipBounds.Bottom, xx, g.VisibleClipBounds.Top);
                 }
-
-
-                if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.BarChart)
+                for (int yy = 0; yy < g.VisibleClipBounds.Height; yy += 33)
                 {
-                    PaintPreviewWithPaintBars(g, Pens.Black);
+                    g.DrawLine(gridPen, g.VisibleClipBounds.Left, yy, g.VisibleClipBounds.Right, yy);
+                }
+            }
+
+
+            if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.BarChart)
+            {
+                PaintPreviewWithPaintBars(g, Pens.Black);
+            }
+            else
+            {
+                if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.CandleStick)
+                {
+                    PaintPreviewWithCandleSticks(g, Pens.Black);
                 }
                 else
                 {
-                    if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.CandleStick)
+                    float x, y;
+                    Point[] points = new Point[(int)Math.Floor(g.VisibleClipBounds.Width)];
+                    int i = 0;
+                    for (x = g.VisibleClipBounds.Left; x < g.VisibleClipBounds.Right; x++)
                     {
-                        PaintPreviewWithCandleSticks(g, Pens.Black);
-                    }
-                    else
-                    {
-                        float x, y;
-                        Point[] points = new Point[(int)Math.Floor(g.VisibleClipBounds.Width)];
-                        int i = 0;
-                        for (x = g.VisibleClipBounds.Left; x < g.VisibleClipBounds.Right; x++)
+                        y = (int)(Math.Sin(x * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
+                        points[i].X = (int)x;
+                        points[i++].Y = (int)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f); if (graphNode.GraphMode == GraphChartMode.LineCross && i % 8 == 0)
                         {
-                            y = (int)(Math.Sin(x * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
-                            points[i].X = (int)x;
-                            points[i++].Y = (int)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f); if (graphNode.GraphMode == GraphChartMode.LineCross && i % 8 == 0)
-                            {
-                                var p = points[i - 1];
-                                g.DrawLine(Pens.Black, p.X - 3, p.Y, p.X + 3, p.Y);
-                                g.DrawLine(Pens.Black, p.X, p.Y - 3, p.X, p.Y + 3);
-                            }
-
+                            var p = points[i - 1];
+                            g.DrawLine(Pens.Black, p.X - 3, p.Y, p.X + 3, p.Y);
+                            g.DrawLine(Pens.Black, p.X, p.Y - 3, p.X, p.Y + 3);
                         }
-                        g.DrawLines(Pens.Black, points);
-                    }
-                }
 
-                using (Brush brush = new SolidBrush(graphNode.GraphTextBackgroundColor))
-                {
-                    using (Brush textBrush = new SolidBrush(Color.Black))
-                    {
-                        using (Font font = new Font(FontFamily.GenericSansSerif, 9))
-                        {
-
-                            SizeF size = g.MeasureString(this.someTextLabel.Text, font);
-                            PointF location = new PointF((g.VisibleClipBounds.Left + g.VisibleClipBounds.Right) / 2.0f + 15f, (g.VisibleClipBounds.Top + g.VisibleClipBounds.Bottom) / 2.0f + 30f);
-                            g.FillRectangle(brush, location.X - 1, location.Y - 1, size.Width, size.Height + 2);
-                            g.DrawRectangle(gridPen, location.X - 1, location.Y - 1, size.Width, size.Height + 2);
-                            g.DrawString(this.someTextLabel.Text, font, textBrush, location);
-                        }
                     }
+                    g.DrawLines(Pens.Black, points);
                 }
             }
+
+            using Brush brush = new SolidBrush(graphNode.GraphTextBackgroundColor);
+            using Brush textBrush = new SolidBrush(Color.Black);
+            using Font font = new Font(FontFamily.GenericSansSerif, 9);
+
+            SizeF size = g.MeasureString(this.someTextLabel.Text, font);
+            PointF location = new PointF((g.VisibleClipBounds.Left + g.VisibleClipBounds.Right) / 2.0f + 15f, (g.VisibleClipBounds.Top + g.VisibleClipBounds.Bottom) / 2.0f + 30f);
+            g.FillRectangle(brush, location.X - 1, location.Y - 1, size.Width, size.Height + 2);
+            g.DrawRectangle(gridPen, location.X - 1, location.Y - 1, size.Width, size.Height + 2);
+            g.DrawString(this.someTextLabel.Text, font, textBrush, location);
         }
         private void backgroundColorPanel_Click(object sender, EventArgs e)
         {
@@ -1967,10 +1953,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         #endregion
         private void applyButton_Click(object sender, EventArgs e)
         {
-            if (this.ThemeEdited != null)
-            {
-                this.ThemeEdited(this.GetTheme());
-            }
+            ThemeEdited?.Invoke(this.GetTheme());
         }
         private void treeView1_KeyDown(object sender, KeyEventArgs e)
         {

@@ -54,23 +54,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
-                    {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
 
-                        var row = line.Split(',');
-                        var stockName = row[2];
-                        if (!string.IsNullOrEmpty(stockName) && stockDictionary.ContainsKey(stockName))
-                        {
-                            stockDictionary[stockName].SaxoId = long.Parse(row[0]);
-                        }
-                        else
-                        {
-                            StockLog.Write($"Saxo Underlying {row[1]} not found in stockDictionary");
-                        }
+                    var row = line.Split(',');
+                    var stockName = row[2];
+                    if (!string.IsNullOrEmpty(stockName) && stockDictionary.ContainsKey(stockName))
+                    {
+                        stockDictionary[stockName].SaxoId = long.Parse(row[0]);
+                    }
+                    else
+                    {
+                        StockLog.Write($"Saxo Underlying {row[1]} not found in stockDictionary");
                     }
                 }
             }
@@ -125,84 +123,82 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
-                using (var wc = new WebClient())
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                var url = FormatIntradayURL(stockSerie.ISIN, "1D");
+
+                try
                 {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                    var url = FormatIntradayURL(stockSerie.ISIN, "1D");
-
-                    try
+                    if (DownloadHistory.ContainsKey(stockSerie.Symbol))
                     {
-                        if (DownloadHistory.ContainsKey(stockSerie.Symbol))
-                        {
-                            DownloadHistory[stockSerie.Symbol] = DateTime.Now;
-                        }
-                        else
-                        {
-                            DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
-                        }
-                        var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
-                        var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
-                        if (saxoData?.series?[0]?.data == null)
-                            return false;
+                        DownloadHistory[stockSerie.Symbol] = DateTime.Now;
+                    }
+                    else
+                    {
+                        DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
+                    }
+                    var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
+                    var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
+                    if (saxoData?.series?[0]?.data == null)
+                        return false;
 
-                        stockSerie.IsInitialised = false;
-                        this.LoadData(stockSerie);
-                        DateTime lastDate = DateTime.MinValue;
-                        if (stockSerie.Count > 0)
+                    stockSerie.IsInitialised = false;
+                    this.LoadData(stockSerie);
+                    DateTime lastDate = DateTime.MinValue;
+                    if (stockSerie.Count > 0)
+                    {
+                        if (stockSerie.Keys.Last().Date == DateTime.Today)
                         {
-                            if (stockSerie.Keys.Last().Date == DateTime.Today)
-                            {
-                                lastDate = stockSerie.Keys.Last();
-                                stockSerie.RemoveLast();
-                            }
+                            lastDate = stockSerie.Keys.Last();
+                            stockSerie.RemoveLast();
+                        }
+                    }
+                    else
+                    {
+                        lastDate = saxoData.series[0].data.First().x;
+                    }
+                    var date = lastDate;
+                    StockDailyValue newBar = null;
+                    foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
+                    {
+                        if (newBar == null)
+                        {
+                            newBar = new StockDailyValue(bar.y, bar.y, bar.y, bar.y, 0, date);
                         }
                         else
                         {
-                            lastDate = saxoData.series[0].data.First().x;
-                        }
-                        var date = lastDate;
-                        StockDailyValue newBar = null;
-                        foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
-                        {
-                            if (newBar == null)
+                            var minute = (bar.x.Minute / 5) * 5;
+                            if (minute == newBar.DATE.Minute)
                             {
-                                newBar = new StockDailyValue(bar.y, bar.y, bar.y, bar.y, 0, date);
+                                newBar.HIGH = Math.Max(newBar.HIGH, bar.y);
+                                newBar.LOW = Math.Min(newBar.LOW, bar.y);
+                                newBar.CLOSE = bar.y;
                             }
                             else
                             {
-                                var minute = (bar.x.Minute / 5) * 5;
-                                if (minute == newBar.DATE.Minute)
-                                {
-                                    newBar.HIGH = Math.Max(newBar.HIGH, bar.y);
-                                    newBar.LOW = Math.Min(newBar.LOW, bar.y);
-                                    newBar.CLOSE = bar.y;
-                                }
-                                else
-                                {
-                                    date = date.AddMinutes(5);
-                                    stockSerie.Add(newBar.DATE, newBar);
-                                    newBar = new StockDailyValue(newBar.CLOSE, bar.y, bar.y, bar.y, 0, date);
-                                }
+                                date = date.AddMinutes(5);
+                                stockSerie.Add(newBar.DATE, newBar);
+                                newBar = new StockDailyValue(newBar.CLOSE, bar.y, bar.y, bar.y, 0, date);
                             }
                         }
-                        if (newBar != null)
-                        {
-                            stockSerie.Add(date, newBar);
-                        }
-
-                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                        var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
-
-                        var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
-
-                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
-
-                        return true;
                     }
-                    catch (Exception e)
+                    if (newBar != null)
                     {
-                        StockLog.Write(e);
+                        stockSerie.Add(date, newBar);
                     }
+
+                    var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                    var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+
+                    var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
+
+                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    StockLog.Write(e);
                 }
             }
             return false;
@@ -242,62 +238,60 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
-                using (var wc = new WebClient())
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+
+                try
                 {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-
-                    try
+                    string url = FormatIntradayURL(stockSerie.ISIN, "1W");
+                    if (DownloadHistory.ContainsKey(stockSerie.Symbol))
                     {
-                        string url = FormatIntradayURL(stockSerie.ISIN, "1W");
-                        if (DownloadHistory.ContainsKey(stockSerie.Symbol))
-                        {
-                            DownloadHistory[stockSerie.Symbol] = DateTime.Now;
-                        }
-                        else
-                        {
-                            DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
-                        }
-                        var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
-                        if (string.IsNullOrEmpty(jsonData))
-                            return false;
-                        var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
-                        if (saxoData?.series?[0]?.data == null)
-                            return false;
-
-                        stockSerie.IsInitialised = false;
-                        this.LoadData(stockSerie);
-                        DateTime lastDate = DateTime.MinValue;
-                        if (stockSerie.Count > 0)
-                        {
-                            lastDate = stockSerie.Keys.Last();
-                        }
-                        else
-                        {
-                            lastDate = saxoData.series[0].data.First().x.AddTicks(-1);
-                        }
-                        int nbNewBars = 0;
-                        foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
-                        {
-                            var newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(-1));
-                            stockSerie.Add(newBar.DATE, newBar);
-                            nbNewBars++;
-                        }
-
-                        if (nbNewBars > 0)
-                        {
-                            var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
-
-                            var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
-
-                            stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
-                        }
-                        return true;
+                        DownloadHistory[stockSerie.Symbol] = DateTime.Now;
                     }
-                    catch (Exception e)
+                    else
                     {
-                        StockLog.Write(e);
+                        DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
                     }
+                    var jsonData = SaxoIntradayDataProvider.HttpGetFromSaxo(url);
+                    if (string.IsNullOrEmpty(jsonData))
+                        return false;
+                    var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
+                    if (saxoData?.series?[0]?.data == null)
+                        return false;
+
+                    stockSerie.IsInitialised = false;
+                    this.LoadData(stockSerie);
+                    DateTime lastDate = DateTime.MinValue;
+                    if (stockSerie.Count > 0)
+                    {
+                        lastDate = stockSerie.Keys.Last();
+                    }
+                    else
+                    {
+                        lastDate = saxoData.series[0].data.First().x.AddTicks(-1);
+                    }
+                    int nbNewBars = 0;
+                    foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
+                    {
+                        var newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(-1));
+                        stockSerie.Add(newBar.DATE, newBar);
+                        nbNewBars++;
+                    }
+
+                    if (nbNewBars > 0)
+                    {
+                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                        var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+
+                        var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
+
+                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
+                    }
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    StockLog.Write(e);
                 }
             }
             return false;
@@ -316,19 +310,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     httpClient = new HttpClient(handler);
                 }
-                using (var request = new HttpRequestMessage())
+                using var request = new HttpRequestMessage();
+                request.Method = HttpMethod.Get;
+                request.RequestUri = new Uri(url);
+                var response = httpClient.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    request.Method = HttpMethod.Get;
-                    request.RequestUri = new Uri(url);
-                    var response = httpClient.SendAsync(request).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return response.Content.ReadAsStringAsync().Result;
-                    }
-                    else
-                    {
-                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
-                    }
+                    return response.Content.ReadAsStringAsync().Result;
+                }
+                else
+                {
+                    StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
                 }
             }
             catch (Exception ex)
@@ -343,52 +335,50 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    if (!stockDictionary.ContainsKey(row[1]))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
-
-                        var row = line.Split(',');
-                        if (!stockDictionary.ContainsKey(row[1]))
+                        var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
+                        stockSerie.ISIN = row[0];
+                        stockDictionary.Add(row[1], stockSerie);
+                        if (row.Length == 3)
                         {
-                            var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
-                            stockSerie.ISIN = row[0];
-                            stockDictionary.Add(row[1], stockSerie);
-                            if (row.Length == 3)
-                            {
-                                stockSerie.Uic = long.Parse(row[2]);
-                            }
+                            stockSerie.Uic = long.Parse(row[2]);
+                        }
 
-                            if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
+                        if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
+                        {
+                            // Check if download needed.
+                            stockSerie.Initialise();
+                            DateTime refDate = DateTime.MinValue;
+                            if (stockSerie.Count > 0)
                             {
-                                // Check if download needed.
-                                stockSerie.Initialise();
-                                DateTime refDate = DateTime.MinValue;
-                                if (stockSerie.Count > 0)
-                                {
-                                    refDate = stockSerie.Keys.Last();
-                                }
-                                this.DownloadIntradayData(stockSerie);
-                                if (stockSerie.Initialise())
-                                {
-                                    needDownload = refDate < stockSerie.Keys.Last();
-                                    RefSerie = stockSerie;
-                                }
+                                refDate = stockSerie.Keys.Last();
                             }
-                            else
+                            this.DownloadIntradayData(stockSerie);
+                            if (stockSerie.Initialise())
                             {
-                                if (download && this.needDownload)
-                                {
-                                    this.DownloadIntradayData(stockSerie);
-                                }
+                                needDownload = refDate < stockSerie.Keys.Last();
+                                RefSerie = stockSerie;
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Saxo Intraday Entry: " + row[1] + " already in stockDictionary");
+                            if (download && this.needDownload)
+                            {
+                                this.DownloadIntradayData(stockSerie);
+                            }
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Saxo Intraday Entry: " + row[1] + " already in stockDictionary");
                     }
                 }
             }

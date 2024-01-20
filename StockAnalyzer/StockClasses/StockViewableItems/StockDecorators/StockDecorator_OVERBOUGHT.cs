@@ -43,198 +43,196 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            List<string> eventNames = this.EventNames.ToList();
+            int ExhaustionTopIndex = eventNames.IndexOf("ExhaustionTop");
+            int ExhaustionBottomIndex = eventNames.IndexOf("ExhaustionBottom");
+            int BearishDivergenceIndex = eventNames.IndexOf("BearishDivergence");
+            int BullishDivergenceIndex = eventNames.IndexOf("BullishDivergence");
+            int ExhaustionTopOccuredIndex = eventNames.IndexOf("ExhaustionTopOccured");
+            int ExhaustionBottomOccuredIndex = eventNames.IndexOf("ExhaustionBottomOccured");
+            int PositiveIndex = eventNames.IndexOf("Positive");
+            int NegativeIndex = eventNames.IndexOf("Negative");
+            int BullishIndex = eventNames.IndexOf("Bullish");
+            int BearishIndex = eventNames.IndexOf("Bearish");
+            int BearFailureIndex = eventNames.IndexOf("BearFailure");
+            int BullFailureIndex = eventNames.IndexOf("BullFailure");
+
+            CreateEventSeries(stockSerie.Count);
+
+            int smoothing = (int)this.parameters[0];
+            float overbought = (float)this.parameters[1];
+            float oversold = (float)this.parameters[2];
+            int lookbackPeriod = (int)this.parameters[3];
+            int signalSmoothing = (int)this.parameters[4];
+
+            int countNegative = 0;
+            int countPositive = 0;
+
+            IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
+            if (indicator != null && indicator.Series[0].Count > 0)
             {
-                List<string> eventNames = this.EventNames.ToList();
-                int ExhaustionTopIndex = eventNames.IndexOf("ExhaustionTop");
-                int ExhaustionBottomIndex = eventNames.IndexOf("ExhaustionBottom");
-                int BearishDivergenceIndex = eventNames.IndexOf("BearishDivergence");
-                int BullishDivergenceIndex = eventNames.IndexOf("BullishDivergence");
-                int ExhaustionTopOccuredIndex = eventNames.IndexOf("ExhaustionTopOccured");
-                int ExhaustionBottomOccuredIndex = eventNames.IndexOf("ExhaustionBottomOccured");
-                int PositiveIndex = eventNames.IndexOf("Positive");
-                int NegativeIndex = eventNames.IndexOf("Negative");
-                int BullishIndex = eventNames.IndexOf("Bullish");
-                int BearishIndex = eventNames.IndexOf("Bearish");
-                int BearFailureIndex = eventNames.IndexOf("BearFailure");
-                int BullFailureIndex = eventNames.IndexOf("BullFailure");
+                FloatSerie indicatorToDecorate = indicator.Series[0].CalculateEMA(smoothing);
+                FloatSerie signalSerie = indicatorToDecorate.CalculateEMA(signalSmoothing);
+                FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count); upperLimit.Reset(overbought);
+                FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count); lowerLimit.Reset(oversold);
 
-                CreateEventSeries(stockSerie.Count);
+                if (smoothing <= 1) { this.SerieVisibility[0] = false; }
+                if (signalSmoothing <= 1) { this.SerieVisibility[3] = false; }
 
-                int smoothing = (int)this.parameters[0];
-                float overbought = (float)this.parameters[1];
-                float oversold = (float)this.parameters[2];
-                int lookbackPeriod = (int)this.parameters[3];
-                int signalSmoothing = (int)this.parameters[4];
+                this.Series[0] = indicatorToDecorate;
+                this.Series[0].Name = this.SerieNames[0];
+                this.Series[1] = upperLimit;
+                this.Series[1].Name = this.SerieNames[1];
+                this.Series[2] = lowerLimit;
+                this.Series[2].Name = this.SerieNames[2];
+                this.Series[3] = signalSerie;
+                this.Series[3].Name = this.SerieNames[3];
 
-                int countNegative = 0;
-                int countPositive = 0;
-
-                IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
-                if (indicator != null && indicator.Series[0].Count > 0)
+                if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
                 {
-                    FloatSerie indicatorToDecorate = indicator.Series[0].CalculateEMA(smoothing);
-                    FloatSerie signalSerie = indicatorToDecorate.CalculateEMA(signalSmoothing);
-                    FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count); upperLimit.Reset(overbought);
-                    FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count); lowerLimit.Reset(oversold);
-
-                    if (smoothing <= 1) { this.SerieVisibility[0] = false; }
-                    if (signalSmoothing <= 1) { this.SerieVisibility[3] = false; }
-
-                    this.Series[0] = indicatorToDecorate;
-                    this.Series[0].Name = this.SerieNames[0];
-                    this.Series[1] = upperLimit;
-                    this.Series[1].Name = this.SerieNames[1];
-                    this.Series[2] = lowerLimit;
-                    this.Series[2].Name = this.SerieNames[2];
-                    this.Series[3] = signalSerie;
-                    this.Series[3].Name = this.SerieNames[3];
-
-                    if (indicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator && indicator is IRange)
-                    {
-                        IRange range = (IRange)indicator;
-                        indicatorToDecorate = indicatorToDecorate.Sub((range.Max + range.Min) / 2.0f);
-                    }
-                    FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-                    FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-
-                    int lastExhaustionSellIndex = int.MinValue;
-                    int lastExhaustionBuyIndex = int.MinValue;
-                    float exhaustionBuyPrice = highSerie[0];
-                    float exhaustionSellPrice = lowSerie[0];
-
-                    float previousValue = indicatorToDecorate[0];
-                    float currentValue;
-                    int i = 0;
-                    for (i = 1; i < indicatorToDecorate.Count - 1; i++)
-                    {
-                        if (indicatorToDecorate[i] > 0)
-                        {
-                            this.Events[PositiveIndex][i] = true;
-                            countPositive++;
-                            countNegative = 0;
-                        }
-                        else
-                        {
-                            this.Events[NegativeIndex][i] = true;
-                            countPositive = 0;
-                            countNegative++;
-                        }
-                        if (indicatorToDecorate[i] > signalSerie[i])
-                        {
-                            this.Events[BullishIndex][i] = true;
-                        }
-                        else
-                        {
-                            this.Events[BearishIndex][i] = true;
-                        }
-                        currentValue = indicatorToDecorate[i];
-                        if (currentValue == previousValue)
-                        {
-                            if (indicatorToDecorate.IsBottomIsh(i))
-                            {
-                                if (currentValue <= oversold)
-                                {
-                                    // This is an exhaustion selling
-                                    this.Events[ExhaustionBottomIndex][i + 1] = true;
-                                    exhaustionSellPrice = lowSerie[i];
-                                    lastExhaustionSellIndex = i + 1;
-                                }
-                                else
-                                {
-                                    // Check if divergence
-                                    if (lowSerie[i] <= exhaustionSellPrice)
-                                    {
-                                        this.Events[BullishDivergenceIndex][i + 1] = true;
-                                    }
-                                }
-                            }
-                            else if (indicatorToDecorate.IsTopIsh(i))
-                            {
-                                if (currentValue >= overbought)
-                                {
-                                    // This is an exhaustion buying
-                                    this.Events[ExhaustionTopIndex][i + 1] = true;
-                                    exhaustionBuyPrice = highSerie[i];
-                                    lastExhaustionBuyIndex = i + 1;
-                                }
-                                else
-                                {
-                                    // Check if divergence
-                                    if (highSerie[i] >= exhaustionBuyPrice)
-                                    {
-                                        this.Events[BearishDivergenceIndex][i + 1] = true;
-                                    }
-                                }
-                            }
-                        }
-                        else if (currentValue < previousValue)
-                        {
-                            if (indicatorToDecorate.IsBottom(i))
-                            {
-                                if (currentValue <= oversold)
-                                {
-                                    // This is an exhaustion selling
-                                    this.Events[ExhaustionBottomIndex][i + 1] = true;
-                                    exhaustionSellPrice = lowSerie[i];
-                                    lastExhaustionSellIndex = i + 1;
-                                }
-                                else
-                                {
-                                    // Check if divergence
-                                    if (lowSerie[i] <= exhaustionSellPrice)
-                                    {
-                                        this.Events[BullishDivergenceIndex][i + 1] = true;
-                                    }
-                                }
-                            }
-                        }
-                        else if (currentValue > previousValue)
-                        {
-                            if (indicatorToDecorate.IsTop(i))
-                            {
-                                if (currentValue >= overbought)
-                                {
-                                    // This is an exhaustion selling
-                                    this.Events[ExhaustionTopIndex][i + 1] = true;
-                                    exhaustionBuyPrice = highSerie[i];
-                                    lastExhaustionBuyIndex = i + 1;
-                                }
-                                else
-                                {
-                                    // Check if divergence
-                                    if (highSerie[i] >= exhaustionBuyPrice)
-                                    {
-                                        this.Events[BearishDivergenceIndex][i + 1] = true;
-                                    }
-                                }
-                            }
-                        }
-                        previousValue = currentValue;
-
-                        // Exhaustion occured events
-                        if (lookbackPeriod > 0)
-                        {
-                            if (i + 1 - lookbackPeriod < lastExhaustionBuyIndex)
-                            {
-                                this.Events[ExhaustionTopOccuredIndex][i + 1] = true;
-                            }
-                            if (i + 1 - lookbackPeriod < lastExhaustionSellIndex)
-                            {
-                                this.Events[ExhaustionBottomOccuredIndex][i + 1] = true;
-                            }
-                        }
-
-                        this.Events[BearFailureIndex][i] = (this.Events[ExhaustionTopOccuredIndex][i] && countPositive == 1);
-                        this.Events[BullFailureIndex][i] = (this.Events[ExhaustionBottomOccuredIndex][i] && countNegative == 1);
-                    }
+                    IRange range = (IRange)indicator;
+                    indicatorToDecorate = indicatorToDecorate.Sub((range.Max + range.Min) / 2.0f);
                 }
-                else
+                FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+                FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+
+                int lastExhaustionSellIndex = int.MinValue;
+                int lastExhaustionBuyIndex = int.MinValue;
+                float exhaustionBuyPrice = highSerie[0];
+                float exhaustionSellPrice = lowSerie[0];
+
+                float previousValue = indicatorToDecorate[0];
+                float currentValue;
+                int i = 0;
+                for (i = 1; i < indicatorToDecorate.Count - 1; i++)
                 {
-                    for (int i = 0; i < this.EventNames.Length; i++)
+                    if (indicatorToDecorate[i] > 0)
                     {
-                        this.Events[i] = new BoolSerie(0, this.EventNames[i]);
+                        this.Events[PositiveIndex][i] = true;
+                        countPositive++;
+                        countNegative = 0;
                     }
+                    else
+                    {
+                        this.Events[NegativeIndex][i] = true;
+                        countPositive = 0;
+                        countNegative++;
+                    }
+                    if (indicatorToDecorate[i] > signalSerie[i])
+                    {
+                        this.Events[BullishIndex][i] = true;
+                    }
+                    else
+                    {
+                        this.Events[BearishIndex][i] = true;
+                    }
+                    currentValue = indicatorToDecorate[i];
+                    if (currentValue == previousValue)
+                    {
+                        if (indicatorToDecorate.IsBottomIsh(i))
+                        {
+                            if (currentValue <= oversold)
+                            {
+                                // This is an exhaustion selling
+                                this.Events[ExhaustionBottomIndex][i + 1] = true;
+                                exhaustionSellPrice = lowSerie[i];
+                                lastExhaustionSellIndex = i + 1;
+                            }
+                            else
+                            {
+                                // Check if divergence
+                                if (lowSerie[i] <= exhaustionSellPrice)
+                                {
+                                    this.Events[BullishDivergenceIndex][i + 1] = true;
+                                }
+                            }
+                        }
+                        else if (indicatorToDecorate.IsTopIsh(i))
+                        {
+                            if (currentValue >= overbought)
+                            {
+                                // This is an exhaustion buying
+                                this.Events[ExhaustionTopIndex][i + 1] = true;
+                                exhaustionBuyPrice = highSerie[i];
+                                lastExhaustionBuyIndex = i + 1;
+                            }
+                            else
+                            {
+                                // Check if divergence
+                                if (highSerie[i] >= exhaustionBuyPrice)
+                                {
+                                    this.Events[BearishDivergenceIndex][i + 1] = true;
+                                }
+                            }
+                        }
+                    }
+                    else if (currentValue < previousValue)
+                    {
+                        if (indicatorToDecorate.IsBottom(i))
+                        {
+                            if (currentValue <= oversold)
+                            {
+                                // This is an exhaustion selling
+                                this.Events[ExhaustionBottomIndex][i + 1] = true;
+                                exhaustionSellPrice = lowSerie[i];
+                                lastExhaustionSellIndex = i + 1;
+                            }
+                            else
+                            {
+                                // Check if divergence
+                                if (lowSerie[i] <= exhaustionSellPrice)
+                                {
+                                    this.Events[BullishDivergenceIndex][i + 1] = true;
+                                }
+                            }
+                        }
+                    }
+                    else if (currentValue > previousValue)
+                    {
+                        if (indicatorToDecorate.IsTop(i))
+                        {
+                            if (currentValue >= overbought)
+                            {
+                                // This is an exhaustion selling
+                                this.Events[ExhaustionTopIndex][i + 1] = true;
+                                exhaustionBuyPrice = highSerie[i];
+                                lastExhaustionBuyIndex = i + 1;
+                            }
+                            else
+                            {
+                                // Check if divergence
+                                if (highSerie[i] >= exhaustionBuyPrice)
+                                {
+                                    this.Events[BearishDivergenceIndex][i + 1] = true;
+                                }
+                            }
+                        }
+                    }
+                    previousValue = currentValue;
+
+                    // Exhaustion occured events
+                    if (lookbackPeriod > 0)
+                    {
+                        if (i + 1 - lookbackPeriod < lastExhaustionBuyIndex)
+                        {
+                            this.Events[ExhaustionTopOccuredIndex][i + 1] = true;
+                        }
+                        if (i + 1 - lookbackPeriod < lastExhaustionSellIndex)
+                        {
+                            this.Events[ExhaustionBottomOccuredIndex][i + 1] = true;
+                        }
+                    }
+
+                    this.Events[BearFailureIndex][i] = (this.Events[ExhaustionTopOccuredIndex][i] && countPositive == 1);
+                    this.Events[BullFailureIndex][i] = (this.Events[ExhaustionBottomOccuredIndex][i] && countNegative == 1);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < this.EventNames.Length; i++)
+                {
+                    this.Events[i] = new BoolSerie(0, this.EventNames[i]);
                 }
             }
         }

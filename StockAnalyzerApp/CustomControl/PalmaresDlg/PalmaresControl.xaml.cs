@@ -398,26 +398,24 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             string fileName = Path.Combine(Folders.Palmares, this.ViewModel.Setting + ".xml");
             if (File.Exists(fileName))
             {
-                using (FileStream fs = new FileStream(fileName, FileMode.Open))
-                {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                    settings.IgnoreWhitespace = true;
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
-                    var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
+                using FileStream fs = new FileStream(fileName, FileMode.Open);
+                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                settings.IgnoreWhitespace = true;
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
+                var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
 
-                    this.ViewModel.Group = palmaresSettings.Group;
-                    this.ViewModel.BarDuration = palmaresSettings.BarDuration;
-                    this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
-                    this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
-                    this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
-                    this.ViewModel.Screener = palmaresSettings.Screener;
-                    this.ViewModel.Stop = palmaresSettings.Stop;
-                    this.ViewModel.BullOnly = palmaresSettings.BullOnly;
-                    this.ViewModel.Theme = palmaresSettings.Theme;
-                    this.GenerateColumns();
-                    LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
-                }
+                this.ViewModel.Group = palmaresSettings.Group;
+                this.ViewModel.BarDuration = palmaresSettings.BarDuration;
+                this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
+                this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
+                this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
+                this.ViewModel.Screener = palmaresSettings.Screener;
+                this.ViewModel.Stop = palmaresSettings.Stop;
+                this.ViewModel.BullOnly = palmaresSettings.BullOnly;
+                this.ViewModel.Theme = palmaresSettings.Theme;
+                this.GenerateColumns();
+                LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
             }
         }
 

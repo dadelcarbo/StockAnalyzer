@@ -42,29 +42,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    if (!stockDictionary.ContainsKey(row[2]))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                        var stockSerie = new StockSerie(row[2], row[1], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]), StockDataProvider.Investing, BarDuration.Daily);
+                        stockSerie.Ticker = long.Parse(row[0]);
 
-                        var row = line.Split(',');
-                        if (!stockDictionary.ContainsKey(row[2]))
+                        stockDictionary.Add(row[2], stockSerie);
+                        if (download && this.needDownload)
                         {
-                            var stockSerie = new StockSerie(row[2], row[1], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]), StockDataProvider.Investing, BarDuration.Daily);
-                            stockSerie.Ticker = long.Parse(row[0]);
-
-                            stockDictionary.Add(row[2], stockSerie);
-                            if (download && this.needDownload)
-                            {
-                                this.needDownload = this.DownloadDailyData(stockSerie);
-                            }
+                            this.needDownload = this.DownloadDailyData(stockSerie);
                         }
-                        else
-                        {
-                            Console.WriteLine("Investing Daily Entry: " + row[2] + " already in stockDictionary");
-                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Investing Daily Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }
@@ -159,49 +157,47 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             return false;
                     }
                 }
-                using (var wc = new WebClient())
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+
+                var url = string.Empty;
+                var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
+                if (stockSerie.Initialise() && stockSerie.Count > 0)
                 {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                    lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
+                    if (lastDate >= DateTime.Today)
+                        return false;
+                    url = FormatURL(stockSerie.Ticker, lastDate.AddMonths(-2), DateTime.Today);
+                }
+                else
+                {
+                    url = FormatURL(stockSerie.Ticker, lastDate, DateTime.Today);
+                }
 
-                    var url = string.Empty;
-                    var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
-                    if (stockSerie.Initialise() && stockSerie.Count > 0)
+                int nbTries = 2;
+                while (nbTries > 0)
+                {
+                    try
                     {
-                        lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
-                        if (lastDate >= DateTime.Today)
-                            return false;
-                        url = FormatURL(stockSerie.Ticker, lastDate.AddMonths(-2), DateTime.Today);
-                    }
-                    else
-                    {
-                        url = FormatURL(stockSerie.Ticker, lastDate, DateTime.Today);
-                    }
-
-                    int nbTries = 2;
-                    while (nbTries > 0)
-                    {
-                        try
+                        var response = InvestingIntradayDataProvider.HttpGetFromInvesting(url);
+                        if (!string.IsNullOrEmpty(response))
                         {
-                            var response = InvestingIntradayDataProvider.HttpGetFromInvesting(url);
-                            if (!string.IsNullOrEmpty(response))
+                            if (response.StartsWith("{"))
                             {
-                                if (response.StartsWith("{"))
-                                {
-                                    File.WriteAllText(fileName, response);
-                                    stockSerie.IsInitialised = false;
-                                    return true;
-                                }
-                                StockLog.Write(response);
-                                return false;
+                                File.WriteAllText(fileName, response);
+                                stockSerie.IsInitialised = false;
+                                return true;
                             }
                             StockLog.Write(response);
-                            nbTries--;
+                            return false;
                         }
-                        catch (Exception ex)
-                        {
-                            nbTries--;
-                            StockLog.Write(ex);
-                        }
+                        StockLog.Write(response);
+                        nbTries--;
+                    }
+                    catch (Exception ex)
+                    {
+                        nbTries--;
+                        StockLog.Write(ex);
                     }
                 }
             }
@@ -213,36 +209,34 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var res = false;
             try
             {
-                using (var sr = new StreamReader(fileName))
+                using var sr = new StreamReader(fileName);
+                var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
+
+                for (var i = 0; i < barchartJson.C.Length; i++)
                 {
-                    var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
+                    if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
+                        continue;
 
-                    for (var i = 0; i < barchartJson.C.Length; i++)
+                    var openDate = refDate.AddSeconds(barchartJson.T[i]).Date;
+                    if (!stockSerie.ContainsKey(openDate))
                     {
-                        if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
-                            continue;
+                        var volString = barchartJson.V[i];
+                        long vol = 0;
+                        long.TryParse(barchartJson.V[i], out vol);
+                        var dailyValue = new StockDailyValue(
+                               barchartJson.O[i],
+                               barchartJson.H[i],
+                               barchartJson.L[i],
+                               barchartJson.C[i],
+                               vol,
+                               openDate);
 
-                        var openDate = refDate.AddSeconds(barchartJson.T[i]).Date;
-                        if (!stockSerie.ContainsKey(openDate))
-                        {
-                            var volString = barchartJson.V[i];
-                            long vol = 0;
-                            long.TryParse(barchartJson.V[i], out vol);
-                            var dailyValue = new StockDailyValue(
-                                   barchartJson.O[i],
-                                   barchartJson.H[i],
-                                   barchartJson.L[i],
-                                   barchartJson.C[i],
-                                   vol,
-                                   openDate);
-
-                            stockSerie.Add(dailyValue.DATE, dailyValue);
-                        }
+                        stockSerie.Add(dailyValue.DATE, dailyValue);
                     }
-                    stockSerie.ClearBarDurationCache();
-
-                    res = true;
                 }
+                stockSerie.ClearBarDurationCache();
+
+                res = true;
             }
             catch (Exception e)
             {

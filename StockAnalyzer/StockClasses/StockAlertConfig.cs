@@ -84,16 +84,14 @@ namespace StockAnalyzer.StockClasses
                     {
                         try
                         {
-                            using (var fs = new FileStream(alertFileName, FileMode.Open))
+                            using var fs = new FileStream(alertFileName, FileMode.Open);
+                            System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
                             {
-                                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
-                                {
-                                    IgnoreWhitespace = true
-                                };
-                                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                                var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                                allAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
-                            }
+                                IgnoreWhitespace = true
+                            };
+                            System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                            var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                            allAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
                         }
                         catch (Exception e)
                         {
@@ -150,18 +148,16 @@ namespace StockAnalyzer.StockClasses
                 }
                 string alertFileName = AlertDefFolder + $@"\AlertDefUserDefined.xml";
                 // Parse alert lists
-                using (var fs = new FileStream(alertFileName, FileMode.Create))
-                {
+                using var fs = new FileStream(alertFileName, FileMode.Create);
 
-                    var settings = new System.Xml.XmlWriterSettings
-                    {
-                        Indent = true,
-                        NewLineOnAttributes = true
-                    };
-                    var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                    var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                    serializer.Serialize(xmlWriter, allAlertDefs.OrderBy(a => a.BarDuration).OrderBy(a => a.Rank).ToList());
-                }
+                var settings = new System.Xml.XmlWriterSettings
+                {
+                    Indent = true,
+                    NewLineOnAttributes = true
+                };
+                var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+                var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
+                serializer.Serialize(xmlWriter, allAlertDefs.OrderBy(a => a.BarDuration).OrderBy(a => a.Rank).ToList());
             }
         }
 

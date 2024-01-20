@@ -122,34 +122,32 @@ namespace StockAnalyzer.StockClasses
             StockStatistics statistic;
             try
             {
-                using (StreamReader sr = new StreamReader(fileName))
+                using StreamReader sr = new StreamReader(fileName);
+                stats = new SortedDictionary<string, StockStatistics>();
+                // Skip headers
+                line = sr.ReadLine();
+
+                while (!sr.EndOfStream)
                 {
-                    stats = new SortedDictionary<string, StockStatistics>();
-                    // Skip headers
                     line = sr.ReadLine();
+                    fields = line.Split(',');
+                    statistic = new StockStatistics();
 
-                    while (!sr.EndOfStream)
-                    {
-                        line = sr.ReadLine();
-                        fields = line.Split(',');
-                        statistic = new StockStatistics();
+                    statistic.minVariationClose = float.Parse(fields[5], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.minVariationLow = float.Parse(fields[6], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.minVariationHigh = float.Parse(fields[7], StockAnalyzerApp.Global.EnglishCulture);
 
-                        statistic.minVariationClose = float.Parse(fields[5], StockAnalyzerApp.Global.EnglishCulture);
-                        statistic.minVariationLow = float.Parse(fields[6], StockAnalyzerApp.Global.EnglishCulture);
-                        statistic.minVariationHigh = float.Parse(fields[7], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.maxVariationClose = float.Parse(fields[8], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.maxVariationLow = float.Parse(fields[9], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.maxVariationHigh = float.Parse(fields[10], StockAnalyzerApp.Global.EnglishCulture);
 
-                        statistic.maxVariationClose = float.Parse(fields[8], StockAnalyzerApp.Global.EnglishCulture);
-                        statistic.maxVariationLow = float.Parse(fields[9], StockAnalyzerApp.Global.EnglishCulture);
-                        statistic.maxVariationHigh = float.Parse(fields[10], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.avgVariationClose = float.Parse(fields[2], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.avgVariationLow = float.Parse(fields[3], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.avgVariationHigh = float.Parse(fields[4], StockAnalyzerApp.Global.EnglishCulture);
 
-                        statistic.avgVariationClose = float.Parse(fields[2], StockAnalyzerApp.Global.EnglishCulture);
-                        statistic.avgVariationLow = float.Parse(fields[3], StockAnalyzerApp.Global.EnglishCulture);
-                        statistic.avgVariationHigh = float.Parse(fields[4], StockAnalyzerApp.Global.EnglishCulture);
+                    statistic.nbVariationValue = int.Parse(fields[1]);
 
-                        statistic.nbVariationValue = int.Parse(fields[1]);
-
-                        stats.Add(fields[0], statistic);
-                    }
+                    stats.Add(fields[0], statistic);
                 }
             }
             catch (Exception)

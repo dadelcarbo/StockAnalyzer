@@ -265,17 +265,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (File.Exists(fileName))
             {
-                using (StreamReader sr = new StreamReader(fileName))
+                using StreamReader sr = new StreamReader(fileName);
+                sr.ReadLine();  // Skip the first line
+                StockDailyValue readValue = null;
+                while (!sr.EndOfStream)
                 {
-                    sr.ReadLine();  // Skip the first line
-                    StockDailyValue readValue = null;
-                    while (!sr.EndOfStream)
+                    readValue = this.ReadMarketDataFromCSVStream(sr, stockSerie.StockName, true);
+                    if (readValue != null && readValue.DATE.Year >= LOAD_START_YEAR && !stockSerie.ContainsKey(readValue.DATE))
                     {
-                        readValue = this.ReadMarketDataFromCSVStream(sr, stockSerie.StockName, true);
-                        if (readValue != null && readValue.DATE.Year >= LOAD_START_YEAR && !stockSerie.ContainsKey(readValue.DATE))
-                        {
-                            stockSerie.Add(readValue.DATE, readValue);
-                        }
+                        stockSerie.Add(readValue.DATE, readValue);
                     }
                 }
                 return true;

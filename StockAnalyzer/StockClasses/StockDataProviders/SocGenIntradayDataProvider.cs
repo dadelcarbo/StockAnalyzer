@@ -73,91 +73,89 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
-                using (var wc = new WebClient())
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                var url = FormatIntradayURL(stockSerie.Ticker);
+
+                try
                 {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                    var url = FormatIntradayURL(stockSerie.Ticker);
+                    var rawData = StockWebHelper.DownloadData(url);
+                    var entries = rawData.Replace("[", "").Replace("]", "").Replace("},{", "|").Replace("{", "").Replace("}", "").Split('|');
+                    if (entries.Length < 2)
+                        return false;
 
-                    try
+                    if (DownloadHistory.ContainsKey(stockSerie.Ticker))
                     {
-                        var rawData = StockWebHelper.DownloadData(url);
-                        var entries = rawData.Replace("[", "").Replace("]", "").Replace("},{", "|").Replace("{", "").Replace("}", "").Split('|');
-                        if (entries.Length < 2)
-                            return false;
+                        DownloadHistory[stockSerie.Ticker] = DateTime.Now;
+                    }
+                    else
+                    {
+                        DownloadHistory.Add(stockSerie.Ticker, DateTime.Now);
+                    }
+                    stockSerie.IsInitialised = false;
+                    this.LoadData(stockSerie);
 
-                        if (DownloadHistory.ContainsKey(stockSerie.Ticker))
+                    DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last().Date.AddDays(1) : DateTime.MinValue;
+                    var values = new Dictionary<DateTime, float>();
+                    DateTime date;
+                    float value;
+                    foreach (var entry in entries)
+                    {
+                        var fields = entry.Replace("\"", "").Split(',');
+                        var dateText = fields.First(e => e.StartsWith("Date")).Replace("Date:", "");
+                        date = DateTime.Parse(dateText, Global.FrenchCulture);
+                        if (date > lastDate)
                         {
-                            DownloadHistory[stockSerie.Ticker] = DateTime.Now;
+                            float ask = float.Parse(fields.First(e => e.StartsWith("Ask")).Split(':')[1], usCulture);
+                            float bid = float.Parse(fields.First(e => e.StartsWith("Bid")).Split(':')[1], usCulture);
+                            value = ask == 0 ? bid : ask;
+
+                            values.Add(date, value);
+                        }
+                    }
+                    if (values.Count == 0)
+                        return true;
+                    // Make 5 minutes bar
+                    date = values.First().Key;
+                    value = values.First().Value;
+                    var minute = (date.Minute / 5) * 5;
+                    StockDailyValue newBar = new StockDailyValue(value, value, value, value, 0, new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0));
+
+                    foreach (var data in values.Skip(1))
+                    {
+                        date = data.Key;
+                        value = data.Value;
+                        minute = (date.Minute / 5) * 5;
+
+                        if (minute == newBar.DATE.Minute)
+                        {
+                            newBar.HIGH = Math.Max(newBar.HIGH, value);
+                            newBar.LOW = Math.Min(newBar.LOW, value);
+                            newBar.CLOSE = value;
                         }
                         else
                         {
-                            DownloadHistory.Add(stockSerie.Ticker, DateTime.Now);
-                        }
-                        stockSerie.IsInitialised = false;
-                        this.LoadData(stockSerie);
-
-                        DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last().Date.AddDays(1) : DateTime.MinValue;
-                        var values = new Dictionary<DateTime, float>();
-                        DateTime date;
-                        float value;
-                        foreach (var entry in entries)
-                        {
-                            var fields = entry.Replace("\"", "").Split(',');
-                            var dateText = fields.First(e => e.StartsWith("Date")).Replace("Date:", "");
-                            date = DateTime.Parse(dateText, Global.FrenchCulture);
-                            if (date > lastDate)
-                            {
-                                float ask = float.Parse(fields.First(e => e.StartsWith("Ask")).Split(':')[1], usCulture);
-                                float bid = float.Parse(fields.First(e => e.StartsWith("Bid")).Split(':')[1], usCulture);
-                                value = ask == 0 ? bid : ask;
-
-                                values.Add(date, value);
-                            }
-                        }
-                        if (values.Count == 0)
-                            return true;
-                        // Make 5 minutes bar
-                        date = values.First().Key;
-                        value = values.First().Value;
-                        var minute = (date.Minute / 5) * 5;
-                        StockDailyValue newBar = new StockDailyValue(value, value, value, value, 0, new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0));
-
-                        foreach (var data in values.Skip(1))
-                        {
-                            date = data.Key;
-                            value = data.Value;
-                            minute = (date.Minute / 5) * 5;
-
-                            if (minute == newBar.DATE.Minute)
-                            {
-                                newBar.HIGH = Math.Max(newBar.HIGH, value);
-                                newBar.LOW = Math.Min(newBar.LOW, value);
-                                newBar.CLOSE = value;
-                            }
-                            else
-                            {
-                                stockSerie.Add(newBar.DATE, newBar);
-                                var newDate = new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0);
-                                newBar = new StockDailyValue(newBar.CLOSE, value, value, value, 0, newDate);
-                            }
-                        }
-                        if (newBar != null)
-                        {
-                            newBar.IsComplete = false;
                             stockSerie.Add(newBar.DATE, newBar);
+                            var newDate = new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0);
+                            newBar = new StockDailyValue(newBar.CLOSE, value, value, value, 0, newDate);
                         }
-
-                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                        var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
-
-                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, stockSerie.Keys.Last().Date);
-
-                        return true;
                     }
-                    catch (Exception e)
+                    if (newBar != null)
                     {
-                        StockLog.Write(e);
+                        newBar.IsComplete = false;
+                        stockSerie.Add(newBar.DATE, newBar);
                     }
+
+                    var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                    var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+
+                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, stockSerie.Keys.Last().Date);
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    StockLog.Write(e);
                 }
             }
             return false;
@@ -167,29 +165,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    if (!stockDictionary.ContainsKey(row[2]))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                        var stockSerie = new StockSerie(row[2], row[1], StockSerie.Groups.TURBO, StockDataProvider.SocGenIntraday, BarDuration.M_5);
+                        stockSerie.Ticker = long.Parse(row[0]);
 
-                        var row = line.Split(',');
-                        if (!stockDictionary.ContainsKey(row[2]))
+                        stockDictionary.Add(row[2], stockSerie);
+                        if (download && this.needDownload)
                         {
-                            var stockSerie = new StockSerie(row[2], row[1], StockSerie.Groups.TURBO, StockDataProvider.SocGenIntraday, BarDuration.M_5);
-                            stockSerie.Ticker = long.Parse(row[0]);
-
-                            stockDictionary.Add(row[2], stockSerie);
-                            if (download && this.needDownload)
-                            {
-                                this.needDownload = this.DownloadDailyData(stockSerie);
-                            }
+                            this.needDownload = this.DownloadDailyData(stockSerie);
                         }
-                        else
-                        {
-                            Console.WriteLine("SocGen Intraday Entry: " + row[2] + " already in stockDictionary");
-                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("SocGen Intraday Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }
@@ -201,36 +197,34 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var res = false;
             try
             {
-                using (var sr = new StreamReader(fileName))
+                using var sr = new StreamReader(fileName);
+                var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
+
+                for (var i = 0; i < barchartJson.C.Length; i++)
                 {
-                    var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
+                    if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
+                        continue;
 
-                    for (var i = 0; i < barchartJson.C.Length; i++)
+                    var openDate = refDate.AddSeconds(barchartJson.T[i]);
+                    if (!stockSerie.ContainsKey(openDate))
                     {
-                        if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
-                            continue;
+                        var volString = barchartJson.V[i];
+                        long vol = 0;
+                        long.TryParse(barchartJson.V[i], out vol);
+                        var dailyValue = new StockDailyValue(
+                               barchartJson.O[i],
+                               barchartJson.H[i],
+                               barchartJson.L[i],
+                               barchartJson.C[i],
+                               vol,
+                               openDate);
 
-                        var openDate = refDate.AddSeconds(barchartJson.T[i]);
-                        if (!stockSerie.ContainsKey(openDate))
-                        {
-                            var volString = barchartJson.V[i];
-                            long vol = 0;
-                            long.TryParse(barchartJson.V[i], out vol);
-                            var dailyValue = new StockDailyValue(
-                                   barchartJson.O[i],
-                                   barchartJson.H[i],
-                                   barchartJson.L[i],
-                                   barchartJson.C[i],
-                                   vol,
-                                   openDate);
-
-                            stockSerie.Add(dailyValue.DATE, dailyValue);
-                        }
+                        stockSerie.Add(dailyValue.DATE, dailyValue);
                     }
-                    stockSerie.ClearBarDurationCache();
-
-                    res = true;
                 }
+                stockSerie.ClearBarDurationCache();
+
+                res = true;
             }
             catch (Exception e)
             {

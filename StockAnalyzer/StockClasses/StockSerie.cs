@@ -127,14 +127,12 @@ namespace StockAnalyzer.StockClasses
                 string fileName = path + @"\" + this.Symbol + "_" + this.StockGroup + ".xml";
                 if (File.Exists(fileName))
                 {
-                    using (FileStream fs = new FileStream(fileName, FileMode.Open))
-                    {
-                        System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                        settings.IgnoreWhitespace = true;
-                        System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                        XmlSerializer serializer = new XmlSerializer(typeof(StockAgenda));
-                        stockAgenda = (StockAgenda)serializer.Deserialize(xmlReader);
-                    }
+                    using FileStream fs = new FileStream(fileName, FileMode.Open);
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                    settings.IgnoreWhitespace = true;
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    XmlSerializer serializer = new XmlSerializer(typeof(StockAgenda));
+                    stockAgenda = (StockAgenda)serializer.Deserialize(xmlReader);
                 }
             }
             return stockAgenda;
@@ -144,14 +142,12 @@ namespace StockAnalyzer.StockClasses
             if (this.Agenda == null) return;
             string path = Folders.AgendaFolder;
             string fileName = path + @"\" + this.Symbol + "_" + this.StockGroup + ".xml";
-            using (FileStream fs = new FileStream(fileName, FileMode.Create))
-            {
-                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
-                settings.Indent = true;
-                System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                XmlSerializer serializer = new XmlSerializer(typeof(StockAgenda));
-                serializer.Serialize(xmlWriter, this.Agenda);
-            }
+            using FileStream fs = new FileStream(fileName, FileMode.Create);
+            System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+            settings.Indent = true;
+            System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+            XmlSerializer serializer = new XmlSerializer(typeof(StockAgenda));
+            serializer.Serialize(xmlWriter, this.Agenda);
         }
 
         #endregion
@@ -324,21 +320,19 @@ namespace StockAnalyzer.StockClasses
                 }
                 return;
             }
-            using (MethodLogger ml = new MethodLogger(typeof(StockSerie), true, $"{this.StockName} Previous:{this.barDuration} New:{newBarDuration}"))
+            using MethodLogger ml = new MethodLogger(typeof(StockSerie), true, $"{this.StockName} Previous:{this.barDuration} New:{newBarDuration}");
+            if (!this.Initialise() || (newBarDuration == this.barDuration))
             {
-                if (!this.Initialise() || (newBarDuration == this.barDuration))
-                {
-                    this.barDuration = newBarDuration;
-                    return;
-                }
-                this.ResetIndicatorCache();
-                this.InitRange(this.GetSmoothedValues(newBarDuration));
                 this.barDuration = newBarDuration;
-                this.PreInitialise();
-                valueArray = StockDailyValuesAsArray();
-                dateArray = null;
                 return;
             }
+            this.ResetIndicatorCache();
+            this.InitRange(this.GetSmoothedValues(newBarDuration));
+            this.barDuration = newBarDuration;
+            this.PreInitialise();
+            valueArray = StockDailyValuesAsArray();
+            dateArray = null;
+            return;
         }
         public void ClearBarDurationCache()
         {
@@ -3674,19 +3668,17 @@ namespace StockAnalyzer.StockClasses
 
         public void SaveToCSV(string fileName, DateTime startDate, bool archive)
         {
-            using (StreamWriter sw = new StreamWriter(fileName))
+            using StreamWriter sw = new StreamWriter(fileName);
+            sw.WriteLine(StockDailyValue.StringFormat());
+            foreach (StockDailyValue value in this.Values)
             {
-                sw.WriteLine(StockDailyValue.StringFormat());
-                foreach (StockDailyValue value in this.Values)
+                if (value.DATE >= startDate && !archive && value.DATE <= DateTime.Today)
                 {
-                    if (value.DATE >= startDate && !archive && value.DATE <= DateTime.Today)
-                    {
-                        sw.WriteLine(value.ToString());
-                    }
-                    else if (value.DATE <= startDate && archive)
-                    {
-                        sw.WriteLine(value.ToString());
-                    }
+                    sw.WriteLine(value.ToString());
+                }
+                else if (value.DATE <= startDate && archive)
+                {
+                    sw.WriteLine(value.ToString());
                 }
             }
         }
@@ -3696,13 +3688,11 @@ namespace StockAnalyzer.StockClasses
             var values = this.Values.Where(v => v.DATE >= startDate && v.DATE <= endDate).ToList();
             if (values.Count() > 0)
             {
-                using (StreamWriter sw = new StreamWriter(fileName))
+                using StreamWriter sw = new StreamWriter(fileName);
+                sw.WriteLine(StockDailyValue.StringFormat());
+                foreach (StockDailyValue value in values)
                 {
-                    sw.WriteLine(StockDailyValue.StringFormat());
-                    foreach (StockDailyValue value in values)
-                    {
-                        sw.WriteLine(value.ToString());
-                    }
+                    sw.WriteLine(value.ToString());
                 }
             }
         }
@@ -3721,24 +3711,20 @@ namespace StockAnalyzer.StockClasses
         readonly object __lockObj = new object();
         public void Lock()
         {
-            using (MethodLogger ml = new MethodLogger(this, lockLoggingActive, this.StockName))
+            using MethodLogger ml = new MethodLogger(this, lockLoggingActive, this.StockName);
+            bool lockTaken = false;
+            while (!lockTaken)
             {
-                bool lockTaken = false;
-                while (!lockTaken)
-                {
-                    StockLog.Write($"Trying to lock {this.StockName}", lockLoggingActive);
-                    Monitor.TryEnter(__lockObj, 500, ref lockTaken);
-                }
-                StockLog.Write("Lock taken", lockLoggingActive);
+                StockLog.Write($"Trying to lock {this.StockName}", lockLoggingActive);
+                Monitor.TryEnter(__lockObj, 500, ref lockTaken);
             }
+            StockLog.Write("Lock taken", lockLoggingActive);
         }
 
         public void UnLock()
         {
-            using (MethodLogger ml = new MethodLogger(this, lockLoggingActive, this.StockName))
-            {
-                Monitor.Exit(__lockObj);
-            }
+            using MethodLogger ml = new MethodLogger(this, lockLoggingActive, this.StockName);
+            Monitor.Exit(__lockObj);
         }
 
         #endregion

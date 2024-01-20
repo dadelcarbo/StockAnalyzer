@@ -95,64 +95,62 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
             {
                 NotifyProgress("Downloading intraday for " + stockSerie.StockName);
 
-                using (var wc = new WebClient())
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+
+                try
                 {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-
-                    try
+                    string url = FormatIntradayURL(stockSerie.ISIN, "2");
+                    if (DownloadHistory.ContainsKey(stockSerie.Symbol))
                     {
-                        string url = FormatIntradayURL(stockSerie.ISIN, "2");
-                        if (DownloadHistory.ContainsKey(stockSerie.Symbol))
-                        {
-                            DownloadHistory[stockSerie.Symbol] = DateTime.Now;
-                        }
-                        else
-                        {
-                            DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
-                        }
-                        var jsonData = VontobelIntradayDataProvider.HttpGetFromVontobel(url);
-                        if (jsonData == null)
-                            return false;
-                        var vontobelData = JsonConvert.DeserializeObject<VontobelJSon>(jsonData, Converter.Settings);
-                        if (!vontobelData.isSuccess)
-                        {
-                            MessageBox.Show(vontobelData.errorCode, "Failed loading date from Vontobel");
-                            return false;
-                        }
-                        stockSerie.IsInitialised = false;
-                        this.LoadData(stockSerie);
-                        DateTime lastDate = DateTime.MinValue;
-                        if (stockSerie.Count > 0)
-                        {
-                            lastDate = stockSerie.Keys.Last();
-                        }
-                        else
-                        {
-                            lastDate = refDate.AddMilliseconds(vontobelData.payload.series[0].points.Min(p => p.timestamp));
-                        }
-                        int nbNewBars = 0;
-                        foreach (var bar in vontobelData.payload.series[0].points.Reverse())
-                        {
-                            var newBar = new StockDailyValue(bar.bid, bar.bid, bar.bid, bar.bid, 0, refDate.AddMilliseconds(bar.timestamp));
-                            stockSerie.Add(newBar.DATE, newBar);
-                            nbNewBars++;
-                        }
-
-                        if (nbNewBars > 0)
-                        {
-                            var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
-
-                            var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
-
-                            stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
-                        }
-                        return true;
+                        DownloadHistory[stockSerie.Symbol] = DateTime.Now;
                     }
-                    catch (Exception e)
+                    else
                     {
-                        StockLog.Write(e);
+                        DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
                     }
+                    var jsonData = VontobelIntradayDataProvider.HttpGetFromVontobel(url);
+                    if (jsonData == null)
+                        return false;
+                    var vontobelData = JsonConvert.DeserializeObject<VontobelJSon>(jsonData, Converter.Settings);
+                    if (!vontobelData.isSuccess)
+                    {
+                        MessageBox.Show(vontobelData.errorCode, "Failed loading date from Vontobel");
+                        return false;
+                    }
+                    stockSerie.IsInitialised = false;
+                    this.LoadData(stockSerie);
+                    DateTime lastDate = DateTime.MinValue;
+                    if (stockSerie.Count > 0)
+                    {
+                        lastDate = stockSerie.Keys.Last();
+                    }
+                    else
+                    {
+                        lastDate = refDate.AddMilliseconds(vontobelData.payload.series[0].points.Min(p => p.timestamp));
+                    }
+                    int nbNewBars = 0;
+                    foreach (var bar in vontobelData.payload.series[0].points.Reverse())
+                    {
+                        var newBar = new StockDailyValue(bar.bid, bar.bid, bar.bid, bar.bid, 0, refDate.AddMilliseconds(bar.timestamp));
+                        stockSerie.Add(newBar.DATE, newBar);
+                        nbNewBars++;
+                    }
+
+                    if (nbNewBars > 0)
+                    {
+                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                        var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+
+                        var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
+
+                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
+                    }
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    StockLog.Write(e);
                 }
             }
             return false;
@@ -171,19 +169,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
 
                     httpClient = new HttpClient(handler);
                 }
-                using (var request = new HttpRequestMessage())
+                using var request = new HttpRequestMessage();
+                request.Method = HttpMethod.Get;
+                request.RequestUri = new Uri(url);
+                var response = httpClient.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    request.Method = HttpMethod.Get;
-                    request.RequestUri = new Uri(url);
-                    var response = httpClient.SendAsync(request).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return response.Content.ReadAsStringAsync().Result;
-                    }
-                    else
-                    {
-                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
-                    }
+                    return response.Content.ReadAsStringAsync().Result;
+                }
+                else
+                {
+                    StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
                 }
             }
             catch (Exception ex)
@@ -198,52 +194,50 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    if (!stockDictionary.ContainsKey(row[1]))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
-
-                        var row = line.Split(',');
-                        if (!stockDictionary.ContainsKey(row[1]))
+                        var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.VontobelIntraday, BarDuration.H_1);
+                        stockSerie.ISIN = row[0];
+                        stockDictionary.Add(row[1], stockSerie);
+                        if (row.Length == 3)
                         {
-                            var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.VontobelIntraday, BarDuration.H_1);
-                            stockSerie.ISIN = row[0];
-                            stockDictionary.Add(row[1], stockSerie);
-                            if (row.Length == 3)
-                            {
-                                stockSerie.Uic = long.Parse(row[2]);
-                            }
+                            stockSerie.Uic = long.Parse(row[2]);
+                        }
 
-                            if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
+                        if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
+                        {
+                            // Check if download needed.
+                            stockSerie.Initialise();
+                            DateTime refDate = DateTime.MinValue;
+                            if (stockSerie.Count > 0)
                             {
-                                // Check if download needed.
-                                stockSerie.Initialise();
-                                DateTime refDate = DateTime.MinValue;
-                                if (stockSerie.Count > 0)
-                                {
-                                    refDate = stockSerie.Keys.Last();
-                                }
-                                this.DownloadIntradayData(stockSerie);
-                                if (stockSerie.Initialise())
-                                {
-                                    needDownload = refDate < stockSerie.Keys.Last();
-                                    RefSerie = stockSerie;
-                                }
+                                refDate = stockSerie.Keys.Last();
                             }
-                            else
+                            this.DownloadIntradayData(stockSerie);
+                            if (stockSerie.Initialise())
                             {
-                                if (download && this.needDownload)
-                                {
-                                    this.DownloadIntradayData(stockSerie);
-                                }
+                                needDownload = refDate < stockSerie.Keys.Last();
+                                RefSerie = stockSerie;
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Vontobel Intraday Entry: " + row[1] + " already in stockDictionary");
+                            if (download && this.needDownload)
+                            {
+                                this.DownloadIntradayData(stockSerie);
+                            }
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Vontobel Intraday Entry: " + row[1] + " already in stockDictionary");
                     }
                 }
             }

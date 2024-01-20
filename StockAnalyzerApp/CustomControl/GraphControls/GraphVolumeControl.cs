@@ -164,46 +164,42 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         override protected void PaintDailyBox(PointF mousePoint)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            string value = string.Empty;
+            foreach (GraphCurveType curveType in this.CurveList)
             {
-                string value = string.Empty;
-                foreach (GraphCurveType curveType in this.CurveList)
+                if (curveType.IsVisible && !float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
                 {
-                    if (curveType.IsVisible && !float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
+                    if (curveType.DataSerie.Name == "EXCHANGED")
                     {
-                        if (curveType.DataSerie.Name == "EXCHANGED")
+                        var volume = this.serie.GetSerie(StockAnalyzer.StockClasses.StockDataType.VOLUME)[this.lastMouseIndex];
+                        var exchanged = curveType.DataSerie[this.lastMouseIndex];
+                        value += BuildTabbedString("VOLUME", volume, 12) + "\r\n";
+                        value += BuildTabbedString("EXCHANGED", exchanged / 1000000, 12) + "\r\n";
+                        if (this.lastMouseIndex == this.serie.LastIndex)
                         {
-                            var volume = this.serie.GetSerie(StockAnalyzer.StockClasses.StockDataType.VOLUME)[this.lastMouseIndex];
-                            var exchanged = curveType.DataSerie[this.lastMouseIndex];
-                            value += BuildTabbedString("VOLUME", volume, 12) + "\r\n";
-                            value += BuildTabbedString("EXCHANGED", exchanged / 1000000, 12) + "\r\n";
-                            if (this.lastMouseIndex == this.serie.LastIndex)
-                            {
-                                value += BuildTabbedString("EXCHANGED AVG", this.serie.GetExchanged(10), 12) + "\r\n";
-                            }
-                        }
-                        else
-                        {
-                            value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
+                            value += BuildTabbedString("EXCHANGED AVG", this.serie.GetExchanged(10), 12) + "\r\n";
                         }
                     }
-                }
-                // Remove last new line.
-                if (value.Length != 0)
-                {
-                    value = value.Remove(value.LastIndexOf("\r\n"));
-                }
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    using (Font font = new Font(new FontFamily(System.Drawing.Text.GenericFontFamilies.Monospace), 8))
+                    else
                     {
-                        Size size = TextRenderer.MeasureText(value, font);
-
-                        PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), GraphRectangle.Top + 5);
-
-                        this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.backgroundBrush, point, true);
+                        value += BuildTabbedString(curveType.DataSerie.Name, curveType.DataSerie[this.lastMouseIndex], 12) + "\r\n";
                     }
                 }
+            }
+            // Remove last new line.
+            if (value.Length != 0)
+            {
+                value = value.Remove(value.LastIndexOf("\r\n"));
+            }
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                using Font font = new Font(new FontFamily(System.Drawing.Text.GenericFontFamilies.Monospace), 8);
+                Size size = TextRenderer.MeasureText(value, font);
+
+                PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), GraphRectangle.Top + 5);
+
+                this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.backgroundBrush, point, true);
             }
         }
 

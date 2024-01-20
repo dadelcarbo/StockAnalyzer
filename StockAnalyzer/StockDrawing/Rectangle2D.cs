@@ -50,10 +50,8 @@ namespace StockAnalyzer.StockDrawing
                 g.DrawLines(pen, points);
                 if (this.Fill)
                 {
-                    using (Brush brush = new SolidBrush(Color.FromArgb(128, pen.Color)))
-                    {
-                        g.FillPolygon(brush, points);
-                    }
+                    using Brush brush = new SolidBrush(Color.FromArgb(128, pen.Color));
+                    g.FillPolygon(brush, points);
                 }
             }
         }

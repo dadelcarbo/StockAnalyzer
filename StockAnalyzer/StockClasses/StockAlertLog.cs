@@ -108,20 +108,18 @@ namespace StockAnalyzer.StockClasses
 
             try
             {
-                using (var fs = new FileStream(filepath, FileMode.OpenOrCreate))
+                using var fs = new FileStream(filepath, FileMode.OpenOrCreate);
+                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
                 {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
-                    {
-                        IgnoreWhitespace = true
-                    };
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
-                    this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName));
+                    IgnoreWhitespace = true
+                };
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
+                this.Alerts = new ObservableCollection<StockAlert>((serializer.Deserialize(xmlReader) as ObservableCollection<StockAlert>).OrderByDescending(a => a.Date).ThenBy(a => a.StockName));
 
-                    foreach (var alert in this.Alerts)
-                    {
-                        alert.SetAlertDef();
-                    }
+                foreach (var alert in this.Alerts)
+                {
+                    alert.SetAlertDef();
                 }
             }
             catch (Exception ex)
@@ -139,18 +137,16 @@ namespace StockAnalyzer.StockClasses
                 Directory.CreateDirectory(AlertLogFolder);
             string filepath = Path.Combine(AlertLogFolder, this.fileName);
             this.LastRefreshDate = DateTime.Now;
-            using (FileStream fs = new FileStream(filepath, FileMode.Create))
+            using FileStream fs = new FileStream(filepath, FileMode.Create);
+            System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings
             {
-                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings
-                {
-                    Indent = true,
-                    NewLineOnAttributes = true
-                };
-                System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
-                this.Alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= StartDate).OrderByDescending(a => a.Date).ThenBy(a => a.AlertDefId).ThenBy(a => a.StockName));
-                serializer.Serialize(xmlWriter, this.alerts);
-            }
+                Indent = true,
+                NewLineOnAttributes = true
+            };
+            System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
+            XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<StockAlert>));
+            this.Alerts = new ObservableCollection<StockAlert>(alerts.Where(a => a.Date >= StartDate).OrderByDescending(a => a.Date).ThenBy(a => a.AlertDefId).ThenBy(a => a.StockName));
+            serializer.Serialize(xmlWriter, this.alerts);
         }
 
         public void Clear()

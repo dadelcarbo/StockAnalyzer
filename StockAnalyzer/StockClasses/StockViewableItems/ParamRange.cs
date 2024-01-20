@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
 
         virtual public Type GetParamType()
         {
-            return MinValue == null ? null : MinValue.GetType();
+            return MinValue?.GetType();
         }
     }
     public class ParamRangeInt : ParamRange

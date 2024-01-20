@@ -85,13 +85,11 @@ namespace StockAnalyzer.StockClasses
 
             // Persist
             string fileName = Path.Combine(destinationFolder, $"{group}_{indicatorName}_{duration}.txt");
-            using (StreamWriter sw = new StreamWriter(fileName, false))
+            using StreamWriter sw = new StreamWriter(fileName, false);
+            foreach (var serie in groupsSeries)
             {
-                foreach (var serie in groupsSeries)
-                {
-                    var serieRanks = ranks.Select(r => r.Value.FirstOrDefault(l => l.Item1 == serie)?.Item2).Where(r => r != null).Select(r => r.Value.ToString("G4"));
-                    sw.WriteLine(serie.StockName + "|" + serieRanks.Aggregate((i, j) => i + "|" + j));
-                }
+                var serieRanks = ranks.Select(r => r.Value.FirstOrDefault(l => l.Item1 == serie)?.Item2).Where(r => r != null).Select(r => r.Value.ToString("G4"));
+                sw.WriteLine(serie.StockName + "|" + serieRanks.Aggregate((i, j) => i + "|" + j));
             }
             //foreach (var dailyValue in stockSerie.Values.Reverse().Take(1))
             //{

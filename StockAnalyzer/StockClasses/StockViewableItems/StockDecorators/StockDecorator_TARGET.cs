@@ -37,40 +37,38 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            List<string> eventNames = this.EventNames.ToList();
+            int overboughtIndex = eventNames.IndexOf("Overbought");
+            int oversoldIndex = eventNames.IndexOf("Oversold");
+            int beginOverboughtIndex = eventNames.IndexOf("BeginOverbought");
+            int beginOversoldIndex = eventNames.IndexOf("BeginOversold");
+            int endOverboughtIndex = eventNames.IndexOf("EndOverbought");
+            int endOversoldIndex = eventNames.IndexOf("EndOversold");
+
+            CreateEventSeries(stockSerie.Count);
+
+            float overboughtTrigger = (float)this.parameters[0];
+            float oversoldTrigger = (float)this.parameters[1];
+
+            IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
+            if (indicator == null || indicator.Series[0].Count == 0)
+                return;
+            FloatSerie indicatorToDecorate = indicator.Series[0];
+
+            this.Series[0] = indicatorToDecorate;
+            this.Series[0].Name = this.SerieNames[0];
+
+            for (int i = 1; i < indicatorToDecorate.Count - 1; i++)
             {
-                List<string> eventNames = this.EventNames.ToList();
-                int overboughtIndex = eventNames.IndexOf("Overbought");
-                int oversoldIndex = eventNames.IndexOf("Oversold");
-                int beginOverboughtIndex = eventNames.IndexOf("BeginOverbought");
-                int beginOversoldIndex = eventNames.IndexOf("BeginOversold");
-                int endOverboughtIndex = eventNames.IndexOf("EndOverbought");
-                int endOversoldIndex = eventNames.IndexOf("EndOversold");
-
-                CreateEventSeries(stockSerie.Count);
-
-                float overboughtTrigger = (float)this.parameters[0];
-                float oversoldTrigger = (float)this.parameters[1];
-
-                IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
-                if (indicator == null || indicator.Series[0].Count == 0)
-                    return;
-                FloatSerie indicatorToDecorate = indicator.Series[0];
-
-                this.Series[0] = indicatorToDecorate;
-                this.Series[0].Name = this.SerieNames[0];
-
-                for (int i = 1; i < indicatorToDecorate.Count - 1; i++)
-                {
-                    bool overbought = indicatorToDecorate[i] > overboughtTrigger;
-                    bool oversold = indicatorToDecorate[i] < oversoldTrigger;
-                    this.eventSeries[overboughtIndex][i] = overbought;
-                    this.eventSeries[oversoldIndex][i] = oversold;
-                    this.eventSeries[beginOverboughtIndex][i] = overbought && indicatorToDecorate[i - 1] < overboughtTrigger;
-                    this.eventSeries[beginOversoldIndex][i] = oversold && indicatorToDecorate[i - 1] > oversoldTrigger;
-                    this.eventSeries[endOverboughtIndex][i] = !overbought && indicatorToDecorate[i - 1] > overboughtTrigger;
-                    this.eventSeries[endOversoldIndex][i] = !oversold && indicatorToDecorate[i - 1] < oversoldTrigger;
-                }
+                bool overbought = indicatorToDecorate[i] > overboughtTrigger;
+                bool oversold = indicatorToDecorate[i] < oversoldTrigger;
+                this.eventSeries[overboughtIndex][i] = overbought;
+                this.eventSeries[oversoldIndex][i] = oversold;
+                this.eventSeries[beginOverboughtIndex][i] = overbought && indicatorToDecorate[i - 1] < overboughtTrigger;
+                this.eventSeries[beginOversoldIndex][i] = oversold && indicatorToDecorate[i - 1] > oversoldTrigger;
+                this.eventSeries[endOverboughtIndex][i] = !overbought && indicatorToDecorate[i - 1] > overboughtTrigger;
+                this.eventSeries[endOversoldIndex][i] = !oversold && indicatorToDecorate[i - 1] < oversoldTrigger;
             }
         }
 

@@ -14,35 +14,33 @@ namespace StockAnalyzer.StockWeb
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                using (MailMessage message = new MailMessage())
+                using MailMessage message = new MailMessage();
+                try
                 {
-                    try
+                    message.Body = alert;
+                    if (SMTPServer.Contains("free.fr"))
                     {
-                        message.Body = alert;
-                        if (SMTPServer.Contains("free.fr"))
-                        {
-                            message.From = new MailAddress("noreply@free.fr");
-                        }
-                        else
-                        {
-                            return;
-                            //message.From = new MailAddress("david.carbonel@volvo.com");
-                        }
-                        string[] toList = To.Split(';');
-                        foreach (var address in toList)
-                        {
-                            message.To.Add(address);
-                        }
-                        message.Subject = subject;
-                        message.IsBodyHtml = false;
-                        SmtpClient smtp = new SmtpClient(SMTPServer);
+                        message.From = new MailAddress("noreply@free.fr");
+                    }
+                    else
+                    {
+                        return;
+                        //message.From = new MailAddress("david.carbonel@volvo.com");
+                    }
+                    string[] toList = To.Split(';');
+                    foreach (var address in toList)
+                    {
+                        message.To.Add(address);
+                    }
+                    message.Subject = subject;
+                    message.IsBodyHtml = false;
+                    SmtpClient smtp = new SmtpClient(SMTPServer);
 
-                        //smtp.Send(message);
-                    }
-                    catch (Exception)
-                    {
-                        //System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
-                    }
+                    //smtp.Send(message);
+                }
+                catch (Exception)
+                {
+                    //System.Windows.Forms.MessageBox.Show(exp.Message, "Email error !");
                 }
             }
         }

@@ -113,71 +113,69 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
 
         public void ParseInputParameters(string[] parameters)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            // Parse input parameters
+            if (parameters.Length < this.ParameterCount)
             {
-                // Parse input parameters
-                if (parameters.Length < this.ParameterCount)
+                StockLog.Write("Invalid input parameter number: " + parameters.Length + " expected: " + this.ParameterCount);
+                StockLog.Write("Using default parameters");
+            }
+            for (int i = 0; i < Math.Min(parameters.Length, this.ParameterTypes.Length); i++)
+            {
+                switch (this.ParameterTypes[i].Name)
                 {
-                    StockLog.Write("Invalid input parameter number: " + parameters.Length + " expected: " + this.ParameterCount);
-                    StockLog.Write("Using default parameters");
-                }
-                for (int i = 0; i < Math.Min(parameters.Length, this.ParameterTypes.Length); i++)
-                {
-                    switch (this.ParameterTypes[i].Name)
-                    {
-                        case "Int32":
-                            int intParam;
-                            if (int.TryParse(parameters[i], out intParam))
-                            {
-                                this.parameters[i] = intParam;
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
-                            }
-                            break;
-                        case "DateTime":
-                            DateTime dateParam = DateTime.MinValue;
-                            if (DateTime.TryParse(parameters[i], out dateParam))
-                            {
-                                this.parameters[i] = dateParam;
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
-                            }
-                            break;
-                        case "Single":
-                            float floatParam;
-                            if (float.TryParse(parameters[i], NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out floatParam))
-                            {
-                                this.parameters[i] = floatParam;
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " value: " + parameters[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
-                            }
-                            break;
-                        case "Boolean":
-                            bool boolParam;
-                            if (bool.TryParse(parameters[i], out boolParam))
-                            {
-                                this.parameters[i] = boolParam;
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
-                            }
-                            break;
-                        case "String":
-                            this.parameters[i] = parameters[i];
-                            break;
-                        case "StockSerie":
-                            this.parameters[i] = parameters[i];
-                            break;
-                        default:
-                            throw new NotImplementedException("This type is not yet implemented: " + this.ParameterTypes[i].ToString());
-                    }
+                    case "Int32":
+                        int intParam;
+                        if (int.TryParse(parameters[i], out intParam))
+                        {
+                            this.parameters[i] = intParam;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
+                        }
+                        break;
+                    case "DateTime":
+                        DateTime dateParam = DateTime.MinValue;
+                        if (DateTime.TryParse(parameters[i], out dateParam))
+                        {
+                            this.parameters[i] = dateParam;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
+                        }
+                        break;
+                    case "Single":
+                        float floatParam;
+                        if (float.TryParse(parameters[i], NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out floatParam))
+                        {
+                            this.parameters[i] = floatParam;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " value: " + parameters[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
+                        }
+                        break;
+                    case "Boolean":
+                        bool boolParam;
+                        if (bool.TryParse(parameters[i], out boolParam))
+                        {
+                            this.parameters[i] = boolParam;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
+                        }
+                        break;
+                    case "String":
+                        this.parameters[i] = parameters[i];
+                        break;
+                    case "StockSerie":
+                        this.parameters[i] = parameters[i];
+                        break;
+                    default:
+                        throw new NotImplementedException("This type is not yet implemented: " + this.ParameterTypes[i].ToString());
                 }
             }
         }

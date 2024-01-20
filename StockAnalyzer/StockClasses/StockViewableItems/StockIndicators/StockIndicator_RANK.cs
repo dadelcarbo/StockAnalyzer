@@ -57,16 +57,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             if (!File.Exists(fileName))
                 return;
 
-            using (var sr = new StreamReader(fileName))
+            using var sr = new StreamReader(fileName);
+            string line;
+            while ((line = sr.ReadLine()) != null)
             {
-                string line;
-                while ((line = sr.ReadLine()) != null)
+                if (line.StartsWith(stockSerie.StockName))
                 {
-                    if (line.StartsWith(stockSerie.StockName))
-                    {
-                        rankSerie.Values = line.Split('|').Skip(1).Select(r => float.Parse(r) / 100.0f).ToArray();
-                        break;
-                    }
+                    rankSerie.Values = line.Split('|').Skip(1).Select(r => float.Parse(r) / 100.0f).ToArray();
+                    break;
                 }
             }
 

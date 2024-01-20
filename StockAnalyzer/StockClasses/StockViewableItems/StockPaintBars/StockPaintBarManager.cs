@@ -39,55 +39,53 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         }
         static public IStockPaintBar CreatePaintBar(string fullName)
         {
-            using (MethodLogger ml = new MethodLogger(typeof(StockPaintBarManager)))
+            using MethodLogger ml = new MethodLogger(typeof(StockPaintBarManager));
+            IStockPaintBar paintBar = null;
+            if (paintBarList == null)
             {
-                IStockPaintBar paintBar = null;
-                if (paintBarList == null)
+                GetPaintBarList();
+            }
+            try
+            {
+                int paramStartIndex = fullName.IndexOf('(') + 1;
+                string name = fullName;
+                int paramLength = 0;
+                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
                 {
-                    GetPaintBarList();
+                    paramLength = fullName.LastIndexOf(')') - paramStartIndex;
+                    name = fullName.Substring(0, paramStartIndex - 1);
                 }
-                try
-                {
-                    int paramStartIndex = fullName.IndexOf('(') + 1;
-                    string name = fullName;
-                    int paramLength = 0;
-                    if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
-                    {
-                        paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                        name = fullName.Substring(0, paramStartIndex - 1);
-                    }
 
-                    if (paintBarList.Contains(name))
+                if (paintBarList.Contains(name))
+                {
+                    StockPaintBarManager sm = new StockPaintBarManager();
+                    paintBar =
+                        (IStockPaintBar)
+                            sm.GetType()
+                                .Assembly.CreateInstance(
+                                    "StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars.StockPaintBar_" +
+                                    name);
+                    if (paintBar != null)
                     {
-                        StockPaintBarManager sm = new StockPaintBarManager();
-                        paintBar =
-                            (IStockPaintBar)
-                                sm.GetType()
-                                    .Assembly.CreateInstance(
-                                        "StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars.StockPaintBar_" +
-                                        name);
-                        if (paintBar != null)
+                        if (paramLength > 0)
                         {
-                            if (paramLength > 0)
-                            {
-                                string parameters = fullName.Substring(paramStartIndex, paramLength);
-                                paintBar.Initialise(parameters.Split(','));
-                            }
+                            string parameters = fullName.Substring(paramStartIndex, paramLength);
+                            paintBar.Initialise(parameters.Split(','));
                         }
                     }
-                    else
-                    {
-                        throw new StockAnalyzerException("PaintBar " + name + " doesn't not exist ! ");
-                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    if (e is StockAnalyzerException) throw e;
-                    paintBar = null;
-                    StockLog.Write(e);
+                    throw new StockAnalyzerException("PaintBar " + name + " doesn't not exist ! ");
                 }
-                return paintBar;
             }
+            catch (Exception e)
+            {
+                if (e is StockAnalyzerException) throw e;
+                paintBar = null;
+                StockLog.Write(e);
+            }
+            return paintBar;
         }
     }
 }

@@ -45,15 +45,13 @@ namespace StockAnalyzerApp.CustomControl
 
         public void ApplyTheme()
         {
-            using (MethodLogger ml = new MethodLogger(this))
-            {
-                this.fullGraphUserControl1.CurrentStockSerie = currentStockSerie;
-                this.fullGraphUserControl1.ApplyTheme();
-                this.fullGraphUserControl2.CurrentStockSerie = currentStockSerie;
-                this.fullGraphUserControl2.ApplyTheme();
-                this.fullGraphUserControl3.CurrentStockSerie = currentStockSerie;
-                this.fullGraphUserControl3.ApplyTheme();
-            }
+            using MethodLogger ml = new MethodLogger(this);
+            this.fullGraphUserControl1.CurrentStockSerie = currentStockSerie;
+            this.fullGraphUserControl1.ApplyTheme();
+            this.fullGraphUserControl2.CurrentStockSerie = currentStockSerie;
+            this.fullGraphUserControl2.ApplyTheme();
+            this.fullGraphUserControl3.CurrentStockSerie = currentStockSerie;
+            this.fullGraphUserControl3.ApplyTheme();
         }
 
         private void StockNameComboBox_SelectedIndexChanged(object sender, System.EventArgs e)

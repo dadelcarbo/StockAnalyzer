@@ -103,29 +103,27 @@ namespace StockAnalyzer.StockWeb
                 InitWebClient();
 
 
-                using (var request = new HttpRequestMessage(new HttpMethod("GET"), url))
-                {
-                    request.Headers.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-                    request.Headers.TryAddWithoutValidation("Accept-Language", "en-GB,en;q=0.9,fr;q=0.8");
-                    request.Headers.TryAddWithoutValidation("Cache-Control", "max-age=0");
-                    request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
-                    request.Headers.TryAddWithoutValidation("If-Modified-Since", "Sat, 15 Oct 2022 01:48:54 GMT");
-                    request.Headers.TryAddWithoutValidation("If-None-Match", "^^");
-                    request.Headers.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
-                    request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36");
+                using var request = new HttpRequestMessage(new HttpMethod("GET"), url);
+                request.Headers.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", "en-GB,en;q=0.9,fr;q=0.8");
+                request.Headers.TryAddWithoutValidation("Cache-Control", "max-age=0");
+                request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
+                request.Headers.TryAddWithoutValidation("If-Modified-Since", "Sat, 15 Oct 2022 01:48:54 GMT");
+                request.Headers.TryAddWithoutValidation("If-None-Match", "^^");
+                request.Headers.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
+                request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36");
 
-                    var response = httpClient.SendAsync(request).GetAwaiter().GetResult();
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Save content to file
-                        var writer = new FileStream(destFile, FileMode.Create);
-                        response.Content.CopyToAsync(writer).Wait();
-                        writer.Close();
-                    }
-                    else
-                    {
-                        success = false;
-                    }
+                var response = httpClient.SendAsync(request).GetAwaiter().GetResult();
+                if (response.IsSuccessStatusCode)
+                {
+                    // Save content to file
+                    var writer = new FileStream(destFile, FileMode.Create);
+                    response.Content.CopyToAsync(writer).Wait();
+                    writer.Close();
+                }
+                else
+                {
+                    success = false;
                 }
             }
             catch (Exception ex)

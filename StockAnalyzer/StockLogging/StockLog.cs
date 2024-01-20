@@ -160,10 +160,7 @@ namespace StockAnalyzer.StockLogging
 
         public void Dispose()
         {
-            if (sw != null)
-            {
-                sw.Close();
-            }
+            sw?.Close();
         }
     }
 }

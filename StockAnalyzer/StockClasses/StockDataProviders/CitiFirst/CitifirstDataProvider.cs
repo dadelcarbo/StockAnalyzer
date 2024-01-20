@@ -154,36 +154,34 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CitiFirst
                         }
                     }
                 }
-                using (var wc = new WebClient())
-                {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                    int nbTries = 2;
-                    while (nbTries > 0)
+                int nbTries = 2;
+                while (nbTries > 0)
+                {
+                    try
                     {
-                        try
+                        var response = HttpGet(stockSerie.ISIN);
+                        var content = response.Content.ReadAsStringAsync().Result;
+                        if (response.IsSuccessStatusCode)
                         {
-                            var response = HttpGet(stockSerie.ISIN);
-                            var content = response.Content.ReadAsStringAsync().Result;
-                            if (response.IsSuccessStatusCode)
+                            if (content.StartsWith("{"))
                             {
-                                if (content.StartsWith("{"))
-                                {
-                                    File.WriteAllText(fileName, content);
-                                    stockSerie.IsInitialised = false;
-                                    return true;
-                                }
-                                StockLog.Write(content);
-                                return false;
+                                File.WriteAllText(fileName, content);
+                                stockSerie.IsInitialised = false;
+                                return true;
                             }
                             StockLog.Write(content);
-                            nbTries--;
+                            return false;
                         }
-                        catch (Exception ex)
-                        {
-                            nbTries--;
-                            StockLog.Write(ex);
-                        }
+                        StockLog.Write(content);
+                        nbTries--;
+                    }
+                    catch (Exception ex)
+                    {
+                        nbTries--;
+                        StockLog.Write(ex);
                     }
                 }
             }
@@ -195,37 +193,35 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CitiFirst
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    if (!stockDictionary.ContainsKey(row[0]))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                        var stockSerie = new StockSerie(row[0], row[1],
+                            StockSerie.Groups.TURBO,
+                            StockDataProvider.Citifirst, BarDuration.M_15);
+                        stockSerie.ISIN = row[2];
+                        stockSerie.Url = row[3];
 
-                        var row = line.Split(',');
-                        if (!stockDictionary.ContainsKey(row[0]))
+                        var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.Symbol == stockSerie.Symbol);
+                        if (dailySerie != null)
                         {
-                            var stockSerie = new StockSerie(row[0], row[1],
-                                StockSerie.Groups.TURBO,
-                                StockDataProvider.Citifirst, BarDuration.M_15);
-                            stockSerie.ISIN = row[2];
-                            stockSerie.Url = row[3];
-
-                            var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.Symbol == stockSerie.Symbol);
-                            if (dailySerie != null)
-                            {
-                                stockSerie.ISIN = dailySerie.ISIN;
-                            }
-                            stockDictionary.Add(row[0], stockSerie);
-                            if (download && needDownload)
-                            {
-                                needDownload = DownloadDailyData(stockSerie);
-                            }
+                            stockSerie.ISIN = dailySerie.ISIN;
                         }
-                        else
+                        stockDictionary.Add(row[0], stockSerie);
+                        if (download && needDownload)
                         {
-                            Console.WriteLine("Investing Intraday Entry: " + row[0] + " already in stockDictionary");
+                            needDownload = DownloadDailyData(stockSerie);
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Investing Intraday Entry: " + row[0] + " already in stockDictionary");
                     }
                 }
             }
@@ -237,68 +233,66 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CitiFirst
             var res = false;
             try
             {
-                using (var sr = new StreamReader(fileName))
+                using var sr = new StreamReader(fileName);
+                var citifirstJson = CitiFirstSeries.FromJson(sr.ReadToEnd());
+                if (citifirstJson?.Bid == null || citifirstJson.Bid.Length == 0)
+                    return false;
+                StockDailyValue previousValue = null;
+                foreach (var data in citifirstJson.Bid)
                 {
-                    var citifirstJson = CitiFirstSeries.FromJson(sr.ReadToEnd());
-                    if (citifirstJson?.Bid == null || citifirstJson.Bid.Length == 0)
-                        return false;
-                    StockDailyValue previousValue = null;
-                    foreach (var data in citifirstJson.Bid)
+                    var openDate = refDate.AddSeconds(data.x / 1000);
+                    var value = data.y;
+                    if (!stockSerie.ContainsKey(openDate))
                     {
-                        var openDate = refDate.AddSeconds(data.x / 1000);
-                        var value = data.y;
-                        if (!stockSerie.ContainsKey(openDate))
-                        {
-                            var dailyValue = new StockDailyValue(value, value, value, value,
-                                   0,
-                                   openDate);
-                            stockSerie.Add(dailyValue.DATE, dailyValue);
-                        }
-                        //for (var i = 0; i < citifirstJson.data.Count; i++)
-                        //{
-                        //    if (citifirstJson.O[i] == 0 && citifirstJson.H[i] == 0 && citifirstJson.L[i] == 0 && citifirstJson.C[i] == 0)
-                        //        continue;
-
-                        //    var openDate = refDate.AddSeconds(citifirstJson.T[i]);
-                        //    if (!stockSerie.ContainsKey(openDate))
-                        //    {
-                        //        var volString = citifirstJson.V[i];
-                        //        long vol = 0;
-                        //        long.TryParse(citifirstJson.V[i], out vol);
-                        //        var dailyValue = new StockDailyValue(
-                        //               citifirstJson.O[i],
-                        //               citifirstJson.H[i],
-                        //               citifirstJson.L[i],
-                        //               citifirstJson.C[i],
-                        //               vol,
-                        //               openDate);
-                        //        #region Add Missing 5 Minutes bars
-                        //        if (previousValue != null && dailyValue.DATE.Day == previousValue.DATE.Day)
-                        //        {
-                        //            var date = previousValue.DATE.Add(minute5);
-                        //            while (date < openDate && !stockSerie.ContainsKey(date))
-                        //            {
-                        //                // Create missing bars
-                        //                var missingValue = new StockDailyValue(
-                        //                       previousValue.CLOSE,
-                        //                       previousValue.CLOSE,
-                        //                       previousValue.CLOSE,
-                        //                       previousValue.CLOSE,
-                        //                       0,
-                        //                       date);
-                        //                stockSerie.Add(date, missingValue);
-                        //                date = date.Add(minute5);
-                        //            }
-                        //        }
-                        //        #endregion
-                        //        stockSerie.Add(dailyValue.DATE, dailyValue);
-                        //        previousValue = dailyValue;
-                        //    }
-                        //}
-                        //stockSerie.ClearBarDurationCache();
-
-                        res = true;
+                        var dailyValue = new StockDailyValue(value, value, value, value,
+                               0,
+                               openDate);
+                        stockSerie.Add(dailyValue.DATE, dailyValue);
                     }
+                    //for (var i = 0; i < citifirstJson.data.Count; i++)
+                    //{
+                    //    if (citifirstJson.O[i] == 0 && citifirstJson.H[i] == 0 && citifirstJson.L[i] == 0 && citifirstJson.C[i] == 0)
+                    //        continue;
+
+                    //    var openDate = refDate.AddSeconds(citifirstJson.T[i]);
+                    //    if (!stockSerie.ContainsKey(openDate))
+                    //    {
+                    //        var volString = citifirstJson.V[i];
+                    //        long vol = 0;
+                    //        long.TryParse(citifirstJson.V[i], out vol);
+                    //        var dailyValue = new StockDailyValue(
+                    //               citifirstJson.O[i],
+                    //               citifirstJson.H[i],
+                    //               citifirstJson.L[i],
+                    //               citifirstJson.C[i],
+                    //               vol,
+                    //               openDate);
+                    //        #region Add Missing 5 Minutes bars
+                    //        if (previousValue != null && dailyValue.DATE.Day == previousValue.DATE.Day)
+                    //        {
+                    //            var date = previousValue.DATE.Add(minute5);
+                    //            while (date < openDate && !stockSerie.ContainsKey(date))
+                    //            {
+                    //                // Create missing bars
+                    //                var missingValue = new StockDailyValue(
+                    //                       previousValue.CLOSE,
+                    //                       previousValue.CLOSE,
+                    //                       previousValue.CLOSE,
+                    //                       previousValue.CLOSE,
+                    //                       0,
+                    //                       date);
+                    //                stockSerie.Add(date, missingValue);
+                    //                date = date.Add(minute5);
+                    //            }
+                    //        }
+                    //        #endregion
+                    //        stockSerie.Add(dailyValue.DATE, dailyValue);
+                    //        previousValue = dailyValue;
+                    //    }
+                    //}
+                    //stockSerie.ClearBarDurationCache();
+
+                    res = true;
                 }
             }
             catch (Exception e)

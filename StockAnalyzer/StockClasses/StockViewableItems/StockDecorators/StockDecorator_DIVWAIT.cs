@@ -41,123 +41,121 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            CreateEventSeries(stockSerie.Count);
+
+            IStockDecorator originalDecorator = stockSerie.GetDecorator(this.Name.Replace("WAIT", ""), this.DecoratedItem);
+
+            this.Series[0] = originalDecorator.Series[0];
+            this.Series[1] = originalDecorator.Series[1];
+            this.Series[2] = originalDecorator.Series[2];
+
+            IStockTrailStop trailIndicator = stockSerie.GetTrailStop("TRAILHL(1)");
+
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+
+            int exhaustionTopIndex = 0;
+            int exhaustionBottomIndex = 1;
+            int bearishDivergenceIndex = 2;
+            int bullishDivergenceIndex = 3;
+
+            int upTrendIndex = 0;
+
+            bool waitExhaustionTop = false;
+            bool waitExhaustionBottom = false;
+            bool waitBearishDivergence = false;
+            bool waitBullishDivergence = false;
+
+            for (int i = 10; i < stockSerie.Count; i++)
             {
-                CreateEventSeries(stockSerie.Count);
-
-                IStockDecorator originalDecorator = stockSerie.GetDecorator(this.Name.Replace("WAIT", ""), this.DecoratedItem);
-
-                this.Series[0] = originalDecorator.Series[0];
-                this.Series[1] = originalDecorator.Series[1];
-                this.Series[2] = originalDecorator.Series[2];
-
-                IStockTrailStop trailIndicator = stockSerie.GetTrailStop("TRAILHL(1)");
-
-                FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-                FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-
-                int exhaustionTopIndex = 0;
-                int exhaustionBottomIndex = 1;
-                int bearishDivergenceIndex = 2;
-                int bullishDivergenceIndex = 3;
-
-                int upTrendIndex = 0;
-
-                bool waitExhaustionTop = false;
-                bool waitExhaustionBottom = false;
-                bool waitBearishDivergence = false;
-                bool waitBullishDivergence = false;
-
-                for (int i = 10; i < stockSerie.Count; i++)
+                if (waitExhaustionTop)
                 {
-                    if (waitExhaustionTop)
+                    if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
+                    {
+                        waitExhaustionTop = false;
+                        this.eventSeries[exhaustionTopIndex][i] = true;
+                    }
+                }
+                else
+                {
+                    if (originalDecorator.Events[exhaustionTopIndex][i])
                     {
                         if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
                         {
-                            waitExhaustionTop = false;
                             this.eventSeries[exhaustionTopIndex][i] = true;
                         }
-                    }
-                    else
-                    {
-                        if (originalDecorator.Events[exhaustionTopIndex][i])
+                        else
                         {
-                            if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
-                            {
-                                this.eventSeries[exhaustionTopIndex][i] = true;
-                            }
-                            else
-                            {
-                                waitExhaustionTop = true;
-                            }
+                            waitExhaustionTop = true;
                         }
                     }
+                }
 
-                    if (waitBearishDivergence)
+                if (waitBearishDivergence)
+                {
+                    if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
+                    {
+                        waitBearishDivergence = false;
+                        this.eventSeries[bearishDivergenceIndex][i] = true;
+                    }
+                }
+                else
+                {
+                    if (originalDecorator.Events[bearishDivergenceIndex][i])
                     {
                         if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
                         {
-                            waitBearishDivergence = false;
                             this.eventSeries[bearishDivergenceIndex][i] = true;
                         }
-                    }
-                    else
-                    {
-                        if (originalDecorator.Events[bearishDivergenceIndex][i])
+                        else
                         {
-                            if (!trailIndicator.Events[upTrendIndex][i])// (highSerie[i - 1] > highSerie[i])
-                            {
-                                this.eventSeries[bearishDivergenceIndex][i] = true;
-                            }
-                            else
-                            {
-                                waitBearishDivergence = true;
-                            }
+                            waitBearishDivergence = true;
                         }
                     }
-                    if (waitExhaustionBottom)
+                }
+                if (waitExhaustionBottom)
+                {
+                    if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
+                    {
+                        waitExhaustionBottom = false;
+                        this.eventSeries[exhaustionBottomIndex][i] = true;
+                    }
+                }
+                else
+                {
+                    if (originalDecorator.Events[exhaustionBottomIndex][i])
                     {
                         if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
                         {
-                            waitExhaustionBottom = false;
                             this.eventSeries[exhaustionBottomIndex][i] = true;
                         }
-                    }
-                    else
-                    {
-                        if (originalDecorator.Events[exhaustionBottomIndex][i])
+                        else
                         {
-                            if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
-                            {
-                                this.eventSeries[exhaustionBottomIndex][i] = true;
-                            }
-                            else
-                            {
-                                waitExhaustionBottom = true;
-                            }
+                            waitExhaustionBottom = true;
                         }
                     }
+                }
 
-                    if (waitBullishDivergence)
+                if (waitBullishDivergence)
+                {
+                    if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
+                    {
+                        waitBullishDivergence = false;
+                        this.eventSeries[bullishDivergenceIndex][i] = true;
+                    }
+                }
+                else
+                {
+                    if (originalDecorator.Events[bullishDivergenceIndex][i])
                     {
                         if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
                         {
-                            waitBullishDivergence = false;
                             this.eventSeries[bullishDivergenceIndex][i] = true;
                         }
-                    }
-                    else
-                    {
-                        if (originalDecorator.Events[bullishDivergenceIndex][i])
+                        else
                         {
-                            if (trailIndicator.Events[upTrendIndex][i]) // (lowSerie[i - 1] < lowSerie[i])
-                            {
-                                this.eventSeries[bullishDivergenceIndex][i] = true;
-                            }
-                            else
-                            {
-                                waitBullishDivergence = true;
-                            }
+                            waitBullishDivergence = true;
                         }
                     }
                 }

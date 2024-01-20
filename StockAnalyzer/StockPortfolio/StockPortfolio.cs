@@ -451,14 +451,12 @@ namespace StockAnalyzer.StockPortfolio
             var fileName = Path.Combine(Folders.Portfolio, "NameMappings.xml");
             if (File.Exists(fileName))
             {
-                using (FileStream fs = new FileStream(fileName, FileMode.Open))
-                {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                    settings.IgnoreWhitespace = true;
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    var serializer = new XmlSerializer(typeof(List<StockNameMapping>));
-                    mappings = (List<StockNameMapping>)serializer.Deserialize(xmlReader);
-                }
+                using FileStream fs = new FileStream(fileName, FileMode.Open);
+                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                settings.IgnoreWhitespace = true;
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                var serializer = new XmlSerializer(typeof(List<StockNameMapping>));
+                mappings = (List<StockNameMapping>)serializer.Deserialize(xmlReader);
             }
             else
             {

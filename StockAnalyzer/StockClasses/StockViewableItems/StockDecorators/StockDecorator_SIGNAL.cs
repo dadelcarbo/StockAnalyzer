@@ -37,42 +37,40 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            List<string> eventNames = this.EventNames.ToList();
+
+            CreateEventSeries(stockSerie.Count);
+
+            int smoothing = (int)this.parameters[0];
+
+            IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
+            if (indicator == null || indicator.Series[0].Count == 0) return;
+
+
+            FloatSerie dataSerie = indicator.Series[0];
+            FloatSerie signalSerie = dataSerie.CalculateEMA(smoothing);
+
+            this.Series[0] = signalSerie;
+            this.Series[0].Name = this.SerieNames[0];
+
+            int bullishIndex = eventNames.IndexOf("Bullish");
+            int bearishIndex = eventNames.IndexOf("Bearish");
+            int crossAboveIndex = eventNames.IndexOf("CrossAbove");
+            int crossBelowIndex = eventNames.IndexOf("CrossBelow");
+
+            bool bullish = dataSerie[1] >= dataSerie[0];
+            bool previousBullish = bullish;
+            for (int i = 1; i < dataSerie.Count - 1; i++)
             {
-                List<string> eventNames = this.EventNames.ToList();
+                bullish = dataSerie[i] >= signalSerie[i];
+                this.Events[bullishIndex][i] = bullish;
+                this.Events[bearishIndex][i] = !bullish;
 
-                CreateEventSeries(stockSerie.Count);
+                this.Events[crossAboveIndex][i] = bullish && !previousBullish;
+                this.Events[crossBelowIndex][i] = !bullish && previousBullish;
 
-                int smoothing = (int)this.parameters[0];
-
-                IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
-                if (indicator == null || indicator.Series[0].Count == 0) return;
-
-
-                FloatSerie dataSerie = indicator.Series[0];
-                FloatSerie signalSerie = dataSerie.CalculateEMA(smoothing);
-
-                this.Series[0] = signalSerie;
-                this.Series[0].Name = this.SerieNames[0];
-
-                int bullishIndex = eventNames.IndexOf("Bullish");
-                int bearishIndex = eventNames.IndexOf("Bearish");
-                int crossAboveIndex = eventNames.IndexOf("CrossAbove");
-                int crossBelowIndex = eventNames.IndexOf("CrossBelow");
-
-                bool bullish = dataSerie[1] >= dataSerie[0];
-                bool previousBullish = bullish;
-                for (int i = 1; i < dataSerie.Count - 1; i++)
-                {
-                    bullish = dataSerie[i] >= signalSerie[i];
-                    this.Events[bullishIndex][i] = bullish;
-                    this.Events[bearishIndex][i] = !bullish;
-
-                    this.Events[crossAboveIndex][i] = bullish && !previousBullish;
-                    this.Events[crossBelowIndex][i] = !bullish && previousBullish;
-
-                    previousBullish = bullish;
-                }
+                previousBullish = bullish;
             }
         }
 

@@ -43,21 +43,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             this.fileName = cfgFile;
             if (File.Exists(fileName))
             {
-                using (StreamReader sr = new StreamReader(fileName, true))
+                using StreamReader sr = new StreamReader(fileName, true);
+                string line;
+                while (!sr.EndOfStream)
                 {
-                    string line;
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                        {
-                            string[] row = line.Split(',');
+                        string[] row = line.Split(',');
 
-                            ListViewItem viewItem = new ListViewItem(row[0]);
-                            viewItem.SubItems.Add(row[1]);
-                            viewItem.SubItems.Add(row[2]);
-                            this.personalListView.Items.Add(viewItem);
-                        }
+                        ListViewItem viewItem = new ListViewItem(row[0]);
+                        viewItem.SubItems.Add(row[1]);
+                        viewItem.SubItems.Add(row[2]);
+                        this.personalListView.Items.Add(viewItem);
                     }
                 }
             }
@@ -100,23 +98,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
                 {
                     this.Cursor = Cursors.WaitCursor;
 
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                        string url = "https://query1.finance.yahoo.com/v1/finance/search?q=" + this.symbolTextBox.Text.Replace("^", "%5E") + "&lang=en-US&region=US&quotesCount=6&newsCount=0&listsCount=2&enableFuzzyQuery=false&quotesQueryId=tss_match_phrase_query&multiQuoteQueryId=multi_quote_single_token_query&newsQueryId=news_cie_vespa&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true&enableResearchReports=true&enableCulturalAssets=true&researchReportsCount=2";
-                        string value = wc.DownloadString(url);
+                    using WebClient wc = new WebClient();
+                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                    string url = "https://query1.finance.yahoo.com/v1/finance/search?q=" + this.symbolTextBox.Text.Replace("^", "%5E") + "&lang=en-US&region=US&quotesCount=6&newsCount=0&listsCount=2&enableFuzzyQuery=false&quotesQueryId=tss_match_phrase_query&multiQuoteQueryId=multi_quote_single_token_query&newsQueryId=news_cie_vespa&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true&enableResearchReports=true&enableCulturalAssets=true&researchReportsCount=2";
+                    string value = wc.DownloadString(url);
 
-                        var searchResult = YahooSearchResult.FromJson(value);
-                        if (searchResult.count > 0)
-                        {
-                            succeeded = true;
-                            this.symbolTextBox.Text = searchResult.quotes[0].symbol?.ToUpper();
-                            this.nameTextBox.Text = searchResult.quotes[0].shortname?.ToUpper();
-                        }
-                        else
-                        {
-                            succeeded = false;
-                        }
+                    var searchResult = YahooSearchResult.FromJson(value);
+                    if (searchResult.count > 0)
+                    {
+                        succeeded = true;
+                        this.symbolTextBox.Text = searchResult.quotes[0].symbol?.ToUpper();
+                        this.nameTextBox.Text = searchResult.quotes[0].shortname?.ToUpper();
+                    }
+                    else
+                    {
+                        succeeded = false;
                     }
                 }
                 catch

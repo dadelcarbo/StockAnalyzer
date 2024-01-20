@@ -39,55 +39,53 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockScreeners
         }
         static public IStockScreener CreateScreener(string fullName)
         {
-            using (MethodLogger ml = new MethodLogger(typeof(StockScreenerManager)))
+            using MethodLogger ml = new MethodLogger(typeof(StockScreenerManager));
+            IStockScreener screener = null;
+            if (screenerList == null)
             {
-                IStockScreener screener = null;
-                if (screenerList == null)
+                GetScreenerList();
+            }
+            try
+            {
+                int paramStartIndex = fullName.IndexOf('(') + 1;
+                string name = fullName;
+                int paramLength = 0;
+                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
                 {
-                    GetScreenerList();
+                    paramLength = fullName.LastIndexOf(')') - paramStartIndex;
+                    name = fullName.Substring(0, paramStartIndex - 1);
                 }
-                try
-                {
-                    int paramStartIndex = fullName.IndexOf('(') + 1;
-                    string name = fullName;
-                    int paramLength = 0;
-                    if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
-                    {
-                        paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                        name = fullName.Substring(0, paramStartIndex - 1);
-                    }
 
-                    if (screenerList.Contains(name))
+                if (screenerList.Contains(name))
+                {
+                    StockScreenerManager sm = new StockScreenerManager();
+                    screener =
+                        (IStockScreener)
+                            sm.GetType()
+                                .Assembly.CreateInstance(
+                                    "StockAnalyzer.StockClasses.StockViewableItems.StockScreeners.StockScreener_" +
+                                    name);
+                    if (screener != null)
                     {
-                        StockScreenerManager sm = new StockScreenerManager();
-                        screener =
-                            (IStockScreener)
-                                sm.GetType()
-                                    .Assembly.CreateInstance(
-                                        "StockAnalyzer.StockClasses.StockViewableItems.StockScreeners.StockScreener_" +
-                                        name);
-                        if (screener != null)
+                        if (paramLength > 0)
                         {
-                            if (paramLength > 0)
-                            {
-                                string parameters = fullName.Substring(paramStartIndex, paramLength);
-                                screener.Initialise(parameters.Split(','));
-                            }
+                            string parameters = fullName.Substring(paramStartIndex, paramLength);
+                            screener.Initialise(parameters.Split(','));
                         }
                     }
-                    else
-                    {
-                        throw new StockAnalyzerException("Screener " + name + " doesn't not exist ! ");
-                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    if (e is StockAnalyzerException) throw e;
-                    screener = null;
-                    StockLog.Write(e);
+                    throw new StockAnalyzerException("Screener " + name + " doesn't not exist ! ");
                 }
-                return screener;
             }
+            catch (Exception e)
+            {
+                if (e is StockAnalyzerException) throw e;
+                screener = null;
+                StockLog.Write(e);
+            }
+            return screener;
         }
     }
 }

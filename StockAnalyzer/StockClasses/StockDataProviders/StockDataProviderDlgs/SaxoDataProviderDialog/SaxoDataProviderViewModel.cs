@@ -141,19 +141,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
                     httpClient = new HttpClient(handler);
                 }
-                using (var request = new HttpRequestMessage())
+                using var request = new HttpRequestMessage();
+                request.Method = HttpMethod.Get;
+                request.RequestUri = new Uri(url);
+                var response = httpClient.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    request.Method = HttpMethod.Get;
-                    request.RequestUri = new Uri(url);
-                    var response = httpClient.SendAsync(request).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return response.Content.ReadAsStringAsync().Result;
-                    }
-                    else
-                    {
-                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
-                    }
+                    return response.Content.ReadAsStringAsync().Result;
+                }
+                else
+                {
+                    StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
                 }
             }
             catch (Exception ex)

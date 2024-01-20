@@ -20,11 +20,9 @@ namespace StockAnalyzerApp.CustomControl.TweetDlg
 
         public void ApplyTheme()
         {
-            using (MethodLogger ml = new MethodLogger(this))
-            {
-                this.fullGraphUserControl.CurrentStockSerie = currentStockSerie;
-                this.fullGraphUserControl.ApplyTheme();
-            }
+            using MethodLogger ml = new MethodLogger(this);
+            this.fullGraphUserControl.CurrentStockSerie = currentStockSerie;
+            this.fullGraphUserControl.ApplyTheme();
         }
 
         private StockSerie currentStockSerie;

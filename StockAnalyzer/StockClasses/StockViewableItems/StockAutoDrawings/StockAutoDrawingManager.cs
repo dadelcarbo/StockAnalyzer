@@ -40,50 +40,48 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         }
         static public IStockAutoDrawing CreateAutoDrawing(string fullName)
         {
-            using (MethodLogger ml = new MethodLogger(typeof(StockAutoDrawingManager)))
+            using MethodLogger ml = new MethodLogger(typeof(StockAutoDrawingManager));
+            IStockAutoDrawing autoDraw = null;
+            if (autoDrawingList == null)
             {
-                IStockAutoDrawing autoDraw = null;
-                if (autoDrawingList == null)
+                GetAutoDrawingList();
+            }
+            try
+            {
+                int paramStartIndex = fullName.IndexOf('(') + 1;
+                string name = fullName;
+                int paramLength = 0;
+                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dialog window
                 {
-                    GetAutoDrawingList();
+                    paramLength = fullName.LastIndexOf(')') - paramStartIndex;
+                    name = fullName.Substring(0, paramStartIndex - 1);
                 }
-                try
-                {
-                    int paramStartIndex = fullName.IndexOf('(') + 1;
-                    string name = fullName;
-                    int paramLength = 0;
-                    if (paramStartIndex != 0) // Else we are creating an empty indicator for the dialog window
-                    {
-                        paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                        name = fullName.Substring(0, paramStartIndex - 1);
-                    }
 
-                    if (autoDrawingList.Contains(name))
+                if (autoDrawingList.Contains(name))
+                {
+                    StockAutoDrawingManager sm = new StockAutoDrawingManager();
+                    autoDraw = (IStockAutoDrawing)sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings.StockAutoDrawing_" + name);
+                    if (autoDraw != null)
                     {
-                        StockAutoDrawingManager sm = new StockAutoDrawingManager();
-                        autoDraw = (IStockAutoDrawing)sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings.StockAutoDrawing_" + name);
-                        if (autoDraw != null)
+                        if (paramLength > 0)
                         {
-                            if (paramLength > 0)
-                            {
-                                string parameters = fullName.Substring(paramStartIndex, paramLength);
-                                autoDraw.Initialise(parameters.Split(','));
-                            }
+                            string parameters = fullName.Substring(paramStartIndex, paramLength);
+                            autoDraw.Initialise(parameters.Split(','));
                         }
                     }
-                    else
-                    {
-                        throw new StockAnalyzerException("AutoDrawing " + name + " doesn't not exist ! ");
-                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    if (e is StockAnalyzerException) throw e;
-                    autoDraw = null;
-                    StockLog.Write(e);
+                    throw new StockAnalyzerException("AutoDrawing " + name + " doesn't not exist ! ");
                 }
-                return autoDraw;
             }
+            catch (Exception e)
+            {
+                if (e is StockAnalyzerException) throw e;
+                autoDraw = null;
+                StockLog.Write(e);
+            }
+            return autoDraw;
         }
     }
 }

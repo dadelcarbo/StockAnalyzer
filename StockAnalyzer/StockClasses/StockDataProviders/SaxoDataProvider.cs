@@ -69,27 +69,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    var instrument = instrumentService.GetInstrumentById(long.Parse(row[0]));
+                    if (instrument != null && !stockDictionary.ContainsKey(instrument.Description))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                        var stockSerie = new StockSerie(instrument.Description, instrument.Symbol, StockSerie.Groups.SAXO, StockDataProvider.Saxo, BarDuration.Daily);
+                        stockSerie.ISIN = row[1];
+                        stockDictionary.Add(instrument.Description, stockSerie);
 
-                        var row = line.Split(',');
-                        var instrument = instrumentService.GetInstrumentById(long.Parse(row[0]));
-                        if (instrument != null && !stockDictionary.ContainsKey(instrument.Description))
-                        {
-                            var stockSerie = new StockSerie(instrument.Description, instrument.Symbol, StockSerie.Groups.SAXO, StockDataProvider.Saxo, BarDuration.Daily);
-                            stockSerie.ISIN = row[1];
-                            stockDictionary.Add(instrument.Description, stockSerie);
-
-                            stockSerie.Uic = instrument.Identifier;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Saxo Intraday Entry: " + row[1] + " already in stockDictionary");
-                        }
+                        stockSerie.Uic = instrument.Identifier;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Saxo Intraday Entry: " + row[1] + " already in stockDictionary");
                     }
                 }
             }

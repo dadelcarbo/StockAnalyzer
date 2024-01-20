@@ -30,51 +30,49 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         }
         static public IStockDecorator CreateDecorator(string fullName, string decoratedItem)
         {
-            using (MethodLogger ml = new MethodLogger(typeof(StockDecoratorManager)))
+            using MethodLogger ml = new MethodLogger(typeof(StockDecoratorManager));
+            StockDecoratorBase decorator = null;
+            if (decoratorList == null)
             {
-                StockDecoratorBase decorator = null;
-                if (decoratorList == null)
-                {
-                    GetDecoratorList();
-                }
+                GetDecoratorList();
+            }
 
-                try
+            try
+            {
+                int paramStartIndex = fullName.IndexOf('(') + 1;
+                string name = fullName;
+                int paramLength = 0;
+                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dialog window
                 {
-                    int paramStartIndex = fullName.IndexOf('(') + 1;
-                    string name = fullName;
-                    int paramLength = 0;
-                    if (paramStartIndex != 0) // Else we are creating an empty indicator for the dialog window
+                    paramLength = fullName.LastIndexOf(')') - paramStartIndex;
+                    name = fullName.Substring(0, paramStartIndex - 1);
+                }
+                if (decoratorList.Contains(name))
+                {
+                    StockDecoratorManager sm = new StockDecoratorManager();
+                    decorator = (StockDecoratorBase)sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockClasses.StockViewableItems.StockDecorators.StockDecorator_" + name);
+                    if (decorator != null)
                     {
-                        paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                        name = fullName.Substring(0, paramStartIndex - 1);
-                    }
-                    if (decoratorList.Contains(name))
-                    {
-                        StockDecoratorManager sm = new StockDecoratorManager();
-                        decorator = (StockDecoratorBase)sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockClasses.StockViewableItems.StockDecorators.StockDecorator_" + name);
-                        if (decorator != null)
+                        decorator.DecoratedItem = decoratedItem;
+                        if (paramLength > 0)
                         {
-                            decorator.DecoratedItem = decoratedItem;
-                            if (paramLength > 0)
-                            {
-                                string parameters = fullName.Substring(paramStartIndex, paramLength);
-                                decorator.Initialise(parameters.Split(','));
-                            }
+                            string parameters = fullName.Substring(paramStartIndex, paramLength);
+                            decorator.Initialise(parameters.Split(','));
                         }
                     }
-                    else
-                    {
-                        throw new StockAnalyzerException("Decorator " + name + " doesn't not exist ! ");
-                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    if (e is StockAnalyzerException) throw e;
-                    decorator = null;
-                    StockLog.Write(e);
+                    throw new StockAnalyzerException("Decorator " + name + " doesn't not exist ! ");
                 }
-                return decorator;
             }
+            catch (Exception e)
+            {
+                if (e is StockAnalyzerException) throw e;
+                decorator = null;
+                StockLog.Write(e);
+            }
+            return decorator;
         }
 
         public static bool Supports(string fullName)

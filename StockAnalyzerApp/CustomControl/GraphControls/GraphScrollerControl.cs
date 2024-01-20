@@ -27,147 +27,139 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         protected override bool InitializeTransformMatrix()
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            if (!CheckGraphSanity()) { return false; }
+            if (this.GraphRectangle.Height > 0)
             {
-                if (!CheckGraphSanity()) { return false; }
-                if (this.GraphRectangle.Height > 0)
+                minValue = float.MaxValue;
+                maxValue = float.MinValue;
+                this.CurveList.GetMinMax(0, dateSerie.Length - 1, ref minValue, ref maxValue, this.ScaleInvisible);
+
+                if (minValue == maxValue || minValue == float.MaxValue || float.IsNaN(minValue) || float.IsInfinity(minValue) || maxValue == float.MinValue || float.IsNaN(maxValue) || float.IsInfinity(maxValue))
                 {
-                    minValue = float.MaxValue;
-                    maxValue = float.MinValue;
-                    this.CurveList.GetMinMax(0, dateSerie.Length - 1, ref minValue, ref maxValue, this.ScaleInvisible);
+                    this.Deactivate("Input data is corrupted and cannot be displayed...", false);
+                    return false;
+                }
 
-                    if (minValue == maxValue || minValue == float.MaxValue || float.IsNaN(minValue) || float.IsInfinity(minValue) || maxValue == float.MinValue || float.IsNaN(maxValue) || float.IsInfinity(maxValue))
-                    {
-                        this.Deactivate("Input data is corrupted and cannot be displayed...", false);
-                        return false;
-                    }
-
-                    if (this.IsLogScale && minValue > 0)
-                    {
-                        minValue -= (maxValue - minValue) * 0.025f;
-                    }
-                    else
-                    {
-                        minValue -= (maxValue - minValue) * 0.05f;
-                    }
-                    maxValue += (maxValue - minValue) * 0.05f;
-
-                    float tmpMinValue, tmpMaxValue;
-                    if (this.IsLogScale)
-                    {
-                        tmpMinValue = minValue < 0 ? (float)-Math.Log10(-minValue + 1) : (float)Math.Log10(minValue + 1);
-                        tmpMaxValue = maxValue < 0 ? (float)-Math.Log10(-maxValue + 1) : (float)Math.Log10(maxValue + 1);
-                    }
-                    else
-                    {
-                        tmpMinValue = minValue;
-                        tmpMaxValue = maxValue;
-                    }
-
-                    float coefX = (this.GraphRectangle.Width * 0.94f) / (dateSerie.Length - 1);
-                    float coefY = this.GraphRectangle.Height / (tmpMaxValue - tmpMinValue);
-
-                    matrixValueToScreen = new System.Drawing.Drawing2D.Matrix();
-                    matrixValueToScreen.Translate(this.GraphRectangle.X + 20, tmpMaxValue * coefY + this.GraphRectangle.Y);
-                    matrixValueToScreen.Scale(coefX, -coefY);
-
-                    matrixScreenToValue = (System.Drawing.Drawing2D.Matrix)matrixValueToScreen.Clone();
-                    matrixScreenToValue.Invert();
+                if (this.IsLogScale && minValue > 0)
+                {
+                    minValue -= (maxValue - minValue) * 0.025f;
                 }
                 else
                 {
-                    this.Deactivate("App too small...", false);
-                    return false;
+                    minValue -= (maxValue - minValue) * 0.05f;
                 }
-                return true;
+                maxValue += (maxValue - minValue) * 0.05f;
+
+                float tmpMinValue, tmpMaxValue;
+                if (this.IsLogScale)
+                {
+                    tmpMinValue = minValue < 0 ? (float)-Math.Log10(-minValue + 1) : (float)Math.Log10(minValue + 1);
+                    tmpMaxValue = maxValue < 0 ? (float)-Math.Log10(-maxValue + 1) : (float)Math.Log10(maxValue + 1);
+                }
+                else
+                {
+                    tmpMinValue = minValue;
+                    tmpMaxValue = maxValue;
+                }
+
+                float coefX = (this.GraphRectangle.Width * 0.94f) / (dateSerie.Length - 1);
+                float coefY = this.GraphRectangle.Height / (tmpMaxValue - tmpMinValue);
+
+                matrixValueToScreen = new System.Drawing.Drawing2D.Matrix();
+                matrixValueToScreen.Translate(this.GraphRectangle.X + 20, tmpMaxValue * coefY + this.GraphRectangle.Y);
+                matrixValueToScreen.Scale(coefX, -coefY);
+
+                matrixScreenToValue = (System.Drawing.Drawing2D.Matrix)matrixValueToScreen.Clone();
+                matrixScreenToValue.Invert();
             }
+            else
+            {
+                this.Deactivate("App too small...", false);
+                return false;
+            }
+            return true;
         }
 
         protected override void PaintGraph()
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            if (this.IsInitialized && this.graphic != null)
             {
-                if (this.IsInitialized && this.graphic != null)
+                //if (ForceNoRepaint) // Skip one go due to Windows crap refresh management
+                //{
+                //    ForceNoRepaint = false;
+                //    return;
+                //}
+                // Draw the graph on the background image
+                if (BackgroundDirty)
                 {
-                    //if (ForceNoRepaint) // Skip one go due to Windows crap refresh management
-                    //{
-                    //    ForceNoRepaint = false;
-                    //    return;
-                    //}
-                    // Draw the graph on the background image
-                    if (BackgroundDirty)
-                    {
-                        // Create Bitmap graphicMain
-                        backgroundBitmap = new Bitmap((int)this.graphic.VisibleClipBounds.Width, (int)this.graphic.VisibleClipBounds.Height, this.graphic);
-                        Graphics tmpGraph = Graphics.FromImage(backgroundBitmap);
+                    // Create Bitmap graphicMain
+                    backgroundBitmap = new Bitmap((int)this.graphic.VisibleClipBounds.Width, (int)this.graphic.VisibleClipBounds.Height, this.graphic);
+                    Graphics tmpGraph = Graphics.FromImage(backgroundBitmap);
 
-                        tmpGraph.Clear(this.BackgroundColor);
-                        PaintTmpGraph(tmpGraph);
-                        PaintGraphTitle(tmpGraph);
+                    tmpGraph.Clear(this.BackgroundColor);
+                    PaintTmpGraph(tmpGraph);
+                    PaintGraphTitle(tmpGraph);
 
-                        // Draw background image
-                        this.graphic.DrawImage(backgroundBitmap, 0, 0);
+                    // Draw background image
+                    this.graphic.DrawImage(backgroundBitmap, 0, 0);
 
-                        this.ForegroundDirty = true;
-                        this.BackgroundDirty = false;
-                    }
-                    else
-                    {
-                        // Draw background image
-                        this.graphic.DrawImage(backgroundBitmap, 0, 0);
-                    }
+                    this.ForegroundDirty = true;
+                    this.BackgroundDirty = false;
                 }
-                else // Draw alternate text.
+                else
                 {
-                    Graphics gr = this.CreateGraphics();
-                    gr.Clear(SystemColors.ControlDark);
-                    gr.DrawString(this.alternateString, axisFont, Brushes.Black, 10, 10);
+                    // Draw background image
+                    this.graphic.DrawImage(backgroundBitmap, 0, 0);
                 }
+            }
+            else // Draw alternate text.
+            {
+                Graphics gr = this.CreateGraphics();
+                gr.Clear(SystemColors.ControlDark);
+                gr.DrawString(this.alternateString, axisFont, Brushes.Black, 10, 10);
             }
         }
 
         protected override void PaintTmpGraph(Graphics aGraphic)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            if (this.matrixValueToScreen == null)
+                return;
+            #region Draw vertical lines
+            if (this.ShowGrid && this.IsInitialized)
             {
-                if (this.matrixValueToScreen == null)
-                    return;
-                #region Draw vertical lines
-                if (this.ShowGrid && this.IsInitialized)
-                {
-                    DrawVerticalGridLines(aGraphic, false, 0, dateSerie.Length - 1);
-                }
-                #endregion
-
-                int i = 0;
-                Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
-                PointF[] points = null;
-                foreach (GraphCurveType currentCurveType in CurveList)
-                {
-                    if (currentCurveType.IsVisible)
-                    {
-                        points = GetScreenPoints(0, dateSerie.Length - 1, currentCurveType.DataSerie);
-                        if (points != null && points.Count() > 1)
-                        {
-                            aGraphic.DrawLines(currentCurveType.CurvePen, points);
-                        }
-                    }
-                    i++;
-                }
-
-                this.DrawSliders(aGraphic);
-
-                aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
+                DrawVerticalGridLines(aGraphic, false, 0, dateSerie.Length - 1);
             }
+            #endregion
+
+            int i = 0;
+            Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
+            PointF[] points = null;
+            foreach (GraphCurveType currentCurveType in CurveList)
+            {
+                if (currentCurveType.IsVisible)
+                {
+                    points = GetScreenPoints(0, dateSerie.Length - 1, currentCurveType.DataSerie);
+                    if (points != null && points.Count() > 1)
+                    {
+                        aGraphic.DrawLines(currentCurveType.CurvePen, points);
+                    }
+                }
+                i++;
+            }
+
+            this.DrawSliders(aGraphic);
+
+            aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
         }
 
         protected override void PaintGraphTitle(Graphics aGraphic)
         {
-            using (MethodLogger ml = new MethodLogger(this))
-            {
-                string graphTitle = "PREVIEW ";
-                this.DrawString(aGraphic, graphTitle, this.axisFont, Brushes.Black, this.textBackgroundBrush, new PointF(1, 1), true);
-            }
+            using MethodLogger ml = new MethodLogger(this);
+            string graphTitle = "PREVIEW ";
+            this.DrawString(aGraphic, graphTitle, this.axisFont, Brushes.Black, this.textBackgroundBrush, new PointF(1, 1), true);
         }
         private void DrawSliders(Graphics aGraphic)
         {
@@ -340,25 +332,23 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public void InitZoom(int startIndex, int endIndex)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            if (!CheckGraphSanity()) { return; }
+            if (startIndex == endIndex || startIndex < 0 || endIndex > this.dateSerie.Length - 1)
             {
-                if (!CheckGraphSanity()) { return; }
-                if (startIndex == endIndex || startIndex < 0 || endIndex > this.dateSerie.Length - 1)
-                {
-                    this.Deactivate("Invalid input data range...", false);
-                    return;
-                }
-                this.StartIndex = startIndex;
-                this.EndIndex = endIndex;
+                this.Deactivate("Invalid input data range...", false);
+                return;
+            }
+            this.StartIndex = startIndex;
+            this.EndIndex = endIndex;
 
-                // Initialise transformation matrix
-                this.IsInitialized = InitializeTransformMatrix();
-                this.ForceRefresh();
+            // Initialise transformation matrix
+            this.IsInitialized = InitializeTransformMatrix();
+            this.ForceRefresh();
 
-                if (this.ZoomChanged != null)
-                {
-                    this.ZoomChanged(startIndex, endIndex);
-                }
+            if (this.ZoomChanged != null)
+            {
+                this.ZoomChanged(startIndex, endIndex);
             }
         }
         #endregion

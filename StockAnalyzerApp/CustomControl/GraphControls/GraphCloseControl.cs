@@ -157,670 +157,656 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         protected override void PaintTmpGraph(Graphics aGraphic)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            // Draw order management area
+            var orderArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, GraphRectangle.Height);
+            aGraphic.FillRectangle(orderAreaBrush, orderArea);
+
+            #region Draw Grid
+
+            // Draw grid
+            if (this.ShowGrid)
             {
-                // Draw order management area
-                var orderArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, GraphRectangle.Height);
-                aGraphic.FillRectangle(orderAreaBrush, orderArea);
+                #region Draw Horizontal lines
 
-                #region Draw Grid
-
-                // Draw grid
-                if (this.ShowGrid)
+                float step = (float)Math.Pow(10, Math.Floor(Math.Log10((maxValue - minValue))));
+                if ((maxValue - minValue) / step < 3)
                 {
-                    #region Draw Horizontal lines
-
-                    float step = (float)Math.Pow(10, Math.Floor(Math.Log10((maxValue - minValue))));
-                    if ((maxValue - minValue) / step < 3)
-                    {
-                        step /= 4;
-                    }
-                    else if ((maxValue - minValue) / step < 6)
-                    {
-                        step /= 2;
-                    }
-                    else
-                    {
-                        if ((maxValue - minValue) / step > 13)
-                        {
-                            step *= 4;
-                        }
-                        else if ((maxValue - minValue) / step > 7)
-                        {
-                            step *= 2;
-                        }
-                    }
-                    float val;
-                    if (minValue < 0)
-                    {
-                        val = -(float)Math.Pow(10, Math.Ceiling(Math.Log10((Math.Abs(minValue)))));
-                    }
-                    else
-                    {
-                        val = (float)Math.Pow(10, Math.Floor(Math.Log10((minValue))));
-                    }
-
-                    if (val > 0 && step > val) val = step;
-                    if (val < 0 && step > Math.Abs(val)) val = -step;
-
-                    PointF p1;
-                    while (val < maxValue)
-                    {
-                        if (val > minValue)
-                        {
-                            p1 = GetScreenPointFromValuePoint(this.StartIndex, val);
-                            aGraphic.DrawLine(gridPen, GraphRectangle.X, p1.Y, GraphRectangle.X + GraphRectangle.Width, p1.Y);
-                            aGraphic.DrawString(val.ToString("0.##"), axisFont, Brushes.Black, 0, p1.Y - 8);
-                        }
-                        val += step;
-                    }
-
-                    #endregion
-
-                    #region Draw vertical lines
-
-                    DrawVerticalGridLines(aGraphic, true, this.StartIndex, this.EndIndex);
-
-                    #endregion
+                    step /= 4;
                 }
-                aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("dd/MM"), axisFont, Brushes.Black,
-                   GraphRectangle.Right - 3, GraphRectangle.Y + GraphRectangle.Height);
-                aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("yyyy"), axisFont, Brushes.Black,
-                   GraphRectangle.Right - 1, GraphRectangle.Y + GraphRectangle.Height + 8);
-
-                #endregion
-
-                #region Draw HLine
-                // Paint horizontal lines first
-                this.PaintHorizontalLines(aGraphic);
-                #endregion
-
-                #region Draw values and curves
-
-                PointF[] tmpPoints = null;
-                PointF[] tmpOpenPoints = null;
-                PointF[] tmpHighPoints = null;
-                PointF[] tmpLowPoints = null;
-                // Draw indicator1Name first not to hide the value
-                if (!HideIndicators)
+                else if ((maxValue - minValue) / step < 6)
                 {
-                    #region DISPLAY CLOUD
-                    if (this.CurveList.Cloud != null && this.CurveList.Cloud.Series[0].Count > 0)
+                    step /= 2;
+                }
+                else
+                {
+                    if ((maxValue - minValue) / step > 13)
                     {
-                        this.DrawStockText(aGraphic, this.CurveList.Cloud.StockTexts);
-
-                        var bullColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[0].Color.R, this.CurveList.Cloud.SeriePens[0].Color.G, this.CurveList.Cloud.SeriePens[0].Color.B);
-                        var bullBrush = new SolidBrush(bullColor);
-                        var bullPen = this.CurveList.Cloud.SeriePens[0];
-
-                        var bearColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[1].Color.R, this.CurveList.Cloud.SeriePens[1].Color.G, this.CurveList.Cloud.SeriePens[1].Color.B);
-                        var bearBrush = new SolidBrush(bearColor);
-                        var bearPen = this.CurveList.Cloud.SeriePens[1];
-
-                        var bullPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[0]);
-                        var bearPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[1]);
-
-                        bool isBull = bullPoints[0].Y < bearPoints[0].Y;
-                        var nbPoints = bullPoints.Length;
-                        var upPoints = new List<PointF>() { bullPoints[0] };
-                        var downPoints = new List<PointF>() { bearPoints[0] };
-                        for (int i = 1; i < nbPoints; i++)
-                        {
-                            if (isBull && bullPoints[i].Y < bearPoints[i].Y) // Bull cloud continuing
-                            {
-                                upPoints.Add(bullPoints[i]);
-                                downPoints.Insert(0, bearPoints[i]);
-                            }
-                            else if (!isBull && bullPoints[i].Y > bearPoints[i].Y) // Bear cloud continuing
-                            {
-                                upPoints.Add(bullPoints[i]);
-                                downPoints.Insert(0, bearPoints[i]);
-                            }
-                            else // Cloud reversing, need a draw
-                            {
-                                if (upPoints.Count > 0)
-                                {
-                                    upPoints.Add(bearPoints[i]);
-                                    downPoints.Insert(0, bullPoints[i]);
-                                    aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
-                                    aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
-                                    upPoints.AddRange(downPoints);
-                                    aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
-                                }
-                                isBull = !isBull;
-                                upPoints.Clear();
-                                downPoints.Clear();
-                                upPoints = new List<PointF>() { bullPoints[i] };
-                                downPoints = new List<PointF>() { bearPoints[i] };
-                            }
-                        }
-                        if (upPoints.Count > 1)
-                        {
-                            aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
-                            aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
-                            upPoints.AddRange(downPoints);
-                            aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
-                            upPoints.Clear();
-                            downPoints.Clear();
-                        }
-                        bullBrush.Dispose();
-                        bearBrush.Dispose();
-                        for (int i = 2; i < this.CurveList.Cloud.SeriesCount; i++)
-                        {
-                            if (this.CurveList.Cloud.SerieVisibility[i] && this.CurveList.Cloud.Series[i]?.Count > 0)
-                            {
-                                DrawSeriePoints(aGraphic, tmpPoints, this.CurveList.Cloud.Series[i], this.CurveList.Cloud.SeriePens[i]);
-                            }
-                        }
+                        step *= 4;
                     }
-                    #endregion
-                    #region DISPLAY TRAIL STOPS
-                    if (this.CurveList.TrailStop?.Series[0] != null && this.CurveList.TrailStop.Series[0].Count > 0)
+                    else if ((maxValue - minValue) / step > 7)
                     {
-                        this.DrawStockText(aGraphic, this.CurveList.TrailStop.StockTexts);
-                        FloatSerie longStopSerie = this.CurveList.TrailStop.Series[0];
-                        FloatSerie shortStopSerie = this.CurveList.TrailStop.Series[1];
-
-                        Pen longPen = this.CurveList.TrailStop.SeriePens[0];
-                        Pen shortPen = this.CurveList.TrailStop.SeriePens[1];
-
-                        List<PointF> points = new List<PointF>();
-
-                        // Draw Long trail
-                        using (Brush brush = new SolidBrush(Color.FromArgb(92, longPen.Color.R, longPen.Color.G, longPen.Color.B)))
-                        {
-                            FillArea(aGraphic, longStopSerie, longPen, brush);
-                        }
-                        using (Brush brush = new SolidBrush(Color.FromArgb(92, shortPen.Color.R, shortPen.Color.G, shortPen.Color.B)))
-                        {
-                            FillArea(aGraphic, shortStopSerie, shortPen, brush);
-                        }
-                        if (this.CurveList.TrailStop.SerieVisibility[2] && this.CurveList.TrailStop.Series[2]?.Count > 0)
-                        {
-                            DrawSeriePoints(aGraphic, tmpPoints, this.CurveList.TrailStop.Series[2], this.CurveList.TrailStop.SeriePens[2]);
-                        }
+                        step *= 2;
                     }
-                    #endregion
-                    #region DISPLAY Auto Drawing curves
-                    if (this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.Series.Count() > 0 && this.CurveList.AutoDrawing.Series[0].Count > 0)
+                }
+                float val;
+                if (minValue < 0)
+                {
+                    val = -(float)Math.Pow(10, Math.Ceiling(Math.Log10((Math.Abs(minValue)))));
+                }
+                else
+                {
+                    val = (float)Math.Pow(10, Math.Floor(Math.Log10((minValue))));
+                }
+
+                if (val > 0 && step > val) val = step;
+                if (val < 0 && step > Math.Abs(val)) val = -step;
+
+                PointF p1;
+                while (val < maxValue)
+                {
+                    if (val > minValue)
                     {
-                        FloatSerie longStopSerie = this.CurveList.AutoDrawing.Series[0];
-                        FloatSerie shortStopSerie = this.CurveList.AutoDrawing.Series[1];
-
-                        Pen longPen = this.CurveList.AutoDrawing.SeriePens[0];
-                        Pen shortPen = this.CurveList.AutoDrawing.SeriePens[1];
-
-                        using (Brush longBrush = new SolidBrush(longPen.Color))
-                        {
-                            using (Brush shortBrush = new SolidBrush(shortPen.Color))
-                            {
-                                PointF srPoint1;
-                                PointF srPoint2;
-                                if (float.IsNaN(shortStopSerie[this.StartIndex]))
-                                {
-                                    srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, longStopSerie[this.StartIndex]);
-                                }
-                                else
-                                {
-                                    srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, shortStopSerie[this.StartIndex]);
-                                }
-                                for (int i = StartIndex + 1; i <= this.EndIndex; i++)
-                                {
-                                    bool isSupport = float.IsNaN(shortStopSerie[i]);
-                                    if (isSupport) // upTrend
-                                    {
-                                        srPoint2 = GetScreenPointFromValuePoint(i, longStopSerie[i]);
-                                        if (!float.IsNaN(srPoint1.Y))
-                                        {
-                                            aGraphic.DrawLine(longPen, srPoint1, srPoint2);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        srPoint2 = GetScreenPointFromValuePoint(i, shortStopSerie[i]);
-                                        if (!float.IsNaN(srPoint1.Y))
-                                        {
-                                            aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
-                                        }
-                                    }
-                                    srPoint1 = srPoint2;
-                                }
-                            }
-                        }
+                        p1 = GetScreenPointFromValuePoint(this.StartIndex, val);
+                        aGraphic.DrawLine(gridPen, GraphRectangle.X, p1.Y, GraphRectangle.X + GraphRectangle.Width, p1.Y);
+                        aGraphic.DrawString(val.ToString("0.##"), axisFont, Brushes.Black, 0, p1.Y - 8);
                     }
-                    #endregion
-                    #region DISPLAY INDICATORS
-
-                    foreach (var stockIndicator in CurveList.Indicators)
-                    {
-                        this.DrawStockText(aGraphic, stockIndicator.StockTexts);
-                        for (int i = 0; i < stockIndicator.SeriesCount; i++)
-                        {
-                            if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0)
-                            {
-                                int indexOfPB = Array.IndexOf<string>(stockIndicator.EventNames, "Pullback");
-                                int indexOfEoT = Array.IndexOf<string>(stockIndicator.EventNames, "EndOfTrend");
-
-                                bool isSupport = stockIndicator.SerieNames[i].EndsWith(".S");
-                                bool isResistance = stockIndicator.SerieNames[i].EndsWith(".R");
-                                if (isSupport || isResistance)
-                                {
-                                    PointF srPoint = PointF.Empty;
-                                    FloatSerie srSerie = stockIndicator.Series[i];
-                                    float pointSize = stockIndicator.SeriePens[i].Width;
-                                    using (Brush srBrush = new SolidBrush(stockIndicator.SeriePens[i].Color))
-                                    {
-                                        for (int index = this.StartIndex; index <= this.EndIndex; index++)
-                                        {
-                                            float sr = srSerie.Values[index];
-                                            if (float.IsNaN(sr))
-                                            {
-                                                continue;
-                                            }
-                                            srPoint = GetScreenPointFromValuePoint(index, sr);
-                                            aGraphic.FillEllipse(srBrush, srPoint.X - pointSize, srPoint.Y - pointSize,
-                                               2 * pointSize, 2 * pointSize);
-
-                                            if (this.ShowIndicatorText && indexOfPB != -1 && indexOfEoT != -1)
-                                            {
-                                                const int textOffset = 4;
-
-                                                float yPos = isSupport
-                                                   ? srPoint.Y + pointSize
-                                                   : srPoint.Y - 2 * pointSize - 12;
-
-                                                // Draw PB and EndOfTrend text
-                                                if (stockIndicator.Events[indexOfPB][index])
-                                                {
-                                                    // Pullback in trend detected
-                                                    this.DrawString(aGraphic, "PB", axisFont, srBrush,
-                                                       this.backgroundBrush, srPoint.X - textOffset, yPos, false);
-                                                }
-                                                else if (stockIndicator.Events[indexOfEoT][index])
-                                                {
-                                                    // End of trend detected
-                                                    this.DrawString(aGraphic, "End", axisFont, srBrush,
-                                                       this.backgroundBrush, srPoint.X - textOffset,
-                                                       yPos, false);
-                                                }
-                                                else
-                                                {
-                                                    if (isSupport && stockIndicator.Events[4][index])
-                                                    {
-                                                        this.DrawString(aGraphic, "HL", axisFont, srBrush,
-                                                           this.backgroundBrush,
-                                                           srPoint.X - textOffset, yPos, false);
-
-                                                    }
-                                                    if (isResistance && stockIndicator.Events[5][index])
-                                                    {
-                                                        this.DrawString(aGraphic, "LH", axisFont, srBrush,
-                                                           this.backgroundBrush,
-                                                           srPoint.X - textOffset, yPos, false);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    DrawSeriePoints(aGraphic, tmpPoints, stockIndicator.Series[i], stockIndicator.SeriePens[i]);
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-                    #region DISPLAY DECORATORS
-                    if (this.ShowIndicatorDiv && CurveList.ShowMes.Count > 0)
-                    {
-                        for (int j = 0; j < CurveList.ShowMes.Count; j++)
-                        {
-                            IStockDecorator decorator = CurveList.ShowMes[j];
-                            for (int i = 0; i < decorator.EventCount; i++)
-                            {
-                                if (decorator.EventVisibility[i] && decorator.IsEvent[i] && decorator.Events[i].Count > 0)
-                                {
-                                    FloatSerie dataSerie = (i % 2 == 0) ? highCurveType.DataSerie : lowCurveType.DataSerie;
-                                    Pen pen = decorator.EventPens[i];
-                                    using (Brush brush = new SolidBrush(pen.Color))
-                                    {
-                                        BoolSerie decoSerie = decorator.Events[i];
-                                        for (int index = this.StartIndex; index <= this.EndIndex; index++)
-                                        {
-                                            if (decoSerie[index])
-                                            {
-                                                PointF point = new PointF(index, dataSerie[index]);
-                                                PointF point2 = GetScreenPointFromValuePoint(point);
-                                                aGraphic.FillEllipse(brush, point2.X - pen.Width * 1.5f, point2.Y - pen.Width * 1.5f,
-                                                   pen.Width * 3f, pen.Width * 3f);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    #endregion
+                    val += step;
                 }
 
                 #endregion
 
-                #region Display the stock value
-                if (this.CurveList.PaintBar != null)
-                {
-                    this.DrawStockText(aGraphic, this.CurveList.PaintBar.StockTexts);
-                }
+                #region Draw vertical lines
 
-                // Then draw the value
-                if (closeCurveType != null && closeCurveType.IsVisible)
-                {
-                    tmpPoints = GetScreenPoints(StartIndex, EndIndex, closeCurveType.DataSerie);
-
-                    // Store in member for future use (Display mouse marquee)
-                    switch (this.ChartMode)
-                    {
-                        case GraphChartMode.Line:
-                            aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
-                            break;
-                        case GraphChartMode.LineCross:
-                            aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
-
-                            if (EndIndex - StartIndex < GraphRectangle.Width / 3)
-                            {
-                                for (int i = 0; i < tmpPoints.Length; i++)
-                                {
-                                    var p = tmpPoints[i];
-                                    aGraphic.DrawLine(closeCurveType.CurvePen, p.X - 3, p.Y, p.X + 3, p.Y);
-                                    aGraphic.DrawLine(closeCurveType.CurvePen, p.X, p.Y - 3, p.X, p.Y + 3);
-                                }
-                            }
-                            break;
-                        case GraphChartMode.BarChart:
-                            {
-                                FloatSerie openSerie = openCurveType.DataSerie;
-                                FloatSerie highSerie = highCurveType.DataSerie;
-                                FloatSerie lowSerie = lowCurveType.DataSerie;
-
-                                tmpOpenPoints = GetScreenPoints(StartIndex, EndIndex, openSerie);
-                                tmpHighPoints = GetScreenPoints(StartIndex, EndIndex, highSerie);
-                                tmpLowPoints = GetScreenPoints(StartIndex, EndIndex, lowSerie);
-
-                                OHLCBar bar = new OHLCBar();
-                                bar.Width = 0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count();
-                                Pen barPen;
-                                for (int i = 0; i < tmpPoints.Count(); i++)
-                                {
-                                    barPen = this.closeCurveType.CurvePen;
-                                    if (!this.HideIndicators && this.CurveList.PaintBar != null)
-                                    {
-                                        // Get pen from paintBar
-                                        IStockPaintBar pb = this.CurveList.PaintBar;
-                                        if (pb.Events[0].Count == this.dateSerie.Length)
-                                        {
-                                            for (int pbIndex = 0; pbIndex < pb.SeriesCount; pbIndex++)
-                                            {
-                                                if (pb.SerieVisibility[pbIndex] && pb.Events[pbIndex][i + this.StartIndex])
-                                                {
-                                                    barPen = pb.SeriePens[pbIndex];
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    bar.X = tmpPoints[i].X;
-                                    bar.Close = tmpPoints[i].Y;
-                                    bar.High = tmpHighPoints[i].Y;
-                                    bar.Open = tmpOpenPoints[i].Y;
-                                    bar.Low = tmpLowPoints[i].Y;
-
-                                    bar.Draw(aGraphic, barPen);
-                                }
-                            }
-                            break;
-                        case GraphChartMode.CandleStick:
-                            {
-                                FloatSerie openSerie = openCurveType.DataSerie;
-                                FloatSerie highSerie = highCurveType.DataSerie;
-                                FloatSerie lowSerie = lowCurveType.DataSerie;
-
-                                tmpOpenPoints = GetScreenPoints(StartIndex, EndIndex, openSerie);
-                                tmpHighPoints = GetScreenPoints(StartIndex, EndIndex, highSerie);
-                                tmpLowPoints = GetScreenPoints(StartIndex, EndIndex, lowSerie);
-
-                                CandleStick candleStick = new CandleStick();
-                                candleStick.Width = (int)(0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count());
-                                for (int i = 0; i < tmpPoints.Count(); i++)
-                                {
-                                    candleStick.X = (int)tmpPoints[i].X;
-                                    candleStick.Close = (int)tmpPoints[i].Y;
-                                    candleStick.High = (int)tmpHighPoints[i].Y;
-                                    candleStick.Open = (int)tmpOpenPoints[i].Y;
-                                    candleStick.Low = (int)tmpLowPoints[i].Y;
-
-                                    Color? color = null;
-                                    if (!this.HideIndicators && this.CurveList.PaintBar != null)
-                                    {
-                                        // Get pen from paintBar
-                                        IStockPaintBar pb = this.CurveList.PaintBar;
-                                        if (pb.Events[0].Count == this.dateSerie.Length)
-                                        {
-                                            for (int pbIndex = 0; pbIndex < pb.SeriesCount; pbIndex++)
-                                            {
-                                                if (pb.SerieVisibility[pbIndex] && pb.Events[pbIndex][i + this.StartIndex])
-                                                {
-                                                    color = pb.SeriePens[pbIndex].Color;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        if (color == null)
-                                        {
-                                            candleStick.Draw(aGraphic, closeCurveType.CurvePen, backgroundBrush);
-                                        }
-                                        else
-                                        {
-                                            using (Brush brush = new SolidBrush(color.Value))
-                                            {
-                                                candleStick.Draw(aGraphic, closeCurveType.CurvePen, brush);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        candleStick.Draw(aGraphic, closeCurveType.CurvePen, null);
-                                    }
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                #endregion
-
-                #region Display the secondary stock value
-
-                if (this.SecondaryFloatSerie != null)
-                {
-                    PointF[] secondaryPoints = GetSecondaryScreenPoints(StartIndex, EndIndex);
-                    if (secondaryPoints.Length > 0)
-                    {
-                        aGraphic.DrawLines(SecondaryPen, secondaryPoints);
-                    }
-                }
-
-                #endregion
-
-                #region Draw frame, axis and axis values
-
-                // Draw main frame
-                aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
-                aGraphic.DrawLine(framePen, orderArea.X, orderArea.Y, orderArea.X, orderArea.Bottom);
-
-                // Display values and dates
-                var lastValue = closeCurveType.DataSerie[EndIndex];
-                var lastValuepoint = GetScreenPointFromValuePoint(EndIndex, lastValue);
-                aGraphic.DrawString(lastValue.ToString(), axisFont, Brushes.Black, GraphRectangle.Right + 1, lastValuepoint.Y - 8);
-
-                #endregion
-
-                #region Display event marquee
-
-                if (this.ShowEventMarquee)
-                {
-                    bool eventFound = false;
-                    for (int i = this.StartIndex; i <= this.EndIndex; i++)
-                    {
-                        eventFound = false;
-                        // Indicators
-                        foreach (IStockIndicator indicator in this.CurveList.Indicators.Where(indic => indic.Events != null))
-                        {
-                            for (int j = 0; j < indicator.EventCount; j++)
-                            {
-                                if (indicator.IsEvent[j] && indicator.Events[j] != null && indicator.Events.Count() > 0)
-                                {
-                                    BoolSerie eventSerie = indicator.Events[j];
-
-                                    if (eventSerie[i])
-                                    {
-                                        eventFound = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (eventFound) break;
-                        }
-                        // Trail Stops
-                        if (!eventFound && this.CurveList.TrailStop != null && this.CurveList.TrailStop.EventCount > 0)
-                        {
-                            for (int j = 0; j < this.CurveList.TrailStop.EventCount; j++)
-                            {
-                                if (this.CurveList.TrailStop.IsEvent[j] && this.CurveList.TrailStop.Events[j] != null &&
-                                    this.CurveList.TrailStop.Events.Count() > 0)
-                                {
-                                    BoolSerie eventSerie = this.CurveList.TrailStop.Events[j];
-                                    if (eventSerie[i])
-                                    {
-                                        eventFound = true;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        // Paint bars
-                        if (!eventFound && this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
-                        {
-                            int j = 0;
-                            foreach (var eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
-                            {
-                                if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null &&
-                                    this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
-                                {
-                                    eventFound = true;
-                                    break;
-                                }
-                                j++;
-                            }
-                        }
-                        // Cloud
-                        if (!eventFound && this.CurveList.Cloud != null && this.CurveList.Cloud.EventCount > 0)
-                        {
-                            int j = 0;
-                            foreach (var eventSerie in this.CurveList.Cloud.Events.Where(ev => ev != null && ev.Count > 0))
-                            {
-                                if (this.CurveList.Cloud.IsEvent != null && this.CurveList.Cloud.IsEvent[j] && eventSerie[i])
-                                {
-                                    eventFound = true;
-                                    break;
-                                }
-                                j++;
-                            }
-                        }
-                        // AutoDrawing
-                        if (!eventFound && this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.EventCount > 0)
-                        {
-                            int j = 0;
-                            foreach (var eventSerie in this.CurveList.AutoDrawing.Events.Where(ev => ev != null && ev.Count > 0))
-                            {
-                                if (this.CurveList.AutoDrawing.IsEvent != null && this.CurveList.AutoDrawing.IsEvent[j] && eventSerie[i])
-                                {
-                                    eventFound = true;
-                                    break;
-                                }
-                                j++;
-                            }
-                        }
-                        if (eventFound)
-                        {
-                            PointF[] marqueePoints = GetEventMarqueePointsAtIndex(i);
-                            aGraphic.FillPolygon(Brushes.DarkBlue, marqueePoints);
-                        }
-                    }
-                }
-
-                #endregion
-
-                #region Display comment marquee
-                if (this.Agenda != null && this.ShowAgenda != AgendaEntryType.No)
-                {
-                    var startDate = this.dateSerie[StartIndex];
-                    var endDate = this.dateSerie[EndIndex];
-                    foreach (var agendaEntry in this.Agenda.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
-                    {
-                        if (agendaEntry.IsOfType(this.ShowAgenda))
-                        {
-                            int index = this.IndexOf(agendaEntry.Date, this.StartIndex, this.EndIndex);
-
-                            PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
-                            aGraphic.FillPolygon(Brushes.DarkCyan, marqueePoints);
-                        }
-                    }
-                }
-                if (this.ShowDividend && this.Dividends != null && this.Dividends.Entries.Count > 0)
-                {
-                    var startDate = this.dateSerie[StartIndex];
-                    var endDate = this.dateSerie[EndIndex];
-                    foreach (var dividendEntry in this.Dividends.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
-                    {
-                        int index = this.IndexOf(dividendEntry.Date, this.StartIndex, this.EndIndex);
-
-                        PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
-                        aGraphic.FillPolygon(Brushes.DarkGreen, marqueePoints);
-                    }
-                }
-                #endregion
-
-                #region Draw orders
-
-                if (ShowPositions && this.Portfolio != null)
-                {
-                    PaintPositions(aGraphic);
-                }
-                if (ShowOrders && this.Portfolio != null)
-                {
-                    PaintOrders(aGraphic);
-                }
-
-                #endregion
-
-                #region Display drawing items
-
-                if (this.ShowDrawings && this.drawingItems != null)
-                {
-                    PaintDrawings(aGraphic, this.drawingItems);
-                }
-                if (this.CurveList?.AutoDrawing?.DrawingItems != null)
-                {
-                    PaintDrawings(aGraphic, this.CurveList.AutoDrawing.DrawingItems);
-                }
+                DrawVerticalGridLines(aGraphic, true, this.StartIndex, this.EndIndex);
 
                 #endregion
             }
+            aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("dd/MM"), axisFont, Brushes.Black,
+               GraphRectangle.Right - 3, GraphRectangle.Y + GraphRectangle.Height);
+            aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("yyyy"), axisFont, Brushes.Black,
+               GraphRectangle.Right - 1, GraphRectangle.Y + GraphRectangle.Height + 8);
+
+            #endregion
+
+            #region Draw HLine
+            // Paint horizontal lines first
+            this.PaintHorizontalLines(aGraphic);
+            #endregion
+
+            #region Draw values and curves
+
+            PointF[] tmpPoints = null;
+            PointF[] tmpOpenPoints = null;
+            PointF[] tmpHighPoints = null;
+            PointF[] tmpLowPoints = null;
+            // Draw indicator1Name first not to hide the value
+            if (!HideIndicators)
+            {
+                #region DISPLAY CLOUD
+                if (this.CurveList.Cloud != null && this.CurveList.Cloud.Series[0].Count > 0)
+                {
+                    this.DrawStockText(aGraphic, this.CurveList.Cloud.StockTexts);
+
+                    var bullColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[0].Color.R, this.CurveList.Cloud.SeriePens[0].Color.G, this.CurveList.Cloud.SeriePens[0].Color.B);
+                    var bullBrush = new SolidBrush(bullColor);
+                    var bullPen = this.CurveList.Cloud.SeriePens[0];
+
+                    var bearColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[1].Color.R, this.CurveList.Cloud.SeriePens[1].Color.G, this.CurveList.Cloud.SeriePens[1].Color.B);
+                    var bearBrush = new SolidBrush(bearColor);
+                    var bearPen = this.CurveList.Cloud.SeriePens[1];
+
+                    var bullPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[0]);
+                    var bearPoints = GetScreenPoints(StartIndex, EndIndex, this.CurveList.Cloud.Series[1]);
+
+                    bool isBull = bullPoints[0].Y < bearPoints[0].Y;
+                    var nbPoints = bullPoints.Length;
+                    var upPoints = new List<PointF>() { bullPoints[0] };
+                    var downPoints = new List<PointF>() { bearPoints[0] };
+                    for (int i = 1; i < nbPoints; i++)
+                    {
+                        if (isBull && bullPoints[i].Y < bearPoints[i].Y) // Bull cloud continuing
+                        {
+                            upPoints.Add(bullPoints[i]);
+                            downPoints.Insert(0, bearPoints[i]);
+                        }
+                        else if (!isBull && bullPoints[i].Y > bearPoints[i].Y) // Bear cloud continuing
+                        {
+                            upPoints.Add(bullPoints[i]);
+                            downPoints.Insert(0, bearPoints[i]);
+                        }
+                        else // Cloud reversing, need a draw
+                        {
+                            if (upPoints.Count > 0)
+                            {
+                                upPoints.Add(bearPoints[i]);
+                                downPoints.Insert(0, bullPoints[i]);
+                                aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
+                                aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
+                                upPoints.AddRange(downPoints);
+                                aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
+                            }
+                            isBull = !isBull;
+                            upPoints.Clear();
+                            downPoints.Clear();
+                            upPoints = new List<PointF>() { bullPoints[i] };
+                            downPoints = new List<PointF>() { bearPoints[i] };
+                        }
+                    }
+                    if (upPoints.Count > 1)
+                    {
+                        aGraphic.DrawLines(isBull ? bullPen : bearPen, upPoints.ToArray());
+                        aGraphic.DrawLines(isBull ? bullPen : bearPen, downPoints.ToArray());
+                        upPoints.AddRange(downPoints);
+                        aGraphic.FillPolygon(isBull ? bullBrush : bearBrush, upPoints.ToArray());
+                        upPoints.Clear();
+                        downPoints.Clear();
+                    }
+                    bullBrush.Dispose();
+                    bearBrush.Dispose();
+                    for (int i = 2; i < this.CurveList.Cloud.SeriesCount; i++)
+                    {
+                        if (this.CurveList.Cloud.SerieVisibility[i] && this.CurveList.Cloud.Series[i]?.Count > 0)
+                        {
+                            DrawSeriePoints(aGraphic, this.CurveList.Cloud.Series[i], this.CurveList.Cloud.SeriePens[i]);
+                        }
+                    }
+                }
+                #endregion
+                #region DISPLAY TRAIL STOPS
+                if (this.CurveList.TrailStop?.Series[0] != null && this.CurveList.TrailStop.Series[0].Count > 0)
+                {
+                    this.DrawStockText(aGraphic, this.CurveList.TrailStop.StockTexts);
+                    FloatSerie longStopSerie = this.CurveList.TrailStop.Series[0];
+                    FloatSerie shortStopSerie = this.CurveList.TrailStop.Series[1];
+
+                    Pen longPen = this.CurveList.TrailStop.SeriePens[0];
+                    Pen shortPen = this.CurveList.TrailStop.SeriePens[1];
+
+                    List<PointF> points = new List<PointF>();
+
+                    // Draw Long trail
+                    using (Brush brush = new SolidBrush(Color.FromArgb(92, longPen.Color.R, longPen.Color.G, longPen.Color.B)))
+                    {
+                        FillArea(aGraphic, longStopSerie, longPen, brush);
+                    }
+                    using (Brush brush = new SolidBrush(Color.FromArgb(92, shortPen.Color.R, shortPen.Color.G, shortPen.Color.B)))
+                    {
+                        FillArea(aGraphic, shortStopSerie, shortPen, brush);
+                    }
+                    if (this.CurveList.TrailStop.SerieVisibility[2] && this.CurveList.TrailStop.Series[2]?.Count > 0)
+                    {
+                        DrawSeriePoints(aGraphic, this.CurveList.TrailStop.Series[2], this.CurveList.TrailStop.SeriePens[2]);
+                    }
+                }
+                #endregion
+                #region DISPLAY Auto Drawing curves
+                if (this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.Series.Count() > 0 && this.CurveList.AutoDrawing.Series[0].Count > 0)
+                {
+                    FloatSerie longStopSerie = this.CurveList.AutoDrawing.Series[0];
+                    FloatSerie shortStopSerie = this.CurveList.AutoDrawing.Series[1];
+
+                    Pen longPen = this.CurveList.AutoDrawing.SeriePens[0];
+                    Pen shortPen = this.CurveList.AutoDrawing.SeriePens[1];
+
+                    using Brush longBrush = new SolidBrush(longPen.Color);
+                    using Brush shortBrush = new SolidBrush(shortPen.Color);
+                    PointF srPoint1;
+                    PointF srPoint2;
+                    if (float.IsNaN(shortStopSerie[this.StartIndex]))
+                    {
+                        srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, longStopSerie[this.StartIndex]);
+                    }
+                    else
+                    {
+                        srPoint1 = GetScreenPointFromValuePoint(this.StartIndex, shortStopSerie[this.StartIndex]);
+                    }
+                    for (int i = StartIndex + 1; i <= this.EndIndex; i++)
+                    {
+                        bool isSupport = float.IsNaN(shortStopSerie[i]);
+                        if (isSupport) // upTrend
+                        {
+                            srPoint2 = GetScreenPointFromValuePoint(i, longStopSerie[i]);
+                            if (!float.IsNaN(srPoint1.Y))
+                            {
+                                aGraphic.DrawLine(longPen, srPoint1, srPoint2);
+                            }
+                        }
+                        else
+                        {
+                            srPoint2 = GetScreenPointFromValuePoint(i, shortStopSerie[i]);
+                            if (!float.IsNaN(srPoint1.Y))
+                            {
+                                aGraphic.DrawLine(shortPen, srPoint1, srPoint2);
+                            }
+                        }
+                        srPoint1 = srPoint2;
+                    }
+                }
+                #endregion
+                #region DISPLAY INDICATORS
+
+                foreach (var stockIndicator in CurveList.Indicators)
+                {
+                    this.DrawStockText(aGraphic, stockIndicator.StockTexts);
+                    for (int i = 0; i < stockIndicator.SeriesCount; i++)
+                    {
+                        if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0)
+                        {
+                            int indexOfPB = Array.IndexOf<string>(stockIndicator.EventNames, "Pullback");
+                            int indexOfEoT = Array.IndexOf<string>(stockIndicator.EventNames, "EndOfTrend");
+
+                            bool isSupport = stockIndicator.SerieNames[i].EndsWith(".S");
+                            bool isResistance = stockIndicator.SerieNames[i].EndsWith(".R");
+                            if (isSupport || isResistance)
+                            {
+                                PointF srPoint = PointF.Empty;
+                                FloatSerie srSerie = stockIndicator.Series[i];
+                                float pointSize = stockIndicator.SeriePens[i].Width;
+                                using Brush srBrush = new SolidBrush(stockIndicator.SeriePens[i].Color);
+                                for (int index = this.StartIndex; index <= this.EndIndex; index++)
+                                {
+                                    float sr = srSerie.Values[index];
+                                    if (float.IsNaN(sr))
+                                    {
+                                        continue;
+                                    }
+                                    srPoint = GetScreenPointFromValuePoint(index, sr);
+                                    aGraphic.FillEllipse(srBrush, srPoint.X - pointSize, srPoint.Y - pointSize,
+                                       2 * pointSize, 2 * pointSize);
+
+                                    if (this.ShowIndicatorText && indexOfPB != -1 && indexOfEoT != -1)
+                                    {
+                                        const int textOffset = 4;
+
+                                        float yPos = isSupport
+                                           ? srPoint.Y + pointSize
+                                           : srPoint.Y - 2 * pointSize - 12;
+
+                                        // Draw PB and EndOfTrend text
+                                        if (stockIndicator.Events[indexOfPB][index])
+                                        {
+                                            // Pullback in trend detected
+                                            this.DrawString(aGraphic, "PB", axisFont, srBrush, srPoint.X - textOffset, yPos, false);
+                                        }
+                                        else if (stockIndicator.Events[indexOfEoT][index])
+                                        {
+                                            // End of trend detected
+                                            this.DrawString(aGraphic, "End", axisFont, srBrush, srPoint.X - textOffset,
+                                               yPos, false);
+                                        }
+                                        else
+                                        {
+                                            if (isSupport && stockIndicator.Events[4][index])
+                                            {
+                                                this.DrawString(aGraphic, "HL", axisFont, srBrush, srPoint.X - textOffset, yPos, false);
+
+                                            }
+                                            if (isResistance && stockIndicator.Events[5][index])
+                                            {
+                                                this.DrawString(aGraphic, "LH", axisFont, srBrush, srPoint.X - textOffset, yPos, false);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                DrawSeriePoints(aGraphic, stockIndicator.Series[i], stockIndicator.SeriePens[i]);
+                            }
+                        }
+                    }
+                }
+                #endregion
+                #region DISPLAY DECORATORS
+                if (this.ShowIndicatorDiv && CurveList.ShowMes.Count > 0)
+                {
+                    for (int j = 0; j < CurveList.ShowMes.Count; j++)
+                    {
+                        IStockDecorator decorator = CurveList.ShowMes[j];
+                        for (int i = 0; i < decorator.EventCount; i++)
+                        {
+                            if (decorator.EventVisibility[i] && decorator.IsEvent[i] && decorator.Events[i].Count > 0)
+                            {
+                                FloatSerie dataSerie = (i % 2 == 0) ? highCurveType.DataSerie : lowCurveType.DataSerie;
+                                Pen pen = decorator.EventPens[i];
+                                using Brush brush = new SolidBrush(pen.Color);
+                                BoolSerie decoSerie = decorator.Events[i];
+                                for (int index = this.StartIndex; index <= this.EndIndex; index++)
+                                {
+                                    if (decoSerie[index])
+                                    {
+                                        PointF point = new PointF(index, dataSerie[index]);
+                                        PointF point2 = GetScreenPointFromValuePoint(point);
+                                        aGraphic.FillEllipse(brush, point2.X - pen.Width * 1.5f, point2.Y - pen.Width * 1.5f,
+                                           pen.Width * 3f, pen.Width * 3f);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+
+            #endregion
+
+            #region Display the stock value
+            if (this.CurveList.PaintBar != null)
+            {
+                this.DrawStockText(aGraphic, this.CurveList.PaintBar.StockTexts);
+            }
+
+            // Then draw the value
+            if (closeCurveType != null && closeCurveType.IsVisible)
+            {
+                tmpPoints = GetScreenPoints(StartIndex, EndIndex, closeCurveType.DataSerie);
+
+                // Store in member for future use (Display mouse marquee)
+                switch (this.ChartMode)
+                {
+                    case GraphChartMode.Line:
+                        aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
+                        break;
+                    case GraphChartMode.LineCross:
+                        aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
+
+                        if (EndIndex - StartIndex < GraphRectangle.Width / 3)
+                        {
+                            for (int i = 0; i < tmpPoints.Length; i++)
+                            {
+                                var p = tmpPoints[i];
+                                aGraphic.DrawLine(closeCurveType.CurvePen, p.X - 3, p.Y, p.X + 3, p.Y);
+                                aGraphic.DrawLine(closeCurveType.CurvePen, p.X, p.Y - 3, p.X, p.Y + 3);
+                            }
+                        }
+                        break;
+                    case GraphChartMode.BarChart:
+                        {
+                            FloatSerie openSerie = openCurveType.DataSerie;
+                            FloatSerie highSerie = highCurveType.DataSerie;
+                            FloatSerie lowSerie = lowCurveType.DataSerie;
+
+                            tmpOpenPoints = GetScreenPoints(StartIndex, EndIndex, openSerie);
+                            tmpHighPoints = GetScreenPoints(StartIndex, EndIndex, highSerie);
+                            tmpLowPoints = GetScreenPoints(StartIndex, EndIndex, lowSerie);
+
+                            OHLCBar bar = new OHLCBar
+                            {
+                                Width = 0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count()
+                            };
+                            Pen barPen;
+                            for (int i = 0; i < tmpPoints.Count(); i++)
+                            {
+                                barPen = this.closeCurveType.CurvePen;
+                                if (!this.HideIndicators && this.CurveList.PaintBar != null)
+                                {
+                                    // Get pen from paintBar
+                                    IStockPaintBar pb = this.CurveList.PaintBar;
+                                    if (pb.Events[0].Count == this.dateSerie.Length)
+                                    {
+                                        for (int pbIndex = 0; pbIndex < pb.SeriesCount; pbIndex++)
+                                        {
+                                            if (pb.SerieVisibility[pbIndex] && pb.Events[pbIndex][i + this.StartIndex])
+                                            {
+                                                barPen = pb.SeriePens[pbIndex];
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                bar.X = tmpPoints[i].X;
+                                bar.Close = tmpPoints[i].Y;
+                                bar.High = tmpHighPoints[i].Y;
+                                bar.Open = tmpOpenPoints[i].Y;
+                                bar.Low = tmpLowPoints[i].Y;
+
+                                bar.Draw(aGraphic, barPen);
+                            }
+                        }
+                        break;
+                    case GraphChartMode.CandleStick:
+                        {
+                            FloatSerie openSerie = openCurveType.DataSerie;
+                            FloatSerie highSerie = highCurveType.DataSerie;
+                            FloatSerie lowSerie = lowCurveType.DataSerie;
+
+                            tmpOpenPoints = GetScreenPoints(StartIndex, EndIndex, openSerie);
+                            tmpHighPoints = GetScreenPoints(StartIndex, EndIndex, highSerie);
+                            tmpLowPoints = GetScreenPoints(StartIndex, EndIndex, lowSerie);
+
+                            CandleStick candleStick = new CandleStick
+                            {
+                                Width = (int)(0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count())
+                            };
+                            for (int i = 0; i < tmpPoints.Count(); i++)
+                            {
+                                candleStick.X = (int)tmpPoints[i].X;
+                                candleStick.Close = (int)tmpPoints[i].Y;
+                                candleStick.High = (int)tmpHighPoints[i].Y;
+                                candleStick.Open = (int)tmpOpenPoints[i].Y;
+                                candleStick.Low = (int)tmpLowPoints[i].Y;
+
+                                Color? color = null;
+                                if (!this.HideIndicators && this.CurveList.PaintBar != null)
+                                {
+                                    // Get pen from paintBar
+                                    IStockPaintBar pb = this.CurveList.PaintBar;
+                                    if (pb.Events[0].Count == this.dateSerie.Length)
+                                    {
+                                        for (int pbIndex = 0; pbIndex < pb.SeriesCount; pbIndex++)
+                                        {
+                                            if (pb.SerieVisibility[pbIndex] && pb.Events[pbIndex][i + this.StartIndex])
+                                            {
+                                                color = pb.SeriePens[pbIndex].Color;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (color == null)
+                                    {
+                                        candleStick.Draw(aGraphic, closeCurveType.CurvePen, backgroundBrush);
+                                    }
+                                    else
+                                    {
+                                        using Brush brush = new SolidBrush(color.Value);
+                                        candleStick.Draw(aGraphic, closeCurveType.CurvePen, brush);
+                                    }
+                                }
+                                else
+                                {
+                                    candleStick.Draw(aGraphic, closeCurveType.CurvePen, null);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            #endregion
+
+            #region Display the secondary stock value
+
+            if (this.SecondaryFloatSerie != null)
+            {
+                PointF[] secondaryPoints = GetSecondaryScreenPoints(StartIndex, EndIndex);
+                if (secondaryPoints.Length > 0)
+                {
+                    aGraphic.DrawLines(SecondaryPen, secondaryPoints);
+                }
+            }
+
+            #endregion
+
+            #region Draw frame, axis and axis values
+
+            // Draw main frame
+            aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
+            aGraphic.DrawLine(framePen, orderArea.X, orderArea.Y, orderArea.X, orderArea.Bottom);
+
+            // Display values and dates
+            var lastValue = closeCurveType.DataSerie[EndIndex];
+            var lastValuepoint = GetScreenPointFromValuePoint(EndIndex, lastValue);
+            aGraphic.DrawString(lastValue.ToString(), axisFont, Brushes.Black, GraphRectangle.Right + 1, lastValuepoint.Y - 8);
+
+            #endregion
+
+            #region Display event marquee
+
+            if (this.ShowEventMarquee)
+            {
+                bool eventFound = false;
+                for (int i = this.StartIndex; i <= this.EndIndex; i++)
+                {
+                    eventFound = false;
+                    // Indicators
+                    foreach (IStockIndicator indicator in this.CurveList.Indicators.Where(indic => indic.Events != null))
+                    {
+                        for (int j = 0; j < indicator.EventCount; j++)
+                        {
+                            if (indicator.IsEvent[j] && indicator.Events[j] != null && indicator.Events.Count() > 0)
+                            {
+                                BoolSerie eventSerie = indicator.Events[j];
+
+                                if (eventSerie[i])
+                                {
+                                    eventFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (eventFound) break;
+                    }
+                    // Trail Stops
+                    if (!eventFound && this.CurveList.TrailStop != null && this.CurveList.TrailStop.EventCount > 0)
+                    {
+                        for (int j = 0; j < this.CurveList.TrailStop.EventCount; j++)
+                        {
+                            if (this.CurveList.TrailStop.IsEvent[j] && this.CurveList.TrailStop.Events[j] != null &&
+                                this.CurveList.TrailStop.Events.Count() > 0)
+                            {
+                                BoolSerie eventSerie = this.CurveList.TrailStop.Events[j];
+                                if (eventSerie[i])
+                                {
+                                    eventFound = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    // Paint bars
+                    if (!eventFound && this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
+                    {
+                        int j = 0;
+                        foreach (var eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
+                        {
+                            if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null &&
+                                this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
+                            {
+                                eventFound = true;
+                                break;
+                            }
+                            j++;
+                        }
+                    }
+                    // Cloud
+                    if (!eventFound && this.CurveList.Cloud != null && this.CurveList.Cloud.EventCount > 0)
+                    {
+                        int j = 0;
+                        foreach (var eventSerie in this.CurveList.Cloud.Events.Where(ev => ev != null && ev.Count > 0))
+                        {
+                            if (this.CurveList.Cloud.IsEvent != null && this.CurveList.Cloud.IsEvent[j] && eventSerie[i])
+                            {
+                                eventFound = true;
+                                break;
+                            }
+                            j++;
+                        }
+                    }
+                    // AutoDrawing
+                    if (!eventFound && this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.EventCount > 0)
+                    {
+                        int j = 0;
+                        foreach (var eventSerie in this.CurveList.AutoDrawing.Events.Where(ev => ev != null && ev.Count > 0))
+                        {
+                            if (this.CurveList.AutoDrawing.IsEvent != null && this.CurveList.AutoDrawing.IsEvent[j] && eventSerie[i])
+                            {
+                                eventFound = true;
+                                break;
+                            }
+                            j++;
+                        }
+                    }
+                    if (eventFound)
+                    {
+                        PointF[] marqueePoints = GetEventMarqueePointsAtIndex(i);
+                        aGraphic.FillPolygon(Brushes.DarkBlue, marqueePoints);
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Display comment marquee
+            if (this.Agenda != null && this.ShowAgenda != AgendaEntryType.No)
+            {
+                var startDate = this.dateSerie[StartIndex];
+                var endDate = this.dateSerie[EndIndex];
+                foreach (var agendaEntry in this.Agenda.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
+                {
+                    if (agendaEntry.IsOfType(this.ShowAgenda))
+                    {
+                        int index = this.IndexOf(agendaEntry.Date, this.StartIndex, this.EndIndex);
+
+                        PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
+                        aGraphic.FillPolygon(Brushes.DarkCyan, marqueePoints);
+                    }
+                }
+            }
+            if (this.ShowDividend && this.Dividends != null && this.Dividends.Entries.Count > 0)
+            {
+                var startDate = this.dateSerie[StartIndex];
+                var endDate = this.dateSerie[EndIndex];
+                foreach (var dividendEntry in this.Dividends.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
+                {
+                    int index = this.IndexOf(dividendEntry.Date, this.StartIndex, this.EndIndex);
+
+                    PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
+                    aGraphic.FillPolygon(Brushes.DarkGreen, marqueePoints);
+                }
+            }
+            #endregion
+
+            #region Draw orders
+
+            if (ShowPositions && this.Portfolio != null)
+            {
+                PaintPositions(aGraphic);
+            }
+            if (ShowOrders && this.Portfolio != null)
+            {
+                PaintOrders(aGraphic);
+            }
+
+            #endregion
+
+            #region Display drawing items
+
+            if (this.ShowDrawings && this.drawingItems != null)
+            {
+                PaintDrawings(aGraphic, this.drawingItems);
+            }
+            if (this.CurveList?.AutoDrawing?.DrawingItems != null)
+            {
+                PaintDrawings(aGraphic, this.CurveList.AutoDrawing.DrawingItems);
+            }
+
+            #endregion
         }
 
-        private void DrawSeriePoints(Graphics aGraphic, PointF[] tmpPoints, FloatSerie pointSerie, Pen pen)
+        private void DrawSeriePoints(Graphics aGraphic, FloatSerie pointSerie, Pen pen)
         {
             List<Tuple<int, int>> tuples = new List<Tuple<int, int>>();
             int start = -1;
@@ -854,7 +840,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             foreach (var tuple in tuples)
             {
-                tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, pointSerie);
+                var tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, pointSerie);
                 if (tmpPoints != null)
                 {
                     aGraphic.DrawLines(pen, tmpPoints);
@@ -942,12 +928,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             foreach (var text in stockTexts.Where(t => t.AbovePrice && t.Index > this.StartIndex && t.Index <= this.EndIndex))
             {
                 var point = GetScreenPointFromValuePoint(text.Index, this.highCurveType.DataSerie[text.Index]);
-                this.DrawString(g, text.Text, axisFont, textBrush, this.backgroundBrush, point.X, point.Y - 15, false);
+                this.DrawString(g, text.Text, axisFont, textBrush, point.X, point.Y - 15, false);
             }
             foreach (var text in stockTexts.Where(t => !t.AbovePrice && t.Index > this.StartIndex && t.Index <= this.EndIndex))
             {
                 var point = GetScreenPointFromValuePoint(text.Index, this.lowCurveType.DataSerie[text.Index]);
-                this.DrawString(g, text.Text, axisFont, textBrush, this.backgroundBrush, point.X, point.Y + 5, false);
+                this.DrawString(g, text.Text, axisFont, textBrush, point.X, point.Y + 5, false);
             }
         }
 
@@ -1137,10 +1123,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.SecondaryFloatSerie != null)
             {
                 graphTitle = this.SecondaryFloatSerie.Name;
-                using (Brush textBrush = new SolidBrush(SecondaryPen.Color))
-                {
-                    this.DrawString(gr, graphTitle, this.axisFont, textBrush, this.backgroundBrush, new PointF(right + 16, 1), true);
-                }
+                using Brush textBrush = new SolidBrush(SecondaryPen.Color);
+                this.DrawString(gr, graphTitle, this.axisFont, textBrush, this.backgroundBrush, new PointF(right + 16, 1), true);
             }
         }
         private void PaintOrders(Graphics graphic)
@@ -1260,7 +1244,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             int arrowLengh = 15;
             float offset = 10;
             isBuy = isShort ? !isBuy : isBuy;
-            Pen p = buyLongPen;
+            Pen p;
             if (isBuy)
             {
                 if (isShort)
@@ -1523,7 +1507,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     mousePoint.X -= 100.0f;
                 }
-                this.DrawString(this.foregroundGraphic, eventTypeString, axisFont, Brushes.Black, backgroundBrush, mousePoint.X, mousePoint.Y, true);
+                this.DrawString(this.foregroundGraphic, eventTypeString, axisFont, Brushes.Black, mousePoint.X, mousePoint.Y, true);
             }
             #endregion
             #region Display Agenda Text
@@ -1540,7 +1524,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     string eventText = agendaEntry.Event.Replace("\n", " ") + Environment.NewLine;
                     eventText += "Date : " + agendaEntry.Date.ToShortDateString();
                     Size size = TextRenderer.MeasureText(eventText, axisFont);
-                    this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                    this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                 }
             }
             #endregion
@@ -1564,7 +1548,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
 
                     Size size = TextRenderer.MeasureText(eventText, axisFont);
-                    this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, backgroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                    this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                 }
             }
             #endregion
@@ -2333,7 +2317,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             float minDistance = float.MaxValue;
             float currentDistance = float.MaxValue;
             Line2DBase line;
-            foreach (Line2DBase line2D in this.drawingItems.Where(di => di.IsPersistent && di is Line2DBase)) // There is an issue here as it supports only persistent items. Does't work with generated line.
+            foreach (var line2D in drawingItems.Where(di => di.IsPersistent && di is Line2DBase).Cast<Line2DBase>()) // There is an issue here as it supports only persistent items. Does't work with generated line.
             {
                 line = line2D.Transform(this.matrixValueToScreen, this.IsLogScale);
                 currentDistance = line.DistanceTo(point2D);

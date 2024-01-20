@@ -44,46 +44,44 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    var stockName = row[1];
+                    if (!stockDictionary.ContainsKey(stockName))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                        var stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.Yahoo, BarDuration.Daily);
+                        stockDictionary.Add(stockName, stockSerie);
 
-                        var row = line.Split(',');
-                        var stockName = row[1];
-                        if (!stockDictionary.ContainsKey(stockName))
+                        if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
                         {
-                            var stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.Yahoo, BarDuration.Daily);
-                            stockDictionary.Add(stockName, stockSerie);
-
-                            if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
+                            RefSerie = stockSerie;
+                            // Check if download needed.
+                            stockSerie.Initialise();
+                            DateTime refDate = DateTime.MinValue;
+                            if (stockSerie.Count > 0)
                             {
-                                RefSerie = stockSerie;
-                                // Check if download needed.
-                                stockSerie.Initialise();
-                                DateTime refDate = DateTime.MinValue;
-                                if (stockSerie.Count > 0)
-                                {
-                                    refDate = stockSerie.Keys.Last();
-                                }
-                                this.DownloadDailyData(stockSerie);
-                                stockSerie.Initialise();
-                                needDownload = refDate < stockSerie.Keys.Last();
+                                refDate = stockSerie.Keys.Last();
                             }
-                            else
-                            {
-                                if (download && this.needDownload)
-                                {
-                                    this.DownloadDailyData(stockSerie);
-                                }
-                            }
+                            this.DownloadDailyData(stockSerie);
+                            stockSerie.Initialise();
+                            needDownload = refDate < stockSerie.Keys.Last();
                         }
                         else
                         {
-                            Console.WriteLine("Yahoo Daily Entry: " + row[2] + " already in stockDictionary");
+                            if (download && this.needDownload)
+                            {
+                                this.DownloadDailyData(stockSerie);
+                            }
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Yahoo Daily Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }
@@ -234,49 +232,47 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             return false;
                     }
                 }
-                using (var wc = new WebClient())
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+
+                var url = string.Empty;
+                var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
+                if (stockSerie.Initialise() && stockSerie.Count > 0)
                 {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                    lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
+                    if (lastDate >= DateTime.Today)
+                        return false;
+                    url = FormatURL(stockSerie.Symbol, lastDate.AddMonths(-1), DateTime.Today, "1d");
+                }
+                else
+                {
+                    url = FormatURL(stockSerie.Symbol, lastDate, DateTime.Today, "1d");
+                }
 
-                    var url = string.Empty;
-                    var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
-                    if (stockSerie.Initialise() && stockSerie.Count > 0)
+                int nbTries = 2;
+                while (nbTries > 0)
+                {
+                    try
                     {
-                        lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
-                        if (lastDate >= DateTime.Today)
-                            return false;
-                        url = FormatURL(stockSerie.Symbol, lastDate.AddMonths(-1), DateTime.Today, "1d");
-                    }
-                    else
-                    {
-                        url = FormatURL(stockSerie.Symbol, lastDate, DateTime.Today, "1d");
-                    }
-
-                    int nbTries = 2;
-                    while (nbTries > 0)
-                    {
-                        try
+                        var response = YahooDataProvider.HttpGetFromYahoo(url, stockSerie.Symbol);
+                        if (!string.IsNullOrEmpty(response))
                         {
-                            var response = YahooDataProvider.HttpGetFromYahoo(url, stockSerie.Symbol);
-                            if (!string.IsNullOrEmpty(response))
+                            if (response.StartsWith("{"))
                             {
-                                if (response.StartsWith("{"))
-                                {
-                                    File.WriteAllText(fileName, response);
-                                    stockSerie.IsInitialised = false;
-                                    return true;
-                                }
-                                StockLog.Write(response);
-                                return false;
+                                File.WriteAllText(fileName, response);
+                                stockSerie.IsInitialised = false;
+                                return true;
                             }
                             StockLog.Write(response);
-                            nbTries--;
+                            return false;
                         }
-                        catch (Exception ex)
-                        {
-                            nbTries--;
-                            StockLog.Write(ex);
-                        }
+                        StockLog.Write(response);
+                        nbTries--;
+                    }
+                    catch (Exception ex)
+                    {
+                        nbTries--;
+                        StockLog.Write(ex);
                     }
                 }
             }
@@ -295,33 +291,31 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     httpClient = new HttpClient(handler);
                 }
-                using (var request = new HttpRequestMessage())
-                {
-                    request.Method = HttpMethod.Get;
-                    request.Headers.TryAddWithoutValidation("authority", "query1.finance.yahoo.com");
-                    request.Headers.TryAddWithoutValidation("accept", "*/*");
-                    request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr;q=0.8");
-                    request.Headers.TryAddWithoutValidation("cookie", "GUC=AQABBwFjUTNjgUIjOQUK&s=AQAAAHQwhHqy&g=Y0_klA; A1=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; A3=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; EuConsent=CPP_3gAPP_3gAAOACBFRClCoAP_AAH_AACiQIjNd_Hf_bX9n-f596ft0eY1f9_r3ruQzDhfNk-8F2L_W_LwX_2E7NB36pq4KmR4ku1LBIQNtHMnUDUmxaokVrzHsak2MpyNKJ7BkknsZe2dYGFtPm5lD-QKZ7_5_d3f52T_9_9v-39z33913v3d93-_12LjdV591H_v9fR_bc_Kdt_5-AAAAAAAAEEEQCTDEvIAuxLHAk0DSqFECMKwkKgFABBQDC0TWADA4KdlYBHqCFgAhNQEYEQIMQUYEAgAEAgCQiACQAsEACAIgEAAIAUICEABAwCCwAsDAIAAQDQMQAoABAkIMjgqOUwICIFogJbKwBKKqY0wgDLLACgERkVEAiAIAEgICAsHEMASAlADDQAYAAgkEIgAwABBIIVABgACCQQA; thamba=2; cmp=t=1666643858&j=1&u=1---&v=56; A1S=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o&j=GDPR; PRF=t^%^3DTSLA^%^252BAAPL^%^252B^%^255EFCHI^%^252BMC.PA^%^252BES^%^253DF^%^252BNQ^%^253DF^%^252BSI^%^253DF^%^252BCC^%^253DF^%^252BADYEN.AS^%^252BAVT.PA^%^252BAC.PA");
-                    request.Headers.TryAddWithoutValidation("origin", "https://finance.yahoo.com");
-                    request.Headers.TryAddWithoutValidation("referer", $"https://finance.yahoo.com/quote/{symbol}/chart?p={symbol}");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-dest", "empty");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-mode", "cors");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-site");
-                    request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36");
+                using var request = new HttpRequestMessage();
+                request.Method = HttpMethod.Get;
+                request.Headers.TryAddWithoutValidation("authority", "query1.finance.yahoo.com");
+                request.Headers.TryAddWithoutValidation("accept", "*/*");
+                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr;q=0.8");
+                request.Headers.TryAddWithoutValidation("cookie", "GUC=AQABBwFjUTNjgUIjOQUK&s=AQAAAHQwhHqy&g=Y0_klA; A1=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; A3=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o; EuConsent=CPP_3gAPP_3gAAOACBFRClCoAP_AAH_AACiQIjNd_Hf_bX9n-f596ft0eY1f9_r3ruQzDhfNk-8F2L_W_LwX_2E7NB36pq4KmR4ku1LBIQNtHMnUDUmxaokVrzHsak2MpyNKJ7BkknsZe2dYGFtPm5lD-QKZ7_5_d3f52T_9_9v-39z33913v3d93-_12LjdV591H_v9fR_bc_Kdt_5-AAAAAAAAEEEQCTDEvIAuxLHAk0DSqFECMKwkKgFABBQDC0TWADA4KdlYBHqCFgAhNQEYEQIMQUYEAgAEAgCQiACQAsEACAIgEAAIAUICEABAwCCwAsDAIAAQDQMQAoABAkIMjgqOUwICIFogJbKwBKKqY0wgDLLACgERkVEAiAIAEgICAsHEMASAlADDQAYAAgkEIgAwABBIIVABgACCQQA; thamba=2; cmp=t=1666643858&j=1&u=1---&v=56; A1S=d=AQABBDrgTGECEJASw6tugP5gurwL3tTZJbsFEgABBwEzUWOBY-Uzb2UB9qMAAAcIOuBMYdTZJbs&S=AQAAAtchReKAiYT-dd18q6pme9o&j=GDPR; PRF=t^%^3DTSLA^%^252BAAPL^%^252B^%^255EFCHI^%^252BMC.PA^%^252BES^%^253DF^%^252BNQ^%^253DF^%^252BSI^%^253DF^%^252BCC^%^253DF^%^252BADYEN.AS^%^252BAVT.PA^%^252BAC.PA");
+                request.Headers.TryAddWithoutValidation("origin", "https://finance.yahoo.com");
+                request.Headers.TryAddWithoutValidation("referer", $"https://finance.yahoo.com/quote/{symbol}/chart?p={symbol}");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "empty");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "cors");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-site");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36");
 
-                    request.RequestUri = new Uri(url);
-                    var response = httpClient.SendAsync(request).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return response.Content.ReadAsStringAsync().Result;
-                    }
-                    else
-                    {
-                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
-                    }
+                request.RequestUri = new Uri(url);
+                var response = httpClient.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    return response.Content.ReadAsStringAsync().Result;
+                }
+                else
+                {
+                    StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
                 }
             }
             catch (Exception ex)
@@ -337,44 +331,42 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var res = false;
             try
             {
-                using (var sr = new StreamReader(fileName))
+                using var sr = new StreamReader(fileName);
+                var yahooJson = YahooJson.FromJson(sr.ReadToEnd());
+                if (!string.IsNullOrEmpty(yahooJson?.chart?.error))
                 {
-                    var yahooJson = YahooJson.FromJson(sr.ReadToEnd());
-                    if (!string.IsNullOrEmpty(yahooJson?.chart?.error))
-                    {
-                        StockLog.Write($"Error loading {stockSerie.StockName}: {yahooJson?.chart?.error}");
-                    }
-
-                    int i = 0;
-                    var priceHint = yahooJson.chart.result[0].meta.priceHint;
-                    var quote = yahooJson.chart.result[0].indicators.quote[0];
-                    foreach (var timestamp in yahooJson.chart.result[0].timestamp)
-                    {
-                        if (quote.open[i] == null || quote.high[i] == null || quote.low[i] == null || quote.close[i] == null)
-                        {
-                            i++;
-                            continue;
-                        }
-                        var openDate = refDate.AddSeconds(timestamp).Date;
-                        if (!stockSerie.ContainsKey(openDate))
-                        {
-                            long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
-                            var dailyValue = new StockDailyValue(
-                                   (float)Math.Round(quote.open[i].Value, priceHint),
-                                   (float)Math.Round(quote.high[i].Value, priceHint),
-                                   (float)Math.Round(quote.low[i].Value, priceHint),
-                                   (float)Math.Round(quote.close[i].Value, priceHint),
-                                   vol,
-                                   openDate);
-
-                            stockSerie.Add(dailyValue.DATE, dailyValue);
-                        }
-                        i++;
-                    }
-                    stockSerie.ClearBarDurationCache();
-
-                    res = true;
+                    StockLog.Write($"Error loading {stockSerie.StockName}: {yahooJson?.chart?.error}");
                 }
+
+                int i = 0;
+                var priceHint = yahooJson.chart.result[0].meta.priceHint;
+                var quote = yahooJson.chart.result[0].indicators.quote[0];
+                foreach (var timestamp in yahooJson.chart.result[0].timestamp)
+                {
+                    if (quote.open[i] == null || quote.high[i] == null || quote.low[i] == null || quote.close[i] == null)
+                    {
+                        i++;
+                        continue;
+                    }
+                    var openDate = refDate.AddSeconds(timestamp).Date;
+                    if (!stockSerie.ContainsKey(openDate))
+                    {
+                        long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
+                        var dailyValue = new StockDailyValue(
+                               (float)Math.Round(quote.open[i].Value, priceHint),
+                               (float)Math.Round(quote.high[i].Value, priceHint),
+                               (float)Math.Round(quote.low[i].Value, priceHint),
+                               (float)Math.Round(quote.close[i].Value, priceHint),
+                               vol,
+                               openDate);
+
+                        stockSerie.Add(dailyValue.DATE, dailyValue);
+                    }
+                    i++;
+                }
+                stockSerie.ClearBarDurationCache();
+
+                res = true;
             }
             catch (Exception e)
             {

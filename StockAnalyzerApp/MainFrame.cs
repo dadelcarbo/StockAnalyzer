@@ -393,12 +393,10 @@ namespace StockAnalyzerApp
         }
         protected void OnWindowStateChanged(EventArgs e)
         {
-            using (MethodLogger ml = new MethodLogger(this, false, $"{this.WindowState}"))
+            using MethodLogger ml = new MethodLogger(this, false, $"{this.WindowState}");
+            if (this.WindowState != FormWindowState.Minimized)
             {
-                if (this.WindowState != FormWindowState.Minimized)
-                {
-                    this.ApplyTheme();
-                }
+                this.ApplyTheme();
             }
         }
 
@@ -1578,20 +1576,18 @@ namespace StockAnalyzerApp
             // Parse watch lists
             if (File.Exists(watchListsFileName))
             {
-                using (FileStream fs = new FileStream(watchListsFileName, FileMode.Open))
-                {
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                    settings.IgnoreWhitespace = true;
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
-                    this.WatchLists = (List<StockWatchList>)serializer.Deserialize(xmlReader);
-                    this.WatchLists = this.WatchLists.OrderBy(wl => wl.Name).ToList();
+                using FileStream fs = new FileStream(watchListsFileName, FileMode.Open);
+                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                settings.IgnoreWhitespace = true;
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
+                this.WatchLists = (List<StockWatchList>)serializer.Deserialize(xmlReader);
+                this.WatchLists = this.WatchLists.OrderBy(wl => wl.Name).ToList();
 
-                    // Cleanup missing stocks
-                    foreach (var watchList in this.WatchLists)
-                    {
-                        watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
-                    }
+                // Cleanup missing stocks
+                foreach (var watchList in this.WatchLists)
+                {
+                    watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
                 }
             }
             else
@@ -1619,13 +1615,11 @@ namespace StockAnalyzerApp
                 // Parse existing drawing items
                 if (File.Exists(analysisFileName))
                 {
-                    using (FileStream fs = new FileStream(analysisFileName, FileMode.Open))
-                    {
-                        System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                        settings.IgnoreWhitespace = true;
-                        System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                        StockDictionary.ReadAnalysisFromXml(xmlReader);
-                    }
+                    using FileStream fs = new FileStream(analysisFileName, FileMode.Open);
+                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                    settings.IgnoreWhitespace = true;
+                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    StockDictionary.ReadAnalysisFromXml(xmlReader);
                 }
                 bool dirty = false;
                 foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
@@ -2271,15 +2265,13 @@ namespace StockAnalyzerApp
                 settings.Indent = true;
                 settings.NewLineOnAttributes = true;
 
-                using (FileStream fs = new FileStream(watchListsFileName, FileMode.Create))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
-                    System.Xml.XmlTextWriter xmlWriter = new System.Xml.XmlTextWriter(fs, null);
-                    xmlWriter.Formatting = System.Xml.Formatting.Indented;
-                    xmlWriter.WriteStartDocument();
-                    serializer.Serialize(xmlWriter, this.WatchLists);
-                    xmlWriter.WriteEndDocument();
-                }
+                using FileStream fs = new FileStream(watchListsFileName, FileMode.Create);
+                XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
+                System.Xml.XmlTextWriter xmlWriter = new System.Xml.XmlTextWriter(fs, null);
+                xmlWriter.Formatting = System.Xml.Formatting.Indented;
+                xmlWriter.WriteStartDocument();
+                serializer.Serialize(xmlWriter, this.WatchLists);
+                xmlWriter.WriteEndDocument();
             }
         }
 
@@ -2294,14 +2286,12 @@ namespace StockAnalyzerApp
             try
             {
                 // Save analysis file
-                using (FileStream fs = new FileStream(tmpFileName, FileMode.Create))
-                {
-                    xmlWriter = new System.Xml.XmlTextWriter(fs, null);
-                    xmlWriter.Formatting = System.Xml.Formatting.Indented;
-                    xmlWriter.WriteStartDocument();
-                    StockDictionary.WriteAnalysisToXml(xmlWriter);
-                    xmlWriter.WriteEndDocument();
-                }
+                using FileStream fs = new FileStream(tmpFileName, FileMode.Create);
+                xmlWriter = new System.Xml.XmlTextWriter(fs, null);
+                xmlWriter.Formatting = System.Xml.Formatting.Indented;
+                xmlWriter.WriteStartDocument();
+                StockDictionary.WriteAnalysisToXml(xmlWriter);
+                xmlWriter.WriteEndDocument();
             }
             catch (Exception exception)
             {
@@ -2402,11 +2392,9 @@ namespace StockAnalyzerApp
                 }
                 g.Flush();
 
-                using (var stream = new MemoryStream())
-                {
-                    snapshot.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                    return "data:image/png;base64," + Convert.ToBase64String(stream.ToArray());
-                }
+                using var stream = new MemoryStream();
+                snapshot.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return "data:image/png;base64," + Convert.ToBase64String(stream.ToArray());
             }
             return string.Empty;
         }
@@ -3748,10 +3736,8 @@ namespace StockAnalyzerApp
 
                 using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(StockViewableItemsManager.GetTheme(fullName))))
                 {
-                    using (StreamReader sr = new StreamReader(ms))
-                    {
-                        this.LoadThemeStream(WORK_THEME, sr);
-                    }
+                    using StreamReader sr = new StreamReader(ms);
+                    this.LoadThemeStream(WORK_THEME, sr);
                 }
                 if (this.themeComboBox.SelectedItem.ToString() == WORK_THEME)
                 {
@@ -3772,8 +3758,7 @@ namespace StockAnalyzerApp
             {
                 string fileName = Path.Combine(Folders.Tweets, $"tweet{++tweetCount}.png");
                 var bitmap = this.graphCloseControl.GetSnapshot();
-                if (bitmap != null)
-                    bitmap.Save(fileName, ImageFormat.Png);
+                bitmap?.Save(fileName, ImageFormat.Png);
 
                 tweetDlg = new TweetDlg2();
                 tweetDlg.Disposed += tweetDialog_Disposed;
@@ -4520,10 +4505,8 @@ namespace StockAnalyzerApp
                 {
                     // Create a default empty theme
                     string emptyTheme = "#ScrollGraph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|Line\r\nDATA|CLOSE|1:255:0:0:0:Solid|True\r\n#CloseGraph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|Line\r\nDATA|CLOSE|1:255:0:0:0:Solid|True\r\nSECONDARY|NONE\r\n#Indicator1Graph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart\r\n#Indicator2Graph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart\r\n#Indicator3Graph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart\r\n#VolumeGraph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
-                    using (StreamWriter tw = new StreamWriter(folderName + @"\\" + Localisation.UltimateChartistStrings.ThemeEmpty + ".thm"))
-                    {
-                        tw.Write(emptyTheme);
-                    }
+                    using StreamWriter tw = new StreamWriter(folderName + @"\\" + Localisation.UltimateChartistStrings.ThemeEmpty + ".thm");
+                    tw.Write(emptyTheme);
                 }
             }
 
@@ -4568,15 +4551,13 @@ namespace StockAnalyzerApp
         }
         private void SaveCurveTheme(string fileName)
         {
-            using (StreamWriter sr = new StreamWriter(fileName))
+            using StreamWriter sr = new StreamWriter(fileName);
+            foreach (string entry in themeDictionary[this.CurrentTheme].Keys)
             {
-                foreach (string entry in themeDictionary[this.CurrentTheme].Keys)
+                sr.WriteLine("#" + entry);
+                foreach (string line in themeDictionary[this.CurrentTheme][entry])
                 {
-                    sr.WriteLine("#" + entry);
-                    foreach (string line in themeDictionary[this.CurrentTheme][entry])
-                    {
-                        sr.WriteLine(line);
-                    }
+                    sr.WriteLine(line);
                 }
             }
         }
@@ -4588,10 +4569,8 @@ namespace StockAnalyzerApp
                 string fileName = Path.Combine(Folders.Theme, themeName + ".thm");
                 if (File.Exists(fileName))
                 {
-                    using (StreamReader sr = new StreamReader(fileName))
-                    {
-                        LoadThemeStream(themeName, sr);
-                    }
+                    using StreamReader sr = new StreamReader(fileName);
+                    LoadThemeStream(themeName, sr);
                 }
             }
             catch (Exception exception)

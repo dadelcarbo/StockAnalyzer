@@ -21,22 +21,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             var entries = new List<InvestingConfigEntry>();
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+
+                    entries.Add(new InvestingConfigEntry(long.Parse(row[0])) // 8894,CC,FUT_COM_COCOA,FUTURE
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
-
-                        var row = line.Split(',');
-
-                        entries.Add(new InvestingConfigEntry(long.Parse(row[0])) // 8894,CC,FUT_COM_COCOA,FUTURE
-                        {
-                            ShortName = row[1],
-                            StockName = row[2],
-                            Group = row[3]
-                        });
-                    }
+                        ShortName = row[1],
+                        StockName = row[2],
+                        Group = row[3]
+                    });
                 }
             }
             return entries;
@@ -44,17 +42,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 
         public static void SaveToFile(IList<InvestingConfigEntry> entries, string fileName)
         {
-            using (var sr = new StreamWriter(fileName, false))
+            using var sr = new StreamWriter(fileName, false);
+            foreach (var entry in entries.OrderBy(e => e.Group).ThenBy(e => e.StockName))
             {
-                foreach (var entry in entries.OrderBy(e => e.Group).ThenBy(e => e.StockName))
-                {
-                    sr.WriteLine(
-                        entry.Ticker + "," +
-                        entry.ShortName + "," +
-                        entry.StockName + "," +
-                        entry.Group
-                        );
-                }
+                sr.WriteLine(
+                    entry.Ticker + "," +
+                    entry.ShortName + "," +
+                    entry.StockName + "," +
+                    entry.Group
+                    );
             }
         }
     }

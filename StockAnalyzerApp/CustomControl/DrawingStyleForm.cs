@@ -70,12 +70,10 @@ namespace StockAnalyzerApp.CustomControl
             Rectangle rect = e.Bounds;
             if (e.Index >= 0)
             {
-                using (Pen pen = new Pen(Color.Black, 2))
-                {
-                    pen.DashStyle = (DashStyle)Enum.Parse(typeof(DashStyle), ((ComboBox)sender).Items[e.Index].ToString());
-                    g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2,
-                                    rect.Width - 10, rect.Y + rect.Height / 2);
-                }
+                using Pen pen = new Pen(Color.Black, 2);
+                pen.DashStyle = (DashStyle)Enum.Parse(typeof(DashStyle), ((ComboBox)sender).Items[e.Index].ToString());
+                g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2,
+                                rect.Width - 10, rect.Y + rect.Height / 2);
             }
         }
         private void thicknessComboBox_DrawItem(object sender, DrawItemEventArgs e)
@@ -85,11 +83,9 @@ namespace StockAnalyzerApp.CustomControl
             if (e.Index >= 0)
             {
                 int n = (int)((ComboBox)sender).Items[e.Index];
-                using (Pen pen = new Pen(Color.Black, n))
-                {
-                    g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2,
-                                    rect.Width - 10, rect.Y + rect.Height / 2);
-                }
+                using Pen pen = new Pen(Color.Black, n);
+                g.DrawLine(pen, rect.X + 10, rect.Y + rect.Height / 2,
+                                rect.Width - 10, rect.Y + rect.Height / 2);
             }
         }
         #endregion

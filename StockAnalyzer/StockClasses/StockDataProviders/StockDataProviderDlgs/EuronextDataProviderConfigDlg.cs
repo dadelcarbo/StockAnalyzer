@@ -44,22 +44,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             string fileName = Path.Combine(Folders.PersonalFolder, this.dataProvider.UserConfigFileName);
             if (File.Exists(fileName))
             {
-                using (StreamReader sr = new StreamReader(fileName, true))
+                using StreamReader sr = new StreamReader(fileName, true);
+                string line;
+                while (!sr.EndOfStream)
                 {
-                    string line;
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                        {
-                            string[] row = line.Split(';');
+                        string[] row = line.Split(';');
 
-                            ListViewItem viewItem = new ListViewItem(row[0]);
-                            viewItem.SubItems.Add(row[3]);  // Name is before code
-                            viewItem.SubItems.Add(row[1]);
-                            viewItem.SubItems.Add(row[4]);
-                            this.personalListView.Items.Add(viewItem);
-                        }
+                        ListViewItem viewItem = new ListViewItem(row[0]);
+                        viewItem.SubItems.Add(row[3]);  // Name is before code
+                        viewItem.SubItems.Add(row[1]);
+                        viewItem.SubItems.Add(row[4]);
+                        this.personalListView.Items.Add(viewItem);
                     }
                 }
             }

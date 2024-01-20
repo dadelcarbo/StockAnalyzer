@@ -42,14 +42,13 @@ namespace Saxo.OpenAPI.AuthenticationServices
         /// <returns></returns>
         public Token GetToken(App app, string authCode)
         {
-            using (MethodLogger ml = new MethodLogger(typeof(LoginHelpers), true))
-            {
-                // Create request
-                var tokenUrl = app.TokenEndpoint;
-                var request = new HttpRequestMessage(HttpMethod.Post, tokenUrl);
+            using MethodLogger ml = new MethodLogger(typeof(LoginHelpers), true);
+            // Create request
+            var tokenUrl = app.TokenEndpoint;
+            var request = new HttpRequestMessage(HttpMethod.Post, tokenUrl);
 
-                // https://www.developer.saxo/openapi/learn/oauth-authorization-code-grant-pkce
-                request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            // https://www.developer.saxo/openapi/learn/oauth-authorization-code-grant-pkce
+            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "grant_type", "authorization_code" },
                 { "code", authCode },
@@ -58,17 +57,16 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 { "redirect_uri", app.RedirectUrls[0]}
             });
 
-                try
-                {
-                    var token = Send<Token>(request);
-                    token.CreationDate = DateTime.Now;
-                    return token;
-                }
-                catch (Exception ex)
-                {
-                    StockLog.Write(ex);
-                    throw new HttpRequestException("Error requesting access token using:" + authCode, ex);
-                }
+            try
+            {
+                var token = Send<Token>(request);
+                token.CreationDate = DateTime.Now;
+                return token;
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+                throw new HttpRequestException("Error requesting access token using:" + authCode, ex);
             }
         }
         /// <summary>
@@ -105,12 +103,10 @@ namespace Saxo.OpenAPI.AuthenticationServices
         /// <returns></returns>
         private string GetCodeChallenge(string codeVerifier)
         {
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = Encoding.ASCII.GetBytes(codeVerifier);
-                var challengeBytes = sha256.ComputeHash(bytes);
-                return Base64UrlEncoder.Encode(challengeBytes);
-            }
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.ASCII.GetBytes(codeVerifier);
+            var challengeBytes = sha256.ComputeHash(bytes);
+            return Base64UrlEncoder.Encode(challengeBytes);
         }
 
     }

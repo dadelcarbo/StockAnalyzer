@@ -138,45 +138,43 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                     return false;
                 var fileName = DataFolder + FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
 
-                using (var wc = new WebClient())
-                {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                    int nbTries = 2;
-                    while (nbTries > 0)
+                int nbTries = 2;
+                while (nbTries > 0)
+                {
+                    try
                     {
-                        try
+                        var client = new HttpClient();
+                        var response = client.GetStringAsync(url).Result;
+                        if (!string.IsNullOrEmpty(response))
                         {
-                            var client = new HttpClient();
-                            var response = client.GetStringAsync(url).Result;
-                            if (!string.IsNullOrEmpty(response))
+                            if (response.StartsWith("{"))
                             {
-                                if (response.StartsWith("{"))
+                                var date = DateTime.Now.TimeOfDay > new TimeSpan(17, 40, 0) ? DateTime.Today.AddMinutes(1439) : DateTime.Now; // Set to 23h59 after 17h40 to prevent for download
+                                if (DownloadHistory.ContainsKey(stockSerie.ISIN))
                                 {
-                                    var date = DateTime.Now.TimeOfDay > new TimeSpan(17, 40, 0) ? DateTime.Today.AddMinutes(1439) : DateTime.Now; // Set to 23h59 after 17h40 to prevent for download
-                                    if (DownloadHistory.ContainsKey(stockSerie.ISIN))
-                                    {
-                                        DownloadHistory[stockSerie.ISIN] = date;
-                                    }
-                                    else
-                                    {
-                                        DownloadHistory.Add(stockSerie.ISIN, date);
-                                    }
-                                    File.WriteAllText(fileName, response);
-                                    stockSerie.IsInitialised = false;
-                                    return true;
+                                    DownloadHistory[stockSerie.ISIN] = date;
                                 }
-                                StockLog.Write(response);
-                                return false;
+                                else
+                                {
+                                    DownloadHistory.Add(stockSerie.ISIN, date);
+                                }
+                                File.WriteAllText(fileName, response);
+                                stockSerie.IsInitialised = false;
+                                return true;
                             }
                             StockLog.Write(response);
-                            nbTries--;
+                            return false;
                         }
-                        catch (Exception ex)
-                        {
-                            nbTries--;
-                            StockLog.Write(ex);
-                        }
+                        StockLog.Write(response);
+                        nbTries--;
+                    }
+                    catch (Exception ex)
+                    {
+                        nbTries--;
+                        StockLog.Write(ex);
                     }
                 }
             }
@@ -228,30 +226,28 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             var res = false;
             try
             {
-                using (var sr = new StreamReader(fileName))
+                using var sr = new StreamReader(fileName);
+                var boursoData = JsonSerializer.Deserialize<BoursoJson>(sr.ReadToEnd());
+                if (string.IsNullOrEmpty(boursoData?.d?.Name))
                 {
-                    var boursoData = JsonSerializer.Deserialize<BoursoJson>(sr.ReadToEnd());
-                    if (string.IsNullOrEmpty(boursoData?.d?.Name))
-                    {
-                        StockLog.Write($"Error loading {stockSerie.StockName}");
-                        return false;
-                    }
-
-                    DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last() : DateTime.MinValue;
-
-                    var bars = boursoData?.d?.QuoteTab?.Select(d => new StockDailyValue(d.o, d.h, d.l, d.c, d.v, BoursoIntradayDateToDateTime(d.d))).Where(b => b.DATE >= lastDate).ToList();
-                    if (bars.Count > 0)
-                    {
-                        bars = Fix1MinuteBars(bars);
-
-                        foreach (var bar in bars)
-                        {
-                            stockSerie.Add(bar.DATE, bar);
-                        }
-                    }
-                    stockSerie.ClearBarDurationCache();
-                    res = true;
+                    StockLog.Write($"Error loading {stockSerie.StockName}");
+                    return false;
                 }
+
+                DateTime lastDate = stockSerie.Count > 0 ? stockSerie.Keys.Last() : DateTime.MinValue;
+
+                var bars = boursoData?.d?.QuoteTab?.Select(d => new StockDailyValue(d.o, d.h, d.l, d.c, d.v, BoursoIntradayDateToDateTime(d.d))).Where(b => b.DATE >= lastDate).ToList();
+                if (bars.Count > 0)
+                {
+                    bars = Fix1MinuteBars(bars);
+
+                    foreach (var bar in bars)
+                    {
+                        stockSerie.Add(bar.DATE, bar);
+                    }
+                }
+                stockSerie.ClearBarDurationCache();
+                res = true;
             }
             catch (Exception e)
             {

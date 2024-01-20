@@ -36,27 +36,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (File.Exists(fileName))
             {
                 // Parse GeneratedIndicator.txt file
-                using (StreamReader sr = new StreamReader(fileName, true))
+                using StreamReader sr = new StreamReader(fileName, true);
+                sr.ReadLine(); // Skip first line
+                while (!sr.EndOfStream)
                 {
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                        {
-                            string[] row = line.Split(',');
-                            string longName = row[0];
+                        string[] row = line.Split(',');
+                        string longName = row[0];
 
-                            if (!stockDictionary.ContainsKey(longName))
+                        if (!stockDictionary.ContainsKey(longName))
+                        {
+                            stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
+                            if (longName.StartsWith("AD."))
                             {
-                                stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
-                                if (longName.StartsWith("AD."))
-                                {
-                                    var stockName = longName.Replace("AD.", "McClellan.");
-                                    stockDictionary.Add(stockName, new StockSerie(stockName, stockName, StockSerie.Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
-                                    stockName = longName.Replace("AD.", "McClellanSum.");
-                                    stockDictionary.Add(stockName, new StockSerie(stockName, stockName, StockSerie.Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
-                                }
+                                var stockName = longName.Replace("AD.", "McClellan.");
+                                stockDictionary.Add(stockName, new StockSerie(stockName, stockName, StockSerie.Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
+                                stockName = longName.Replace("AD.", "McClellanSum.");
+                                stockDictionary.Add(stockName, new StockSerie(stockName, stockName, StockSerie.Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
                             }
                         }
                     }

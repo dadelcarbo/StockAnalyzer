@@ -34,34 +34,32 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     httpClient = new HttpClient(handler);
                 }
-                using (var request = new HttpRequestMessage())
-                {
-                    request.Method = HttpMethod.Get;
-                    request.Headers.TryAddWithoutValidation("authority", "tvc6.investing.com");
-                    request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-                    request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-                    request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
-                    request.Headers.TryAddWithoutValidation("cookie", "adBlockerNewUserDomains=1469044276; __gads=ID=8a3c5ca9165802f1:T=1569259598:S=ALNI_Masu3Qed7ImFzeIFflGdJZ2VpYuZA; __cf_bm=s20GsXRnJzDalMulh714_CjCTXney_GW2fL2RkTEN8I-1666118184-0-AV/AKIibsbx7T3UZAQRCO6MTMEVZRTTbympe+QVYiODm2TuF1VQDUFZ7Y8IeMfXuKGHPuPdkYySlYtcArEwXg/I=");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-                    request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-                    request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47");
+                using var request = new HttpRequestMessage();
+                request.Method = HttpMethod.Get;
+                request.Headers.TryAddWithoutValidation("authority", "tvc6.investing.com");
+                request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
+                request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
+                request.Headers.TryAddWithoutValidation("cookie", "adBlockerNewUserDomains=1469044276; __gads=ID=8a3c5ca9165802f1:T=1569259598:S=ALNI_Masu3Qed7ImFzeIFflGdJZ2VpYuZA; __cf_bm=s20GsXRnJzDalMulh714_CjCTXney_GW2fL2RkTEN8I-1666118184-0-AV/AKIibsbx7T3UZAQRCO6MTMEVZRTTbympe+QVYiODm2TuF1VQDUFZ7Y8IeMfXuKGHPuPdkYySlYtcArEwXg/I=");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
+                request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.47");
 
-                    request.RequestUri = new Uri(url);
-                    var response = httpClient.SendAsync(request).Result;
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return response.Content.ReadAsStringAsync().Result;
-                    }
-                    else
-                    {
-                        StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
-                    }
+                request.RequestUri = new Uri(url);
+                var response = httpClient.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    return response.Content.ReadAsStringAsync().Result;
+                }
+                else
+                {
+                    StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
                 }
             }
             catch (Exception ex)
@@ -243,44 +241,42 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                     }
                 }
-                using (var wc = new WebClient())
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+
+                var url = string.Empty;
+                if (stockSerie.Initialise())
                 {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                    url = FormatIntradayURL(stockSerie.Ticker, stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date.AddDays(-7));
+                }
+                else
+                {
+                    url = FormatIntradayURL(stockSerie.Ticker, DateTime.Today.AddDays(-80));
+                }
 
-                    var url = string.Empty;
-                    if (stockSerie.Initialise())
+                int nbTries = 2;
+                while (nbTries > 0)
+                {
+                    try
                     {
-                        url = FormatIntradayURL(stockSerie.Ticker, stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date.AddDays(-7));
-                    }
-                    else
-                    {
-                        url = FormatIntradayURL(stockSerie.Ticker, DateTime.Today.AddDays(-80));
-                    }
-
-                    int nbTries = 2;
-                    while (nbTries > 0)
-                    {
-                        try
+                        var response = HttpGetFromInvesting(url);
+                        if (!string.IsNullOrEmpty(response))
                         {
-                            var response = HttpGetFromInvesting(url);
-                            if (!string.IsNullOrEmpty(response))
+                            if (response.StartsWith("{"))
                             {
-                                if (response.StartsWith("{"))
-                                {
-                                    File.WriteAllText(fileName, response);
-                                    stockSerie.IsInitialised = false;
-                                    return true;
-                                }
-                                StockLog.Write(response);
-                                return false;
+                                File.WriteAllText(fileName, response);
+                                stockSerie.IsInitialised = false;
+                                return true;
                             }
-                            nbTries--;
+                            StockLog.Write(response);
+                            return false;
                         }
-                        catch (Exception ex)
-                        {
-                            nbTries--;
-                            StockLog.Write(ex);
-                        }
+                        nbTries--;
+                    }
+                    catch (Exception ex)
+                    {
+                        nbTries--;
+                        StockLog.Write(ex);
                     }
                 }
             }
@@ -292,36 +288,34 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    if (!stockDictionary.ContainsKey(row[2]))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                        var stockSerie = new StockSerie(row[2], row[1],
+                            (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]),
+                            StockDataProvider.InvestingIntraday, BarDuration.M_5);
+                        stockSerie.Ticker = long.Parse(row[0]);
 
-                        var row = line.Split(',');
-                        if (!stockDictionary.ContainsKey(row[2]))
+                        //var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.ShortName == stockSerie.ShortName);
+                        //if (dailySerie != null)
+                        //{
+                        //    stockSerie.ISIN = dailySerie.ISIN;
+                        //}
+                        stockDictionary.Add(row[2], stockSerie);
+                        if (download && this.needDownload)
                         {
-                            var stockSerie = new StockSerie(row[2], row[1],
-                                (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]),
-                                StockDataProvider.InvestingIntraday, BarDuration.M_5);
-                            stockSerie.Ticker = long.Parse(row[0]);
-
-                            //var dailySerie = stockDictionary.Values.FirstOrDefault(s => !string.IsNullOrEmpty(s.ISIN) && s.ShortName == stockSerie.ShortName);
-                            //if (dailySerie != null)
-                            //{
-                            //    stockSerie.ISIN = dailySerie.ISIN;
-                            //}
-                            stockDictionary.Add(row[2], stockSerie);
-                            if (download && this.needDownload)
-                            {
-                                this.needDownload = this.DownloadDailyData(stockSerie);
-                            }
+                            this.needDownload = this.DownloadDailyData(stockSerie);
                         }
-                        else
-                        {
-                            Console.WriteLine("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
-                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }
@@ -333,58 +327,56 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var res = false;
             try
             {
-                using (var sr = new StreamReader(fileName))
+                using var sr = new StreamReader(fileName);
+                var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
+                if (barchartJson == null || barchartJson.C == null)
+                    return false;
+                StockDailyValue previousValue = null;
+                var minute5 = new TimeSpan(0, 5, 0);
+                for (var i = 0; i < barchartJson.C.Length; i++)
                 {
-                    var barchartJson = BarChartJSon.FromJson(sr.ReadToEnd());
-                    if (barchartJson == null || barchartJson.C == null)
-                        return false;
-                    StockDailyValue previousValue = null;
-                    var minute5 = new TimeSpan(0, 5, 0);
-                    for (var i = 0; i < barchartJson.C.Length; i++)
+                    if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
+                        continue;
+
+                    var openDate = refDate.AddSeconds(barchartJson.T[i]);
+                    if (!stockSerie.ContainsKey(openDate))
                     {
-                        if (barchartJson.O[i] == 0 && barchartJson.H[i] == 0 && barchartJson.L[i] == 0 && barchartJson.C[i] == 0)
-                            continue;
-
-                        var openDate = refDate.AddSeconds(barchartJson.T[i]);
-                        if (!stockSerie.ContainsKey(openDate))
+                        var volString = barchartJson.V[i];
+                        long vol = 0;
+                        long.TryParse(barchartJson.V[i], out vol);
+                        var dailyValue = new StockDailyValue(
+                               barchartJson.O[i],
+                               barchartJson.H[i],
+                               barchartJson.L[i],
+                               barchartJson.C[i],
+                               vol,
+                               openDate);
+                        #region Add Missing 5 Minutes bars
+                        if (previousValue != null && dailyValue.DATE.Day == previousValue.DATE.Day)
                         {
-                            var volString = barchartJson.V[i];
-                            long vol = 0;
-                            long.TryParse(barchartJson.V[i], out vol);
-                            var dailyValue = new StockDailyValue(
-                                   barchartJson.O[i],
-                                   barchartJson.H[i],
-                                   barchartJson.L[i],
-                                   barchartJson.C[i],
-                                   vol,
-                                   openDate);
-                            #region Add Missing 5 Minutes bars
-                            if (previousValue != null && dailyValue.DATE.Day == previousValue.DATE.Day)
+                            var date = previousValue.DATE.Add(minute5);
+                            while (date < openDate && !stockSerie.ContainsKey(date))
                             {
-                                var date = previousValue.DATE.Add(minute5);
-                                while (date < openDate && !stockSerie.ContainsKey(date))
-                                {
-                                    // Create missing bars
-                                    var missingValue = new StockDailyValue(
-                                           previousValue.CLOSE,
-                                           previousValue.CLOSE,
-                                           previousValue.CLOSE,
-                                           previousValue.CLOSE,
-                                           0,
-                                           date);
-                                    stockSerie.Add(date, missingValue);
-                                    date = date.Add(minute5);
-                                }
+                                // Create missing bars
+                                var missingValue = new StockDailyValue(
+                                       previousValue.CLOSE,
+                                       previousValue.CLOSE,
+                                       previousValue.CLOSE,
+                                       previousValue.CLOSE,
+                                       0,
+                                       date);
+                                stockSerie.Add(date, missingValue);
+                                date = date.Add(minute5);
                             }
-                            #endregion
-                            stockSerie.Add(dailyValue.DATE, dailyValue);
-                            previousValue = dailyValue;
                         }
+                        #endregion
+                        stockSerie.Add(dailyValue.DATE, dailyValue);
+                        previousValue = dailyValue;
                     }
-                    stockSerie.ClearBarDurationCache();
-
-                    res = true;
                 }
+                stockSerie.ClearBarDurationCache();
+
+                res = true;
             }
             catch (Exception e)
             {

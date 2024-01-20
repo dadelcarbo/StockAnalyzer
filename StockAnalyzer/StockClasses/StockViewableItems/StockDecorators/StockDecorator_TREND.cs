@@ -37,47 +37,45 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            using (MethodLogger ml = new MethodLogger(this))
+            using MethodLogger ml = new MethodLogger(this);
+            CreateEventSeries(stockSerie.Count);
+            IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
+
+            if (indicator == null)
+                return;
+
+            float fadeOut = (100.0f - (float)this.parameters[0]) / 100.0f;
+
+            FloatSerie indicatorToDecorate = indicator.Series[0];
+            FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count);
+            FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count);
+
+            this.Series[0] = upperLimit;
+            this.Series[0].Name = this.SerieNames[0];
+            this.Series[1] = lowerLimit;
+            this.Series[1].Name = this.SerieNames[1];
+
+
+            upperLimit[0] = lowerLimit[0] = indicatorToDecorate[0];
+            for (int i = 1; i < indicatorToDecorate.Count; i++)
             {
-                CreateEventSeries(stockSerie.Count);
-                IStockIndicator indicator = stockSerie.GetIndicator(this.DecoratedItem);
-
-                if (indicator == null)
-                    return;
-
-                float fadeOut = (100.0f - (float)this.parameters[0]) / 100.0f;
-
-                FloatSerie indicatorToDecorate = indicator.Series[0];
-                FloatSerie upperLimit = new FloatSerie(indicatorToDecorate.Count);
-                FloatSerie lowerLimit = new FloatSerie(indicatorToDecorate.Count);
-
-                this.Series[0] = upperLimit;
-                this.Series[0].Name = this.SerieNames[0];
-                this.Series[1] = lowerLimit;
-                this.Series[1].Name = this.SerieNames[1];
-
-
-                upperLimit[0] = lowerLimit[0] = indicatorToDecorate[0];
-                for (int i = 1; i < indicatorToDecorate.Count; i++)
+                float value = indicatorToDecorate[i];
+                if (value > upperLimit[i - 1])
                 {
-                    float value = indicatorToDecorate[i];
-                    if (value > upperLimit[i - 1])
-                    {
-                        upperLimit[i] = value;
-                        lowerLimit[i] = lowerLimit[i - 1] * fadeOut;
-                        this.Events[0][i] = true;
-                    }
-                    else if (value < lowerLimit[i - 1])
-                    {
-                        upperLimit[i] = upperLimit[i - 1] * fadeOut;
-                        lowerLimit[i] = value;
-                        this.Events[1][i] = true;
-                    }
-                    else
-                    {
-                        lowerLimit[i] = lowerLimit[i - 1] * fadeOut;
-                        upperLimit[i] = upperLimit[i - 1] * fadeOut;
-                    }
+                    upperLimit[i] = value;
+                    lowerLimit[i] = lowerLimit[i - 1] * fadeOut;
+                    this.Events[0][i] = true;
+                }
+                else if (value < lowerLimit[i - 1])
+                {
+                    upperLimit[i] = upperLimit[i - 1] * fadeOut;
+                    lowerLimit[i] = value;
+                    this.Events[1][i] = true;
+                }
+                else
+                {
+                    lowerLimit[i] = lowerLimit[i - 1] * fadeOut;
+                    upperLimit[i] = upperLimit[i - 1] * fadeOut;
                 }
             }
         }

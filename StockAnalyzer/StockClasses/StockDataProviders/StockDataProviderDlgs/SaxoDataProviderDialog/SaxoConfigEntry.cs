@@ -18,21 +18,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             var entries = new List<SaxoConfigEntry>();
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+
+                    entries.Add(new SaxoConfigEntry() // 8894,CC,FUT_COM_COCOA,FUTURE
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
-
-                        var row = line.Split(',');
-
-                        entries.Add(new SaxoConfigEntry() // 8894,CC,FUT_COM_COCOA,FUTURE
-                        {
-                            ISIN = row[0],
-                            StockName = row[1]
-                        });
-                    }
+                        ISIN = row[0],
+                        StockName = row[1]
+                    });
                 }
             }
             return entries;
@@ -40,15 +38,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
         public static void SaveToFile(IList<SaxoConfigEntry> entries, string fileName)
         {
-            using (var sr = new StreamWriter(fileName, false))
+            using var sr = new StreamWriter(fileName, false);
+            foreach (var entry in entries.OrderBy(e => e.StockName))
             {
-                foreach (var entry in entries.OrderBy(e => e.StockName))
-                {
-                    sr.WriteLine(
-                        entry.ISIN + "," +
-                        entry.StockName
-                        );
-                }
+                sr.WriteLine(
+                    entry.ISIN + "," +
+                    entry.StockName
+                    );
             }
         }
     }

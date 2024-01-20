@@ -130,13 +130,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 var resp = httpClient.PostAsync("download/historiques", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
                     return false;
-                using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                {
-                    using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
-                    {
-                        respStream.CopyTo(fileStream);
-                    }
-                }
+                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
+                respStream.CopyTo(fileStream);
             }
             catch (Exception)
             {
@@ -178,13 +174,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     StockLog.Write("Failed downloading group: " + resp.Content.ReadAsStringAsync().Result.Substring(0, 200));
                     return false;
                 }
-                using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                {
-                    using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
-                    {
-                        respStream.CopyTo(fileStream);
-                    }
-                }
+                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
+                respStream.CopyTo(fileStream);
             }
             catch (Exception ex)
             {
@@ -220,13 +212,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 var resp = httpClient.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
                     return false;
-                using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                {
-                    using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
-                    {
-                        respStream.CopyTo(fileStream);
-                    }
-                }
+                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
+                respStream.CopyTo(fileStream);
             }
             catch (Exception)
             {
@@ -256,13 +244,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 var resp = httpClient.PostAsync("download/libelles", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode)
                     return false;
-                using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                {
-                    using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
-                    {
-                        respStream.CopyTo(fileStream);
-                    }
-                }
+                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
+                respStream.CopyTo(fileStream);
             }
             catch (Exception)
             {
@@ -292,13 +276,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 var resp = httpClient.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
                 if (!resp.IsSuccessStatusCode)
                     return false;
-                using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                {
-                    using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
-                    {
-                        respStream.CopyTo(fileStream);
-                    }
-                }
+                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
+                respStream.CopyTo(fileStream);
             }
             catch (Exception)
             {
@@ -373,21 +353,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 string fileName = DataFolder + ABC_DAILY_CFG_SECTOR_FOLDER + @"\" + sector.Code.ToString() + ".txt";
                 if (File.Exists(fileName))
                 {
-                    using (StreamReader sr = new StreamReader(fileName, true))
+                    using StreamReader sr = new StreamReader(fileName, true);
+                    string line;
+                    sr.ReadLine(); // Skip first line
+                    while (!sr.EndOfStream)
                     {
-                        string line;
-                        sr.ReadLine(); // Skip first line
-                        while (!sr.EndOfStream)
+                        line = sr.ReadLine();
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
-                            line = sr.ReadLine();
-                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                            string[] fields = line.Split(';');
+                            var stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == fields[0]);
+                            if (stockSerie != null)
                             {
-                                string[] fields = line.Split(';');
-                                var stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == fields[0]);
-                                if (stockSerie != null)
-                                {
-                                    stockSerie.SectorId = sector.Code;
-                                }
+                                stockSerie.SectorId = sector.Code;
                             }
                         }
                     }
@@ -451,41 +429,39 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (File.Exists(fileName))
             {
                 StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), Path.GetFileNameWithoutExtension(fileName));
-                using (StreamReader sr = new StreamReader(fileName, true))
+                using StreamReader sr = new StreamReader(fileName, true);
+                string line;
+                sr.ReadLine(); // Skip first line
+                while (!sr.EndOfStream)
                 {
-                    string line;
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
                     {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
+                        string[] row = line.Split(';');
+                        string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
+                        if (!stockDictionary.ContainsKey(stockName))
                         {
-                            string[] row = line.Split(';');
-                            string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
-                            if (!stockDictionary.ContainsKey(stockName))
-                            {
-                                StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
+                            StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
 
-                                stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN.Substring(0, 2) switch
-                                {
-                                    null => string.Empty,
-                                    "FR" => "p",
-                                    "QS" => "p",
-                                    "BE" => "g",
-                                    "NL" => "n",
-                                    "DE" => "f",
-                                    "DK" => "f",
-                                    "IT" => "i",
-                                    "ES" => "m",
-                                    "PT" => "I",
-                                    _ => string.Empty
-                                };
-                                stockDictionary.Add(stockName, stockSerie);
-                            }
-                            else
+                            stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN.Substring(0, 2) switch
                             {
-                                StockLog.Write(line + " already in group " + stockDictionary[stockName].StockGroup);
-                            }
+                                null => string.Empty,
+                                "FR" => "p",
+                                "QS" => "p",
+                                "BE" => "g",
+                                "NL" => "n",
+                                "DE" => "f",
+                                "DK" => "f",
+                                "IT" => "i",
+                                "ES" => "m",
+                                "PT" => "I",
+                                _ => string.Empty
+                            };
+                            stockDictionary.Add(stockName, stockSerie);
+                        }
+                        else
+                        {
+                            StockLog.Write(line + " already in group " + stockDictionary[stockName].StockGroup);
                         }
                     }
                 }
@@ -499,27 +475,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (File.Exists(fileName))
             {
-                using (StreamReader sr = new StreamReader(fileName, true))
+                using StreamReader sr = new StreamReader(fileName, true);
+                string line;
+                sr.ReadLine(); // Skip first line
+                while (!sr.EndOfStream)
                 {
-                    string line;
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
                     {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
+                        string[] row = line.Split(';');
+                        string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
+                        if (stockDictionary.ContainsKey(stockName))
                         {
-                            string[] row = line.Split(';');
-                            string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
-                            if (stockDictionary.ContainsKey(stockName))
+                            if (group == StockSerie.Groups.SRD)
                             {
-                                if (group == StockSerie.Groups.SRD)
-                                {
-                                    stockDictionary[stockName].SRD = true;
-                                }
-                                if (group == StockSerie.Groups.SRD_LO)
-                                {
-                                    stockDictionary[stockName].SRD_LO = true;
-                                }
+                                stockDictionary[stockName].SRD = true;
+                            }
+                            if (group == StockSerie.Groups.SRD_LO)
+                            {
+                                stockDictionary[stockName].SRD_LO = true;
                             }
                         }
                     }
@@ -567,43 +541,41 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (File.Exists(fileName))
             {
-                using (StreamReader sr = new StreamReader(fileName, true))
+                using StreamReader sr = new StreamReader(fileName, true);
+                string line;
+                sr.ReadLine(); // Skip first line
+                while (!sr.EndOfStream)
                 {
-                    string line;
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                        string[] row = line.Split(';');
+                        StockSerie stockSerie = new StockSerie(row[1], string.IsNullOrEmpty(row[2]) ? row[3] : row[2], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
+                        stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN?.Substring(0, 2) switch
                         {
-                            string[] row = line.Split(';');
-                            StockSerie stockSerie = new StockSerie(row[1], string.IsNullOrEmpty(row[2]) ? row[3] : row[2], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
-                            stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN?.Substring(0, 2) switch
-                            {
-                                null => string.Empty,
-                                "FR" => "p",
-                                "QS" => "p",
-                                "BE" => "g",
-                                "NL" => "n",
-                                "DE" => "f",
-                                "IT" => "i",
-                                "ES" => "m",
-                                "PT" => "I",
-                                _ => string.Empty
-                            };
-                            if (!stockDictionary.ContainsKey(row[1]))
-                            {
-                                stockDictionary.Add(row[1], stockSerie);
-                            }
-                            else
-                            {
-                                StockLog.Write("ABC Entry: " + row[1] + " already in stockDictionary");
-                            }
-                            if (download && this.needDownload)
-                            {
-                                NotifyProgress($"Downloading {stockSerie.StockName}");
-                                this.DownloadDailyData(stockSerie);
-                            }
+                            null => string.Empty,
+                            "FR" => "p",
+                            "QS" => "p",
+                            "BE" => "g",
+                            "NL" => "n",
+                            "DE" => "f",
+                            "IT" => "i",
+                            "ES" => "m",
+                            "PT" => "I",
+                            _ => string.Empty
+                        };
+                        if (!stockDictionary.ContainsKey(row[1]))
+                        {
+                            stockDictionary.Add(row[1], stockSerie);
+                        }
+                        else
+                        {
+                            StockLog.Write("ABC Entry: " + row[1] + " already in stockDictionary");
+                        }
+                        if (download && this.needDownload)
+                        {
+                            NotifyProgress($"Downloading {stockSerie.StockName}");
+                            this.DownloadDailyData(stockSerie);
                         }
                     }
                 }
@@ -772,57 +744,55 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (!File.Exists(fileName)) return false;
                 StockSerie stockSerie = null;
-                using (StreamReader sr = new StreamReader(fileName, true))
+                using StreamReader sr = new StreamReader(fileName, true);
+                string previousISIN = string.Empty;
+                DateTime date = File.GetLastWriteTime(fileName);
+                while (!sr.EndOfStream)
                 {
-                    string previousISIN = string.Empty;
-                    DateTime date = File.GetLastWriteTime(fileName);
-                    while (!sr.EndOfStream)
+                    string line = sr.ReadLine().Replace(",", ".");
+                    string[] row = line.Split(';');
+                    if (previousISIN != row[0])
                     {
-                        string line = sr.ReadLine().Replace(",", ".");
-                        string[] row = line.Split(';');
-                        if (previousISIN != row[0])
+                        stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0] && s.StockGroup == group);
+                        if (stockSerie == null)
+                            continue;
+                        previousISIN = row[0];
+                        if (stockSerie.Count == 0)
                         {
-                            stockSerie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0] && s.StockGroup == group);
-                            if (stockSerie == null)
-                                continue;
-                            previousISIN = row[0];
-                            if (stockSerie.Count == 0)
+                            this.LoadFromCSV(stockSerie);
+                        }
+                    }
+                    if (stockSerie != null)
+                    {
+                        if (intraday)
+                        {
+                            if (DateTime.Parse(row[1]) != DateTime.Today)
                             {
-                                this.LoadFromCSV(stockSerie);
+                                continue;
                             }
                         }
-                        if (stockSerie != null)
+                        else
                         {
-                            if (intraday)
+                            date = DateTime.Parse(row[1]);
+                        }
+                        if (date.Year >= LOAD_START_YEAR)
+                        {
+                            if (!stockSerie.ContainsKey(date))
                             {
-                                if (DateTime.Parse(row[1]) != DateTime.Today)
-                                {
-                                    continue;
-                                }
+                                StockDailyValue dailyValue = new StockDailyValue(
+                                  float.Parse(row[2]),
+                                  float.Parse(row[3]),
+                                  float.Parse(row[4]),
+                                  float.Parse(row[5]),
+                                  long.Parse(row[6]),
+                                  date);
+                                dailyValue.IsComplete = !intraday;
+                                stockSerie.Add(dailyValue.DATE, dailyValue);
                             }
-                            else
-                            {
-                                date = DateTime.Parse(row[1]);
-                            }
-                            if (date.Year >= LOAD_START_YEAR)
-                            {
-                                if (!stockSerie.ContainsKey(date))
-                                {
-                                    StockDailyValue dailyValue = new StockDailyValue(
-                                      float.Parse(row[2]),
-                                      float.Parse(row[3]),
-                                      float.Parse(row[4]),
-                                      float.Parse(row[5]),
-                                      long.Parse(row[6]),
-                                      date);
-                                    dailyValue.IsComplete = !intraday;
-                                    stockSerie.Add(dailyValue.DATE, dailyValue);
-                                }
-                            }
-                            else
-                            {
-                                return false;
-                            }
+                        }
+                        else
+                        {
+                            return false;
                         }
                     }
                 }
@@ -1115,22 +1085,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (File.Exists(fileName))
             {
-                using (StreamReader sr = new StreamReader(fileName))
+                using StreamReader sr = new StreamReader(fileName);
+                StockDailyValue readValue = null;
+                while (!sr.EndOfStream)
                 {
-                    StockDailyValue readValue = null;
-                    while (!sr.EndOfStream)
+                    readValue = this.ReadMarketDataFromABCCSVStream(sr, stockSerie.StockName, true);
+                    if (readValue != null && readValue.DATE.Year >= LOAD_START_YEAR)
                     {
-                        readValue = this.ReadMarketDataFromABCCSVStream(sr, stockSerie.StockName, true);
-                        if (readValue != null && readValue.DATE.Year >= LOAD_START_YEAR)
+                        if (!stockSerie.ContainsKey(readValue.DATE))
                         {
-                            if (!stockSerie.ContainsKey(readValue.DATE))
-                            {
-                                stockSerie.Add(readValue.DATE, readValue);
-                            }
-                            else
-                            { // 
-                                StockLog.Write("The dailyValue already exist in the serie");
-                            }
+                            stockSerie.Add(readValue.DATE, readValue);
+                        }
+                        else
+                        { // 
+                            StockLog.Write("The dailyValue already exist in the serie");
                         }
                     }
                 }
@@ -1206,13 +1174,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 var resp = httpClient.GetAsync(url).Result;
                 if (!resp.IsSuccessStatusCode)
                     return false;
-                using (var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                {
-                    using (var fileStream = File.Create(Path.Combine(destFolder, fileName)))
-                    {
-                        respStream.CopyTo(fileStream);
-                    }
-                }
+                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
+                respStream.CopyTo(fileStream);
             }
             catch (Exception ex)
             {
@@ -1291,28 +1255,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             using (HttpWebResponse response = (HttpWebResponse)req.GetResponse())
             {
                 // Get the stream containing content returned by the server.
-                using (Stream dataStream = response.GetResponseStream())
-                {
-                    // Open the stream using a StreamReader for easy access.
-                    using (StreamReader reader = new StreamReader(dataStream))
-                    {
-                        // Read the content.
-                        string responseFromServer = reader.ReadToEnd();
+                using Stream dataStream = response.GetResponseStream();
+                // Open the stream using a StreamReader for easy access.
+                using StreamReader reader = new StreamReader(dataStream);
+                // Read the content.
+                string responseFromServer = reader.ReadToEnd();
 
-                        if (responseFromServer.Length != 0 && !responseFromServer.StartsWith("<", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            // Save content to file
-                            using (StreamWriter writer = new StreamWriter(fileName))
-                            {
-                                writer.Write(responseFromServer);
-                                //StockLog.Write("Download succeeded: " + fileName);
-                            }
-                        }
-                        else
-                        {
-                            success = false;
-                        }
-                    }
+                if (responseFromServer.Length != 0 && !responseFromServer.StartsWith("<", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    // Save content to file
+                    using StreamWriter writer = new StreamWriter(fileName);
+                    writer.Write(responseFromServer);
+                    //StockLog.Write("Download succeeded: " + fileName);
+                }
+                else
+                {
+                    success = false;
                 }
             }
             return success;
@@ -1340,18 +1298,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                   ABC_DAILY_CFG_GROUP_FOLDER + @"\CAC40.txt";
                 if (File.Exists(fileName))
                 {
-                    using (StreamReader sr = new StreamReader(fileName, true))
+                    using StreamReader sr = new StreamReader(fileName, true);
+                    string line;
+                    sr.ReadLine(); // Skip first line
+                    while (!sr.EndOfStream)
                     {
-                        string line;
-                        sr.ReadLine(); // Skip first line
-                        while (!sr.EndOfStream)
+                        line = sr.ReadLine();
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
-                            line = sr.ReadLine();
-                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                            {
-                                string[] row = line.Split(';');
-                                cac40List.Add(row[1].ToUpper());
-                            }
+                            string[] row = line.Split(';');
+                            cac40List.Add(row[1].ToUpper());
                         }
                     }
                 }
@@ -1378,18 +1334,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + @"\SBF120.txt";
                 if (File.Exists(fileName))
                 {
-                    using (StreamReader sr = new StreamReader(fileName, true))
+                    using StreamReader sr = new StreamReader(fileName, true);
+                    string line;
+                    sr.ReadLine(); // Skip first line
+                    while (!sr.EndOfStream)
                     {
-                        string line;
-                        sr.ReadLine(); // Skip first line
-                        while (!sr.EndOfStream)
+                        line = sr.ReadLine();
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
-                            line = sr.ReadLine();
-                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                            {
-                                string[] row = line.Split(';');
-                                sbf120List.Add(row[1].ToUpper());
-                            }
+                            string[] row = line.Split(';');
+                            sbf120List.Add(row[1].ToUpper());
                         }
                     }
                 }
@@ -1409,18 +1363,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + @"\CAC_AT.txt";
                 if (File.Exists(fileName))
                 {
-                    using (StreamReader sr = new StreamReader(fileName, true))
+                    using StreamReader sr = new StreamReader(fileName, true);
+                    string line;
+                    sr.ReadLine(); // Skip first line
+                    while (!sr.EndOfStream)
                     {
-                        string line;
-                        sr.ReadLine(); // Skip first line
-                        while (!sr.EndOfStream)
+                        line = sr.ReadLine();
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
-                            line = sr.ReadLine();
-                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                            {
-                                string[] row = line.Split(';');
-                                cacatList.Add(row[1].ToUpper());
-                            }
+                            string[] row = line.Split(';');
+                            cacatList.Add(row[1].ToUpper());
                         }
                     }
                 }
@@ -1515,12 +1467,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var pivotDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddDays(-1);
             if (forceArchive || happyNewMonth || !File.Exists(fileName))
             {
-                using (StreamWriter sw = new StreamWriter(fileName))
+                using StreamWriter sw = new StreamWriter(fileName);
+                foreach (var value in stockSerie.Values.Where(v => v.DATE <= pivotDate))
                 {
-                    foreach (var value in stockSerie.Values.Where(v => v.DATE <= pivotDate))
-                    {
-                        sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
-                    }
+                    sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
                 }
             }
 

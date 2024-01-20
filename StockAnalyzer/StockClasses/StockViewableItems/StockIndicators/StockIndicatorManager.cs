@@ -59,51 +59,49 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         static public IStockIndicator CreateIndicator(string fullName)
         {
-            using (MethodLogger ml = new MethodLogger(typeof(StockIndicatorManager)))
+            using MethodLogger ml = new MethodLogger(typeof(StockIndicatorManager));
+            StockIndicatorBase indicator = null;
+            if (indicatorList == null)
             {
-                StockIndicatorBase indicator = null;
-                if (indicatorList == null)
+                GetIndicatorList();
+            }
+
+            try
+            {
+                int paramStartIndex = fullName.IndexOf('(') + 1;
+                string name = fullName;
+                int paramLength = 0;
+                if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
                 {
-                    GetIndicatorList();
+                    paramLength = fullName.LastIndexOf(')') - paramStartIndex;
+                    name = fullName.Substring(0, paramStartIndex - 1);
                 }
 
-                try
+                if (indicatorList.Contains(name))
                 {
-                    int paramStartIndex = fullName.IndexOf('(') + 1;
-                    string name = fullName;
-                    int paramLength = 0;
-                    if (paramStartIndex != 0) // Else we are creating an empty indicator for the dianlog window
+                    StockIndicatorManager sm = new StockIndicatorManager();
+                    indicator = (StockIndicatorBase)sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockClasses.StockViewableItems.StockIndicators.StockIndicator_" + name);
+                    if (indicator != null)
                     {
-                        paramLength = fullName.LastIndexOf(')') - paramStartIndex;
-                        name = fullName.Substring(0, paramStartIndex - 1);
-                    }
-
-                    if (indicatorList.Contains(name))
-                    {
-                        StockIndicatorManager sm = new StockIndicatorManager();
-                        indicator = (StockIndicatorBase)sm.GetType().Assembly.CreateInstance("StockAnalyzer.StockClasses.StockViewableItems.StockIndicators.StockIndicator_" + name);
-                        if (indicator != null)
+                        if (paramLength > 0)
                         {
-                            if (paramLength > 0)
-                            {
-                                string parameters = fullName.Substring(paramStartIndex, paramLength);
-                                indicator.Initialise(parameters.Split(','));
-                            }
+                            string parameters = fullName.Substring(paramStartIndex, paramLength);
+                            indicator.Initialise(parameters.Split(','));
                         }
                     }
-                    else
-                    {
-                        throw new StockAnalyzerException("Indicator " + name + " doesn't not exist ! ");
-                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    //if (e is StockAnalyzerException) throw e;
-                    indicator = null;
-                    StockLog.Write(e);
+                    throw new StockAnalyzerException("Indicator " + name + " doesn't not exist ! ");
                 }
-                return indicator;
             }
+            catch (Exception e)
+            {
+                //if (e is StockAnalyzerException) throw e;
+                indicator = null;
+                StockLog.Write(e);
+            }
+            return indicator;
         }
     }
 }

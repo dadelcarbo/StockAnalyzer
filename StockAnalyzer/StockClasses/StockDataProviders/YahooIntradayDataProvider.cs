@@ -43,46 +43,44 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             string line;
             if (File.Exists(fileName))
             {
-                using (var sr = new StreamReader(fileName, true))
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
                 {
-                    while (!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+
+                    var row = line.Split(',');
+                    var stockName = row[1];
+                    if (!stockDictionary.ContainsKey(stockName))
                     {
-                        line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                        var stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.YahooIntraday, BarDuration.M_5);
+                        stockDictionary.Add(stockName, stockSerie);
 
-                        var row = line.Split(',');
-                        var stockName = row[1];
-                        if (!stockDictionary.ContainsKey(stockName))
+                        if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
                         {
-                            var stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.YahooIntraday, BarDuration.M_5);
-                            stockDictionary.Add(stockName, stockSerie);
-
-                            if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
+                            RefSerie = stockSerie;
+                            // Check if download needed.
+                            stockSerie.Initialise();
+                            DateTime refDate = DateTime.MinValue;
+                            if (stockSerie.Count > 0)
                             {
-                                RefSerie = stockSerie;
-                                // Check if download needed.
-                                stockSerie.Initialise();
-                                DateTime refDate = DateTime.MinValue;
-                                if (stockSerie.Count > 0)
-                                {
-                                    refDate = stockSerie.Keys.Last();
-                                }
-                                this.DownloadDailyData(stockSerie);
-                                stockSerie.Initialise();
-                                needDownload = refDate < stockSerie.Keys.Last();
+                                refDate = stockSerie.Keys.Last();
                             }
-                            else
-                            {
-                                if (download && this.needDownload)
-                                {
-                                    this.DownloadDailyData(stockSerie);
-                                }
-                            }
+                            this.DownloadDailyData(stockSerie);
+                            stockSerie.Initialise();
+                            needDownload = refDate < stockSerie.Keys.Last();
                         }
                         else
                         {
-                            Console.WriteLine("YahooIntraday Daily Entry: " + row[2] + " already in stockDictionary");
+                            if (download && this.needDownload)
+                            {
+                                this.DownloadDailyData(stockSerie);
+                            }
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("YahooIntraday Daily Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }
@@ -177,47 +175,45 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             return false;
                     }
                 }
-                using (var wc = new WebClient())
+                using var wc = new WebClient();
+                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+
+                var url = string.Empty;
+                var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
+                if (stockSerie.Initialise() && stockSerie.Count > 0)
                 {
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                    lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
+                    url = FormatURL(stockSerie.Symbol, lastDate.AddDays(-2), DateTime.Now, "5m");
+                }
+                else
+                {
+                    url = FormatURL(stockSerie.Symbol, DateTime.Today.AddDays(-10), DateTime.Now, "5m");
+                }
 
-                    var url = string.Empty;
-                    var lastDate = new DateTime(ARCHIVE_START_YEAR, 1, 1);
-                    if (stockSerie.Initialise() && stockSerie.Count > 0)
+                int nbTries = 2;
+                while (nbTries > 0)
+                {
+                    try
                     {
-                        lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
-                        url = FormatURL(stockSerie.Symbol, lastDate.AddDays(-2), DateTime.Now, "5m");
-                    }
-                    else
-                    {
-                        url = FormatURL(stockSerie.Symbol, DateTime.Today.AddDays(-10), DateTime.Now, "5m");
-                    }
-
-                    int nbTries = 2;
-                    while (nbTries > 0)
-                    {
-                        try
+                        var response = YahooDataProvider.HttpGetFromYahoo(url, stockSerie.Symbol);
+                        if (!string.IsNullOrEmpty(response))
                         {
-                            var response = YahooDataProvider.HttpGetFromYahoo(url, stockSerie.Symbol);
-                            if (!string.IsNullOrEmpty(response))
+                            if (response.StartsWith("{"))
                             {
-                                if (response.StartsWith("{"))
-                                {
-                                    File.WriteAllText(fileName, response);
-                                    stockSerie.IsInitialised = false;
-                                    return true;
-                                }
-                                StockLog.Write(response);
-                                return false;
+                                File.WriteAllText(fileName, response);
+                                stockSerie.IsInitialised = false;
+                                return true;
                             }
                             StockLog.Write(response);
-                            nbTries--;
+                            return false;
                         }
-                        catch (Exception ex)
-                        {
-                            nbTries--;
-                            StockLog.Write(ex);
-                        }
+                        StockLog.Write(response);
+                        nbTries--;
+                    }
+                    catch (Exception ex)
+                    {
+                        nbTries--;
+                        StockLog.Write(ex);
                     }
                 }
             }
@@ -229,73 +225,71 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var res = false;
             try
             {
-                using (var sr = new StreamReader(fileName))
+                using var sr = new StreamReader(fileName);
+                var yahooJson = YahooJson.FromJson(sr.ReadToEnd());
+                if (yahooJson == null || !string.IsNullOrEmpty(yahooJson?.chart?.error))
                 {
-                    var yahooJson = YahooJson.FromJson(sr.ReadToEnd());
-                    if (yahooJson == null || !string.IsNullOrEmpty(yahooJson?.chart?.error))
+                    StockLog.Write($"Error loading {stockSerie.StockName}: {yahooJson?.chart?.error}");
+                    return false;
+                }
+
+                int i = 0;
+                var priceInt = yahooJson.chart.result[0].meta.priceHint;
+                var quote = yahooJson.chart.result[0].indicators.quote[0];
+                foreach (var timestamp in yahooJson.chart.result[0].timestamp)
+                {
+                    if (quote.open[i] == null || quote.high[i] == null || quote.low[i] == null || quote.close[i] == null)
                     {
-                        StockLog.Write($"Error loading {stockSerie.StockName}: {yahooJson?.chart?.error}");
-                        return false;
+                        i++;
+                        continue;
                     }
-
-                    int i = 0;
-                    var priceInt = yahooJson.chart.result[0].meta.priceHint;
-                    var quote = yahooJson.chart.result[0].indicators.quote[0];
-                    foreach (var timestamp in yahooJson.chart.result[0].timestamp)
+                    if (timestamp % 300 != 0) // Bar not Complete
                     {
-                        if (quote.open[i] == null || quote.high[i] == null || quote.low[i] == null || quote.close[i] == null)
+                        var lastDate = refDate.AddSeconds(timestamp / 300 * 300).ToLocalTime();
+                        if (lastDate == stockSerie.Keys.Last())
                         {
-                            i++;
-                            continue;
-                        }
-                        if (timestamp % 300 != 0) // Bar not Complete
-                        {
-                            var lastDate = refDate.AddSeconds(timestamp / 300 * 300).ToLocalTime();
-                            if (lastDate == stockSerie.Keys.Last())
-                            {
-                                var dailyValue = stockSerie[lastDate];
-                                var close = (float)Math.Round(quote.close[i].Value, priceInt);
-                                dailyValue.HIGH = Math.Max(dailyValue.HIGH, close);
-                                dailyValue.LOW = Math.Min(dailyValue.LOW, close);
-                                dailyValue.CLOSE = close;
-                            }
-                            else
-                            {
-                                long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
-                                var dailyValue = new StockDailyValue(
-                                       (float)Math.Round(quote.open[i].Value, priceInt),
-                                       (float)Math.Round(quote.high[i].Value, priceInt),
-                                       (float)Math.Round(quote.low[i].Value, priceInt),
-                                       (float)Math.Round(quote.close[i].Value, priceInt),
-                                       vol,
-                                       lastDate);
-
-                                stockSerie.Add(dailyValue.DATE, dailyValue);
-                            }
+                            var dailyValue = stockSerie[lastDate];
+                            var close = (float)Math.Round(quote.close[i].Value, priceInt);
+                            dailyValue.HIGH = Math.Max(dailyValue.HIGH, close);
+                            dailyValue.LOW = Math.Min(dailyValue.LOW, close);
+                            dailyValue.CLOSE = close;
                         }
                         else
                         {
-                            var openDate = refDate.AddSeconds(timestamp).ToLocalTime();
-                            if (!stockSerie.ContainsKey(openDate))
-                            {
-                                long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
-                                var dailyValue = new StockDailyValue(
-                                       (float)Math.Round(quote.open[i].Value, priceInt),
-                                       (float)Math.Round(quote.high[i].Value, priceInt),
-                                       (float)Math.Round(quote.low[i].Value, priceInt),
-                                       (float)Math.Round(quote.close[i].Value, priceInt),
-                                       vol,
-                                       openDate);
+                            long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
+                            var dailyValue = new StockDailyValue(
+                                   (float)Math.Round(quote.open[i].Value, priceInt),
+                                   (float)Math.Round(quote.high[i].Value, priceInt),
+                                   (float)Math.Round(quote.low[i].Value, priceInt),
+                                   (float)Math.Round(quote.close[i].Value, priceInt),
+                                   vol,
+                                   lastDate);
 
-                                stockSerie.Add(dailyValue.DATE, dailyValue);
-                            }
+                            stockSerie.Add(dailyValue.DATE, dailyValue);
                         }
-                        i++;
                     }
-                    stockSerie.ClearBarDurationCache();
+                    else
+                    {
+                        var openDate = refDate.AddSeconds(timestamp).ToLocalTime();
+                        if (!stockSerie.ContainsKey(openDate))
+                        {
+                            long vol = quote.volume[i].HasValue ? quote.volume[i].Value : 0;
+                            var dailyValue = new StockDailyValue(
+                                   (float)Math.Round(quote.open[i].Value, priceInt),
+                                   (float)Math.Round(quote.high[i].Value, priceInt),
+                                   (float)Math.Round(quote.low[i].Value, priceInt),
+                                   (float)Math.Round(quote.close[i].Value, priceInt),
+                                   vol,
+                                   openDate);
 
-                    res = true;
+                            stockSerie.Add(dailyValue.DATE, dailyValue);
+                        }
+                    }
+                    i++;
                 }
+                stockSerie.ClearBarDurationCache();
+
+                res = true;
             }
             catch (Exception e)
             {
