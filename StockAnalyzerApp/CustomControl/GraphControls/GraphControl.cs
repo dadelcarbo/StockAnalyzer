@@ -28,7 +28,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
     {
         Line,
         BarChart,
-        CandleStick
+        CandleStick,
+        LineCross
     }
     public enum GraphDrawMode
     {

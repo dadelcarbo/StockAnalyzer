@@ -524,6 +524,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         case GraphChartMode.Line:
                             aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
+                            break;
+                        case GraphChartMode.LineCross:
+                            aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
                             if (EndIndex - StartIndex < GraphRectangle.Width / 3)
                             {
                                 for (int i = 0; i < tmpPoints.Length; i++)
