@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl
         // Implements the manual sorting of items by column.
         class ListViewItemComparer : IComparer
         {
-            private int col;
+            private readonly int col;
             public ListViewItemComparer()
             {
                 col = 0;

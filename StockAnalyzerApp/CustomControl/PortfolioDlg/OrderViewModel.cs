@@ -6,7 +6,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 {
     public class OrderViewModel : NotifyPropertyChangedBase
     {
-        SaxoOrder order;
+        readonly SaxoOrder order;
         public OrderViewModel(SaxoOrder order)
         {
             this.order = order;

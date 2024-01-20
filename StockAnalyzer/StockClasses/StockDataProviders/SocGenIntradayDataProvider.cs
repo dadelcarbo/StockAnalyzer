@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             return true;
         }
-        static SortedDictionary<long, DateTime> DownloadHistory = new SortedDictionary<long, DateTime>();
+        static readonly SortedDictionary<long, DateTime> DownloadHistory = new SortedDictionary<long, DateTime>();
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
             if (stockSerie.Count > 0 && DownloadHistory.ContainsKey(stockSerie.Ticker) && DownloadHistory[stockSerie.Ticker] > DateTime.Now.AddMinutes(-2))
@@ -195,7 +195,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
+        static readonly DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
         private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
         {
             var res = false;

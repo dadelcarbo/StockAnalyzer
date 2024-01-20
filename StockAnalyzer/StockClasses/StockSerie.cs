@@ -3716,9 +3716,9 @@ namespace StockAnalyzer.StockClasses
 
         #region Multithread Lock/Unlock
 
-        static bool lockLoggingActive = false;
+        static readonly bool lockLoggingActive = false;
 
-        object __lockObj = new object();
+        readonly object __lockObj = new object();
         public void Lock()
         {
             using (MethodLogger ml = new MethodLogger(this, lockLoggingActive, this.StockName))

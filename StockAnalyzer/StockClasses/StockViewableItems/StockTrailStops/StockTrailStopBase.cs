@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 return seriePens;
             }
         }
-        private bool[] serieVisibility;
+        private readonly bool[] serieVisibility;
         public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
@@ -99,7 +99,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         }
         #endregion
 
-        private static string[] eventNames = new string[]
+        private static readonly string[] eventNames = new string[]
           {
              "BrokenUp", "BrokenDown",           // 0,1
              "Pullback", "EndOfTrend",           // 2,3

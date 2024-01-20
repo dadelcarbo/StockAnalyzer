@@ -11,7 +11,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
     /// </summary>
     public partial class PortfolioSimulationControl : System.Windows.Controls.UserControl
     {
-        private Form parent;
+        private readonly Form parent;
         public event StockAnalyzerForm.SelectedStockAndDurationAndIndexChangedEventHandler SelectedStockChanged;
 
         public PortfolioSimulationViewModel ViewModel { get; set; }

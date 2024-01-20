@@ -194,11 +194,11 @@ namespace StockAnalyzerApp
         private int startIndex = 0;
         private int endIndex = 0;
 
-        private List<GraphControl> graphList = new List<GraphControl>();
+        private readonly List<GraphControl> graphList = new List<GraphControl>();
 
         #region CONSTANTS
 
-        private static string WORK_THEME = "__NewTheme*";
+        private static readonly string WORK_THEME = "__NewTheme*";
 
         #endregion
         #region STARTUP methods
@@ -691,7 +691,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private bool showTimerDebug = true;
+        private readonly bool showTimerDebug = true;
 
         private void goToStock(object sender, EventArgs e)
         {
@@ -4044,7 +4044,7 @@ namespace StockAnalyzerApp
         public delegate void OnStrategyChangedHandler(string currentStrategy);
         public delegate void OnThemeChangedHandler(string currentTheme);
         public delegate void OnThemeEditedHandler(Dictionary<string, List<string>> themeDico);
-        Dictionary<string, Dictionary<string, List<string>>> themeDictionary = new Dictionary<string, Dictionary<string, List<string>>>();
+        readonly Dictionary<string, Dictionary<string, List<string>>> themeDictionary = new Dictionary<string, Dictionary<string, List<string>>>();
 
         public Dictionary<string, List<string>> GetCurrentTheme()
         {

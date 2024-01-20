@@ -15,8 +15,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 {
     public class BoursoIntradayDataProvider : StockDataProviderBase, IConfigDialog
     {
-        static private string FOLDER = @"\intraday\BoursoIntraday";
-        static private string ARCHIVE_FOLDER = @"\archive\intraday\BoursoIntraday";
+        private static readonly string FOLDER = @"\intraday\BoursoIntraday";
+        private static readonly string ARCHIVE_FOLDER = @"\archive\intraday\BoursoIntraday";
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -111,7 +111,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
         }
 
         static TimeSpan marketClose = new TimeSpan(17, 35, 00);
-        static SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
+        static readonly SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
 
         public override bool DownloadDailyData(StockSerie stockSerie)
         {

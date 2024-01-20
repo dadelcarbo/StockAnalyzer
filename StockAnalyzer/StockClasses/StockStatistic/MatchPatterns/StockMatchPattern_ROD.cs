@@ -9,7 +9,7 @@ namespace StockAnalyzer.StockClasses.StockStatistic.MatchPatterns
 
         public float Trigger { get; set; }
 
-        int lookback = 50;
+        readonly int lookback = 50;
         public bool MatchPattern(StockSerie stockSerie, int index)
         {
             if (index < lookback) return false;

@@ -27,8 +27,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             }
         }
 
-        static Pen supportPen = new Pen(Brushes.DarkRed, 3) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot };
-        static Pen resistancePen = new Pen(Brushes.DarkGreen, 3) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot };
+        static readonly Pen supportPen = new Pen(Brushes.DarkRed, 3) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot };
+        static readonly Pen resistancePen = new Pen(Brushes.DarkGreen, 3) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot };
 
         public override void ApplyTo(StockSerie stockSerie)
         {

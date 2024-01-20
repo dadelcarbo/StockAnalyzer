@@ -10,7 +10,7 @@ namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
 {
     public class ChartService : BaseService
     {
-        private InstrumentService instrumentService = new InstrumentService();
+        private readonly InstrumentService instrumentService = new InstrumentService();
         private const int MAX_BAR_COUNT = 1200;
         public StockDailyValue[] GetData(long uic, BarDuration duration, DateTime? from = null)
         {

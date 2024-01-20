@@ -4,7 +4,7 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockSerieLocker : IDisposable
     {
-        private StockSerie stockSerie;
+        private readonly StockSerie stockSerie;
 
         public StockSerieLocker(StockSerie serie)
         {

@@ -180,7 +180,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             }
         }
 
-        static string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
+        static readonly string[] eventNames = new string[] { "ExhaustionTop", "ExhaustionBottom", "BearishDivergence", "BullishDivergence" };
         public override string[] EventNames => eventNames;
 
         static readonly bool[] isEvent = new bool[] { true, true, true, true };

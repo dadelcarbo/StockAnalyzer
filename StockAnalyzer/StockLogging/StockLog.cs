@@ -9,9 +9,9 @@ namespace StockAnalyzer.StockLogging
 {
     public class MethodLogger : IDisposable
     {
-        private StackFrame sf;
-        private Type callerType;
-        private bool isActive = false;
+        private readonly StackFrame sf;
+        private readonly Type callerType;
+        private readonly bool isActive = false;
         public MethodLogger(Object caller, bool activated = false, string text = "")
         {
             isActive = activated;
@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockLogging
         static private StockLog logger = null;
         static public StockLog Logger { get { logger ??= new StockLog(); return logger; } }
 
-        private StreamWriter sw;
+        private readonly StreamWriter sw;
 
         private StockLog()
         {

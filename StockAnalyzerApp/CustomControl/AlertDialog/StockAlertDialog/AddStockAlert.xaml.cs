@@ -9,8 +9,8 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
     /// </summary>
     public partial class AddStockAlert : UserControl
     {
-        AddStockAlertViewModel ViewModel;
-        AddStockAlertDlg ParentDlg;
+        readonly AddStockAlertViewModel ViewModel;
+        readonly AddStockAlertDlg ParentDlg;
         public AddStockAlert(AddStockAlertDlg parent, AddStockAlertViewModel viewModel)
         {
             this.ParentDlg = parent;

@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 {
     public class MarketReplayPositionViewModel : NotifyPropertyChangedBase
     {
-        private StockPosition position;
+        private readonly StockPosition position;
         public MarketReplayPositionViewModel(StockPosition position)
         {
             this.position = position;

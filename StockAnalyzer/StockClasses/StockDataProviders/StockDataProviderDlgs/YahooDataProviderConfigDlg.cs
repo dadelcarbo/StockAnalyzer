@@ -9,11 +9,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
     public partial class YahooDataProviderConfigDlg : Form
     {
-        YahooDataProvider dataProvider = null;
-        StockDictionary stockDictionary = null;
+        readonly YahooDataProvider dataProvider = null;
+        readonly StockDictionary stockDictionary = null;
 
         bool needRestart = false;
-        string fileName;
+        readonly string fileName;
 
         public YahooDataProviderConfigDlg(StockDictionary stockDico, string cfgFile)
         {

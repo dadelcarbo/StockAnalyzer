@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         public override Object[] ParameterDefaultValues => new Object[] { 10f, 20f };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeFloat(0f, 10000f), new ParamRangeFloat(0f, 10000f) };
 
-        static string[] eventNames = new string[] {
+        static readonly string[] eventNames = new string[] {
             "LowerTHan", "GreaterThan", "InRange"
         };
 

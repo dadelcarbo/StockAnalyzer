@@ -58,7 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
                 this.Series[0] = new FloatSerie(0, this.SerieNames[0]);
             }
         }
-        static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown", "TrailedUp", "TrailedDown" };
+        static readonly string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown", "TrailedUp", "TrailedDown" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true, false, false };
         public override bool[] IsEvent => isEvent;

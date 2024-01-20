@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "FastPeriod", "SlowPeriod", "NbUpDev", "NbDownDev", "MAType" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 20, 50, 2.0f, -2.0f, "MA" };
-        static List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
+        static readonly List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
         public override ParamRange[] ParameterRanges => new ParamRange[]
             {
                 new ParamRangeInt(1, 500),
@@ -77,7 +77,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Series[2].Name = this.SerieNames[2];
         }
 
-        static string[] eventNames = new string[] { "DownBandOvershot", "UpBandOvershot", "BullRun", "BearRun" };
+        static readonly string[] eventNames = new string[] { "DownBandOvershot", "UpBandOvershot", "BullRun", "BearRun" };
         public override string[] EventNames => eventNames;
 
         private static readonly bool[] isEvent = new bool[] { true, true, false, false };

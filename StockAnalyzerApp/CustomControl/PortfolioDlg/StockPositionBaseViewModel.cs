@@ -17,8 +17,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
-        PortfolioViewModel portfolio;
-        StockPositionBase position;
+        readonly PortfolioViewModel portfolio;
+        readonly StockPositionBase position;
         public StockPositionBaseViewModel(StockPositionBase pos, PortfolioViewModel portfolio)
         {
             this.position = pos;

@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string Definition => "Band made of a moving average and border based on adding ADR";
         public override string[] ParameterNames => new string[] { "Period", "ADRPeriod", "NbUpDev", "NbDownDev", "MAType" };
         public override Object[] ParameterDefaultValues => new Object[] { 20, 10, 3.0f, -3.0f, "EMA" };
-        static List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
+        static readonly List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
         public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
@@ -88,7 +88,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
             }
         }
-        static string[] eventNames = new string[] { "UpBandOvershot", "DownBandOvershot", "BullishSignal", "BearishSignal" };
+        static readonly string[] eventNames = new string[] { "UpBandOvershot", "DownBandOvershot", "BullishSignal", "BearishSignal" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true };
         public override bool[] IsEvent => isEvent;

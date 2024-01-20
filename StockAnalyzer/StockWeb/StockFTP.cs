@@ -8,13 +8,13 @@ namespace StockAnalyzer.StockWeb
 {
     public class StockFTP
     {
-        private string host = null;
-        private string user = null;
-        private string pass = null;
+        private readonly string host = null;
+        private readonly string user = null;
+        private readonly string pass = null;
         private FtpWebRequest ftpRequest = null;
         private FtpWebResponse ftpResponse = null;
         private Stream ftpStream = null;
-        private int bufferSize = 2048;
+        private readonly int bufferSize = 2048;
 
         /* Construct Object */
         public StockFTP(string hostIP, string userName, string password) { host = hostIP; user = userName; pass = password; }

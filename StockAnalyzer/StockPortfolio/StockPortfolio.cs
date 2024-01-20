@@ -151,7 +151,7 @@ namespace StockAnalyzer.StockPortfolio
             var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss.ff") + PORTFOLIO_FILE_EXT);
             File.Copy(filepath, archiveFilePath);
         }
-        static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ" };
+        static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ" };
         public static StockPortfolio Deserialize(string filepath)
         {
             return JsonConvert.DeserializeObject<StockPortfolio>(File.ReadAllText(filepath), jsonSerializerSettings);
@@ -504,7 +504,7 @@ namespace StockAnalyzer.StockPortfolio
 
         #region SAXO Integration Management
 
-        private static SortedDictionary<long, StockSerie> UicToSerieCache = new SortedDictionary<long, StockSerie>();
+        private static readonly SortedDictionary<long, StockSerie> UicToSerieCache = new SortedDictionary<long, StockSerie>();
 
         public StockSerie GetStockSerieFromUic(long uic)
         {
@@ -560,9 +560,9 @@ namespace StockAnalyzer.StockPortfolio
         }
 
         Account account = null;
-        AccountService accountService = new AccountService();
-        InstrumentService instrumentService = new InstrumentService();
-        OrderService orderService = new OrderService();
+        readonly AccountService accountService = new AccountService();
+        readonly InstrumentService instrumentService = new InstrumentService();
+        readonly OrderService orderService = new OrderService();
         private string name;
 
         public bool SaxoLogin()

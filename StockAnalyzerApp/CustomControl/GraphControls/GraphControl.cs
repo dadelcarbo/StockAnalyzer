@@ -28,8 +28,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
     {
         Line,
         BarChart,
-        CandleStick,
-        LineCross
+        CandleStick
     }
     public enum GraphDrawMode
     {
@@ -1146,7 +1145,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        static float[] fibonacciRetracements = new float[] { 0.25f, 0.5f, 0.75f };
+        static readonly float[] fibonacciRetracements = new float[] { 0.25f, 0.5f, 0.75f };
         protected void DrawSelectionZone(MouseEventArgs e, Keys key)
         {
             using (MethodLogger ml = new MethodLogger(this))

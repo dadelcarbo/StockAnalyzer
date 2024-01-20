@@ -78,13 +78,13 @@ namespace StockAnalyzer.StockSecurity
             this.LicenseKey = this.GenerateLicenseKey();
         }
 
-        private static int userIDIndex = 0;
-        private static int expriryDateIndex = 1;
-        private static int majorVersionIndex = 2;
-        private static int minorVersionIndex = 3;
-        private static int machineIDIndex = 4;
-        private static int featureCountIndex = 5;
-        private static int featureListStartIndex = 6;
+        private static readonly int userIDIndex = 0;
+        private static readonly int expriryDateIndex = 1;
+        private static readonly int majorVersionIndex = 2;
+        private static readonly int minorVersionIndex = 3;
+        private static readonly int machineIDIndex = 4;
+        private static readonly int featureCountIndex = 5;
+        private static readonly int featureListStartIndex = 6;
 
         private string GenerateLicenseKey()
         {

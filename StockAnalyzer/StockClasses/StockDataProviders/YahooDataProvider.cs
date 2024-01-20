@@ -14,11 +14,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class YahooDataProvider : StockDataProviderBase, IConfigDialog
     {
-        static private string FOLDER = @"\daily\Yahoo";
-        static private string ARCHIVE_FOLDER = @"\archive\daily\Yahoo";
+        private static readonly string FOLDER = @"\daily\Yahoo";
+        private static readonly string ARCHIVE_FOLDER = @"\archive\daily\Yahoo";
 
-        static private string CONFIG_FILE = "YahooDownload.cfg";
-        static private string CONFIG_FILE_USER = "YahooDownload.user.cfg";
+        private static readonly string CONFIG_FILE = "YahooDownload.cfg";
+        private static readonly string CONFIG_FILE_USER = "YahooDownload.user.cfg";
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -174,7 +174,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return res;
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01);
+        static readonly DateTime refDate = new DateTime(1970, 01, 01);
         public string FormatURL(string symbol, DateTime startDate, DateTime endDate, string interval)
         {
             var startTime = (int)(startDate - refDate).TotalSeconds;

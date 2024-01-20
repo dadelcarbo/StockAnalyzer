@@ -14,7 +14,7 @@ namespace StockAnalyzerApp.CustomControl
 {
     public partial class StockScannerDlg : Form
     {
-        private StockDictionary stockDictionary;
+        private readonly StockDictionary stockDictionary;
         private StockBarDuration barDuration;
 
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
@@ -234,7 +234,7 @@ namespace StockAnalyzerApp.CustomControl
             Initilised,
             Calculated
         };
-        private Dictionary<StockSerie, ProgressStatus> progress = new Dictionary<StockSerie, ProgressStatus>();
+        private readonly Dictionary<StockSerie, ProgressStatus> progress = new Dictionary<StockSerie, ProgressStatus>();
 
         private System.Windows.Forms.Timer downloadTimer;
         private System.Windows.Forms.Timer processTimer;

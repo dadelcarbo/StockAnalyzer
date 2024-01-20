@@ -124,7 +124,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             this.Products = newProducts;
         }
 
-        string configFile;
+        readonly string configFile;
 
         #region WebHelper
 

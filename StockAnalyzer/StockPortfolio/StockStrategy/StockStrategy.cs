@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockPortfolio.StockStrategy
 {
     public class StockStrategyEvent
     {
-        private static List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator", "Cloud", "AutoDrawing" };
+        private static readonly List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator", "Cloud", "AutoDrawing" };
 
         public string IndicatorType { get; set; }
         public string Indicator { get; set; }
@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockPortfolio.StockStrategy
             string filepath = Path.Combine(Folders.Strategy, this.Name + STRATEGY_FILE_EXT);
             File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
         }
-        static JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ" };
+        static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ" };
 
 
         public static StockStrategy Deserialize(string filepath)

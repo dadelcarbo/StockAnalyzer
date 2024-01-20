@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         public override Object[] ParameterDefaultValues => new Object[] { "RSI(3_1)", 80f, 20f };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeFloat(-100f, 100f), new ParamRangeFloat(-100f, 100f) };
 
-        static string[] eventNames = new string[] {
+        static readonly string[] eventNames = new string[] {
             "Overbought", "Oversold"
         };
         public override string[] EventNames => eventNames;

@@ -141,12 +141,12 @@ namespace StockAnalyzerApp.CustomControl
         /// <summary>
         /// Textbox to display in the editable cells
         /// </summary>
-        private TextBox textBox = new TextBox();
+        private readonly TextBox textBox = new TextBox();
 
         /// <summary>
         /// Combo box to display in the associated cells
         /// </summary>
-        private ComboBox combo = new ComboBox();
+        private readonly ComboBox combo = new ComboBox();
 
         /// <summary>
         /// This is a flag variable. This is used to determine whether
@@ -157,7 +157,7 @@ namespace StockAnalyzerApp.CustomControl
         /// <summary>
         /// To store, subitems that contains comboboxes and text boxes
         /// </summary>
-        private Hashtable customCells = new Hashtable();
+        private readonly Hashtable customCells = new Hashtable();
         #endregion
 
         #region Methods

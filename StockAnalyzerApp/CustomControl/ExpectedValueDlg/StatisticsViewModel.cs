@@ -35,7 +35,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
         private BarDuration barDuration;
         public BarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
 
-        private static List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator", "Cloud", "AutoDrawing" };
+        private static readonly List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator", "Cloud", "AutoDrawing" };
 
         private string indicatorType;
         public string IndicatorType { get { return indicatorType; } set { if (value != indicatorType) { indicatorType = value; OnPropertyChanged("IndicatorType"); } } }

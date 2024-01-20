@@ -195,7 +195,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private bool holdingStartSlider = false;
         private bool holdingEndSlider = false;
         private bool holdingViewWindow = false;
-        private float tolerance = Resources.ScrollLeft.Width / 2;
+        private readonly float tolerance = Resources.ScrollLeft.Width / 2;
 
         override protected void Form1_MouseLeave(object sender, EventArgs e)
         {

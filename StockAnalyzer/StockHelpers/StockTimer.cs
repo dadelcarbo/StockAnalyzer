@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockHelpers
 
         public static bool TimerSuspended { get; set; }
 
-        private Timer timer;
+        private readonly Timer timer;
         const int refreshPeriod = 10000; // 10 seconds
 
         static public List<StockTimer> Timers = new List<StockTimer>();
@@ -74,7 +74,7 @@ namespace StockAnalyzer.StockHelpers
             public int PeriodSeconds { get; set; }
         }
 
-        private SortedDictionary<StockBarDuration, PeriodTick> periodTicks = new SortedDictionary<StockBarDuration, PeriodTick> {
+        private readonly SortedDictionary<StockBarDuration, PeriodTick> periodTicks = new SortedDictionary<StockBarDuration, PeriodTick> {
             { StockBarDuration.M_5, new PeriodTick { Tick = 0, PeriodSeconds = 60*5} },
             { StockBarDuration.M_15, new PeriodTick { Tick = 0, PeriodSeconds = 60*15} },
             { StockBarDuration.M_30, new PeriodTick { Tick = 0, PeriodSeconds = 60*30} },

@@ -90,7 +90,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        private static string[] eventNames = new string[] { "ResistanceDetected", "ResistanceBroken", "HigherHigh", "Bearish" };
+        private static readonly string[] eventNames = new string[] { "ResistanceDetected", "ResistanceBroken", "HigherHigh", "Bearish" };
         public override string[] EventNames => eventNames;
 
         private static readonly bool[] isEvent = new bool[] { true, true, true, false };

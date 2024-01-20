@@ -10,8 +10,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         public override string DisplayName => "Breadth";
 
-        static private string FOLDER = @"\daily\Breadth";
-        static private string ARCHIVE_FOLDER = @"\archive\daily\Breadth";
+        private static readonly string FOLDER = @"\daily\Breadth";
+        private static readonly string ARCHIVE_FOLDER = @"\archive\daily\Breadth";
 
         public static bool NeedGenerate { get; set; }
 

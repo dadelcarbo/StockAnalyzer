@@ -78,7 +78,7 @@ namespace StockAnalyzer.StockClasses
             alertLogs.Add(fileName, this);
         }
 
-        private static SortedDictionary<string, StockAlertLog> alertLogs = new SortedDictionary<string, StockAlertLog>();
+        private static readonly SortedDictionary<string, StockAlertLog> alertLogs = new SortedDictionary<string, StockAlertLog>();
 
         public DateTime StartDate { get; set; }
         public static StockAlertLog Load(string fileName, DateTime startDate)

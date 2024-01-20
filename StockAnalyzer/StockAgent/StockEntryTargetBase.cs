@@ -106,7 +106,7 @@ namespace StockAnalyzer.StockAgent
         }
 
         #region PARAMETER MANAGEMENT
-        static private Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>> parameters = new Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>>();
+        private static readonly Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>> parameters = new Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>>();
         static public Dictionary<PropertyInfo, StockAgentParamAttribute> GetParams(Type type)
         {
             if (!parameters.ContainsKey(type))

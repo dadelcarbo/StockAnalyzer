@@ -10,7 +10,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
     /// </summary>
     public partial class ExpectedValueControl : UserControl
     {
-        ExpectedValueViewModel viewModel;
+        readonly ExpectedValueViewModel viewModel;
         public ExpectedValueControl()
         {
             InitializeComponent();

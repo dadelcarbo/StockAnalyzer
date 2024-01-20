@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 
         abstract public Pen[] SeriePens { get; }
 
-        private bool[] serieVisibility;
+        private readonly bool[] serieVisibility;
         public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)

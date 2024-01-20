@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockScreeners
         public override string Definition => "Detect opportunities in bullish in TRAILATR for a short period of time";
         public override string[] ParameterNames => new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType", "Duration" };
         public override object[] ParameterDefaultValues => new object[] { 20, 10, 3.0f, -3.0f, "EMA", 10 };
-        static List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
+        static readonly List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
         public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),

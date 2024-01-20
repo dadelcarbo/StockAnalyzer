@@ -76,10 +76,10 @@ namespace StockAnalyzerApp.CustomControl.TweetDlg
         public event TweetSentHandler TweetSent;
 
 
-        private string oAuthConsumerKey = "vTMGphEDjwBCflVYANUt5sbMP";
-        private string oAuthConsumerSecret = "8h40YUVy4RhcHtB2H4289sdStoZTXLRXe9zOPQpxqf3kpAdyOi";
-        private string accessToken = "165906306-dHAtCCfd4khKBlzegtJhTr4NtCnY6vTLrcZ1TgTv";
-        private string accessTokenSecret = "3WuVUBnLH7O3HnpSune1lomha1Syyl4kKY50l89H8DD2r";
+        private readonly string oAuthConsumerKey = "vTMGphEDjwBCflVYANUt5sbMP";
+        private readonly string oAuthConsumerSecret = "8h40YUVy4RhcHtB2H4289sdStoZTXLRXe9zOPQpxqf3kpAdyOi";
+        private readonly string accessToken = "165906306-dHAtCCfd4khKBlzegtJhTr4NtCnY6vTLrcZ1TgTv";
+        private readonly string accessTokenSecret = "3WuVUBnLH7O3HnpSune1lomha1Syyl4kKY50l89H8DD2r";
 
     }
 }

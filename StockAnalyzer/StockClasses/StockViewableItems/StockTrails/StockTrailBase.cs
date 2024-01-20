@@ -42,7 +42,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
             return themeString;
         }
 
-        private bool[] serieVisibility;
+        private readonly bool[] serieVisibility;
         public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)

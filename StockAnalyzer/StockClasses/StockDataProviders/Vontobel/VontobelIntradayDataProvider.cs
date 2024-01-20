@@ -75,7 +75,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
             return true;
         }
 
-        static SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
+        static readonly SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
             if (stockSerie.Count > 0)
@@ -249,7 +249,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
             }
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
+        static readonly DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {

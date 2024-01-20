@@ -211,7 +211,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         public float Price { get; set; }
         public bool BrokenUp { get; set; }
 
-        private List<StockAlertDef> allAlertDefs;
+        private readonly List<StockAlertDef> allAlertDefs;
         public IEnumerable<StockAlertDef> AlertDefs => allAlertDefs?.Where(a => a.Type == this.AlertType);
 
         private AlertType alertType;

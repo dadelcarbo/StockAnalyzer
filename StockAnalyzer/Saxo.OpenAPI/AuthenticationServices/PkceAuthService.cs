@@ -12,7 +12,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
 {
     public class PkceAuthService : BaseService
     {
-        private RandomStringBuilder _randomService = new RandomStringBuilder();
+        private readonly RandomStringBuilder _randomService = new RandomStringBuilder();
 
         /// <summary>
         /// Create the login page url for PKCE

@@ -8,7 +8,7 @@ namespace StockAnalyzerApp.CustomControl
 {
     public partial class DrawingStyleForm : Form
     {
-        private ColorDialog colorDlg;
+        private readonly ColorDialog colorDlg;
 
         public Pen Pen { get; private set; }
 

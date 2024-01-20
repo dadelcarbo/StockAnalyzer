@@ -55,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown", "UpTrend", "DownTrend", "BrokenUp", "BrokenDown" };
+        static readonly string[] eventNames = new string[] { "UpTrend", "DownTrend", "BrokenUp", "BrokenDown", "UpTrend", "DownTrend", "BrokenUp", "BrokenDown" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true, false, false, true, true };
         public override bool[] IsEvent => isEvent;

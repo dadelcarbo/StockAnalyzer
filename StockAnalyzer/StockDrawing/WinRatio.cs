@@ -6,8 +6,8 @@ namespace StockAnalyzer.StockDrawing
 {
     public class WinRatio : DrawingItem
     {
-        static SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
-        static SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
+        static readonly SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
+        static readonly SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
 
         public PointF Stop { get; set; }
         public PointF Entry { get; set; }

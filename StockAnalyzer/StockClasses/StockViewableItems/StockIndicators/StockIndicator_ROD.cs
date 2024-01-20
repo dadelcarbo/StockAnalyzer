@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[3][i] = (rodSerie[i - 1] == 0 && rodSerie[i] > 0);
             }
         }
-        static string[] eventNames = new string[] { "Top", "Bottom", "Zero", "OutOfZero" };
+        static readonly string[] eventNames = new string[] { "Top", "Bottom", "Zero", "OutOfZero" };
         public override string[] EventNames => eventNames;
 
         static readonly bool[] isEvent = new bool[] { true, true, true, true };

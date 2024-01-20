@@ -54,7 +54,7 @@ namespace StockAnalyzerApp
         #endregion
 
         private int browsingHistoryIndex = 0;
-        private List<BrowsingEntry> browingHistory = new List<BrowsingEntry>();
+        private readonly List<BrowsingEntry> browingHistory = new List<BrowsingEntry>();
 
         public bool IsHistoryActive { get; set; } = true;
 

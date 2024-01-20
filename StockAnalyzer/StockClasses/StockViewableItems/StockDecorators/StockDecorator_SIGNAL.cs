@@ -94,7 +94,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             }
         }
 
-        private static string[] eventNames = new string[]
+        private static readonly string[] eventNames = new string[]
         {
             "Bullish",
             "Bearish",

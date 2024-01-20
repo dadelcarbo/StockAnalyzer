@@ -42,8 +42,8 @@ namespace StockAnalyzer.StockClasses
         public float ATR => HIGH - LOW;
         public float NATR => ATR / CLOSE;
 
-        private static CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
-        private static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
+        private static readonly CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
+        private static readonly CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
         public float GetStockData(StockDataType dataType)
         {

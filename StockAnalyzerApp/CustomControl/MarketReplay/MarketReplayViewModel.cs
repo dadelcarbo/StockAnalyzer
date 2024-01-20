@@ -19,8 +19,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
     {
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
 
-        private StockSerie.Groups selectedGroup;
-        private StockBarDuration barDuration;
+        private readonly StockSerie.Groups selectedGroup;
+        private readonly StockBarDuration barDuration;
 
         public ObservableCollection<MarketReplayPositionViewModel> Positions { get; set; }
 
@@ -179,7 +179,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         }
         #endregion
 
-        DispatcherTimer replayTimer;
+        readonly DispatcherTimer replayTimer;
         public MarketReplayViewModel(StockSerie.Groups selectedGroup, StockBarDuration barDuration)
         {
             this.selectedGroup = selectedGroup;

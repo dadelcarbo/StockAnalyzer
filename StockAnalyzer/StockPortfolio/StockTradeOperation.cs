@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockPortfolio
     {
         public StockTradeOperation() { }
 
-        private StockPortfolio portfolio;
+        private readonly StockPortfolio portfolio;
         public StockTradeOperation(StockPortfolio portfolio)
         {
             this.portfolio = portfolio;

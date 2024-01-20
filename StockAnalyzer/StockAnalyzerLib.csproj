@@ -292,6 +292,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADRBAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIANS.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TURTLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDHS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NBBARS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ROCEMA.cs" />

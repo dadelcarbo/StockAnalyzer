@@ -6,7 +6,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
     public partial class ClosePositionDlg : Form
     {
         public CloseTradeViewModel TradeViewModel { get; }
-        CloseTradeUserControl closeTradeUserControl;
+        readonly CloseTradeUserControl closeTradeUserControl;
         public ClosePositionDlg(CloseTradeViewModel tradeLogViewModel)
         {
             InitializeComponent();

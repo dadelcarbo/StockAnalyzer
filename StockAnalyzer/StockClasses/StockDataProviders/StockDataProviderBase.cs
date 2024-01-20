@@ -96,7 +96,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private static SortedDictionary<StockDataProvider, IStockDataProvider> dataProviders = new SortedDictionary<StockDataProvider, IStockDataProvider>();
+        private static readonly SortedDictionary<StockDataProvider, IStockDataProvider> dataProviders = new SortedDictionary<StockDataProvider, IStockDataProvider>();
         public static IStockDataProvider GetDataProvider(StockDataProvider dataProviderType)
         {
             if (!dataProviders.ContainsKey(dataProviderType))

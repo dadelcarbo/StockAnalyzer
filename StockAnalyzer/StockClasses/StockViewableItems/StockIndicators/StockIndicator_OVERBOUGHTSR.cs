@@ -167,7 +167,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[] {
+        static readonly string[] eventNames = new string[] {
             "SupportDetected", "ResistanceDetected",
             "Pullback", "EndOfTrend",
             "HigherLow", "LowerHigh",

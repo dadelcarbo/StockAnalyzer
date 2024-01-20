@@ -12,11 +12,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class InvestingDataProvider : StockDataProviderBase, IConfigDialog
     {
-        static private string FOLDER = @"\daily\Investing";
-        static private string ARCHIVE_FOLDER = @"\archive\daily\Investing";
+        private static readonly string FOLDER = @"\daily\Investing";
+        private static readonly string ARCHIVE_FOLDER = @"\archive\daily\Investing";
 
-        static private string CONFIG_FILE = "InvestingDownload.cfg";
-        static private string CONFIG_FILE_USER = "InvestingDownload.user.cfg";
+        private static readonly string CONFIG_FILE = "InvestingDownload.cfg";
+        private static readonly string CONFIG_FILE_USER = "InvestingDownload.user.cfg";
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -103,7 +103,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return res;
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
+        static readonly DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
         public string FormatURL(long ticker, DateTime startDate, DateTime endDate)
         {
             var interval = "D";

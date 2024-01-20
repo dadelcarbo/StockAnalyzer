@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override string[] ParameterNames => new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 20, 2.0f, -2.0f, "EMA" };
-        static List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
+        static readonly List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
         public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),

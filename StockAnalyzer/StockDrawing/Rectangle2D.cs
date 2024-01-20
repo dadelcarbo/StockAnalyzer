@@ -6,7 +6,7 @@ namespace StockAnalyzer.StockDrawing
     public class Rectangle2D : DrawingItem
     {
 
-        private float Epsilon = 0.001f;
+        private readonly float Epsilon = 0.001f;
         public PointF TopLeft { get; set; }
         public PointF BottomRight { get; set; }
         public PointF TopRight => new PointF(BottomRight.X, TopLeft.Y);

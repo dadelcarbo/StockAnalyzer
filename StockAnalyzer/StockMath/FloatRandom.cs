@@ -4,7 +4,7 @@ namespace StockAnalyzer.StockMath
 {
     public class FloatRandom
     {
-        static private Random r = new Random();
+        private static readonly Random r = new Random();
 
         public static float NextUniform(float min, float max)
         {

@@ -121,7 +121,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[] {
+        static readonly string[] eventNames = new string[] {
             "True", "False",
             "HigherClose", "LowerClose",
             "RecHigherClose", "RecLowerClose",

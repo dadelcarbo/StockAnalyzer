@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockScripting
         {
         }
 
-        private static string filterClassTemplate = @"using System;
+        private static readonly string filterClassTemplate = @"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

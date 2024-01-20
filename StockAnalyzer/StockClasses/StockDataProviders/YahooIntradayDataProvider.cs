@@ -13,11 +13,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class YahooIntradayDataProvider : StockDataProviderBase, IConfigDialog
     {
-        static private string FOLDER = @"\intraday\YahooIntraday";
-        static private string ARCHIVE_FOLDER = @"\archive\intraday\YahooIntraday";
+        private static readonly string FOLDER = @"\intraday\YahooIntraday";
+        private static readonly string ARCHIVE_FOLDER = @"\archive\intraday\YahooIntraday";
 
-        static private string CONFIG_FILE = "YahooIntradayDownload.cfg";
-        static private string CONFIG_FILE_USER = "YahooIntradayDownload.user.cfg";
+        private static readonly string CONFIG_FILE = "YahooIntradayDownload.cfg";
+        private static readonly string CONFIG_FILE_USER = "YahooIntradayDownload.user.cfg";
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -121,7 +121,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return res;
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01);
+        static readonly DateTime refDate = new DateTime(1970, 01, 01);
         public string FormatURL(string ticker, DateTime startDate, DateTime endDate, string interval)
         {
             var startTime = (int)(startDate - refDate).TotalSeconds;

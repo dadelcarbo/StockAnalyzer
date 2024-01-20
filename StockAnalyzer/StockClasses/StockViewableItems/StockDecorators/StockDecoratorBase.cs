@@ -49,7 +49,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
         abstract public Pen[] SeriePens { get; }
 
-        private bool[] serieVisibility;
+        private readonly bool[] serieVisibility;
         public bool[] SerieVisibility => this.serieVisibility;
 
         public void Initialise(string[] parameters)
@@ -77,7 +77,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         abstract public bool[] IsEvent { get; }
 
 
-        private bool[] eventVisibility;
+        private readonly bool[] eventVisibility;
         public bool[] EventVisibility => this.eventVisibility;
 
         protected Pen[] eventPens = null;

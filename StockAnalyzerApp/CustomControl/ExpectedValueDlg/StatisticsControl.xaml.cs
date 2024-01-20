@@ -10,7 +10,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
     /// </summary>
     public partial class StatisticsControl : UserControl
     {
-        StatisticsViewModel viewModel = new StatisticsViewModel("TRUE(1)", "True");
+        readonly StatisticsViewModel viewModel = new StatisticsViewModel("TRUE(1)", "True");
 
         public StatisticsControl()
         {

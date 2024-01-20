@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 {
     public partial class AlertDlg : Form
     {
-        private AlertControl alertControl;
+        private readonly AlertControl alertControl;
 
         public AlertDlg(StockAlertConfig alertCfg)
         {

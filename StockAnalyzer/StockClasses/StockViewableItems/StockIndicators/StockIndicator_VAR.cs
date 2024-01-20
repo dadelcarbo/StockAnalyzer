@@ -64,7 +64,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[] { "Low", "InRange", "High" };
+        static readonly string[] eventNames = new string[] { "Low", "InRange", "High" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true, true };
         public override bool[] IsEvent => isEvent;

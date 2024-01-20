@@ -524,9 +524,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         case GraphChartMode.Line:
                             aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
-                            break;
-                        case GraphChartMode.LineCross:
-                            aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
                             if (EndIndex - StartIndex < GraphRectangle.Width / 3)
                             {
                                 for (int i = 0; i < tmpPoints.Length; i++)
@@ -1172,8 +1169,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        static SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
-        static SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
+        static readonly SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
+        static readonly SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
 
         private void PaintPositions(Graphics graphic)
         {
@@ -1251,10 +1248,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        static Pen buyLongPen = new Pen(Color.Green, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
-        static Pen buyShortPen = new Pen(Color.Red, 5) { StartCap = LineCap.RoundAnchor, EndCap = LineCap.ArrowAnchor };
-        static Pen sellLongPen = new Pen(Color.Red, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
-        static Pen sellShortPen = new Pen(Color.Green, 5) { StartCap = LineCap.RoundAnchor, EndCap = LineCap.ArrowAnchor };
+        static readonly Pen buyLongPen = new Pen(Color.Green, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
+        static readonly Pen buyShortPen = new Pen(Color.Red, 5) { StartCap = LineCap.RoundAnchor, EndCap = LineCap.ArrowAnchor };
+        static readonly Pen sellLongPen = new Pen(Color.Red, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
+        static readonly Pen sellShortPen = new Pen(Color.Green, 5) { StartCap = LineCap.RoundAnchor, EndCap = LineCap.ArrowAnchor };
 
         private void DrawArrow(Graphics g, PointF point, bool isBuy, bool isShort)
         {

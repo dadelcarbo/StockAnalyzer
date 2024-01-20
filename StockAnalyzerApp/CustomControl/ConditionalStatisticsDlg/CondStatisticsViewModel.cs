@@ -33,7 +33,7 @@ namespace StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg
         private StockBarDuration barDuration1;
         public StockBarDuration BarDuration { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; OnPropertyChanged("BarDuration"); } } }
 
-        private static List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator" };
+        private static readonly List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator" };
 
         private string indicatorType1;
         public string IndicatorType1 { get { return indicatorType1; } set { if (value != indicatorType1) { indicatorType1 = value; OnPropertyChanged("IndicatorType1"); } } }

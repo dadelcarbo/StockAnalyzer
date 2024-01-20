@@ -77,7 +77,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.ApplyTheme();
             }
         }
-        private List<GraphControl> graphList = new List<GraphControl>();
+        private readonly List<GraphControl> graphList = new List<GraphControl>();
 
         private Point lastMouseLocation = Point.Empty;
         void MouseMoveOverGraphControl(object sender, System.Windows.Forms.MouseEventArgs e)

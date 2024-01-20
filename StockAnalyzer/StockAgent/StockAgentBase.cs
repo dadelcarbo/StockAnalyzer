@@ -161,7 +161,7 @@ namespace StockAnalyzer.StockAgent
 
         public StockTradeSummary TradeSummary { get; }
 
-        static Random rnd = new Random();
+        static readonly Random rnd = new Random();
         public void Randomize()
         {
             var parameters = StockAgentBase.GetParams(this.GetType());
@@ -269,7 +269,7 @@ namespace StockAnalyzer.StockAgent
         }
 
         #region PARAMETER MANAGEMENT
-        static private Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>> parameters = new Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>>();
+        private static readonly Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>> parameters = new Dictionary<Type, Dictionary<PropertyInfo, StockAgentParamAttribute>>();
         static public Dictionary<PropertyInfo, StockAgentParamAttribute> GetParams(Type type)
         {
             if (!parameters.ContainsKey(type))

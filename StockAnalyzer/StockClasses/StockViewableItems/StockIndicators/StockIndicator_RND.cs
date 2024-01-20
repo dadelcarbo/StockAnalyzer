@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override HLine[] HorizontalLines => new HLine[] { new HLine((float)this.parameters[0], new Pen(Color.LightGray)) };
 
-        static Random rnd = new Random();
+        static readonly Random rnd = new Random();
         public override void ApplyTo(StockSerie stockSerie)
         {
             var rndSerie = new FloatSerie(stockSerie.Keys.Select(k => (float)rnd.NextDouble()).ToArray(), "RND");
@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[1][i] = rndSerie[i] > trigger;
             }
         }
-        static string[] eventNames = new string[] { "IsTrue", "IsFalse" };
+        static readonly string[] eventNames = new string[] { "IsTrue", "IsFalse" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent => isEvent;

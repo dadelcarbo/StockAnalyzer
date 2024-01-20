@@ -4,7 +4,7 @@ namespace StockAnalyzer.StockPortfolio.NameMappingDlg
 {
     public partial class NameMappingDlg : Form
     {
-        NameMappingUserControl UserControl;
+        readonly NameMappingUserControl UserControl;
         public NameMappingDlg()
         {
             InitializeComponent();

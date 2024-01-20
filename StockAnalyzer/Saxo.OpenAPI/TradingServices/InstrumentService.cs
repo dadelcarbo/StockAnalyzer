@@ -23,9 +23,9 @@ namespace Saxo.OpenAPI.TradingServices
                 InstrumentCache = new List<Instrument>();
             }
         }
-        private static List<Instrument> InstrumentCache;
+        private static readonly List<Instrument> InstrumentCache;
 
-        static string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
+        static readonly string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
         public Instrument GetInstrumentByIsin(string isin)
         {
             try
@@ -108,7 +108,7 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
-        private static SortedDictionary<long, InstrumentDetails> InstrumentDetailsCache = new SortedDictionary<long, InstrumentDetails>();
+        private static readonly SortedDictionary<long, InstrumentDetails> InstrumentDetailsCache = new SortedDictionary<long, InstrumentDetails>();
         public InstrumentDetails GetInstrumentDetailsById(long uic, string assetType, Account account)
         {
             try

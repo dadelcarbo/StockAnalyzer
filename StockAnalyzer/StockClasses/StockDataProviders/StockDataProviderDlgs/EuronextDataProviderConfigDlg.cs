@@ -9,12 +9,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
     public partial class EuronextDataProviderConfigDlg : Form
     {
-        ABCDataProvider dataProvider = null;
-        StockDictionary stockDictionary = null;
+        readonly ABCDataProvider dataProvider = null;
+        readonly StockDictionary stockDictionary = null;
 
         bool needRestart = false;
 
-        SortedDictionary<string, string> mepMapping = new SortedDictionary<string, string>();
+        readonly SortedDictionary<string, string> mepMapping = new SortedDictionary<string, string>();
 
         public EuronextDataProviderConfigDlg(StockDictionary stockDico)
         {
@@ -72,8 +72,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             mepMapping.Add("BE", "3");
         }
 
-        string shortName = string.Empty;
-        string isin = string.Empty;
+        readonly string shortName = string.Empty;
+        readonly string isin = string.Empty;
         private void personalListView_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Right && this.personalListView.SelectedItems.Count > 0)

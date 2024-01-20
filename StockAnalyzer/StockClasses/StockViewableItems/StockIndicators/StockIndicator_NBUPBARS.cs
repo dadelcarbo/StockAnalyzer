@@ -72,7 +72,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Series[0] = nbUpDaysSerie.CalculateMA((int)this.parameters[1]).Sub(0.5f);
         }
 
-        static string[] eventNames = new string[] { };
+        static readonly string[] eventNames = new string[] { };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { };
         public override bool[] IsEvent => isEvent;

@@ -46,7 +46,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
 
-        static ChartService chartService = new ChartService();
+        static readonly ChartService chartService = new ChartService();
 
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        static InstrumentService instrumentService = new InstrumentService();
+        static readonly InstrumentService instrumentService = new InstrumentService();
 
         private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {

@@ -133,7 +133,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.Events[9][i] = isBearish;
             }
         }
-        private static string[] eventNames = new string[]
+        private static readonly string[] eventNames = new string[]
       {
          "SupportDetected", "ResistanceDetected", // 0,1
          "Pullback", "EndOfTrend", // 2,3

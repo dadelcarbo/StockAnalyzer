@@ -94,7 +94,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[]
+        static readonly string[] eventNames = new string[]
           {
             "Uptrend", "DownTrend", "BrokenUp","BrokenDown"
           };

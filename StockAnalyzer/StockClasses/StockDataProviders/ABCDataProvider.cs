@@ -20,15 +20,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public class ABCDataProvider : StockDataProviderBase, IConfigDialog
     {
-        static private string ABC_INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\ABC";
-        static private string ABC_DAILY_FOLDER = DAILY_SUBFOLDER + @"\ABC";
-        static private string ABC_DAILY_CFG_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl";
-        static private string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
-        static private string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
-        static private string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
-        static private string CONFIG_FILE = "EuronextDownload.cfg";
-        static private string CONFIG_FILE_USER = "EuronextDownload.user.cfg";
-        static private string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
+        private static readonly string ABC_INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\ABC";
+        private static readonly string ABC_DAILY_FOLDER = DAILY_SUBFOLDER + @"\ABC";
+        private static readonly string ABC_DAILY_CFG_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl";
+        private static readonly string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
+        private static readonly string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
+        private static readonly string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
+        private static readonly string CONFIG_FILE = "EuronextDownload.cfg";
+        private static readonly string CONFIG_FILE_USER = "EuronextDownload.user.cfg";
+        private static readonly string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
 
         #region ABC DOWNLOAD HELPER
 
@@ -314,7 +314,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool SupportsIntradayDownload => Settings.Default.SupportIntraday;
 
-        static string defaultConfigFile = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
+        static readonly string defaultConfigFile = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
             CreateDirectories();

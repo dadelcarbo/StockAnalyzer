@@ -4,9 +4,9 @@ namespace StockAnalyzer.StockClasses.StockStatistic
 {
     public class StockStatisticsEngine
     {
-        private int sampleBefore = 0;
-        private int sampleAfter = 0;
-        private int sampleSize = 0;
+        private readonly int sampleBefore = 0;
+        private readonly int sampleAfter = 0;
+        private readonly int sampleSize = 0;
 
         public StockStatisticsEngine(int before, int after)
         {

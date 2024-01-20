@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
     public partial class OpenPositionDlg : Form
     {
         public OpenTradeViewModel TradeViewModel { get; }
-        OpenTradeUserControl openTradeUserControl;
+        readonly OpenTradeUserControl openTradeUserControl;
         public OpenPositionDlg(OpenTradeViewModel tradeLogViewModel)
         {
             InitializeComponent();

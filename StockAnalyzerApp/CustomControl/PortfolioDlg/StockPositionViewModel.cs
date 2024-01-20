@@ -17,8 +17,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
-        StockPosition position;
-        private PortfolioViewModel portfolio;
+        readonly StockPosition position;
+        private readonly PortfolioViewModel portfolio;
 
         public StockPositionViewModel(StockPosition pos, PortfolioViewModel portfolio)
         {

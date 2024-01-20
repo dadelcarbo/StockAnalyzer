@@ -8,7 +8,7 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
 {
     public partial class WatchListDlg : Form
     {
-        private List<StockWatchList> watchLists;
+        private readonly List<StockWatchList> watchLists;
 
         public event StockAnalyzerForm.StockWatchListsChangedEventHandler StockWatchListsChanged;
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;

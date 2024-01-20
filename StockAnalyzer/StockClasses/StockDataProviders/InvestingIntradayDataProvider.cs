@@ -118,7 +118,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             wb.Navigate(url.ToString());
         }
 
-        static SortedDictionary<string, string> downloads = new SortedDictionary<string, string>();
+        static readonly SortedDictionary<string, string> downloads = new SortedDictionary<string, string>();
         private static void Wb_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             Console.WriteLine("DL-Wb_Navigated: " + Thread.CurrentThread.ManagedThreadId);
@@ -327,7 +327,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        static DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
+        static readonly DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
         private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
         {
             var res = false;

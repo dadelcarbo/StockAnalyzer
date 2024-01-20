@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             _action = action;
         }
 
-        private Action _action;
+        private readonly Action _action;
         public bool CanExecute(object parameter)
         {
             return true;
@@ -28,9 +28,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
     {
         public event EventHandler CanExecuteChanged;
 
-        string _propertyName;
-        T _sourceObject;
-        Func<T, bool> _selector;
+        readonly string _propertyName;
+        readonly T _sourceObject;
+        readonly Func<T, bool> _selector;
         public CommandBase(Action action, T sourceObject, Func<T, bool> selector, string propertyName)
         {
             _action = action;
@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             }
         }
 
-        private Action _action;
+        private readonly Action _action;
         public bool CanExecute(object parameter)
         {
             return _selector(_sourceObject);

@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[1][i] = mrpSerie[i] < 0;
             }
         }
-        static string[] eventNames = new string[] { "Positive", "Negative", "Obsolete" };
+        static readonly string[] eventNames = new string[] { "Positive", "Negative", "Obsolete" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent => isEvent;

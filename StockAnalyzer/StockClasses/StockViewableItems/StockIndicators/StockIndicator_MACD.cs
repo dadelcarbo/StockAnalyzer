@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static string[] eventNames = new string[] { "MACDPositive", "MACDNegative", "MACDAboveSignal", "MACDBelowSignal" };
+        static readonly string[] eventNames = new string[] { "MACDPositive", "MACDNegative", "MACDAboveSignal", "MACDBelowSignal" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, false, false };
         public override bool[] IsEvent => isEvent;
