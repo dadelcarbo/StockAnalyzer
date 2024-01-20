@@ -1807,57 +1807,60 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 if (graphNode.GraphShowGrid)
                 {
 
+                    for (int xx = 0; xx < g.VisibleClipBounds.Width; xx += 33)
                     {
-                        {
-                            for (int xx = 0; xx < g.VisibleClipBounds.Width; xx += 33)
-                            {
-                                g.DrawLine(gridPen, xx, g.VisibleClipBounds.Bottom, xx, g.VisibleClipBounds.Top);
-                            }
-                            for (int yy = 0; yy < g.VisibleClipBounds.Height; yy += 33)
-                            {
-                                g.DrawLine(gridPen, g.VisibleClipBounds.Left, yy, g.VisibleClipBounds.Right, yy);
-                            }
-                        }
+                        g.DrawLine(gridPen, xx, g.VisibleClipBounds.Bottom, xx, g.VisibleClipBounds.Top);
                     }
-
-                    if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.BarChart)
+                    for (int yy = 0; yy < g.VisibleClipBounds.Height; yy += 33)
                     {
-                        PaintPreviewWithPaintBars(g, Pens.Black);
+                        g.DrawLine(gridPen, g.VisibleClipBounds.Left, yy, g.VisibleClipBounds.Right, yy);
+                    }
+                }
+
+
+                if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.BarChart)
+                {
+                    PaintPreviewWithPaintBars(g, Pens.Black);
+                }
+                else
+                {
+                    if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.CandleStick)
+                    {
+                        PaintPreviewWithCandleSticks(g, Pens.Black);
                     }
                     else
                     {
-                        if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.CandleStick)
+                        float x, y;
+                        Point[] points = new Point[(int)Math.Floor(g.VisibleClipBounds.Width)];
+                        int i = 0;
+                        for (x = g.VisibleClipBounds.Left; x < g.VisibleClipBounds.Right; x++)
                         {
-                            PaintPreviewWithCandleSticks(g, Pens.Black);
-                        }
-                        else
-                        {
-                            float x, y;
-                            Point[] points = new Point[(int)Math.Floor(g.VisibleClipBounds.Width)];
-                            int i = 0;
-                            for (x = g.VisibleClipBounds.Left; x < g.VisibleClipBounds.Right; x++)
+                            y = (int)(Math.Sin(x * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
+                            points[i].X = (int)x;
+                            points[i++].Y = (int)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f); if (graphNode.GraphMode == GraphChartMode.LineCross && i % 8 == 0)
                             {
-                                y = (int)(Math.Sin(x * Math.PI * 6.0 / g.VisibleClipBounds.Width) * 0.4f * g.VisibleClipBounds.Height);
-                                points[i].X = (int)x;
-                                points[i++].Y = (int)(y - (g.VisibleClipBounds.Top - g.VisibleClipBounds.Bottom) / 2.0f);
+                                var p = points[i - 1];
+                                g.DrawLine(Pens.Black, p.X - 3, p.Y, p.X + 3, p.Y);
+                                g.DrawLine(Pens.Black, p.X, p.Y - 3, p.X, p.Y + 3);
                             }
-                            g.DrawLines(Pens.Black, points);
+
                         }
+                        g.DrawLines(Pens.Black, points);
                     }
+                }
 
-                    using (Brush brush = new SolidBrush(graphNode.GraphTextBackgroundColor))
+                using (Brush brush = new SolidBrush(graphNode.GraphTextBackgroundColor))
+                {
+                    using (Brush textBrush = new SolidBrush(Color.Black))
                     {
-                        using (Brush textBrush = new SolidBrush(Color.Black))
+                        using (Font font = new Font(FontFamily.GenericSansSerif, 9))
                         {
-                            using (Font font = new Font(FontFamily.GenericSansSerif, 9))
-                            {
 
-                                SizeF size = g.MeasureString(this.someTextLabel.Text, font);
-                                PointF location = new PointF((g.VisibleClipBounds.Left + g.VisibleClipBounds.Right) / 2.0f + 15f, (g.VisibleClipBounds.Top + g.VisibleClipBounds.Bottom) / 2.0f + 30f);
-                                g.FillRectangle(brush, location.X - 1, location.Y - 1, size.Width, size.Height + 2);
-                                g.DrawRectangle(gridPen, location.X - 1, location.Y - 1, size.Width, size.Height + 2);
-                                g.DrawString(this.someTextLabel.Text, font, textBrush, location);
-                            }
+                            SizeF size = g.MeasureString(this.someTextLabel.Text, font);
+                            PointF location = new PointF((g.VisibleClipBounds.Left + g.VisibleClipBounds.Right) / 2.0f + 15f, (g.VisibleClipBounds.Top + g.VisibleClipBounds.Bottom) / 2.0f + 30f);
+                            g.FillRectangle(brush, location.X - 1, location.Y - 1, size.Width, size.Height + 2);
+                            g.DrawRectangle(gridPen, location.X - 1, location.Y - 1, size.Width, size.Height + 2);
+                            g.DrawString(this.someTextLabel.Text, font, textBrush, location);
                         }
                     }
                 }

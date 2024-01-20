@@ -146,15 +146,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         #region PAINT METHODS
         override protected void PaintCopyright(Graphics aGraphic)
         {
-            using (MethodLogger ml = new MethodLogger(this))
-            {
-                string graphCopyright = "Copyright © " + DateTime.Today.Year + " Dad El Carbo";
+            using MethodLogger ml = new MethodLogger(this);
+            string graphCopyright = "Copyright © " + DateTime.Today.Year + " Dad El Carbo";
 
-                Size size = TextRenderer.MeasureText(graphCopyright, this.axisFont);
-                PointF point = new PointF(aGraphic.VisibleClipBounds.Right - size.Width + 10, 5);
+            Size size = TextRenderer.MeasureText(graphCopyright, this.axisFont);
+            PointF point = new PointF(aGraphic.VisibleClipBounds.Right - size.Width + 10, 5);
 
-                this.DrawString(aGraphic, graphCopyright, this.axisFont, Brushes.Black, this.backgroundBrush, point, false);
-            }
+            this.DrawString(aGraphic, graphCopyright, this.axisFont, Brushes.Black, this.backgroundBrush, point, false);
         }
 
         protected override void PaintTmpGraph(Graphics aGraphic)
@@ -524,6 +522,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         case GraphChartMode.Line:
                             aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
+                            break;
+                        case GraphChartMode.LineCross:
+                            aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
+
                             if (EndIndex - StartIndex < GraphRectangle.Width / 3)
                             {
                                 for (int i = 0; i < tmpPoints.Length; i++)
