@@ -287,6 +287,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_HLBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_CUPHANDLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_MID2Lines.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TURTLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LAKERATIO.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADRBAND.cs" />
@@ -317,6 +318,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_TRAILATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_Amsterdam.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreenerBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTURTLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMONTREUX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILCUPEMA.cs" />
@@ -335,8 +337,8 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMAHL.cs" />
+    <Compile Include="StockDrawing\Area.cs" />
     <Compile Include="StockDrawing\Box.cs" />
-    <Compile Include="StockDrawing\IOpenedDrawing.cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />
     <Compile Include="StockHelpers\TaskExtension.cs" />

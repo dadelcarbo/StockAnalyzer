@@ -328,11 +328,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     // Draw Long trail
                     using (Brush brush = new SolidBrush(Color.FromArgb(92, longPen.Color.R, longPen.Color.G, longPen.Color.B)))
                     {
-                        FillArea(aGraphic, longStopSerie, longPen, brush);
+                        FillArea(aGraphic, longStopSerie, closeCurveType.DataSerie, longPen, brush);
                     }
                     using (Brush brush = new SolidBrush(Color.FromArgb(92, shortPen.Color.R, shortPen.Color.G, shortPen.Color.B)))
                     {
-                        FillArea(aGraphic, shortStopSerie, shortPen, brush);
+                        FillArea(aGraphic, shortStopSerie, closeCurveType.DataSerie, shortPen, brush);
                     }
                     if (this.CurveList.TrailStop.SerieVisibility[2] && this.CurveList.TrailStop.Series[2]?.Count > 0)
                     {
@@ -456,6 +456,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             }
                         }
                     }
+
+                    // Draw indicator areas
+                    if (stockIndicator.Areas != null)
+                    {
+                        foreach (var area in stockIndicator.Areas)
+                        {
+                            FillArea(aGraphic, area.UpLine, area.DownLine, null, area.Brush);
+                        }
+                    }
                 }
                 #endregion
                 #region DISPLAY DECORATORS
@@ -478,8 +487,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     {
                                         PointF point = new PointF(index, dataSerie[index]);
                                         PointF point2 = GetScreenPointFromValuePoint(point);
-                                        aGraphic.FillEllipse(brush, point2.X - pen.Width * 1.5f, point2.Y - pen.Width * 1.5f,
-                                           pen.Width * 3f, pen.Width * 3f);
+                                        aGraphic.FillEllipse(brush, point2.X - pen.Width * 1.5f, point2.Y - pen.Width * 1.5f, pen.Width * 3f, pen.Width * 3f);
                                     }
                                 }
                             }
@@ -848,14 +856,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        private void FillArea(Graphics aGraphic, FloatSerie dataSerie, Pen pen, Brush brush)
+        private void FillArea(Graphics aGraphic, FloatSerie dataSerie1, FloatSerie dataSerie2, Pen pen, Brush brush)
         {
             List<Tuple<int, int>> tuples = new List<Tuple<int, int>>();
             int start = -1;
             int end = -1;
             for (int k = StartIndex; k <= EndIndex; k++)
             {
-                if (float.IsNaN(dataSerie[k]))
+                if (float.IsNaN(dataSerie1[k]))
                 {
                     if (start != -1)
                     {
@@ -882,13 +890,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             foreach (var tuple in tuples)
             {
-                var tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, dataSerie);
+                var tmpPoints = GetScreenPoints(tuple.Item1, tuple.Item2, dataSerie1);
                 if (tmpPoints != null)
                 {
-                    var closePoints = GetScreenPoints(tuple.Item1, tuple.Item2, closeCurveType.DataSerie);
+                    var closePoints = GetScreenPoints(tuple.Item1, tuple.Item2, dataSerie2);
                     var fillPoints = tmpPoints.Concat(closePoints.Reverse()).ToArray();
                     aGraphic.FillPolygon(brush, fillPoints);
-                    aGraphic.DrawLines(pen, tmpPoints);
+                    if (pen != null)
+                    {
+                        aGraphic.DrawLines(pen, tmpPoints);
+                    }
                 }
             }
         }

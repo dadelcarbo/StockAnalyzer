@@ -6,7 +6,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_TURTLE : StockIndicatorBase
     {
-        public override string Definition => "Display the highest, lowest lines for the specified period of a EMA over defined period. This is for InvestingZen Turtle strategy";
+        public override string Definition => base.Definition + Environment.NewLine + "Display the highest, lowest lines for the specified period of a EMA over defined period. This is for InvestingZen Turtle strategy";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "EMAPeriod" };
         public override Object[] ParameterDefaultValues => new Object[] { 36, 12, 3 };
@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "High", "Low", "EMA" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -31,11 +31,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             int highPeriod = (int)this.parameters[0];
             int lowPeriod = (int)this.parameters[1];
             int emaPeriod = (int)this.parameters[2];
-            if (Math.Max(highPeriod, lowPeriod) > stockSerie.Count)
-            {
-                this.CreateEventSeries(stockSerie.Count);
-                return;
-            }
 
             // Calculate MDH Channel
             FloatSerie upLine = new FloatSerie(stockSerie.Count);
@@ -46,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             upLine[0] = emaSerie[0];
             downLine[0] = emaSerie[0];
 
-            for (int i = 1; i <= Math.Max(highPeriod, lowPeriod); i++)
+            for (int i = 1; i <= Math.Max(highPeriod, lowPeriod) && i < stockSerie.Count; i++)
             {
                 upLine[i] = emaSerie.GetMax(0, i);
                 downLine[i] = emaSerie.GetMin(0, i);
@@ -70,6 +65,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
+            this.Areas = new StockDrawing.Area[]
+            {
+                new StockDrawing.Area(stockSerie.Count) {Brush = new SolidBrush( Color.FromArgb(128, Color.LightGreen)) }
+            };
             bool upTrend = false;
             for (int i = 1; i < stockSerie.Count; i++)
             {
@@ -77,28 +76,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 if (upTrend)
                 {
                     upTrend = !(emaSerie[i] <= downLine[i]);
+                    this.Areas[0].UpLine[i] = upLine[i];
+                    this.Areas[0].DownLine[i] = downLine[i];
                 }
                 else
                 {
                     upTrend = emaSerie[i] >= upLine[i];
                 }
 
-                this.Events[count++][i] = upTrend;
-                this.Events[count++][i] = !upTrend;
-                this.Events[count++][i] = (!this.Events[0][i - 1]) && (this.Events[0][i]);
-                this.Events[count++][i] = (this.Events[0][i - 1]) && (!this.Events[0][i]);
+                this.Events[count++][i] = emaSerie[i - 1] < upLine[i - 1] && emaSerie[i] >= upLine[i];  // BrokenUp
+                this.Events[count++][i] = emaSerie[i - 1] > downLine[i - 1] && emaSerie[i] <= downLine[i]; // BrokenDown
             }
+
         }
 
-        static readonly string[] eventNames = new string[]
-          {
-            "Uptrend", "DownTrend", "BrokenUp","BrokenDown"
-          };
+        static readonly string[] eventNames = new string[] { "BrokenUp", "BrokenDown" };
         public override string[] EventNames => eventNames;
-        static readonly bool[] isEvent = new bool[]
-          {
-            false, false, true, true
-          };
+
+        static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent => isEvent;
     }
 }

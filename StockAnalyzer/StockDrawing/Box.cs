@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace StockAnalyzer.StockDrawing
 {
-    public class Box : Rectangle2D, IOpenedDrawing
+    public class Box : Rectangle2D
     {
         static readonly Brush fillBrush = new SolidBrush(Color.FromArgb(32, Color.LightGreen));
 
@@ -16,28 +16,8 @@ namespace StockAnalyzer.StockDrawing
         {
             this.Fill = true;
             this.Pen = new Pen(Color.Green) { Width = 1 };
-            this.IsOpened = isOpened;
         }
 
-        #region IOpenedDrawing
-        public bool IsOpened { get; set; }
-        public bool TryClose(FloatSerie closeSerie)
-        {
-            if (!this.IsOpened)
-                return false;
-            if (this.Right > closeSerie.LastIndex)
-                return false;
-            for (int i = (int)this.Right; i < closeSerie.Count; i++)
-            {
-                if (closeSerie[i] > this.Top)
-                {
-                    this.IsOpened = false;
-                    return true;
-                }
-            }
-            return false;
-        }
-        #endregion
 
         public override void Draw(Graphics g, Pen pen, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
         {

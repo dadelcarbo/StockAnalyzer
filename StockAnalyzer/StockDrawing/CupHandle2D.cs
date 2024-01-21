@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 namespace StockAnalyzer.StockDrawing
 {
     [Serializable]
-    public class CupHandle2D : Segment2D, IOpenedDrawing
+    public class CupHandle2D : Segment2D
     {
         public CupHandle2D()
         {

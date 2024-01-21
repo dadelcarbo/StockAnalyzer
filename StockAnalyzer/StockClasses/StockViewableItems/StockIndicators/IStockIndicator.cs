@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -6,5 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     {
         FloatSerie[] Series { get; }
         HLine[] HorizontalLines { get; }
+        Area[] Areas { get; }
     }
 }

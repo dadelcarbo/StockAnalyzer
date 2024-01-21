@@ -41,6 +41,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         abstract public Pen[] SeriePens { get; }
         public virtual HLine[] HorizontalLines => null;
 
+        public Area[] Areas { get; set; }
+
         private readonly bool[] serieVisibility;
         public bool[] SerieVisibility => this.serieVisibility;
 

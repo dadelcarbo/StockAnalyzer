@@ -25,6 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
         public ViewableItemType Type => ViewableItemType.Trail;
 
         public virtual bool RequiresVolumeData => false;
+        public Area[] Areas { get; set; }
 
         public string TrailedItem { get; set; }
 
