@@ -445,7 +445,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawingManager.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATRStop.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_EMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_ATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BBStop.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_BB.cs" />

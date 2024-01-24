@@ -4438,20 +4438,41 @@ namespace StockAnalyzerApp
         }
         void refreshPortfolioBtn_Click(object sender, EventArgs e)
         {
-            if (this.portfolio != null)
+            var refreshAll = Control.ModifierKeys == Keys.Control;
+            if (refreshAll)
             {
-                this.portfolio.Refresh();
-                if (portfolio.SaxoSilentLogin())
+                foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
                 {
-                    this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
-                    this.portfolioStatusLbl.ToolTipText = "Connected";
+                    p.Refresh();
+                    if (p.SaxoSilentLogin())
+                    {
+                        this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
+                        this.portfolioStatusLbl.ToolTipText = "Connected";
+                    }
+                    else
+                    {
+                        this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
+                        this.portfolioStatusLbl.ToolTipText = "Not Connected";
+                    }
                 }
-                else
+            }
+            else
+            {
+                if (this.portfolio != null)
                 {
-                    this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
-                    this.portfolioStatusLbl.ToolTipText = "Not Connected";
+                    this.portfolio.Refresh();
+                    if (portfolio.SaxoSilentLogin())
+                    {
+                        this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
+                        this.portfolioStatusLbl.ToolTipText = "Connected";
+                    }
+                    else
+                    {
+                        this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
+                        this.portfolioStatusLbl.ToolTipText = "Not Connected";
+                    }
+                    this.graphCloseControl.ForceRefresh();
                 }
-                this.graphCloseControl.ForceRefresh();
             }
         }
 

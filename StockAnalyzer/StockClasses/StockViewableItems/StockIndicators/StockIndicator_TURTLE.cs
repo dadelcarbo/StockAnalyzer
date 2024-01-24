@@ -67,7 +67,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             this.Areas = new StockDrawing.Area[]
             {
-                new StockDrawing.Area(stockSerie.Count) {Brush = new SolidBrush( Color.FromArgb(128, Color.LightGreen)) }
+                new StockDrawing.Area(stockSerie.Count) {Brush = new SolidBrush( Color.FromArgb(128, Color.LightGreen)) },
+                new StockDrawing.Area(stockSerie.Count) {Brush = new SolidBrush( Color.FromArgb(128, Color.Red)) }
             };
             bool upTrend = false;
             for (int i = 1; i < stockSerie.Count; i++)
@@ -76,13 +77,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 if (upTrend)
                 {
                     upTrend = !(emaSerie[i] <= downLine[i]);
-                    this.Areas[0].UpLine[i] = upLine[i];
-                    this.Areas[0].DownLine[i] = downLine[i];
                 }
                 else
                 {
                     upTrend = emaSerie[i] >= upLine[i];
                 }
+                this.Areas[upTrend ? 0 : 1].UpLine[i] = upLine[i];
+                this.Areas[upTrend ? 0 : 1].DownLine[i] = downLine[i];
 
                 this.Events[count++][i] = emaSerie[i - 1] < upLine[i - 1] && emaSerie[i] >= upLine[i];  // BrokenUp
                 this.Events[count++][i] = emaSerie[i - 1] > downLine[i - 1] && emaSerie[i] <= downLine[i]; // BrokenDown

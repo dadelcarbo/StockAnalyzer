@@ -596,11 +596,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public bool SaxoSilentLogin()
         {
-            if (string.IsNullOrEmpty(SaxoAccountId))
-            {
-                return false;
-            }
-            if (string.IsNullOrEmpty(SaxoClientId))
+            if (string.IsNullOrEmpty(SaxoAccountId) || string.IsNullOrEmpty(SaxoClientId))
             {
                 return false;
             }
