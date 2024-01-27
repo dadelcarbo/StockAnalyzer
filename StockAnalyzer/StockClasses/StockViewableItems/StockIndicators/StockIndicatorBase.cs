@@ -3,6 +3,7 @@ using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Web;
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public abstract class StockIndicatorBase : Parameterizable, IStockIndicator, IStockText
@@ -32,6 +33,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 themeString += "|" + GraphCurveType.PenToString(this.SeriePens[i]) + "|" + this.SerieVisibility[i].ToString();
             }
+            if (this.Areas != null)
+            {
+                foreach (var area in this.Areas)
+                {
+                    themeString += "|" + GraphCurveType.ColorToString(area.Color) + "|" + area.Visibility.ToString();
+                }
+            }
             return themeString;
         }
 
@@ -41,7 +49,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         abstract public Pen[] SeriePens { get; }
         public virtual HLine[] HorizontalLines => null;
 
-        public Area[] Areas { get; set; }
+        protected Area[] areas;
+        public virtual Area[] Areas => areas;
 
         private readonly bool[] serieVisibility;
         public bool[] SerieVisibility => this.serieVisibility;

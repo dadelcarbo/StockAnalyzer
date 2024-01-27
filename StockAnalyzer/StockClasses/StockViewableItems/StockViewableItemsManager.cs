@@ -112,9 +112,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
 
             if (viewableSerie != null)
             {
+                int index = 0;
                 for (int i = 0; i < viewableSerie.SeriesCount; i++)
                 {
-                    int index = 2 * i + offset;
+                    index = 2 * i + offset;
                     if (index < fields.Length)
                     {
                         viewableSerie.SeriePens[i] = GraphCurveType.PenFromString(fields[index]);
@@ -125,13 +126,29 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                         viewableSerie.SerieVisibility[i] = true;
                     }
                 }
+                if (viewableSerie is IStockIndicator)
+                {
+                    var indicator = (IStockIndicator)viewableSerie;
+                    if (indicator?.Areas != null)
+                    {
+                        foreach (var area in indicator.Areas)
+                        {
+                            index += 2;
+                            if (index < fields.Length)
+                            {
+                                area.Color = GraphCurveType.ColorFromString(fields[index]);
+                                area.Visibility = bool.Parse(fields[index + 1]);
+                            }
+                        }
+                    }
+                }
                 if (fields[0].ToUpper() == "DECORATOR")
                 {
                     offset += viewableSerie.SeriesCount * 2;
                     IStockDecorator decorator = viewableSerie as IStockDecorator;
                     for (int i = 0; i < decorator.EventCount; i++)
                     {
-                        int index = 2 * i + offset;
+                        index = 2 * i + offset;
                         if (index < fields.Length)
                         {
                             decorator.EventPens[i] = GraphCurveType.PenFromString(fields[index]);

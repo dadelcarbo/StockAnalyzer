@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,6 +32,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
+        public override Area[] Areas => areas ??= new StockDrawing.Area[] {
+            new StockDrawing.Area {Color = Color.FromArgb(64, Color.Blue) }
+            };
+
         public override void ApplyTo(StockSerie stockSerie)
         {
             // Calculate Bollinger Bands
@@ -48,6 +53,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             this.series[2] = emaIndicator.Series[0];
             this.Series[2].Name = this.SerieNames[2];
+
+            this.Areas[0].UpLine = upperBB;
+            this.Areas[0].DownLine = lowerBB;
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);

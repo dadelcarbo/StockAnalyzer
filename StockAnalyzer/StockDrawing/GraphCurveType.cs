@@ -51,6 +51,15 @@ namespace StockAnalyzer.StockDrawing
         {
             return pen.Width.ToString() + ":" + pen.Color.A.ToString() + ":" + pen.Color.R.ToString() + ":" + pen.Color.G.ToString() + ":" + pen.Color.B.ToString() + ":" + pen.DashStyle.ToString();
         }
+        public static Color ColorFromString(string colorString)
+        {
+            string[] pieces = colorString.Split(':');
+            return Color.FromArgb(byte.Parse(pieces[0]), byte.Parse(pieces[1]), byte.Parse(pieces[2]), byte.Parse(pieces[3]));
+        }
+        public static string ColorToString(Color color)
+        {
+            return color.A.ToString() + ":" + color.R.ToString() + ":" + color.G.ToString() + ":" + color.B.ToString();
+        }
         public GraphCurveType(FloatSerie serie, string penString, bool isVisible)
         {
             this.XmlPen = penString;

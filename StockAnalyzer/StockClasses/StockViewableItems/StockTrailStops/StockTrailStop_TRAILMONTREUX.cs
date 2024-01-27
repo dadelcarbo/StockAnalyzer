@@ -6,6 +6,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILMONTREUX : StockTrailStopBase
     {
+        public override string Definition => base.Definition + Environment.NewLine +
+            "Draw a trail stop fro InvestingZen Montreux strategie. Starts on BB broke Up, and trails with lower band.";
+
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" };
 

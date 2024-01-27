@@ -460,7 +460,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     // Draw indicator areas
                     if (stockIndicator.Areas != null)
                     {
-                        foreach (var area in stockIndicator.Areas)
+                        foreach (var area in stockIndicator.Areas.Where(a => a.Visibility))
                         {
                             FillArea(aGraphic, area.UpLine, area.DownLine, null, area.Brush);
                         }

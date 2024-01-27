@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 
@@ -25,6 +26,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
+        public override Area[] Areas => areas ??= new StockDrawing.Area[]
+            {
+                new Area {Name="Bull", Color = Color.FromArgb(128, Color.LightGreen) },
+                new Area {Name="Bear", Color = Color.FromArgb(128, Color.Red) }
+            };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -62,14 +68,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.series[++count] = emaSerie;
             this.Series[count].Name = this.SerieNames[count];
 
+            this.Areas[0].UpLine = new FloatSerie(stockSerie.Count);
+            this.Areas[0].DownLine = new FloatSerie(stockSerie.Count);
+
+            this.Areas[1].UpLine = new FloatSerie(stockSerie.Count);
+            this.Areas[1].DownLine = new FloatSerie(stockSerie.Count);
+
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-            this.Areas = new StockDrawing.Area[]
-            {
-                new StockDrawing.Area(stockSerie.Count) {Brush = new SolidBrush( Color.FromArgb(128, Color.LightGreen)) },
-                new StockDrawing.Area(stockSerie.Count) {Brush = new SolidBrush( Color.FromArgb(128, Color.Red)) }
-            };
             bool upTrend = false;
             for (int i = 1; i < stockSerie.Count; i++)
             {

@@ -4276,16 +4276,12 @@ namespace StockAnalyzerApp
                                             case "TRAIL":
                                             case "INDICATOR":
                                                 {
-                                                    IStockIndicator stockIndicator =
-                                                        (IStockIndicator)
-                                                            StockViewableItemsManager.GetViewableItem(line,
-                                                                this.CurrentStockSerie);
+                                                    IStockIndicator stockIndicator = (IStockIndicator) StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
                                                     if (stockIndicator != null)
                                                     {
                                                         if (entry.ToUpper() != "CLOSEGRAPH")
                                                         {
-                                                            if (stockIndicator.DisplayTarget ==
-                                                                IndicatorDisplayTarget.RangedIndicator)
+                                                            if (stockIndicator.DisplayTarget == IndicatorDisplayTarget.RangedIndicator)
                                                             {
                                                                 IRange range = (IRange)stockIndicator;
                                                                 ((GraphRangedControl)graphControl).RangeMin = range.Min;
@@ -4297,9 +4293,7 @@ namespace StockAnalyzerApp
                                                                 ((GraphRangedControl)graphControl).RangeMax = float.NaN;
                                                             }
                                                         }
-                                                        if (
-                                                            !(stockIndicator.RequiresVolumeData &&
-                                                              !this.CurrentStockSerie.HasVolume))
+                                                        if (!(stockIndicator.RequiresVolumeData && !this.CurrentStockSerie.HasVolume))
                                                         {
                                                             curveList.Indicators.Add(stockIndicator);
                                                         }
