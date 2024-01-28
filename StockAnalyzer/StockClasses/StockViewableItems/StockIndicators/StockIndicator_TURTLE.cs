@@ -39,8 +39,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             int emaPeriod = (int)this.parameters[2];
 
             // Calculate MDH Channel
-            FloatSerie upLine = new FloatSerie(stockSerie.Count);
-            FloatSerie downLine = new FloatSerie(stockSerie.Count);
+            FloatSerie upLine = new FloatSerie(stockSerie.Count, float.NaN);
+            FloatSerie downLine = new FloatSerie(stockSerie.Count, float.NaN);
 
             FloatSerie emaSerie = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(emaPeriod);
 

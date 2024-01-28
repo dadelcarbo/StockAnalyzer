@@ -63,6 +63,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.opacityTrackBar = new System.Windows.Forms.TrackBar();
             this.thicknessComboBox = new System.Windows.Forms.ComboBox();
             this.lineTypeComboBox = new System.Windows.Forms.ComboBox();
             this.curveConfigBox = new System.Windows.Forms.GroupBox();
@@ -331,6 +332,15 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.thicknessComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.thicknessComboBox_DrawItem);
             this.thicknessComboBox.SelectedIndexChanged += new System.EventHandler(this.thicknessComboBox_SelectedIndexChanged);
             // 
+            // opacityTrackBar
+            // 
+            resources.ApplyResources(this.opacityTrackBar, "opacityTrackBar");
+            this.opacityTrackBar.Minimum = 0;
+            this.opacityTrackBar.Maximum = 255;
+            this.opacityTrackBar.TickFrequency = 25;
+            this.opacityTrackBar.Name = "opacityTrackBar";
+            this.opacityTrackBar.ValueChanged += new System.EventHandler(this.opacityTrackBar_ValueChanged);
+            // 
             // lineTypeComboBox
             // 
             this.lineTypeComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
@@ -346,6 +356,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.curveConfigBox.Controls.Add(this.visibleCheckBox);
             this.curveConfigBox.Controls.Add(this.curvePreviewLabel);
             this.curveConfigBox.Controls.Add(this.previewPanel);
+            this.curveConfigBox.Controls.Add(this.opacityTrackBar);
             resources.ApplyResources(this.curveConfigBox, "curveConfigBox");
             this.curveConfigBox.Name = "curveConfigBox";
             this.curveConfigBox.TabStop = false;
@@ -548,6 +559,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.ToolStripMenuItem removeStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addDecoratorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addTrailToolStripMenuItem;
+        private System.Windows.Forms.TrackBar opacityTrackBar;
         private System.Windows.Forms.ComboBox thicknessComboBox;
         private System.Windows.Forms.ComboBox lineTypeComboBox;
         private System.Windows.Forms.Label curvePreviewLabel;

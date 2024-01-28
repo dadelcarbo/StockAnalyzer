@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -23,6 +24,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
+        public override Area[] Areas => areas ??= new StockDrawing.Area[]
+            {
+                new Area {Name="Bull", Color = Color.FromArgb(64, Color.Green) },
+                new Area {Name="Bear", Color = Color.FromArgb(64, Color.Red) }
+            };
 
         protected void CalculateEvents(StockSerie stockSerie)
         {
@@ -37,6 +43,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
+            this.Areas[0].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[0].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[1].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[1].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
             for (int i = 2; i < maSerie.Count; i++)
             {
                 this.eventSeries[0][i] = (maSerie[i - 2] > maSerie[i - 1] && maSerie[i - 1] < maSerie[i]);  // Bottom
@@ -55,6 +65,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[11][i] = maSerie[i - 1] > maSerie[i];                                      // Falling
                 this.eventSeries[12][i] = closeSerie[i] > openSerie[i] && bodyLowSerie[i] > maSerie[i] && bodyLowSerie[i - 1] < maSerie[i - 1];      // FirstBarAbove
                 this.eventSeries[13][i] = closeSerie[i] < openSerie[i] && bodyHighSerie[i] < maSerie[i] && bodyHighSerie[i - 1] > maSerie[i - 1];    // FirstBarBelow
+
+                if (closeSerie[i] > maSerie[i])
+                {
+                    this.areas[0].UpLine[i] = closeSerie[i];
+                    this.areas[0].DownLine[i] = maSerie[i];
+                }
+                else
+                {
+                    this.areas[1].UpLine[i] = maSerie[i];
+                    this.areas[1].DownLine[i] = closeSerie[i];
+                }
             }
         }
 

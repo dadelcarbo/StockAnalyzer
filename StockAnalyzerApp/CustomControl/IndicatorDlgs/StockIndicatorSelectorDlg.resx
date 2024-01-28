@@ -610,7 +610,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;graphConfigBox.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="applyToAllButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>228, 345</value>
@@ -786,6 +786,27 @@
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
+  <data name="opacityTrackBar.Location" type="System.Drawing.Point, System.Drawing">
+    <value>65, 65</value>
+  </data>
+  <data name="opacityTrackBar.Size" type="System.Drawing.Size, System.Drawing">
+    <value>250, 21</value>
+  </data>
+  <data name="opacityTrackBar.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;opacityTrackBar.Name" xml:space="preserve">
+    <value>opacityTrackBar</value>
+  </data>
+  <data name="&gt;&gt;opacityTrackBar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;opacityTrackBar.Parent" xml:space="preserve">
+    <value>lineConfigBox</value>
+  </data>
+  <data name="&gt;&gt;opacityTrackBar.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
   <data name="thicknessComboBox.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
   </data>
@@ -808,7 +829,7 @@
     <value>lineConfigBox</value>
   </data>
   <data name="&gt;&gt;thicknessComboBox.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="lineTypeComboBox.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
@@ -832,7 +853,7 @@
     <value>lineConfigBox</value>
   </data>
   <data name="&gt;&gt;lineTypeComboBox.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="lineConfigBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>228, 12</value>
@@ -978,7 +999,6 @@
   <data name="&gt;&gt;paintBarGroupBox.ZOrder" xml:space="preserve">
     <value>13</value>
   </data>
-
   <data name="cloudGroupBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>228, 12</value>
   </data>
@@ -1001,9 +1021,8 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;cloudGroupBox.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>14</value>
   </data>
-  
   <data name="trailStopGroupBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>228, 12</value>
   </data>
@@ -1055,20 +1074,20 @@
   <data name="addPaintBarsToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Paint Bars</value>
   </data>
-  <data name="addAutoDrawingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>179, 22</value>
-  </data>
-  <data name="addAutoDrawingsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Add Auto Drawings</value>
-  </data>
   <data name="addTrailStopsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>179, 22</value>
   </data>
   <data name="addTrailStopsToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Trail Stops</value>
   </data>
+  <data name="addAutoDrawingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>179, 22</value>
+  </data>
+  <data name="addAutoDrawingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Add Auto Drawings</value>
+  </data>
   <data name="graphMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 92</value>
+    <value>180, 136</value>
   </data>
   <data name="&gt;&gt;graphMenuStrip.Name" xml:space="preserve">
     <value>graphMenuStrip</value>
@@ -1076,38 +1095,35 @@
   <data name="&gt;&gt;graphMenuStrip.Type" xml:space="preserve">
     <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="copyToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>32, 19</value>
+  <metadata name="indicatorMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>456, 17</value>
+  </metadata>
+  <data name="removeStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>196, 22</value>
+  </data>
+  <data name="removeStripMenuItem.Text" xml:space="preserve">
+    <value>Remove</value>
   </data>
   <data name="addDecoratorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>196, 22</value>
   </data>
   <data name="addDecoratorToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Decorator</value>
   </data>
   <data name="addTrailToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>196, 22</value>
   </data>
   <data name="addTrailToolStripMenuItem.Text" xml:space="preserve">
     <value>Add Trail</value>
   </data>
-  <metadata name="indicatorMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>456, 17</value>
-  </metadata>
-  <data name="removeStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>151, 22</value>
-  </data>
-  <data name="removeStripMenuItem.Text" xml:space="preserve">
-    <value>Remove</value>
-  </data>
   <data name="copyStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>196, 22</value>
   </data>
   <data name="copyStripMenuItem.Text" xml:space="preserve">
     <value>Copy Text To Clipboard</value>
   </data>
   <data name="indicatorMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 48</value>
+    <value>197, 92</value>
   </data>
   <data name="&gt;&gt;indicatorMenuStrip.Name" xml:space="preserve">
     <value>indicatorMenuStrip</value>
@@ -1221,13 +1237,16 @@
     <value>True</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>34</value>
+    <value>31</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>654, 374</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Configure Graph Content</value>
@@ -1268,6 +1287,12 @@
   <data name="&gt;&gt;addIndicatorToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;addCloudToolStripMenuItem.Name" xml:space="preserve">
+    <value>addCloudToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;addCloudToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;addHorizontalLineToolStripMenuItem.Name" xml:space="preserve">
     <value>addHorizontalLineToolStripMenuItem</value>
   </data>
@@ -1286,16 +1311,16 @@
   <data name="&gt;&gt;addTrailStopsToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;addAutoDrawingToolStripMenuItem.Name" xml:space="preserve">
-    <value>addAutoDrawingToolStripMenuItem</value>
+  <data name="&gt;&gt;addAutoDrawingsToolStripMenuItem.Name" xml:space="preserve">
+    <value>addAutoDrawingsToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;addAutoDrawingToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;addAutoDrawingsToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;copyToolStripMenuItem.Name" xml:space="preserve">
-    <value>copyToolStripMenuItem</value>
+  <data name="&gt;&gt;removeStripMenuItem.Name" xml:space="preserve">
+    <value>removeStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;copyToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;removeStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;addDecoratorToolStripMenuItem.Name" xml:space="preserve">
@@ -1310,16 +1335,10 @@
   <data name="&gt;&gt;addTrailToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;removeStripMenuItem.Name" xml:space="preserve">
-    <value>removeStripMenuItem</value>
+  <data name="&gt;&gt;copyStripMenuItem.Name" xml:space="preserve">
+    <value>copyStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;removeStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;toolStripMenuItem1.Name" xml:space="preserve">
-    <value>toolStripMenuItem1</value>
-  </data>
-  <data name="&gt;&gt;toolStripMenuItem1.Type" xml:space="preserve">
+  <data name="&gt;&gt;copyStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
