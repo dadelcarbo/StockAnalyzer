@@ -68,11 +68,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.series[++count] = emaSerie;
             this.Series[count].Name = this.SerieNames[count];
 
-            this.Areas[0].UpLine = new FloatSerie(stockSerie.Count);
-            this.Areas[0].DownLine = new FloatSerie(stockSerie.Count);
+            this.Areas[0].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[0].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
 
-            this.Areas[1].UpLine = new FloatSerie(stockSerie.Count);
-            this.Areas[1].DownLine = new FloatSerie(stockSerie.Count);
+            this.Areas[1].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[1].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
