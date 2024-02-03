@@ -814,6 +814,23 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             return points;
         }
+
+        public PointF[] GetScreenPointsEx(int startIndex, int endIndex, FloatSerie floatSerie)
+        {
+            PointF[] points = null;
+            if (floatSerie.Count > 0)
+            {
+                points = new PointF[endIndex - startIndex + 1];
+                int count = 1;
+                points[0] = GetScreenPointFromValuePoint(new PointF(startIndex - 0.5f, floatSerie.Values[startIndex]));
+                for (int i = startIndex + 1; i < endIndex; i++)
+                {
+                    points[count++] = GetScreenPointFromValuePoint(new PointF(i, floatSerie.Values[i]));
+                }
+                points[count] = GetScreenPointFromValuePoint(new PointF(endIndex + 0.5f, floatSerie.Values[endIndex]));
+            }
+            return points;
+        }
         protected PointF GetValuePointFromScreenPoint(PointF point2D)
         {
             PointF[] points = new PointF[] { point2D };

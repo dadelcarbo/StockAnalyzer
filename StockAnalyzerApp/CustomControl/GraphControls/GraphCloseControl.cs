@@ -462,7 +462,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         foreach (var area in stockIndicator.Areas.Where(a => a.Visibility))
                         {
-                            FillArea(aGraphic, area.UpLine, area.DownLine, null, area.Brush);
+                            FillAreaEx(aGraphic, area.UpLine, area.DownLine, null, area.Brush);
                         }
                     }
                 }
@@ -894,6 +894,53 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 if (tmpPoints != null)
                 {
                     var closePoints = GetScreenPoints(tuple.Item1, tuple.Item2, dataSerie2);
+                    var fillPoints = tmpPoints.Concat(closePoints.Reverse()).ToArray();
+                    aGraphic.FillPolygon(brush, fillPoints);
+                    if (pen != null)
+                    {
+                        aGraphic.DrawLines(pen, tmpPoints);
+                    }
+                }
+            }
+        }
+        private void FillAreaEx(Graphics aGraphic, FloatSerie dataSerie1, FloatSerie dataSerie2, Pen pen, Brush brush)
+        {
+            List<Tuple<int, int>> tuples = new List<Tuple<int, int>>();
+            int start = -1;
+            int end = -1;
+            for (int k = StartIndex; k <= EndIndex; k++)
+            {
+                if (float.IsNaN(dataSerie1[k]))
+                {
+                    if (start != -1)
+                    {
+                        if (start != end) // Draw only if there are at least two points
+                        {
+                            tuples.Add(new Tuple<int, int>(start, end));
+                        }
+                        start = -1;
+                        end = -1;
+                    }
+                }
+                else
+                {
+                    if (start == -1)
+                    {
+                        start = k;
+                    }
+                    end = k;
+                }
+            }
+            if (start != end) // Draw only if there are at least two points
+            {
+                tuples.Add(new Tuple<int, int>(start, end));
+            }
+            foreach (var tuple in tuples)
+            {
+                var tmpPoints = GetScreenPointsEx(tuple.Item1, tuple.Item2, dataSerie1);
+                if (tmpPoints != null)
+                {
+                    var closePoints = GetScreenPointsEx(tuple.Item1, tuple.Item2, dataSerie2);
                     var fillPoints = tmpPoints.Concat(closePoints.Reverse()).ToArray();
                     aGraphic.FillPolygon(brush, fillPoints);
                     if (pen != null)

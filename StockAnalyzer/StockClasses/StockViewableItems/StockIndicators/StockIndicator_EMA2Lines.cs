@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 
@@ -26,15 +27,25 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
+        public override Area[] Areas => areas ??= new StockDrawing.Area[]
+            {
+                new Area {Name="Bull", Color = Color.FromArgb(64, Color.Green), Visibility = true },
+                new Area {Name="Bear", Color = Color.FromArgb(64, Color.Red), Visibility = true }
+            };
+
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie fastSerie = stockSerie.GetIndicator(this.SerieNames[0]).Series[0];
-            FloatSerie slowSerie = stockSerie.GetIndicator(this.SerieNames[1]).Series[0];
-
-            FloatSerie closeSerie = (stockSerie.GetSerie(StockDataType.CLOSE) + stockSerie.GetSerie(StockDataType.HIGH) + stockSerie.GetSerie(StockDataType.LOW)) / 3.0f;
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie fastSerie = closeSerie.CalculateEMA((int)this.parameters[0]);
+            FloatSerie slowSerie = closeSerie.CalculateEMA((int)this.parameters[1]);
 
             this.Series[0] = fastSerie;
             this.Series[1] = slowSerie;
+
+            this.Areas[0].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[0].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[1].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[1].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
@@ -70,6 +81,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     {
                         this.Events[1][i] = true;
                     }
+                }
+
+
+                if (fastSerie[i] > slowSerie[i])
+                {
+                    this.areas[0].UpLine[i] = fastSerie[i];
+                    this.areas[0].DownLine[i] = slowSerie[i];
+                }
+                else
+                {
+                    this.areas[1].UpLine[i] = slowSerie[i];
+                    this.areas[1].DownLine[i] = fastSerie[i];
                 }
             }
         }
