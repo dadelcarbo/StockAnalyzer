@@ -1874,6 +1874,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     }
                     break;
                 case NodeType.Curve:
+                case NodeType.Fill:
                     if (((StockNode)treeNode.Parent).Type == NodeType.PaintBars)
                     {
                         ActivatePaintBarConfigPanel((CurveNode)treeNode);
