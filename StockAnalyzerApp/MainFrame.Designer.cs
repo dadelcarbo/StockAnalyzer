@@ -96,6 +96,7 @@ namespace StockAnalyzerApp
             this.portfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameMappingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.portfolioReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageWatchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -676,7 +677,8 @@ namespace StockAnalyzerApp
             // 
             this.portfolioMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.currentPortfolioMenuItem,
-            this.nameMappingMenuItem});
+            this.nameMappingMenuItem,
+            this.portfolioReportMenuItem});
             this.portfolioMenuItem.Name = "portfolioMenuItem";
             this.portfolioMenuItem.Size = new System.Drawing.Size(77, 20);
             this.portfolioMenuItem.Text = "Portfolios";
@@ -696,6 +698,14 @@ namespace StockAnalyzerApp
             this.nameMappingMenuItem.Size = new System.Drawing.Size(202, 22);
             this.nameMappingMenuItem.Text = "Name Mappings";
             this.nameMappingMenuItem.Click += new System.EventHandler(this.nameMappingMenuItem_Click);
+            // 
+            // portfolioReportMenuItem
+            // 
+            this.portfolioReportMenuItem.Name = "portfolioReportMenuItem";
+            this.portfolioReportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
+            this.portfolioReportMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.portfolioReportMenuItem.Text = "Report";
+            this.portfolioReportMenuItem.Click += new System.EventHandler(this.portfolioReportMenuItem_Click);
             // 
             // watchlistsMenuItem
             // 
@@ -1587,6 +1597,7 @@ namespace StockAnalyzerApp
         private ToolStripStatusLabel statusLabel;
         private ToolStripProgressBar progressBar;
         private ToolStripMenuItem nameMappingMenuItem;
+        private ToolStripMenuItem portfolioReportMenuItem;
         private ToolStripMenuItem showOrdersMenuItem;
         private ToolStripMenuItem showPositionsMenuItem;
         private ToolStripMenuItem showDrawingsMenuItem;

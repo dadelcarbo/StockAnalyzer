@@ -606,7 +606,7 @@ namespace StockAnalyzerApp
                 if (reportDate < cac40.LastValue.DATE)
                 {
                     generateDailyReportToolStripBtn_Click(null, null);
-                    this.GeneratePortfolioReports();
+                    //this.GeneratePortfolioReports();
                     File.WriteAllText(fileName, cac40.LastValue.DATE.ToString());
                 }
             }
@@ -2804,6 +2804,28 @@ namespace StockAnalyzerApp
             var dlg = new StockAnalyzer.StockPortfolio.NameMappingDlg.NameMappingDlg();
             dlg.Show();
         }
+        private void portfolioReportMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
+            {
+                if (p.SaxoLogin())
+                {
+                    this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
+                    this.portfolioStatusLbl.ToolTipText = "Connected";
+                }
+                else
+                {
+                    this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
+                    this.portfolioStatusLbl.ToolTipText = "Not Connected";
+                }
+            }
+            foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
+            {
+                p.Refresh();
+                this.GeneratePortfolioReportFile(p);
+            }
+        }
+
         #endregion
 
         #region ANALYSIS MENU HANDLERS
@@ -4276,7 +4298,7 @@ namespace StockAnalyzerApp
                                             case "TRAIL":
                                             case "INDICATOR":
                                                 {
-                                                    IStockIndicator stockIndicator = (IStockIndicator) StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                    IStockIndicator stockIndicator = (IStockIndicator)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
                                                     if (stockIndicator != null)
                                                     {
                                                         if (entry.ToUpper() != "CLOSEGRAPH")
