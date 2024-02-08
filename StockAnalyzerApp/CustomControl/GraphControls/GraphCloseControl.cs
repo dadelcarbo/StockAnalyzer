@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using Telerik.Windows.Controls.Calculator;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -146,6 +147,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         #region PAINT METHODS
         override protected void PaintCopyright(Graphics aGraphic)
         {
+            return;
+            /*
             using MethodLogger ml = new MethodLogger(this);
             string graphCopyright = "Copyright © " + DateTime.Today.Year + " Dad El Carbo";
 
@@ -153,6 +156,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             PointF point = new PointF(aGraphic.VisibleClipBounds.Right - size.Width + 10, 5);
 
             this.DrawString(aGraphic, graphCopyright, this.axisFont, Brushes.Black, this.backgroundBrush, point, false);
+            */
         }
 
         protected override void PaintTmpGraph(Graphics aGraphic)
@@ -1198,7 +1202,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
             foreach (var operation in operations.Where(p => p.ActivityTime >= startDate && p.ActivityTime < endDate))
             {
-
                 DateTime orderDate = (this.serie.BarDuration.IsIntraday || this.serie.StockGroup == StockSerie.Groups.INTRADAY || this.serie.StockGroup == StockSerie.Groups.TURBO) ? operation.ActivityTime : operation.ActivityTime.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
@@ -1234,7 +1237,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             foreach (var position in positions.Where(p => p.IsClosed && startDate < p.ExitDate.Value && endDate > p.EntryDate))
             {
-                int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+                DateTime entryDate = (this.serie.BarDuration.IsIntraday || this.serie.StockGroup == StockSerie.Groups.INTRADAY || this.serie.StockGroup == StockSerie.Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+
+                int entryIndex = this.IndexOf(entryDate, this.StartIndex, this.EndIndex);
                 if (entryIndex == -1) continue;
                 int exitIndex = this.IndexOf(position.ExitDate.Value, this.StartIndex, this.EndIndex);
                 if (exitIndex == -1) continue;
@@ -1280,7 +1285,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private void PaintOpenedPosition(Graphics graphic, StockPositionBase position)
         {
-            int entryIndex = this.IndexOf(position.EntryDate, this.StartIndex, this.EndIndex);
+            DateTime orderDate = (this.serie.BarDuration.IsIntraday || this.serie.StockGroup == StockSerie.Groups.INTRADAY || this.serie.StockGroup == StockSerie.Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+
+            int entryIndex = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
             this.DrawStop(graphic, entryPen, entryIndex, position.EntryValue, true);
             if (position.Stop != 0)
             {
@@ -1290,6 +1297,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 this.DrawStop(graphic, trailStopPen, entryIndex, position.TrailStop, true);
             }
+            //          this.DrawText(g, $"R={ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 35, points[0].Y + 2), true, Pens.Black);
+
+            var winRatio = new WinRatio(entryIndex, this.EndIndex, position.EntryValue, position.Stop, closeCurveType.DataSerie.Last);
+            DrawTmpItem(graphic, winRatio, true);
         }
 
         static readonly Pen buyLongPen = new Pen(Color.Green, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
