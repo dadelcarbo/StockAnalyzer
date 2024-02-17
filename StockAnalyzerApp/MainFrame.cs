@@ -2914,8 +2914,9 @@ namespace StockAnalyzerApp
                     <th>Risk/Reward Ratio</th>
                 </tr>
                 </thead>
-                <tbody>
-<br/>";
+                <tbody>";
+
+            string picturehtml = string.Empty;
 
             var positions = portfolio?.Positions.OrderBy(p => p.StockName).ToList();
             if (positions == null || positions.Count == 0)
@@ -2942,7 +2943,8 @@ namespace StockAnalyzerApp
                     barDurationChangeFromUI = false;
 
                     var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme);
-                    var stockNameHtml = stockNameTemplate.Replace("%MSG%", stockName).Replace("%IMG%", bitmapString) + "\r\n";
+
+                    var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockName) + "\r\n";
                     var lastValue = stockSerie.ValueArray.Last();
                     var risk = (position.Stop - position.EntryValue) / position.EntryValue;
                     var portfolioRisk = (position.Stop - position.EntryValue) * position.EntryQty / portfolio.TotalValue;
@@ -2959,6 +2961,7 @@ namespace StockAnalyzerApp
                         Replace("%COL6%", positionReturn.ToString("P2")).
                         Replace("%COL7%", portfolioReturn.ToString("P2")).
                         Replace("%COL8%", riskReward.ToString("0.##"));
+                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", stockName).Replace("%IMG%", bitmapString) + "\r\n";
                 }
                 else
                 {
@@ -2977,9 +2980,8 @@ namespace StockAnalyzerApp
             reportBody += @" 
 </tbody>
 </table>
-</body>
-</html>
-";
+
+" + picturehtml;
 
             StockAnalyzerForm.MainFrame.Size = previousSize;
             StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;
@@ -3131,6 +3133,8 @@ namespace StockAnalyzerApp
         }
 
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
+        const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
+        const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\">%STOCKNAME%</h1><img src=\"%IMG%\">";
         private string GenerateAlertTable(StockAlertDef alertDef, int nbStocks)
         {
             var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group));
