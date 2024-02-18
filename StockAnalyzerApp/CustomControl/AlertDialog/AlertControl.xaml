@@ -43,19 +43,19 @@
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
             <telerik:RadGridView.Columns>
                 <telerik:GridViewDataColumn ToolTip="{Binding Date}" Header="Date" DataMemberBinding="{Binding Date, Converter={StaticResource StockDateConverter}}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StockGroup}" Header="Group" DataMemberBinding="{Binding StockGroup}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.Duration}" Header="Duration" DataMemberBinding="{Binding BarDuration.Duration, Mode=OneWay}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding AlertDefId}" Header="Alert&#xA;Id" DataMemberBinding="{Binding AlertDefId, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding AlertDescription}" Header="Alert&#xA;Description" DataMemberBinding="{Binding AlertDescription, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding Theme}" Header="Theme" DataMemberBinding="{Binding Theme, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StopValue}" Header="Stop&#xA;Value" DataMemberBinding="{Binding StopValue, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StopPercent}" Header="Stop&#xA;Percent" DataMemberBinding="{Binding StopPercent, Mode=OneWay, StringFormat=P2}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding Theme}" Header="Theme" DataMemberBinding="{Binding Theme, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding AlertClose}" Header="Alert&#xA;Close" DataMemberBinding="{Binding AlertClose, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding Speed}" Header="Speed" DataMemberBinding="{Binding Speed, Mode=OneWay}" IsReadOnly="True"/>
-                <telerik:GridViewDataColumn ToolTip="{Binding Stok}" Header="Speed" DataMemberBinding="{Binding Stok, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding Stok}" Header="Stok" DataMemberBinding="{Binding Stok, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding ExchangedMoney}" Header="Exchanged&#xA;Money (M€)" DataMemberBinding="{Binding ExchangedMoney, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding Theme}" Header="Theme" DataMemberBinding="{Binding Theme, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding BarDuration.Duration}" Header="Duration" DataMemberBinding="{Binding BarDuration.Duration, Mode=OneWay}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding AlertDefId}" Header="Alert&#xA;Id" DataMemberBinding="{Binding AlertDefId, Mode=OneWay}" IsReadOnly="True"/>
             </telerik:RadGridView.Columns>
         </telerik:RadGridView>
     </Grid>

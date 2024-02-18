@@ -985,7 +985,7 @@ namespace StockAnalyzerApp
                         (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
                         alertConfig.AlertLog.Alerts.Clear();
                     }
-                    foreach (var alertDef in alertDefs)
+                    foreach (var alertDef in alertDefs.OrderBy(a => a.Rank))
                     {
                         StockLog.Write($"AlertDef.Id: {alertDef.Id}");
                         List<StockSerie> stockList = new List<StockSerie>();
@@ -3173,6 +3173,7 @@ namespace StockAnalyzerApp
                 indexSerie.BarDuration = StockBarDuration.Daily;
 
                 var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
+                var rankFormat = rankIndicator.StartsWith("RO") ? "P2" : "#.##";
                 var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
 
                 foreach (StockSerie stockSerie in stockList)
@@ -3257,7 +3258,7 @@ namespace StockAnalyzerApp
                         html += rowTemplate.
                             Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
                             Replace("%COL1%", stockName).
-                            Replace("%COL2.1%", reportSerie.rank.ToString("P2")).
+                            Replace("%COL2.1%", reportSerie.rank.ToString(rankFormat)).
                             Replace("%COL2.2%", stokValue.ToString("#.##")).
                             Replace("%COL3%", "").
                             Replace("%COL4%", "").
@@ -3270,7 +3271,7 @@ namespace StockAnalyzerApp
                         html += rowTemplate.
                             Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
                             Replace("%COL1%", stockName).
-                            Replace("%COL2.1%", reportSerie.rank.ToString("P2")).
+                            Replace("%COL2.1%", reportSerie.rank.ToString(rankFormat)).
                             Replace("%COL2.2%", stokValue.ToString("#.##")).
                             Replace("%COL3%", ((lastValue.CLOSE - reportSerie.trailStop) / lastValue.CLOSE).ToString("P2")).
                             Replace("%COL4%", reportSerie.trailStop.ToString("#.##")).
