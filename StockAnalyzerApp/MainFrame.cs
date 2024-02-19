@@ -646,42 +646,48 @@ namespace StockAnalyzerApp
         {
             try
             {
-                if (string.IsNullOrEmpty(searchCombo.Text) || searchCombo.Text == typedSearch)
+                if (searchCombo.Text == typedSearch)
+                {
                     return;
-                else
-                    typedSearch = searchCombo.Text.ToUpper();
-
-                if (!string.IsNullOrEmpty(searchCombo.Text) && searchCombo.Text.Length > 2)
-                {
-                    if (this.searchCombo.Items.Count == 1 && this.searchCombo.Items[0].ToString() == searchCombo.Text)
-                        return; // Prevent infinite loop
-                    var name = searchCombo.Text.ToUpper();
-                    var match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && p.Key.ToUpper().Contains(name)).Select(p => p.Key).ToArray();
-
-                    this.searchCombo.Items.Clear();
-                    this.searchCombo.Items.AddRange(match);
-                    if (match.Length == 1)
-                    {
-                        this.searchCombo.SelectedIndex = 0;
-                        this.searchCombo.DroppedDown = false;
-                    }
-                    else
-                    {
-                        this.searchCombo.DroppedDown = true;
-                        this.searchCombo.SelectedIndex = -1;
-                        searchCombo.Text = name;
-                        this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
-                        Cursor = Cursors.Default;
-                        // Automatically pop up drop-down
-                    }
                 }
-                else
+                if (string.IsNullOrEmpty(searchCombo.Text) && !string.IsNullOrEmpty(typedSearch))
                 {
-                    var match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray();
+                    Debug.WriteLine("Cond0");
                     this.searchCombo.Items.Clear();
-                    this.searchCombo.Items.AddRange(match);
+                    this.searchCombo.Items.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
+                    typedSearch = null;
+                    return;
                 }
+                typedSearch = searchCombo.Text.ToUpper();
+                if (this.searchCombo.Items.Count == 1 && this.searchCombo.Items[0].ToString() == searchCombo.Text)
+                {
+                    Debug.WriteLine("Cond2");
+                    return; // Prevent infinite loop
+                }
+                var name = searchCombo.Text.ToUpper();
+                var match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && p.Key.ToUpper().Contains(name)).Select(p => p.Key).ToArray();
+                if (match.Length == 1)
+                {
+                    Debug.WriteLine("Cond3");
+                    searchCombo.Text = name;
+                    this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
+                    this.SetCurrentStock(match.First());
+                }
+                else
+                {
+                    Debug.WriteLine("Cond4");
+                    this.searchCombo.Items.Clear();
+                    this.searchCombo.Items.AddRange(match);
+                    this.searchCombo.DroppedDown = true;
+                    this.searchCombo.SelectedIndex = -1;
+                    searchCombo.Text = name;
+                    this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
+                    Cursor = Cursors.Default;
+                    // Automatically pop up drop-down
+                }
+
+                Debug.WriteLine("Cond5");
             }
             catch (Exception exception)
             {
@@ -693,12 +699,18 @@ namespace StockAnalyzerApp
 
         private void goToStock(object sender, EventArgs e)
         {
-            if (searchCombo.SelectedItem == null) return;
+            if (searchCombo.SelectedItem == null)
+                return;
 
-            var text = searchCombo.SelectedItem.ToString().ToUpper();
-            if (text == this.currentStockSerie.StockName.ToUpper()) return;
+            var stockName = searchCombo.SelectedItem.ToString().ToUpper();
+            SetCurrentStock(stockName);
+        }
 
-            var serie = this.StockDictionary.Values.FirstOrDefault(s => s.StockName.ToUpper() == text);
+        private void SetCurrentStock(string stockName)
+        {
+            if (stockName == this.currentStockSerie.StockName.ToUpper()) return;
+
+            var serie = this.StockDictionary.Values.FirstOrDefault(s => s.StockName.ToUpper() == stockName);
 
             if (serie == null) return;
 
@@ -1706,7 +1718,7 @@ namespace StockAnalyzerApp
 
         private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.searchCombo.Text != stockNameComboBox.SelectedItem.ToString())
+            if (!string.IsNullOrEmpty(this.searchCombo.Text) && !stockNameComboBox.SelectedItem.ToString().ToUpper().Contains(this.searchCombo.Text.ToUpper()))
                 this.searchCombo.Text = "";
 
             StockSerie selectedSerie = null;
@@ -2883,6 +2895,7 @@ namespace StockAnalyzerApp
 
         public string GeneratePortfolioReportHtml(StockPortfolio portfolio)
         {
+            var riskFreeValue = portfolio.Balance + portfolio.Positions.Where(p => !p.IsClosed).Select(p => p.EntryQty * p.TrailStop).Sum();
             const string rowTemplate = @"
          <tr>
              <td>%COL1%</td>
@@ -2900,7 +2913,7 @@ namespace StockAnalyzerApp
                 <thead>
                 <tr>
                     <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}</th>
-                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€ Cash:{portfolio.Balance}€</th>
+                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€ RiskValue: {riskFreeValue}€ Cash:{portfolio.Balance}€</th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>
@@ -3280,10 +3293,9 @@ namespace StockAnalyzerApp
                             Replace("%COL7%", reportSerie.highest.ToString());
                     }
                 }
-
                 html += @"
-</tbody>
-</table>";
+                    </tbody>
+                    </table>";
             }
             catch (Exception exception)
             {
