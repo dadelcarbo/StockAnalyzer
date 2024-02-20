@@ -2909,11 +2909,11 @@ namespace StockAnalyzerApp
              <td>%COL8%</td>
          </tr>";
             string html = $@"
-            <table  class=""reportTable"">
+            <table  class=""reportTable"" id=""PAGE_TOP"">
                 <thead>
                 <tr>
-                    <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}</th>
-                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€ RiskValue: {riskFreeValue}€ Cash:{portfolio.Balance}€</th>
+                    <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}    </th>
+                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€<br>RiskValue: {riskFreeValue}€<br>Cash:{portfolio.Balance}€</th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>
@@ -3147,7 +3147,7 @@ namespace StockAnalyzerApp
 
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
         const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
-        const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\">%STOCKNAME%</h1><img src=\"%IMG%\">";
+        const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME%</a></h2><img src=\"%IMG%\">";
         private string GenerateAlertTable(StockAlertDef alertDef, int nbStocks)
         {
             var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group));
