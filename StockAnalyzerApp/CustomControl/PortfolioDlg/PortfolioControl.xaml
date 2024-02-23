@@ -39,7 +39,9 @@
             <Label>Value:</Label>
             <TextBlock Text="{Binding PortfolioViewModel.Value}" VerticalAlignment="Center"/>
             <Label>Risk free value:</Label>
-            <TextBlock Text="{Binding PortfolioViewModel.RiskFreeValue}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Portfolio.RiskFreeValue}" VerticalAlignment="Center"/>
+            <Label>Drawdown:</Label>
+            <TextBlock Text="{Binding Portfolio.DrawDown, StringFormat=\{0:P\}}" VerticalAlignment="Center"/>
             <Label>Max Risk:</Label>
             <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" IsReadOnly="True" VerticalAlignment="Center" Width="50"/>
         </StackPanel>
@@ -57,11 +59,17 @@
             </Button>
         </StackPanel>
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
-            <TabItem Header="Opened Positions">
+            <TabItem Header="Portfolio">
+                <telerik:RadPropertyGrid x:Name="propertyGrid" Item="{Binding PortfolioViewModel}" FontSize="9"
+                                         AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"
+                                         DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" 
+                                         SortAndGroupButtonsVisibility="Collapsed" IsGrouped="True"></telerik:RadPropertyGrid>
+            </TabItem>
+            <TabItem Header="Opened Positions" IsSelected="True">
                 <telerik:RadGridView FontSize="9" Name="mixedOpenedPositionGridView" ItemsSource="{Binding PortfolioViewModel.OpenedPositions}"
                                      SelectionMode="Single" SelectionUnit="Mixed" ClipboardCopyMode="Cells"
                                      FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
-                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="False" LeftFrozenColumnCount="1">
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="False" LeftFrozenColumnCount="1" IsFilteringAllowed="False">
                     <telerik:RadGridView.ColumnGroups>
                         <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
                         <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry"/>
@@ -171,12 +179,6 @@
 
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>
-            </TabItem>
-            <TabItem Header="Portfolio">
-                <telerik:RadPropertyGrid x:Name="propertyGrid" Item="{Binding PortfolioViewModel}" FontSize="9"
-                                         AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"
-                                         DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" 
-                                         SortAndGroupButtonsVisibility="Collapsed" IsGrouped="True"></telerik:RadPropertyGrid>
             </TabItem>
         </TabControl>
     </Grid>

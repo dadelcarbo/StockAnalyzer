@@ -83,6 +83,11 @@ namespace StockAnalyzer.StockPortfolio
         public float PositionValue { get; set; }
         [JsonIgnore]
         public float TotalValue => this.Balance + this.PositionValue;
+        public float RiskFreeValue => this.Balance + this.Positions.Select(p => p.EntryQty * p.TrailStop).Sum();
+
+        public float DrawDown => (MaxValue - TotalValue) / MaxValue;
+        public float MaxValue { get; set; }
+
         public float MaxRisk { get; set; }
         public float MaxPositionSize { get; set; }
         [JsonIgnore]
@@ -633,7 +638,8 @@ namespace StockAnalyzer.StockPortfolio
                 }
 
                 // 
-                this.Performance = null; //  accountService.GetPerformance(account);
+                this.Performance = accountService.GetPerformance(account);
+                this.MaxValue = Math.Max(this.MaxValue, this.Performance.Balance.AccountValue.Max(v=>v.Value));
 
                 // Get Opened Orders
                 this.SaxoOpenOrders.Clear();

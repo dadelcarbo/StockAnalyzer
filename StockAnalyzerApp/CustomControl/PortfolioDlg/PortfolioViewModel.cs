@@ -16,6 +16,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
             this.OpenedPositions = new List<StockPositionBaseViewModel>();
 
+            
             foreach (var pos in portfolio.Positions)
             {
                 this.OpenedPositions.Add(new StockPositionBaseViewModel(pos, this));
@@ -34,6 +35,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float Balance => Portfolio.Balance;
         [Property(null, "1-General")]
         public float Value => Portfolio.TotalValue;
+        [Property(null, "1-General")]
+        public float RiskFreeValue => Portfolio.RiskFreeValue;
+        [Property("P2", "1-General")]
+        public float Drawdown => Portfolio.DrawDown;
 
         [Property(null, "2-Risk")]
         public int MaxPositions { get => Portfolio.MaxPositions; set => Portfolio.MaxPositions = value; }
@@ -63,8 +68,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public IList<StockPositionBaseViewModel> OpenedPositions { get; private set; }
 
         public IEnumerable<StockPositionBaseViewModel> ClosedPositions => Portfolio.ClosedPositions.Where(p => p.IsClosed).OrderByDescending(p => p.ExitDate).Select(p => new StockPositionBaseViewModel(p, this));
-
-        public float RiskFreeValue => Portfolio.Balance + this.OpenedPositions.Select(p => p.EntryQty * p.TrailStop).Sum();
 
         public bool IsDirty { get; set; }
         public IEnumerable<OrderViewModel> Orders { get; private set; }

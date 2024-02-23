@@ -1,4 +1,5 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
+using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -21,7 +22,6 @@ using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
-using StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg;
 using StockAnalyzerApp.CustomControl.DrawingDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
@@ -631,14 +631,6 @@ namespace StockAnalyzerApp
             // Ready to start
             StockSplashScreen.CloseForm(true);
             this.Focus();
-        }
-
-        private void GeneratePortfolioReports()
-        {
-            foreach (var portfolio in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoClientId) & p.Positions.Any(pp => !pp.IsClosed)))
-            {
-                this.GeneratePortfolioReportFile(portfolio);
-            }
         }
 
         string typedSearch = null;
@@ -2895,7 +2887,6 @@ namespace StockAnalyzerApp
 
         public string GeneratePortfolioReportHtml(StockPortfolio portfolio)
         {
-            var riskFreeValue = portfolio.Balance + portfolio.Positions.Where(p => !p.IsClosed).Select(p => p.EntryQty * p.TrailStop).Sum();
             const string rowTemplate = @"
          <tr>
              <td>%COL1%</td>
@@ -2913,7 +2904,7 @@ namespace StockAnalyzerApp
                 <thead>
                 <tr>
                     <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}    </th>
-                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€<br>RiskValue: {riskFreeValue}€<br>Cash:{portfolio.Balance}€</th>
+                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€<br>Risk Free: {portfolio.RiskFreeValue}€<br>Cash:{portfolio.Balance}€<br>DrawDown: {portfolio.DrawDown.ToString("P2")}</th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>
@@ -2989,6 +2980,11 @@ namespace StockAnalyzerApp
                         Replace("%COL8%", " - ");
                 }
             }
+
+            var portfolioSerie = StockDictionary[portfolio.Name];
+            this.ViewModel.BarDuration = BarDuration.Daily;
+            var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "Portfolio");
+            picturehtml = stockPictureTemplate.Replace("%STOCKNAME%", portfolio.Name).Replace("%IMG%", portfolioSerieBitmapString) + "\r\n" + picturehtml;
 
             reportBody += @" 
 </tbody>
