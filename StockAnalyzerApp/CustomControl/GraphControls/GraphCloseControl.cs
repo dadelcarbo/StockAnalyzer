@@ -1238,8 +1238,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             foreach (var position in positions.Where(p => p.IsClosed && startDate < p.ExitDate.Value && endDate > p.EntryDate))
             {
                 DateTime entryDate = (this.serie.BarDuration.IsIntraday || this.serie.StockGroup == StockSerie.Groups.INTRADAY || this.serie.StockGroup == StockSerie.Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
-
                 int entryIndex = this.IndexOf(entryDate, this.StartIndex, this.EndIndex);
+                entryIndex = Math.Max(this.StartIndex, entryIndex);
+
                 if (entryIndex == -1) continue;
                 int exitIndex = this.IndexOf(position.ExitDate.Value, this.StartIndex, this.EndIndex);
                 if (exitIndex == -1) continue;
@@ -1286,8 +1287,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private void PaintOpenedPosition(Graphics graphic, StockPositionBase position)
         {
             DateTime orderDate = (this.serie.BarDuration.IsIntraday || this.serie.StockGroup == StockSerie.Groups.INTRADAY || this.serie.StockGroup == StockSerie.Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
-
             int entryIndex = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
+            entryIndex = Math.Max(this.StartIndex, entryIndex);
+
             this.DrawStop(graphic, entryPen, entryIndex, position.EntryValue, true);
             if (position.Stop != 0)
             {

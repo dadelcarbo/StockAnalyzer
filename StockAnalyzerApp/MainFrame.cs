@@ -3000,7 +3000,6 @@ namespace StockAnalyzerApp
 
         public void GeneratePortfolioReportFile(StockPortfolio portfolio)
         {
-            var previousPortfolio = this.Portfolio;
             this.Portfolio = portfolio;
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;
@@ -3026,7 +3025,6 @@ namespace StockAnalyzerApp
             this.CurrentTheme = previousTheme;
             this.ViewModel.BarDuration = previousBarDuration;
             this.ViewModel.IsHistoryActive = true;
-            this.Portfolio = previousPortfolio;
         }
         private void GenerateReport(string title, StockBarDuration duration, List<StockAlertDef> alertDefs)
         {

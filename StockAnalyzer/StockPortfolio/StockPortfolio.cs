@@ -127,6 +127,7 @@ namespace StockAnalyzer.StockPortfolio
         #region PERSISTENCY
         public void RenameFile(string newName)
         {
+            using var ml = new MethodLogger(this);
             string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
             string newFilepath = Path.Combine(Folders.Portfolio, newName + PORTFOLIO_FILE_EXT);
             if (File.Exists(filepath))
@@ -136,33 +137,39 @@ namespace StockAnalyzer.StockPortfolio
         }
         public void Serialize()
         {
-            string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
-
-            // Archive PTF files
-            string archiveDirectory = Path.Combine(Folders.Portfolio, "Archive");
-            if (!Directory.Exists(archiveDirectory))
-                Directory.CreateDirectory(archiveDirectory);
-            else
+            lock (this)
             {
-                var dateLimit = DateTime.Today.AddDays(-50);
-                foreach (var file in Directory.EnumerateFiles(archiveDirectory).Where(f => File.GetLastWriteTime(f) < dateLimit))
-                {
-                    File.Delete(file);
-                }
-            }
+                using var ml = new MethodLogger(this, true, this.Name);
+                string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
 
-            File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
-            var fileDate = File.GetLastWriteTime(filepath);
-            var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss.ff") + PORTFOLIO_FILE_EXT);
-            File.Copy(filepath, archiveFilePath);
+                // Archive PTF files
+                string archiveDirectory = Path.Combine(Folders.Portfolio, "Archive");
+                if (!Directory.Exists(archiveDirectory))
+                    Directory.CreateDirectory(archiveDirectory);
+                else
+                {
+                    var dateLimit = DateTime.Today.AddDays(-5);
+                    foreach (var file in Directory.EnumerateFiles(archiveDirectory).Where(f => File.GetLastWriteTime(f) < dateLimit))
+                    {
+                        File.Delete(file);
+                    }
+                }
+
+                File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
+                var fileDate = File.GetLastWriteTime(filepath);
+                var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss.ff") + PORTFOLIO_FILE_EXT);
+                File.Copy(filepath, archiveFilePath);
+            }
         }
         static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ" };
         public static StockPortfolio Deserialize(string filepath)
         {
+            using var ml = new MethodLogger(typeof(StockPortfolio));
             return JsonConvert.DeserializeObject<StockPortfolio>(File.ReadAllText(filepath), jsonSerializerSettings);
         }
         public static List<StockPortfolio> LoadPortfolios(string folder)
         {
+            using var ml = new MethodLogger(typeof(StockPortfolio));
             try
             {
                 LoadMappings();
@@ -371,57 +378,16 @@ namespace StockAnalyzer.StockPortfolio
         }
         public void Clear()
         {
+            using var ml = new MethodLogger(this);
             this.ClosedPositions.Clear();
             this.Positions.Clear();
             this.TradeOperations.Clear();
             this.Balance = this.InitialBalance;
             this.PositionValue = 0;
         }
-
-        public void Dump()
-        {
-            StockLog.Write($"All Positions: {this.Positions.Count}");
-            StockLog.Write($"Opened Positions: {this.Positions.Count()}");
-
-            foreach (var p in this.Positions.OrderBy(p => p.StockName))
-            {
-                p.Dump();
-            }
-        }
-        public void Dump(DateTime date)
-        {
-            StockLog.Write($"Dump for date:{date.ToShortDateString()}");
-            StockLog.Write($"All Positions: {this.Positions.Count}");
-            StockLog.Write($"Opened Positions: {this.Positions.Count()}");
-
-            foreach (var p in this.Positions.Where(p => p.EntryDate < date && p.ExitDate > date).OrderBy(p => p.StockName))
-            {
-                p.Dump();
-            }
-        }
-        public float EvaluateOpenedPositionsAt(DateTime date, StockClasses.BarDuration duration, out long volume)
-        {
-            // Calculate value for opened positions
-            var positions = this.Positions.Where(p => (p.ExitDate == null || p.ExitDate > date) && p.EntryDate <= date);
-            float positionValue = 0f;
-            volume = 0;
-            foreach (var pos in positions)
-            {
-                volume++;
-                float value = PriceProvider.GetClosingPrice(pos.StockName, date, duration);
-                if (value == 0.0f)
-                {
-                    positionValue += pos.EntryQty * pos.EntryValue;
-                }
-                else
-                {
-                    positionValue += pos.EntryQty * value;
-                }
-            }
-            return positionValue;
-        }
         public void EvaluateOpenedPositions()
         {
+            using var ml = new MethodLogger(this);
             // Calculate value for opened positions
             var positions = this.Positions.Where(p => !p.IsClosed);
             float positionValue = 0f;
@@ -511,6 +477,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public StockSerie GetStockSerieFromUic(long uic)
         {
+            using var ml = new MethodLogger(this);
             if (UicToSerieCache.ContainsKey(uic))
                 return UicToSerieCache[uic];
 
@@ -570,6 +537,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public bool SaxoLogin()
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             if (this.IsSimu)
                 return false;
 
@@ -601,6 +569,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public bool SaxoSilentLogin()
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             if (string.IsNullOrEmpty(SaxoAccountId) || string.IsNullOrEmpty(SaxoClientId))
             {
                 return false;
@@ -624,6 +593,7 @@ namespace StockAnalyzer.StockPortfolio
         public Performance Performance { get; private set; }
         public void Refresh()
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (!this.SaxoLogin())
@@ -681,6 +651,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public void AddSaxoActivityOrder(OrderActivity activityOrder)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             if (activityOrder.LogId <= this.LastLogId)
                 return;
 
@@ -837,6 +808,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = true)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (!this.SaxoLogin())
@@ -892,6 +864,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public long SaxoSellOrder(StockSerie stockSerie, OrderType orderType, int qty, float orderValue = 0)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (!this.SaxoLogin())
@@ -939,6 +912,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public string SaxoUpdateStopOrder(StockPosition position, float exitValue)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (!this.SaxoLogin())
@@ -985,6 +959,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public string SaxoClosePosition(StockPosition position, OrderType orderType, float exitValue = 0.0f)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (!this.SaxoLogin())
@@ -1046,6 +1021,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public string SaxoUpdateOpenOrder(StockOpenedOrder openOrder, float newValue)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (!this.SaxoLogin())
@@ -1083,6 +1059,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public void SaxoCancelOpenOrder(long orderId)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (orderId <= 0)
@@ -1104,6 +1081,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public Instrument GetInstrument(long uic)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (!this.SaxoLogin())
@@ -1118,6 +1096,7 @@ namespace StockAnalyzer.StockPortfolio
         }
         public InstrumentDetails GetInstrumentDetails(StockSerie stockSerie)
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             try
             {
                 if (!this.SaxoLogin())
