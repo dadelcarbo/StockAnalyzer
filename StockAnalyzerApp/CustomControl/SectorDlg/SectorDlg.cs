@@ -6,7 +6,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
 {
     public partial class SectorDlg : Form
     {
-        public SectorDlg(string group, StockBarDuration barDuration)
+        public SectorDlg(string group, BarDuration barDuration)
         {
             InitializeComponent();
 
@@ -14,7 +14,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             StockAnalyzerForm.MainFrame.NotifyBarDurationChanged += MainFrame_NotifyBarDurationChanged;
         }
 
-        void MainFrame_NotifyBarDurationChanged(StockBarDuration barDuration)
+        void MainFrame_NotifyBarDurationChanged(BarDuration barDuration)
         {
             (this.elementHost1.Child as SectorUserControl).ViewModel.BarDuration = barDuration;
         }

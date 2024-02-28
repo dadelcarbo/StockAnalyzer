@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockPortfolio.StockStrategy
 {
     public class StockStrategyEngine
     {
-        static public void ProcessStrategies(List<StockBarDuration> barDurations, DateTime barDate)
+        static public void ProcessStrategies(List<BarDuration> barDurations, DateTime barDate)
         {
             using (new MethodLogger(typeof(StockStrategyEngine), false))
             {

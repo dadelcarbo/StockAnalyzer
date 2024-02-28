@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.SimulationDlgs" 
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
-             xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
+             xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="900"
              Height="450" Width="1000">
@@ -23,7 +23,8 @@
             <StackPanel Orientation="Horizontal" Margin="1">
                 <Label Margin="2">Group</Label>
                 <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
-                <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" LineBreakVisibility="Visible"/>
+                <Label>Duration</Label>
+                <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
                 <Label Margin="2">Selector</Label>
                 <telerik:RadComboBox Margin="1" Width="150" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
                 <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click" Width="60"/>

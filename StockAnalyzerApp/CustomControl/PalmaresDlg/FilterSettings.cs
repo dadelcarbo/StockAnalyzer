@@ -6,7 +6,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
     public class PalmaresSettings
     {
         public List<FilterSetting> FilterSettings { get; set; }
-        public StockBarDuration BarDuration { get; set; }
+        public BarDuration BarDuration { get; set; }
         public StockSerie.Groups Group { get; set; }
         public string Indicator1 { get; set; }
         public string Indicator2 { get; set; }

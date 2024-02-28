@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses
     {
         public StockAlertDef()
         {
-            this.BarDuration = StockBarDuration.Daily;
+            this.BarDuration = BarDuration.Daily;
             this.CreationDate = DateTime.MinValue;
             this.InReport = true;
         }
@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockClasses
         /// </summary>
         public float MinLiquidity { get; set; }
         public bool TriggerBrokenUp { get; set; }
-        public StockBarDuration BarDuration { get; set; }
+        public BarDuration BarDuration { get; set; }
 
         public string IndicatorType { get; set; }
         public string IndicatorName { get; set; }
@@ -47,6 +47,7 @@ namespace StockAnalyzer.StockClasses
         public string FilterName { get; set; }
         public string FilterEventName { get; set; }
         public string FilterFullName => FilterType == null || FilterName == null ? null : FilterType + "|" + FilterName;
+        public BarDuration FilterDuration { get; set; } = new BarDuration();
 
         public string Stop { get; set; }
         public string Speed { get; set; }

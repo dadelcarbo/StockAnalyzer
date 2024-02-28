@@ -135,6 +135,7 @@ namespace StockAnalyzer.StockPortfolio
                 File.Move(filepath, newFilepath);
             }
         }
+        private static bool archivePortfolioFile = false;
         public void Serialize()
         {
             lock (this)
@@ -142,13 +143,15 @@ namespace StockAnalyzer.StockPortfolio
                 using var ml = new MethodLogger(this, true, this.Name);
                 string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
 
+                if (!archivePortfolioFile)
+                    return;
                 // Archive PTF files
                 string archiveDirectory = Path.Combine(Folders.Portfolio, "Archive");
                 if (!Directory.Exists(archiveDirectory))
                     Directory.CreateDirectory(archiveDirectory);
                 else
                 {
-                    var dateLimit = DateTime.Today.AddDays(-5);
+                    var dateLimit = DateTime.Today.AddDays(-2);
                     foreach (var file in Directory.EnumerateFiles(archiveDirectory).Where(f => File.GetLastWriteTime(f) < dateLimit))
                     {
                         File.Delete(file);

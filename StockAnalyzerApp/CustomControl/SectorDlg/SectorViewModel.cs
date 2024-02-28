@@ -12,7 +12,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
     {
         public SectorViewModel()
         {
-            this.BarDuration = StockBarDuration.Daily;
+            this.BarDuration = BarDuration.Daily;
             this.Sector = ABCDataProvider.SectorCodes.First();
             this.Period = 100;
         }
@@ -32,9 +32,9 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             }
         }
 
-        static public IList<StockBarDuration> BarDurations => StockBarDuration.Values;
-        private StockBarDuration barDuration;
-        public StockBarDuration BarDuration
+        static public IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
+        private BarDuration barDuration;
+        public BarDuration BarDuration
         {
             get { return barDuration; }
             set

@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses
         public string StockGroup { get; set; }
         public int AlertDefId { get; set; }
         public string Theme => this.alertDef?.Theme;
-        public StockBarDuration BarDuration => alertDef?.BarDuration;
+        public BarDuration BarDuration => alertDef.BarDuration;
         public string AlertDescription
         {
             get

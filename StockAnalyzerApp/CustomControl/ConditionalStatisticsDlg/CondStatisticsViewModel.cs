@@ -28,10 +28,10 @@ namespace StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg
             }
         }
 
-        static public IList<StockBarDuration> BarDurations => StockBarDuration.Values;
+        static public IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
 
-        private StockBarDuration barDuration1;
-        public StockBarDuration BarDuration { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; OnPropertyChanged("BarDuration"); } } }
+        private BarDuration barDuration1;
+        public BarDuration BarDuration { get { return barDuration1; } set { if (value != barDuration1) { barDuration1 = value; OnPropertyChanged("BarDuration"); } } }
 
         private static readonly List<string> indicatorTypes = new List<string>() { "Indicator", "PaintBar", "TrailStop", "Trail", "Decorator" };
 
@@ -136,7 +136,7 @@ namespace StockAnalyzerApp.CustomControl.ConditionalStatisticsDlg
 
             this.Results = new ObservableCollection<CondStatisticsResult>();
             this.Summary = new ObservableCollection<CondStatisticsResult>();
-            this.BarDuration = StockBarDuration.Daily;
+            this.BarDuration = BarDuration.Daily;
             this.Group = StockSerie.Groups.CAC40;
         }
 

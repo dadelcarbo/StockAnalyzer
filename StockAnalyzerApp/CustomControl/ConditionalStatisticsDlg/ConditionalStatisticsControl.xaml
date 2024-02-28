@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
              mc:Ignorable="d" Width="638" Height="349" Background="AntiqueWhite">
     <Grid>
         <Grid.RowDefinitions>
@@ -16,7 +17,8 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <Label Content="Group " Width="56"/>
             <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center" ></ComboBox>
-            <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
+            <Label>Duration</Label>
+            <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
             <Button Content="Calculate" Click="CalculateBtn_OnClick" Margin="10, 2,2,2"/>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">

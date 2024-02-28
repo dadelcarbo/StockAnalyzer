@@ -15,14 +15,14 @@ namespace StockAnalyzerApp.CustomControl
     public partial class StockScannerDlg : Form
     {
         private readonly StockDictionary stockDictionary;
-        private StockBarDuration barDuration;
+        private BarDuration barDuration;
 
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
         public event StockAnalyzerForm.SelectedStockGroupChangedEventHandler SelectStockGroupChanged;
 
         public IEnumerable<string> SelectedStocks => this.selectedStockListBox.Items.Cast<string>();
 
-        public StockScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, StockBarDuration barDuration, Dictionary<string, List<string>> theme)
+        public StockScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, BarDuration barDuration, Dictionary<string, List<string>> theme)
         {
             InitializeComponent();
 
@@ -173,7 +173,7 @@ namespace StockAnalyzerApp.CustomControl
 
             eventTreeView.ExpandAll();
         }
-        public void OnBarDurationChanged(StockBarDuration barDuration)
+        public void OnBarDurationChanged(BarDuration barDuration)
         {
             this.barDuration = barDuration;
         }

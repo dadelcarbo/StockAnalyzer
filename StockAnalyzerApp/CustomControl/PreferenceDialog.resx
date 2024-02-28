@@ -925,36 +925,6 @@ Do you want to restart now ?</value>
   <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="showBarSmoothingCheckBox.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="showBarSmoothingCheckBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="showBarSmoothingCheckBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>193, 113</value>
-  </data>
-  <data name="showBarSmoothingCheckBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>122, 17</value>
-  </data>
-  <data name="showBarSmoothingCheckBox.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="showBarSmoothingCheckBox.Text" xml:space="preserve">
-    <value>Show bar smoothing</value>
-  </data>
-  <data name="&gt;&gt;showBarSmoothingCheckBox.Name" xml:space="preserve">
-    <value>showBarSmoothingCheckBox</value>
-  </data>
-  <data name="&gt;&gt;showBarSmoothingCheckBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;showBarSmoothingCheckBox.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;showBarSmoothingCheckBox.ZOrder" xml:space="preserve">
-    <value>16</value>
-  </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>

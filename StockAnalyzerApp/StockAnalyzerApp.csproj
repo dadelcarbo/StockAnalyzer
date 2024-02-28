@@ -34,7 +34,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>281</ApplicationRevision>
+    <ApplicationRevision>285</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -305,9 +305,6 @@
       <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertViewModel.cs" />
-    <Compile Include="CustomControl\BarDurationCtrl\BarDurationControl.xaml.cs">
-      <DependentUpon>BarDurationControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\PalmaresDlg\FilterSettings.cs" />
     <Compile Include="CustomControl\PortfolioDlg\OrderViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\PortfolioControl.xaml.cs">
@@ -831,6 +828,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PreferenceDialog.fr-FR.resx">
       <DependentUpon>PreferenceDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SaveThemeForm.fr-FR.resx">
       <DependentUpon>SaveThemeForm.cs</DependentUpon>
@@ -1094,10 +1092,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlert.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\BarDurationCtrl\BarDurationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

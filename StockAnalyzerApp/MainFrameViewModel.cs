@@ -21,18 +21,11 @@ namespace StockAnalyzerApp
         static public bool NotificationSuspended { get; set; } = false;
 
         #region Bar Duration
-        private StockBarDuration barDuration;
-        public StockBarDuration BarDuration { get { return barDuration; } set { SetProperty(ref barDuration, value); } }
+        private BarDuration barDuration;
+        public BarDuration BarDuration { get { return barDuration; } set { SetProperty(ref barDuration, value); } }
 
-        public void SetBarDuration(BarDuration barDuration, int smoothing, bool heikenAshi, int lineBreak, bool notifyPropertyChanged)
+        public void SetBarDuration(BarDuration bd, bool notifyPropertyChanged)
         {
-            StockBarDuration bd = new StockBarDuration()
-            {
-                Duration = barDuration,
-                Smoothing = smoothing,
-                HeikinAshi = heikenAshi,
-                LineBreak = lineBreak
-            };
             if (notifyPropertyChanged)
             {
                 this.BarDuration = bd;

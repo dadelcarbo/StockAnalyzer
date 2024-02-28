@@ -11,11 +11,11 @@ namespace StockAnalyzer.StockClasses
     {
         public string Theme { get; set; }
         public bool Excluded { get; set; }
-        public Dictionary<StockBarDuration, StockDrawingItems> DrawingItems { get; set; }
+        public Dictionary<BarDuration, StockDrawingItems> DrawingItems { get; set; }
 
         public StockAnalysis()
         {
-            this.DrawingItems = new Dictionary<StockBarDuration, StockDrawingItems>();
+            this.DrawingItems = new Dictionary<BarDuration, StockDrawingItems>();
             this.Excluded = false;
             this.Theme = string.Empty;
         }
@@ -51,8 +51,8 @@ namespace StockAnalyzer.StockClasses
                 XmlSerializer serializer = new XmlSerializer(typeof(StockDrawingItems));
                 while (reader.Name == "DrawingItems")
                 {
-                    StockBarDuration barDuration;
-                    if (StockBarDuration.TryParse(reader.GetAttribute("BarDuration"), out barDuration))
+                    BarDuration barDuration;
+                    if (BarDuration.TryParse(reader.GetAttribute("BarDuration"), out barDuration))
                     {
                         reader.ReadStartElement();
                         this.DrawingItems.Add(barDuration, (StockDrawingItems)serializer.Deserialize(reader));
@@ -85,7 +85,7 @@ namespace StockAnalyzer.StockClasses
             // Serialize drawing items
             if (hasDrawings)
             {
-                foreach (KeyValuePair<StockBarDuration, StockDrawingItems> drawingItems in this.DrawingItems.Where(pair => pair.Value.Count(item => item.IsPersistent) > 0))
+                foreach (KeyValuePair<BarDuration, StockDrawingItems> drawingItems in this.DrawingItems.Where(pair => pair.Value.Count(item => item.IsPersistent) > 0))
                 {
                     writer.WriteStartElement("DrawingItems");
                     writer.WriteAttributeString("BarDuration", drawingItems.Key.ToString());

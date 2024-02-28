@@ -5,7 +5,7 @@
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
        xmlns:tradedlgs="clr-namespace:StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs"
-       xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
+       xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
        mc:Ignorable="d" Background="WhiteSmoke" Language="fr-FR"
        d:DataContext="{d:DesignInstance Type=tradedlgs:OpenTradeViewModel, IsDesignTimeCreatable=False}"
        Width="450" Height="400">
@@ -114,7 +114,8 @@
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="70">Theme:</Label>
                         <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Padding="4" IsEditable="True" Width="150"></ComboBox>
-                        <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
+                        <Label>Duration</Label>
+                        <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="70">Comment:</Label>

@@ -47,12 +47,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             using MethodLogger ml = new MethodLogger(this);
-            List<StockDailyValue> dailyValues = stockSerie.GenerateHeikinAshiBarFromDaily(stockSerie.Values.ToList());
             FloatSerie upVolume = new FloatSerie(stockSerie.Count);
             FloatSerie downVolume = new FloatSerie(stockSerie.Count);
 
             int i = -1;
-            foreach (StockDailyValue dailyValue in dailyValues)
+            foreach (StockDailyValue dailyValue in stockSerie.Values)
             {
                 i++;
                 float R = dailyValue.HIGH - dailyValue.LOW; // Bar range

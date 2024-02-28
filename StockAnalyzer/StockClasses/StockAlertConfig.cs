@@ -114,16 +114,16 @@ namespace StockAnalyzer.StockClasses
                 switch (TimeFrame)
                 {
                     case StockAlertTimeFrame.Daily:
-                        alertDefs = AllAlertDefs.Where(a => a.BarDuration == StockBarDuration.Daily).ToList();
+                        alertDefs = AllAlertDefs.Where(a => a.BarDuration == BarDuration.Daily).ToList();
                         break;
                     case StockAlertTimeFrame.Weekly:
-                        alertDefs = AllAlertDefs.Where(a => a.BarDuration == StockBarDuration.Weekly).ToList();
+                        alertDefs = AllAlertDefs.Where(a => a.BarDuration == BarDuration.Weekly).ToList();
                         break;
                     case StockAlertTimeFrame.Monthly:
-                        alertDefs = AllAlertDefs.Where(a => a.BarDuration == StockBarDuration.Monthly).ToList();
+                        alertDefs = AllAlertDefs.Where(a => a.BarDuration == BarDuration.Monthly).ToList();
                         break;
                     case StockAlertTimeFrame.Intraday:
-                        alertDefs = AllAlertDefs.Where(a => a.BarDuration.Duration > BarDuration.Monthly).ToList();
+                        alertDefs = AllAlertDefs.Where(a => a.BarDuration > BarDuration.Monthly).ToList();
                         break;
                     default:
                         alertDefs = new List<StockAlertDef>();

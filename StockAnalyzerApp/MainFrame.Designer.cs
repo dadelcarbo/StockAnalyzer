@@ -123,11 +123,6 @@ namespace StockAnalyzerApp
             this.browseToolStrip = new System.Windows.Forms.ToolStrip();
             this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.smoothingLabel = new System.Windows.Forms.ToolStripLabel();
-            this.barSmoothingComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.lineBreakLabel = new System.Windows.Forms.ToolStripLabel();
-            this.barLineBreakComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.barHeikinAshiCheckBox = new ToolStripCheckedBox();
             this.downloadBtn = new System.Windows.Forms.ToolStripButton();
             this.searchCombo = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -956,11 +951,6 @@ namespace StockAnalyzerApp
             this.copyIsinBtn,
             this.stockNameComboBox,
             this.barDurationComboBox,
-            this.lineBreakLabel,
-            this.barLineBreakComboBox,
-            this.smoothingLabel,
-            this.barSmoothingComboBox,
-            this.barHeikinAshiCheckBox,
             this.downloadBtn,
             this.searchCombo,
             this.toolStripSeparator6,
@@ -990,39 +980,6 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.Name = "barDurationComboBox";
             this.barDurationComboBox.Size = new System.Drawing.Size(125, 27);
             this.barDurationComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
-            // 
-            // smoothingLabel
-            // 
-            this.smoothingLabel.Name = "smoothingLabel";
-            this.smoothingLabel.Text = "Smooth:";
-            // 
-            // barSmoothingComboBox
-            // 
-            this.barSmoothingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.barSmoothingComboBox.Name = "barSmoothingComboBox";
-            this.barSmoothingComboBox.Size = new System.Drawing.Size(25, 23);
-            this.barSmoothingComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
-            // 
-            // lineBreakLabel
-            // 
-            this.lineBreakLabel.Name = "lineBreakLabel";
-            this.lineBreakLabel.Text = "LineBreak:";
-            // 
-            // barLineBreakComboBox
-            // 
-            this.barLineBreakComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.barLineBreakComboBox.Name = "barLineBreakComboBox";
-            this.barLineBreakComboBox.DropDownWidth = 25;
-            this.barLineBreakComboBox.Size = new System.Drawing.Size(25, 20);
-            this.barLineBreakComboBox.SelectedIndexChanged += new System.EventHandler(this.BarDurationChanged);
-            // 
-            // barHeikinAshiCheckBox
-            // 
-            this.barHeikinAshiCheckBox.Text = "HA";
-            this.barHeikinAshiCheckBox.Name = "barHeikinAshiCheckBox";
-            this.barHeikinAshiCheckBox.Size = new System.Drawing.Size(50, 23);
-            this.barHeikinAshiCheckBox.ToolTipText = "Heikin Ashi";
-            this.barHeikinAshiCheckBox.CheckBox.CheckedChanged += new System.EventHandler(this.BarDurationChanged);
             // 
             // downloadBtn
             // 
@@ -1569,9 +1526,6 @@ namespace StockAnalyzerApp
         private CustomControl.GraphControls.GraphVolumeControl graphVolumeControl;
         private ToolStripComboBox stockNameComboBox;
         private ToolStripComboBox barDurationComboBox;
-        private ToolStripComboBox barSmoothingComboBox;
-        private ToolStripComboBox barLineBreakComboBox;
-        private ToolStripCheckedBox barHeikinAshiCheckBox;
         private ToolStripMenuItem fileMenuItem;
         private ToolStripMenuItem helpMenuItem;
         private ToolStripMenuItem optionsMenuItem;
@@ -1687,7 +1641,5 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem saveThemeMenuItem;
         private ToolStripMenuItem newAnalysisMenuItem;
         private ToolStripComboBox searchCombo;
-        private ToolStripLabel smoothingLabel;
-        private ToolStripLabel lineBreakLabel;
     }
 }

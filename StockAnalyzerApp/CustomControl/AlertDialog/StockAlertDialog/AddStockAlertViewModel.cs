@@ -47,6 +47,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     this.TriggerEvent = alertDef.EventName;
                     this.FilterName = alertDef.FilterFullName;
                     this.FilterEvent = alertDef.FilterEventName;
+                    this.FilterDuration = alertDef.FilterDuration;
                     break;
                 case AlertType.Stock:
                     this.StockName = alertDef.StockName;
@@ -54,6 +55,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     this.TriggerEvent = alertDef.EventName;
                     this.FilterName = alertDef.FilterFullName;
                     this.FilterEvent = alertDef.FilterEventName;
+                    this.FilterDuration = alertDef.FilterDuration;
                     break;
                 case AlertType.Price:
                     this.StockName = alertDef.StockName;
@@ -74,8 +76,8 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         private string title;
         public string Title { get => title; set => SetProperty(ref title, value); }
 
-        private StockBarDuration barDuration;
-        public StockBarDuration BarDuration { get => barDuration; set => SetProperty(ref barDuration, value); }
+        private BarDuration barDuration;
+        public BarDuration BarDuration { get => barDuration; set => SetProperty(ref barDuration, value); }
 
         private string stockName;
         public string StockName { get => stockName; set => SetProperty(ref stockName, value); }
@@ -206,6 +208,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                 }
             }
         }
+
+        private BarDuration filterDuration;
+        public BarDuration FilterDuration { get => filterDuration; set => SetProperty(ref filterDuration, value); }
         #endregion
 
         public float Price { get; set; }
@@ -283,6 +288,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     alertDef.FilterType = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[0];
                     alertDef.FilterName = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[1];
                     alertDef.FilterEventName = filterEvent;
+                    alertDef.FilterDuration = filterDuration;
                     break;
                 case AlertType.Stock:
                     alertDef.StockName = this.StockName;
@@ -292,6 +298,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     alertDef.FilterType = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[0];
                     alertDef.FilterName = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[1];
                     alertDef.FilterEventName = filterEvent;
+                    alertDef.FilterDuration = filterDuration;
                     break;
                 case AlertType.Price:
                     alertDef.StockName = this.StockName;
@@ -382,6 +389,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                 this.Theme = this.Themes.FirstOrDefault();
             this.TriggerEvent = null;
             this.FilterEvent = null;
+            this.FilterDuration = BarDuration.Daily;
         }
     }
 }

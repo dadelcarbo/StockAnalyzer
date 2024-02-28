@@ -40,7 +40,7 @@ namespace StockAnalyzer.StockAgent
         }
 
 
-        public void GreedySelection(IEnumerable<StockSerie> series, StockBarDuration duration, int minIndex, Func<StockTradeSummary, float> selector)
+        public void GreedySelection(IEnumerable<StockSerie> series, BarDuration duration, int minIndex, Func<StockTradeSummary, float> selector)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -68,7 +68,7 @@ namespace StockAnalyzer.StockAgent
                 if (Worker != null && Worker.CancellationPending)
                     return;
 
-                serie.BarDuration = StockBarDuration.Daily;
+                serie.BarDuration = BarDuration.Daily;
                 serie.IsInitialised = false;
                 if (serie.Initialise())
                 {
@@ -174,7 +174,7 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void Perform(IEnumerable<StockSerie> series, int minIndex, StockBarDuration duration)
+        public void Perform(IEnumerable<StockSerie> series, int minIndex, BarDuration duration)
         {
             try
             {

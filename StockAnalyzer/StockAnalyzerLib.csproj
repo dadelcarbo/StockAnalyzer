@@ -388,7 +388,7 @@
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
-    <Compile Include="StockClasses\StockBarDuration.cs" />
+    <Compile Include="StockClasses\BarDuration.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\InvestingDataProvider.cs" />
@@ -608,7 +608,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StockTrailStops.resx</DependentUpon>
     </Compile>
-    <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrail_SAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrail_HLEX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrails\StockTrail_EMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrails\IStockTrail.cs" />
@@ -662,7 +661,6 @@
     <Compile Include="StockMath\FloatRandom.cs" />
     <Compile Include="StockMath\FloatRange.cs" />
     <Compile Include="StockMath\FloatSerie.cs" />
-    <Compile Include="StockMath\StockMathToolkit.cs" />
     <Compile Include="StockPortfolio\StockOperation.cs" />
     <Compile Include="StockPortfolio\StockPortfolio.cs" />
     <Compile Include="StockPortfolio\StockPosition.cs" />

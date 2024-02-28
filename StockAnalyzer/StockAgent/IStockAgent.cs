@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockAgent
 
         StockSerie StockSerie { get; }
 
-        bool Initialize(StockSerie stockSerie, StockBarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent);
+        bool Initialize(StockSerie stockSerie, BarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent);
         TradeAction Decide(int index);
 
         bool CanOpen(int index);

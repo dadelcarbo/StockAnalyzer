@@ -9,7 +9,7 @@ namespace StockAnalyzer.StockAgent
         string Description { get; }
         string DisplayIndicator { get; }
 
-        bool Initialize(StockSerie stockSerie, StockBarDuration duration);
+        bool Initialize(StockSerie stockSerie, BarDuration duration);
         bool IsStopped();
 
         string GetParameterValues();

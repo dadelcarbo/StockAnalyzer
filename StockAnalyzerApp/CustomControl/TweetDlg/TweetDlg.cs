@@ -9,7 +9,7 @@ namespace StockAnalyzerApp.CustomControl.TweetDlg
     {
         public TweetDlg()
         {
-            this.fullGraphUserControl = new FullGraphUserControl(StockBarDuration.Monthly);
+            this.fullGraphUserControl = new FullGraphUserControl(BarDuration.Monthly);
             InitializeComponent();
         }
 

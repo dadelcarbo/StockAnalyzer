@@ -506,18 +506,6 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowBarSmoothing {
-            get {
-                return ((bool)(this["ShowBarSmoothing"]));
-            }
-            set {
-                this["ShowBarSmoothing"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DownloadData {
             get {

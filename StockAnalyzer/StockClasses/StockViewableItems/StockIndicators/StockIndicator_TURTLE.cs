@@ -94,14 +94,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
                 this.Events[count++][i] = emaSerie[i - 1] < upLine[i - 1] && emaSerie[i] >= upLine[i];  // BrokenUp
                 this.Events[count++][i] = emaSerie[i - 1] > downLine[i - 1] && emaSerie[i] <= downLine[i]; // BrokenDown
+                this.Events[count++][i] = upTrend;
+                this.Events[count++][i] = !upTrend;
             }
-
         }
 
-        static readonly string[] eventNames = new string[] { "BrokenUp", "BrokenDown" };
+        static readonly string[] eventNames = new string[] { "BrokenUp", "BrokenDown", "Bullish", "Bearish" };
         public override string[] EventNames => eventNames;
 
-        static readonly bool[] isEvent = new bool[] { true, true };
+        static readonly bool[] isEvent = new bool[] { true, true, false, false };
         public override bool[] IsEvent => isEvent;
     }
 }

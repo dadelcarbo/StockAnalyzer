@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                     {
                         position.EntryComment = this.TradeViewModel.EntryComment;
                         position.Theme = this.TradeViewModel.Theme;
-                        position.BarDuration = this.TradeViewModel.BarDuration.Duration;
+                        position.BarDuration = this.TradeViewModel.BarDuration;
                     }
                 }
             }
@@ -65,7 +65,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             var order = this.TradeViewModel.Portfolio.SaxoOrders.FirstOrDefault(o => o.OrderId == orderId);
             if (order != null)
             {
-                order.BarDuration = this.TradeViewModel.BarDuration.Duration;
+                order.BarDuration = this.TradeViewModel.BarDuration;
                 order.Theme = this.TradeViewModel.Theme;
                 order.EntryComment = this.TradeViewModel.EntryComment;
             }

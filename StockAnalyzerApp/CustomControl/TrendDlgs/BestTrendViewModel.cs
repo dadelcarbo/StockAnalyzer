@@ -28,9 +28,9 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             }
         }
 
-        static public IList<StockBarDuration> BarDurations => StockBarDuration.Values;
-        private StockBarDuration barDuration;
-        public StockBarDuration BarDuration
+        static public IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
+        private BarDuration barDuration;
+        public BarDuration BarDuration
         {
             get { return barDuration; }
             set

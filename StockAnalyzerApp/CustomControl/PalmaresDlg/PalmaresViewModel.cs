@@ -38,8 +38,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
-        private StockBarDuration barDuration;
-        public StockBarDuration BarDuration
+        private BarDuration barDuration;
+        public BarDuration BarDuration
         {
             get { return barDuration; }
             set
@@ -350,7 +350,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
 
                     var previousDuration = stockSerie.BarDuration;
-                    stockSerie.BarDuration = this.barDuration.Duration;
+                    stockSerie.BarDuration = this.BarDuration;
                     if (stockSerie.Count < 40)
                     {
                         stockSerie.BarDuration = previousDuration;

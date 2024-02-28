@@ -112,23 +112,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case "McClellanSum":
                     return stockDictionary.GenerateMcClellanSumSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "EQW":
-                    return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "ROC":
-                    return stockDictionary.GenerateIndiceBestROC(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateIndiceBestROC(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "OSC":
-                    return stockDictionary.GenerateIndiceBestOSC(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateIndiceBestOSC(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "HL":
-                    return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "EMA":
-                    return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateEMABreadthSerie(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "STOKF":
-                    return stockDictionary.GenerateSTOKFBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateSTOKFBreadthSerie(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "STOK":
-                    return stockDictionary.GenerateSTOKBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateSTOKBreadthSerie(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "RSI":
-                    return stockDictionary.GenerateRSIBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateRSIBreadthSerie(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "STOKS":
-                    return stockDictionary.GenerateSTOKSBreadthSerie(stockSerie, row[1], StockBarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateSTOKSBreadthSerie(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "MM":
                     return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 default:

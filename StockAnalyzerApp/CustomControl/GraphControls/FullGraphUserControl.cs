@@ -22,11 +22,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
     {
         public event MouseValueChangedHandler OnMouseDateChanged;
 
-        public FullGraphUserControl(StockBarDuration duration)
+        public FullGraphUserControl(BarDuration duration)
         {
             InitializeComponent();
 
-            this.durationComboBox.Items.AddRange(StockBarDuration.Values.ToArray());
+            this.durationComboBox.Items.AddRange(StockBarDuration.BarDurations.Cast<object>().ToArray());
             this.durationComboBox.SelectedItem = duration;
             this.durationComboBox.SelectedValueChanged += durationComboBox_SelectedValueChanged;
 
@@ -66,7 +66,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        public void SetDuration(StockBarDuration duration)
+        public void SetDuration(BarDuration duration)
         {
             this.durationComboBox.SelectedItem = duration;
         }
@@ -178,7 +178,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
 
                 // Set the bar duration
-                currentStockSerie.BarDuration = (StockBarDuration)this.durationComboBox.SelectedItem;
+                currentStockSerie.BarDuration = (BarDuration)this.durationComboBox.SelectedItem;
 
                 this.StartIndex = Math.Max(0, currentStockSerie.Count - Settings.Default.DefaultBarNumber);
                 this.EndIndex = currentStockSerie.Count - 1;

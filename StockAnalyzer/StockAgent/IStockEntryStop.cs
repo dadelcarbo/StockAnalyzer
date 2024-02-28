@@ -7,7 +7,7 @@ namespace StockAnalyzer.StockAgent
     {
         string Description { get; }
 
-        bool Initialize(StockSerie stockSerie, StockBarDuration duration);
+        bool Initialize(StockSerie stockSerie, BarDuration duration);
 
         float GetStop(int index);
 
@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockAgent
     {
         string Description { get; }
 
-        bool Initialize(StockSerie stockSerie, StockBarDuration duration);
+        bool Initialize(StockSerie stockSerie, BarDuration duration);
 
         float GetTarget(int index);
 

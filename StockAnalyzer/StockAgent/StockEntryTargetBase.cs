@@ -9,7 +9,7 @@ namespace StockAnalyzer.StockAgent
     public abstract class StockEntryTargetBase : IStockEntryTarget
     {
         public StockSerie StockSerie { get; private set; }
-        public StockBarDuration Duration { get; private set; }
+        public BarDuration Duration { get; private set; }
 
 
         static List<string> entryTargetNames = null;
@@ -34,7 +34,7 @@ namespace StockAnalyzer.StockAgent
             return entryTargetNames;
         }
 
-        public bool Initialize(StockSerie stockSerie, StockBarDuration duration)
+        public bool Initialize(StockSerie stockSerie, BarDuration duration)
         {
             try
             {

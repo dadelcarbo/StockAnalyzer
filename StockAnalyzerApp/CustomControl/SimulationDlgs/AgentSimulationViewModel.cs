@@ -30,14 +30,14 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             EntryStop = EntryStops.FirstOrDefault();
             EntryTarget = EntryTargets.FirstOrDefault();
 
-            this.BarDuration = new StockBarDuration(StockAnalyzerForm.MainFrame.ViewModel.BarDuration);
+            this.BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
         }
         public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
         public StockSerie.Groups Group { get; set; }
 
-        private StockBarDuration barDuration;
-        public StockBarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
+        private BarDuration barDuration;
+        public BarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }
 
         public List<string> Selectors => new List<string> { "RiskRewardRatio", "ExpectedGainPerBar", "ExpectedGain", "Kelly %", "WinTradeRatio", "WinLossRatio", "TotalGain" };
         public string Selector { get; set; }
@@ -386,7 +386,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
 
-                engine.GreedySelection(stockSeries, new StockBarDuration(this.BarDuration), 20, selector);
+                engine.GreedySelection(stockSeries, this.BarDuration, 20, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
             }

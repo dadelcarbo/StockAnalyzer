@@ -48,7 +48,7 @@ namespace StockAnalyzer.StockClasses
             return validGroups;
         }
         #region RANK Calculation
-        public void CalculateRank(StockSerie.Groups group, string indicatorName, StockBarDuration duration, string destinationFolder)
+        public void CalculateRank(StockSerie.Groups group, string indicatorName, BarDuration duration, string destinationFolder)
         {
             var groupsSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(group) && s.Initialise()).ToList();
 
@@ -267,7 +267,7 @@ namespace StockAnalyzer.StockClasses
             return true;
         }
 
-        public bool GenerateSTOKFBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateSTOKFBreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -369,7 +369,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateSTOKBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateSTOKBreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -471,7 +471,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateRSIBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateRSIBreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -573,7 +573,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateSTOKSBreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateSTOKSBreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -675,7 +675,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateEMABreadthSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateEMABreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -782,7 +782,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateHigherThanHLTrailSerie(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateHigherThanHLTrailSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             StockSerie indiceSerie = null;
@@ -889,7 +889,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie
 
@@ -985,7 +985,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateIndiceBestROC(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateIndiceBestROC(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             int nbStocks = 10;
@@ -1109,7 +1109,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateIndiceBestOSC(StockSerie breadthSerie, string indexName, StockBarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateIndiceBestOSC(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             int nbStocks = 10;
@@ -1235,7 +1235,7 @@ namespace StockAnalyzer.StockClasses
             return true;
         }
 
-        public float GeneratePTFBestFilter(StockSerie.Groups stockGroup, StockBarDuration barDuration, string filter, int nbStocks)
+        public float GeneratePTFBestFilter(StockSerie.Groups stockGroup, BarDuration barDuration, string filter, int nbStocks)
         {
             StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie
             if (!indiceSerie.Initialise())
@@ -1352,7 +1352,7 @@ namespace StockAnalyzer.StockClasses
                     this.ReportProgress("Loading data for " + serie.StockName);
                 }
                 serie.Initialise();
-                serie.BarDuration = StockBarDuration.Daily;
+                serie.BarDuration = BarDuration.Daily;
             }
             #endregion
             long vol;

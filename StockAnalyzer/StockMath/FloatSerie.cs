@@ -1031,51 +1031,7 @@ namespace StockAnalyzer.StockMath
         }
         #endregion
 
-        public FloatSerie ApplySmoothing(StockMathToolkit.SmoothingType smoothingType, float inputWidth, float scale)
-        {
-            FloatSerie serie = new FloatSerie(this.Count);
-            StockMathToolkit.SmoothingFunction smoothingFunction = StockMathToolkit.GetSmoothingFunction(smoothingType);
-            int i = 0;
-            foreach (float value in this.Values)
-            {
-                serie[i++] = smoothingFunction(value, inputWidth, scale);
-            }
-            return serie;
-        }
-        public FloatSerie Clamp(float min, float max)
-        {
-            float[] serie = new float[this.Values.Count()];
-            for (int i = 0; i < this.Values.Count(); i++)
-            {
-                if (this.Values[i] < min)
-                {
-                    serie[i] = min;
-                }
-                else if (this.Values[i] > max)
-                {
-                    serie[i] = max;
-                }
-                else
-                {
-                    serie[i] = this.Values[i];
-                }
-            }
-
-            return new FloatSerie(serie);
-        }
-
         public float Last => this.Values.Last();
-        public float LastNonNaN
-        {
-            get
-            {
-                for (int i = this.Values.Count() - 1; i >= 1; i--)
-                {
-                    if (!float.IsNaN(this[i])) return this[i];
-                }
-                return float.NaN;
-            }
-        }
         public int LastIndex => this.Values.Count() - 1;
 
 
@@ -1368,22 +1324,6 @@ namespace StockAnalyzer.StockMath
         #endregion
         #region statistic function
         #endregion
-
-        public FloatSerie CalculateVolatility(int period)
-        {
-            FloatSerie volatilitySerie = new FloatSerie(this.Count, "VLTY");
-            int periodOffset = period - 1;
-            for (int i = periodOffset; i < this.Count; i++)
-            {
-                volatilitySerie[i] = this.CalculateStdev(i - periodOffset, i);
-            }
-            for (int i = 0; i < periodOffset; i++)
-            {
-                volatilitySerie[i] = volatilitySerie[periodOffset];
-            }
-
-            return volatilitySerie;
-        }
 
         internal FloatSerie CalculateSARTrail(float accelerationFactorInit, float accelerationFactorStep)
         {

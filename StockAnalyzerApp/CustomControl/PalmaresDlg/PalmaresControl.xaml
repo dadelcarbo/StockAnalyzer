@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.PalmaresDlg" 
-             xmlns:bardurationctrl="clr-namespace:StockAnalyzerApp.CustomControl.BarDurationCtrl"
+             xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="1000" Background="AntiqueWhite"
              d:DataContext="{d:DesignInstance Type=local:PalmaresViewModel, IsDesignTimeCreatable=False}">
@@ -25,7 +25,8 @@
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Group " Width="50"/>
                         <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="120" VerticalAlignment="Center"/>
-                        <bardurationctrl:BarDurationControl BarDuration="{Binding BarDuration, Mode=TwoWay}" />
+                        <Label>Duration</Label>
+                        <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
                         <Label Content="Theme"/>
                         <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center"/>
                     </StackPanel>

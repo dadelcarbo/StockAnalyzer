@@ -13,9 +13,9 @@ namespace StockAnalyzerApp.CustomControl
         private StockSerie.Groups selectedGroup;
         public MultiTimeFrameChartDlg()
         {
-            this.fullGraphUserControl1 = new FullGraphUserControl(StockBarDuration.Monthly);
-            this.fullGraphUserControl2 = new FullGraphUserControl(StockBarDuration.Weekly);
-            this.fullGraphUserControl3 = new FullGraphUserControl(StockBarDuration.Daily);
+            this.fullGraphUserControl1 = new FullGraphUserControl(BarDuration.Monthly);
+            this.fullGraphUserControl2 = new FullGraphUserControl(BarDuration.Weekly);
+            this.fullGraphUserControl3 = new FullGraphUserControl(BarDuration.Daily);
             InitializeComponent();
 
             this.fullGraphUserControl1.OnMouseDateChanged += fullGraphUserControl2.MouseDateChanged;
@@ -36,7 +36,7 @@ namespace StockAnalyzerApp.CustomControl
             switch (this.selectedGroup)
             {
                 case StockSerie.Groups.INTRADAY:
-                    fullGraphUserControl3.SetDuration(StockBarDuration.Daily);
+                    fullGraphUserControl3.SetDuration(BarDuration.Daily);
                     break;
             }
 

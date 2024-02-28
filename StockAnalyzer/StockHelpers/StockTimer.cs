@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockHelpers
         public delegate void StockTimerCallback();
         public event StockTimerCallback TimerTick;
 
-        public delegate void StockAlertTimerCallback(List<StockBarDuration> barDurations);
+        public delegate void StockAlertTimerCallback(List<BarDuration> barDurations);
         public event StockAlertTimerCallback AlertTimerTick;
 
         public static bool TimerSuspended { get; set; }
@@ -74,11 +74,11 @@ namespace StockAnalyzer.StockHelpers
             public int PeriodSeconds { get; set; }
         }
 
-        private readonly SortedDictionary<StockBarDuration, PeriodTick> periodTicks = new SortedDictionary<StockBarDuration, PeriodTick> {
-            { StockBarDuration.M_5, new PeriodTick { Tick = 0, PeriodSeconds = 60*5} },
-            { StockBarDuration.M_15, new PeriodTick { Tick = 0, PeriodSeconds = 60*15} },
-            { StockBarDuration.M_30, new PeriodTick { Tick = 0, PeriodSeconds = 60*30} },
-            { StockBarDuration.H_1, new PeriodTick { Tick = 0, PeriodSeconds = 60*60} },
+        private readonly SortedDictionary<BarDuration, PeriodTick> periodTicks = new SortedDictionary<BarDuration, PeriodTick> {
+            { BarDuration.M_5, new PeriodTick { Tick = 0, PeriodSeconds = 60*5} },
+            { BarDuration.M_15, new PeriodTick { Tick = 0, PeriodSeconds = 60*15} },
+            { BarDuration.M_30, new PeriodTick { Tick = 0, PeriodSeconds = 60*30} },
+            { BarDuration.H_1, new PeriodTick { Tick = 0, PeriodSeconds = 60*60} },
             };
 
         public static StockTimer CreateAlertTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback)
@@ -105,7 +105,7 @@ namespace StockAnalyzer.StockHelpers
                 return;
 
             var timeSeconds = time.TotalSeconds;
-            var barDurations = new List<StockBarDuration>();
+            var barDurations = new List<BarDuration>();
             foreach (var tickPeriod in periodTicks)
             {
                 var currentTick = (int)(timeSeconds / tickPeriod.Value.PeriodSeconds);

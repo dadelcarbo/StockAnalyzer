@@ -50,7 +50,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
-            var bars = chartService.GetData(stockSerie.Uic, stockSerie.BarDuration.Duration);
+            var bars = chartService.GetData(stockSerie.Uic, stockSerie.BarDuration);
             if (bars == null || bars.Length == 0)
                 return false;
             stockSerie.IsInitialised = false;

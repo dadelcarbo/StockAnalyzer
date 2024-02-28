@@ -6,7 +6,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
 {
     public partial class HorseRaceDlg : Form
     {
-        public HorseRaceDlg(string group, StockBarDuration barDuration)
+        public HorseRaceDlg(string group, BarDuration barDuration)
         {
             InitializeComponent();
 
@@ -17,7 +17,7 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             StockAnalyzerForm.MainFrame.NotifyBarDurationChanged += MainFrame_NotifyBarDurationChanged;
         }
 
-        void MainFrame_NotifyBarDurationChanged(StockBarDuration barDuration)
+        void MainFrame_NotifyBarDurationChanged(BarDuration barDuration)
         {
             (this.elementHost1.Child as HorseRaceControl).ViewModel.BarDuration = barDuration;
         }

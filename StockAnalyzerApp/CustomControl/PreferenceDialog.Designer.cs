@@ -61,7 +61,6 @@ namespace StockAnalyzerApp.CustomControl
             this.alertActiveCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.generateDailyReportCheckBox = new System.Windows.Forms.CheckBox();
-            this.showBarSmoothingCheckBox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.dataFolderTextBox = new System.Windows.Forms.TextBox();
             this.browseDataButton = new System.Windows.Forms.Button();
@@ -301,13 +300,6 @@ namespace StockAnalyzerApp.CustomControl
             this.generateDailyReportCheckBox.UseVisualStyleBackColor = true;
             this.generateDailyReportCheckBox.CheckedChanged += new System.EventHandler(this.generateDailyReportCheckBox_CheckedChanged);
             // 
-            // showBarSmoothingCheckBox
-            // 
-            resources.ApplyResources(this.showBarSmoothingCheckBox, "showBarSmoothingCheckBox");
-            this.showBarSmoothingCheckBox.Name = "showBarSmoothingCheckBox";
-            this.showBarSmoothingCheckBox.UseVisualStyleBackColor = true;
-            this.showBarSmoothingCheckBox.CheckedChanged += new System.EventHandler(this.showBarSmoothingCheckBox_CheckedChanged);
-            // 
             // label6
             // 
             resources.ApplyResources(this.label6, "label6");
@@ -366,7 +358,6 @@ namespace StockAnalyzerApp.CustomControl
             this.Controls.Add(this.userIDTextBox);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.showBarSmoothingCheckBox);
             this.Controls.Add(this.enableLoggingCheckBox);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.okBtn);
@@ -424,7 +415,6 @@ namespace StockAnalyzerApp.CustomControl
         private System.Windows.Forms.CheckBox alertActiveCheckBox;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.CheckBox generateDailyReportCheckBox;
-        private System.Windows.Forms.CheckBox showBarSmoothingCheckBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox dataFolderTextBox;
         private System.Windows.Forms.Button browseDataButton;

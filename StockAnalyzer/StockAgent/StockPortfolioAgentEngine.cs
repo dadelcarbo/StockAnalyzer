@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockAgent
         private EquityValue[] equityCurve;
         public EquityValue[] EquityCurve => equityCurve;
 
-        public void PerformPortfolio(List<IStockPortfolioAgent> agents, int minIndex, StockBarDuration duration, PositionManagement positionManagement)
+        public void PerformPortfolio(List<IStockPortfolioAgent> agents, int minIndex, BarDuration duration, PositionManagement positionManagement)
         {
             var candidates = new List<Tuple<IStockPortfolioAgent, float>>();
 
@@ -145,7 +145,7 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public string ToLog(StockBarDuration duration)
+        public string ToLog(BarDuration duration)
         {
             return this.TradeSummary.ToLog(duration);
         }

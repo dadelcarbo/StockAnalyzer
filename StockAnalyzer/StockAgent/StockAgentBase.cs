@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockAgent
         protected float EntryTargetValue { get; private set; }
         protected IStockEntryTarget EntryTargetAgent { get; private set; }
 
-        public bool Initialize(StockSerie stockSerie, StockBarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent)
+        public bool Initialize(StockSerie stockSerie, BarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent)
         {
             try
             {

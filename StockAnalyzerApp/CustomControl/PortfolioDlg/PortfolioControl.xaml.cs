@@ -105,7 +105,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;
             }
         }
-        private void SelectionChanged(string stockName, string isin, StockBarDuration duration = null, string theme = null)
+        private void SelectionChanged(string stockName, string isin, BarDuration? duration = null, string theme = null)
         {
             if (StockAnalyzerForm.MainFrame.CurrentStockSerie.StockName == stockName)
                 return;
@@ -116,7 +116,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 StockAnalyzerForm.MainFrame.Activate();
                 if (duration != null)
                 {
-                    this.SelectedStockAndDurationChanged(stockSerie.StockName, duration, theme, true);
+                    this.SelectedStockAndDurationChanged(stockSerie.StockName, duration.Value, theme, true);
                 }
                 else
                 {

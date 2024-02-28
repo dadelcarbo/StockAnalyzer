@@ -69,8 +69,8 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             }
         }
 
-        private StockBarDuration barDuration = StockBarDuration.Daily;
-        public StockBarDuration BarDuration
+        private BarDuration barDuration = BarDuration.Daily;
+        public BarDuration BarDuration
         {
             get { return barDuration; }
             set

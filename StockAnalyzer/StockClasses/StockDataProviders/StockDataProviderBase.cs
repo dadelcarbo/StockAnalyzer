@@ -164,9 +164,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 using (new StockSerieLocker(serie))
                 {
-                    StockBarDuration currentBarDuration = serie.BarDuration;
+                    BarDuration currentBarDuration = serie.BarDuration;
                     if (serie.DataProvider != StockDataProvider.Saxo)
-                        serie.BarDuration = StockBarDuration.Daily;
+                        serie.BarDuration = BarDuration.Daily;
                     bool res = dataProvider.DownloadDailyData(serie);
                     if (dataProvider.SupportsIntradayDownload)
                     {
@@ -178,7 +178,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-        public static bool DownloadIntadaySerieData(StockSerie serie, StockBarDuration barDuration)
+        public static bool DownloadIntadaySerieData(StockSerie serie, BarDuration barDuration)
         {
             if (serie == null)
                 return false;
@@ -209,8 +209,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             else
             {
-                StockBarDuration currentBarDuration = serie.BarDuration;
-                serie.BarDuration = new StockBarDuration(BarDuration.Daily, 1);
+                BarDuration currentBarDuration = serie.BarDuration;
+                serie.BarDuration = BarDuration.Daily;
                 bool res = dataProvider.ForceDownloadData(serie);
                 if (dataProvider.SupportsIntradayDownload)
                 {
