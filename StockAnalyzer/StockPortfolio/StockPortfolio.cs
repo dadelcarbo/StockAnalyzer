@@ -809,7 +809,7 @@ namespace StockAnalyzer.StockPortfolio
             }
         }
 
-        public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = true)
+        public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = false)
         {
             using var ml = new MethodLogger(this, true, this.Name);
             try
