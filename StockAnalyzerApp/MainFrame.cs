@@ -2949,7 +2949,7 @@ namespace StockAnalyzerApp
                         Replace("%COL6%", positionReturn.ToString("P2")).
                         Replace("%COL7%", portfolioReturn.ToString("P2")).
                         Replace("%COL8%", riskReward.ToString("0.##"));
-                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", stockName).Replace("%IMG%", bitmapString) + "\r\n";
+                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", stockName + " - " + position.BarDuration).Replace("%IMG%", bitmapString) + "\r\n";
                 }
                 else
                 {

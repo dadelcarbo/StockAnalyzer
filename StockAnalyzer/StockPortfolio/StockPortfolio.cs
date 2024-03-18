@@ -143,25 +143,26 @@ namespace StockAnalyzer.StockPortfolio
                 using var ml = new MethodLogger(this, true, this.Name);
                 string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
 
-                if (!archivePortfolioFile)
-                    return;
-                // Archive PTF files
-                string archiveDirectory = Path.Combine(Folders.Portfolio, "Archive");
-                if (!Directory.Exists(archiveDirectory))
-                    Directory.CreateDirectory(archiveDirectory);
-                else
-                {
-                    var dateLimit = DateTime.Today.AddDays(-2);
-                    foreach (var file in Directory.EnumerateFiles(archiveDirectory).Where(f => File.GetLastWriteTime(f) < dateLimit))
-                    {
-                        File.Delete(file);
-                    }
-                }
-
                 File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
-                var fileDate = File.GetLastWriteTime(filepath);
-                var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss.ff") + PORTFOLIO_FILE_EXT);
-                File.Copy(filepath, archiveFilePath);
+
+                if (archivePortfolioFile)
+                {
+                    // Archive PTF files
+                    string archiveDirectory = Path.Combine(Folders.Portfolio, "Archive");
+                    if (!Directory.Exists(archiveDirectory))
+                        Directory.CreateDirectory(archiveDirectory);
+                    else
+                    {
+                        var dateLimit = DateTime.Today.AddDays(-2);
+                        foreach (var file in Directory.EnumerateFiles(archiveDirectory).Where(f => File.GetLastWriteTime(f) < dateLimit))
+                        {
+                            File.Delete(file);
+                        }
+                    }
+                    var fileDate = File.GetLastWriteTime(filepath);
+                    var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss.ff") + PORTFOLIO_FILE_EXT);
+                    File.Copy(filepath, archiveFilePath);
+                }
             }
         }
         static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ" };
@@ -593,7 +594,7 @@ namespace StockAnalyzer.StockPortfolio
             this.Refresh();
             return true;
         }
-        public Performance Performance { get; private set; }
+        public Performance Performance { get; set; }
         public void Refresh()
         {
             using var ml = new MethodLogger(this, true, this.Name);
@@ -608,11 +609,8 @@ namespace StockAnalyzer.StockPortfolio
                 {
                     this.Balance = balance.CashAvailableForTrading;
                     this.PositionValue = balance.UnrealizedPositionsValue;
+                    this.MaxValue = Math.Max(this.MaxValue, balance.TotalValue);
                 }
-
-                // 
-                this.Performance = accountService.GetPerformance(account);
-                this.MaxValue = Math.Max(this.MaxValue, this.Performance.Balance.AccountValue.Max(v=>v.Value));
 
                 // Get Opened Orders
                 this.SaxoOpenOrders.Clear();
@@ -650,6 +648,19 @@ namespace StockAnalyzer.StockPortfolio
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public void GetPerformance()
+        {
+            if (!this.SaxoLogin())
+                return;
+
+            var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
+            if (this.Performance == null || this.Performance.Balance.AccountValue.Last().Date < lastCacDate)
+            {
+                this.Performance = accountService.GetPerformance(account);
+                this.MaxValue = Math.Max(this.MaxValue, this.Performance.Balance.AccountValue.Max(v => v.Value));
             }
         }
         public void AddSaxoActivityOrder(OrderActivity activityOrder)

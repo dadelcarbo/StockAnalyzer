@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockLogging;
+﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -57,13 +58,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override bool LoadData(StockSerie stockSerie)
         {
             var p = Portfolios.FirstOrDefault(p => p.Name == stockSerie.StockName);
-            if (p?.Performance == null)
-                return false;
 
             stockSerie.IsInitialised = false;
+            p.GetPerformance();
+            if (p?.Performance?.Balance?.AccountValue == null)
+                return false;
+
             foreach (var v in p.Performance.Balance.AccountValue)
             {
                 stockSerie.Add(v.Date, new StockDailyValue(v.Value, v.Value, v.Value, v.Value, 0, v.Date));
+            }
+            var lastAccountValue = p.Performance.Balance.AccountValue.Last();
+            var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
+            if (lastAccountValue.Date.Date == lastCacDate && p.LastSyncDate > lastCacDate && p.TotalValue != lastAccountValue.Value)
+            {
+                stockSerie.Add(DateTime.Today, new StockDailyValue(p.TotalValue, p.TotalValue, p.TotalValue, p.TotalValue, 0, DateTime.Today));
             }
             return true;
         }
