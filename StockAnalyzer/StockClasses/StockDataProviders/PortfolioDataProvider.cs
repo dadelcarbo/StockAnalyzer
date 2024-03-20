@@ -70,7 +70,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             var lastAccountValue = p.Performance.Balance.AccountValue.Last();
             var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
-            if (lastAccountValue.Date.Date == lastCacDate && p.LastSyncDate > lastCacDate && p.TotalValue != lastAccountValue.Value)
+            if (lastAccountValue.Date.Date <= DateTime.Today && DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
                 stockSerie.Add(DateTime.Today, new StockDailyValue(p.TotalValue, p.TotalValue, p.TotalValue, p.TotalValue, 0, DateTime.Today));
             }
