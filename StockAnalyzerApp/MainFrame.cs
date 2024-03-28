@@ -2796,20 +2796,17 @@ namespace StockAnalyzerApp
         {
             foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
             {
-                if (p.SaxoLogin())
+                if (!p.SaxoLogin())
                 {
-                    this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
-                    this.portfolioStatusLbl.ToolTipText = "Connected";
-                }
-                else
-                {
-                    this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.RedIcon;
-                    this.portfolioStatusLbl.ToolTipText = "Not Connected";
+                    var diagResult = MessageBox.Show($"Portfolio: {p.Name} login failed !!! {Environment.NewLine}Do you want to continue ?", "Login Error", MessageBoxButtons.YesNo);
+                    if (diagResult == DialogResult.No)
+                    {
+                        return;
+                    }
                 }
             }
             foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
             {
-                p.Refresh();
                 this.GeneratePortfolioReportFile(p);
             }
         }
@@ -2984,6 +2981,11 @@ namespace StockAnalyzerApp
 
         public void GeneratePortfolioReportFile(StockPortfolio portfolio)
         {
+            if (!portfolio.SaxoSilentLogin())
+            {
+                return;
+            }
+            portfolio.Refresh();
             this.Portfolio = portfolio;
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;

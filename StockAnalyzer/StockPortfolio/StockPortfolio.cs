@@ -591,7 +591,6 @@ namespace StockAnalyzer.StockPortfolio
                     return false;
                 }
             }
-            this.Refresh();
             return true;
         }
         public Performance Performance { get; set; }
