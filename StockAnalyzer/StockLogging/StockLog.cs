@@ -42,6 +42,34 @@ namespace StockAnalyzer.StockLogging
             }
         }
     }
+
+    internal class StockLogStream : IDisposable
+    {
+        private readonly StreamWriter sw;
+        public StockLogStream(StreamWriter streamWriter)
+        {
+            sw = streamWriter;
+        }
+
+        public void Dispose()
+        {
+            if (sw != null)
+                sw.Close();
+        }
+
+        public void WriteLine(string text)
+        {
+            if (sw != null)
+            {
+                sw.WriteLine(text);
+            }
+            else
+            {
+                Debug.WriteLine(text);
+            }
+        }
+    }
+
     public class StockLog : IDisposable
     {
         public bool isEnabled = false;
@@ -52,7 +80,7 @@ namespace StockAnalyzer.StockLogging
         static private StockLog logger = null;
         static public StockLog Logger { get { logger ??= new StockLog(); return logger; } }
 
-        private readonly StreamWriter sw;
+        private readonly StockLogStream sw;
 
         private StockLog()
         {
@@ -84,13 +112,11 @@ namespace StockAnalyzer.StockLogging
                         Directory.CreateDirectory(logFolder);
                     }
                     string fileName = logFolder + @"\log_" + DateTime.Now.ToString("yyyMMdd_hhmmss") + ".log";
-                    sw = new StreamWriter(fileName, false);
-                    sw.AutoFlush = true;
+                    sw = new StockLogStream(new StreamWriter(fileName, false) { AutoFlush = true });
                 }
                 else
                 {
-                    sw = new StreamWriter(Console.OpenStandardOutput());
-                    sw.AutoFlush = true;
+                    sw = new StockLogStream(null);
                 }
             }
         }
@@ -135,7 +161,7 @@ namespace StockAnalyzer.StockLogging
                     padding += "  ";
                     innerException = innerException.InnerException;
                 }
-                StreamWriter sw = StockLog.Logger.sw;
+                var sw = StockLog.Logger.sw;
                 if (objException.Source != null)
                 {
                     sw.WriteLine("Source      : " + objException.Source.ToString().Trim());
@@ -154,13 +180,12 @@ namespace StockAnalyzer.StockLogging
                             objException.StackTrace.ToString().Trim());
                 }
                 sw.WriteLine("^^-------------------------------------------------------------------^^");
-                sw.Flush();
             }
         }
 
         public void Dispose()
         {
-            sw?.Close();
+            sw.Dispose();
         }
     }
 }

@@ -1232,7 +1232,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
 
                 string abcGroup = GetABCGroup(stockGroup);
-                string fileName = destFolder + @"\" + abcGroup + "_" + endDate.Year + "_" + endDate.Month + ".csv";
+                string fileName = destFolder + @"\" + abcGroup + "_" + endDate.Year + "_" + endDate.Month.ToString("0#") + ".csv";
                 if (this.DownloadGroup(destFolder, fileName, startDate, endDate, abcGroup))
                 {
                     if (loadData)
