@@ -29,6 +29,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private static readonly string CONFIG_FILE = "EuronextDownload.cfg";
         private static readonly string CONFIG_FILE_USER = "EuronextDownload.user.cfg";
         private static readonly string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
+        private static readonly string ABC_TMP_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\TMPCache";
 
         #region ABC DOWNLOAD HELPER
 
@@ -150,13 +151,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             "typeData=isin&" +
             "__RequestVerificationToken=$TOKEN&"
             + "cbYes=false";
-        public bool DownloadGroup(string destFolder, string fileName, DateTime startDate, DateTime endDate, string group)
+
+        static DateTime cacheEndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        public bool DownloadGroup(string fileName, DateTime startDate, DateTime endDate, string group)
         {
             if (!this.Initialize())
                 return false;
 
             try
             {
+                string cacheFileName = fileName.Replace("\\TMP\\", "\\TMPCache\\");
+                if (File.Exists(cacheFileName))
+                {
+                    File.Copy(cacheFileName, fileName);
+                    return true;
+                }
+
                 var postData = DOWNLOAD_GROUP_BODY;
 
                 postData = postData.Replace("$START_DATE", startDate.ToString("yyyy-MM-dd"));
@@ -175,8 +185,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return false;
                 }
                 using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
-                respStream.CopyTo(fileStream);
+                using (var fileStream = File.Create(fileName))
+                {
+                    respStream.CopyTo(fileStream);
+                }
+                if (endDate < cacheEndDate)
+                {
+                    File.Copy(fileName, cacheFileName);
+                }
             }
             catch (Exception ex)
             {
@@ -410,6 +426,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     // Purge files at each start
                     File.Delete(file);
                 }
+            }
+            if (!Directory.Exists(DataFolder + ABC_TMP_CACHE_FOLDER))
+            {
+                Directory.CreateDirectory(DataFolder + ABC_TMP_CACHE_FOLDER);
             }
             if (!Directory.Exists(DataFolder + ABC_TMP_FOLDER))
             {
@@ -1233,7 +1253,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 string abcGroup = GetABCGroup(stockGroup);
                 string fileName = destFolder + @"\" + abcGroup + "_" + endDate.Year + "_" + endDate.Month.ToString("0#") + ".csv";
-                if (this.DownloadGroup(destFolder, fileName, startDate, endDate, abcGroup))
+                if (this.DownloadGroup(fileName, startDate, endDate, abcGroup))
                 {
                     if (loadData)
                     {
