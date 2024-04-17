@@ -4,6 +4,7 @@ using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -2946,7 +2947,7 @@ namespace StockAnalyzerApp
                         Replace("%COL6%", positionReturn.ToString("P2")).
                         Replace("%COL7%", portfolioReturn.ToString("P2")).
                         Replace("%COL8%", riskReward.ToString("0.##"));
-                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", stockName + " - " + position.BarDuration).Replace("%IMG%", bitmapString) + "\r\n";
+                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", stockName).Replace("%DURATION%", position.BarDuration.ToString()).Replace("%IMG%", bitmapString) + "\r\n";
                 }
                 else
                 {
@@ -3127,7 +3128,7 @@ namespace StockAnalyzerApp
 
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
         const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
-        const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME%</a></h2><img src=\"%IMG%\">";
+        const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h2><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
         private string GenerateAlertTable(StockAlertDef alertDef, int nbStocks)
         {
             var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group));
