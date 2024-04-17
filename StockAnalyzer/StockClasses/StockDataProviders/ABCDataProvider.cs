@@ -29,7 +29,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private static readonly string CONFIG_FILE = "EuronextDownload.cfg";
         private static readonly string CONFIG_FILE_USER = "EuronextDownload.user.cfg";
         private static readonly string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
-        private static readonly string ABC_TMP_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\TMPCache";
+        private static readonly string ABC_WEB_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\WebCache";
 
         #region ABC DOWNLOAD HELPER
 
@@ -427,9 +427,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     File.Delete(file);
                 }
             }
-            if (!Directory.Exists(DataFolder + ABC_TMP_CACHE_FOLDER))
+            if (!Directory.Exists(DataFolder + ABC_WEB_CACHE_FOLDER))
             {
-                Directory.CreateDirectory(DataFolder + ABC_TMP_CACHE_FOLDER);
+                Directory.CreateDirectory(DataFolder + ABC_WEB_CACHE_FOLDER);
             }
             if (!Directory.Exists(DataFolder + ABC_TMP_FOLDER))
             {

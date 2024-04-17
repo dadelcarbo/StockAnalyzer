@@ -1,8 +1,10 @@
-﻿using StockAnalyzerSettings;
+﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -158,6 +160,10 @@ namespace StockAnalyzer.StockClasses
                 var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
                 var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
                 serializer.Serialize(xmlWriter, allAlertDefs.OrderBy(a => a.BarDuration).OrderBy(a => a.Rank).ToList());
+
+
+                alertFileName = AlertDefFolder + $@"\AlertDefUserDefined.json";
+                File.WriteAllText(alertFileName, JsonSerializer.Serialize(allAlertDefs.OrderBy(a => a.BarDuration).OrderBy(a => a.Rank).ToList()));
             }
         }
 

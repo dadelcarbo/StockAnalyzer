@@ -71,9 +71,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             if (string.IsNullOrEmpty(stockSerie.Symbol) || string.IsNullOrEmpty(stockSerie.ISIN) || stockSerie.ISIN.Length < 2)
                 return null;
             var prefix = stockSerie.ISIN.Substring(0, 2);
+            if (stockSerie.StockGroup == StockSerie.Groups.FUND)
+            {
+                prefix += "T";
+            }
             var symbol = prefix switch
             {
                 "FR" => $"1rP{stockSerie.Symbol}",
+                "FRT" => $"1rT{stockSerie.Symbol}",
                 "DE" => $"1z{stockSerie.Symbol}",
                 "BE" => $"FF11-{stockSerie.Symbol}",
                 "NL" => $"1rA{stockSerie.Symbol}",
