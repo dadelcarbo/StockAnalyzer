@@ -2966,7 +2966,7 @@ namespace StockAnalyzerApp
             var portfolioSerie = StockDictionary[portfolio.Name];
             this.ViewModel.BarDuration = BarDuration.Daily;
             var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio");
-            picturehtml = stockPictureTemplate.Replace("%STOCKNAME%", portfolio.Name).Replace("%IMG%", portfolioSerieBitmapString) + "\r\n" + picturehtml;
+            picturehtml = stockPictureTemplate.Replace("%STOCKNAME%", portfolio.Name).Replace(" - %DURATION%", "").Replace("%IMG%", portfolioSerieBitmapString) + "\r\n" + picturehtml;
 
             reportBody += @" 
 </tbody>
