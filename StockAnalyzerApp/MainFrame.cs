@@ -4,6 +4,7 @@ using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
@@ -2403,12 +2404,16 @@ namespace StockAnalyzerApp
         #endregion DRAWING TOOLBAR HANDLERS
 
         #region ANALYSYS TOOLBAR HANDLERS
-
         private void excludeButton_Click(object sender, EventArgs e)
         {
-            // Flag as excluded
-            CurrentStockSerie.StockAnalysis.Excluded = true;
-            SaveAnalysis(Settings.Default.AnalysisFile);
+            var dp = StockDataProviderBase.GetDataProvider(CurrentStockSerie.DataProvider);
+            var handled = dp.RemoveEntry(CurrentStockSerie);
+            if (!handled)
+            {
+                // Flag as excluded
+                CurrentStockSerie.StockAnalysis.Excluded = true;
+                SaveAnalysis(Settings.Default.AnalysisFile);
+            }
 
             // Remove from current combo list.
             int selectedIndex = this.stockNameComboBox.SelectedIndex;

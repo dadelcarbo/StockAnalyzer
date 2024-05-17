@@ -389,30 +389,30 @@ namespace StockAnalyzer.StockMath
                 }
             }
         }
-        public FloatSerie CalculateMA(int maPeriod)
+        public FloatSerie CalculateMA(int period)
         {
             float[] serie = new float[Values.Count()];
             float cumul = 0.0f;
             for (int i = 0; i < Values.Count(); i++)
             {
-                if (i < maPeriod)
+                if (i < period)
                 {
                     cumul += Values[i];
                     serie[i] = cumul / (i + 1);
                 }
                 else
                 {
-                    cumul += Values[i] - Values[i - maPeriod];
-                    serie[i] = cumul / maPeriod;
+                    cumul += Values[i] - Values[i - period];
+                    serie[i] = cumul / period;
                 }
             }
-            return new FloatSerie(serie, "MA_" + maPeriod);
+            return new FloatSerie(serie, "MA_" + period);
         }
 
-        public FloatSerie CalculateEMA(int emaPeriod)
+        public FloatSerie CalculateEMA(int period)
         {
             FloatSerie serie = new FloatSerie(Values.Count());
-            if (emaPeriod <= 1)
+            if (period <= 1)
             {
                 for (int i = 0; i < this.Count; i++)
                 {
@@ -421,7 +421,7 @@ namespace StockAnalyzer.StockMath
             }
             else
             {
-                float alpha = 2.0f / (float)(emaPeriod + 1);
+                float alpha = 2.0f / (float)(period + 1);
 
                 serie[0] = Values[0];
                 for (int i = 1; i < Values.Count(); i++)
@@ -429,13 +429,13 @@ namespace StockAnalyzer.StockMath
                     serie[i] = serie[i - 1] + alpha * (Values[i] - serie[i - 1]);
                 }
             }
-            serie.Name = "EMA_" + emaPeriod.ToString();
+            serie.Name = "EMA_" + period.ToString();
             return serie;
         }
-        public FloatSerie CalculateWMA(int emaPeriod)
+        public FloatSerie CalculateWMA(int period)
         {
-            FloatSerie serie = new FloatSerie(Values.Length, $"WMA_{emaPeriod}");
-            if (emaPeriod <= 1)
+            FloatSerie serie = new FloatSerie(Values.Length, $"WMA_{period}");
+            if (period <= 1)
             {
                 for (int i = 0; i < this.Count; i++)
                 {
@@ -446,19 +446,19 @@ namespace StockAnalyzer.StockMath
 
             int count = 1;
             float sum = serie[0] = Values[0];
-            for (int i = 1; i < Math.Min(Values.Length, emaPeriod); i++)
+            for (int i = 1; i < Math.Min(Values.Length, period); i++)
             {
                 sum += Values[i] * (i + 1);
                 count += i + 1;
 
                 serie[i] = sum / count;
             }
-            for (int i = emaPeriod; i < Values.Length; i++)
+            for (int i = period; i < Values.Length; i++)
             {
                 sum = 0;
-                for (int j = emaPeriod; j > 0; j--)
+                for (int j = period; j > 0; j--)
                 {
-                    sum += Values[i - (emaPeriod - j)] * j;
+                    sum += Values[i - (period - j)] * j;
                 }
                 serie[i] = sum / count;
             }
@@ -479,15 +479,15 @@ namespace StockAnalyzer.StockMath
 
             return newSerie;
         }
-        public FloatSerie CalculateRSI(int rsiPeriod, bool useLog)
+        public FloatSerie CalculateRSI(int period, bool useLog)
         {
             float[] serie = new float[Values.Count()];
-            float alphaEMA_RSI = 2.0f / (float)(rsiPeriod + 1);
+            float alphaEMA_RSI = 2.0f / (float)(period + 1);
             float RSI_EMA_U = 0.0f;
             float RSI_EMA_D = 0.0f;
             float U, D;
 
-            int maxIndex = Math.Min(rsiPeriod, Values.Count() - 1);
+            int maxIndex = Math.Min(period, Values.Count() - 1);
             serie[0] = 50.0f;
 
             for (int i = 1; i < Values.Count(); i++)
@@ -509,13 +509,13 @@ namespace StockAnalyzer.StockMath
                 }
 
                 // Clamp in case of first values
-                if (i < rsiPeriod)
+                if (i < period)
                 {
                     serie[i] = Math.Max(30, serie[i]);
                     serie[i] = Math.Min(70, serie[i]);
                 }
             }
-            return new FloatSerie(serie, "RSI_" + rsiPeriod);
+            return new FloatSerie(serie, "RSI_" + period);
         }
         public FloatSerie CalculateStochastik(int period, int smoothing)
         {
@@ -595,7 +595,7 @@ namespace StockAnalyzer.StockMath
             }
             return correlationSerie;
         }
-        public void CalculateBB(FloatSerie referenceAverage, int bbTimePeriod, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
+        public void CalculateBB(FloatSerie referenceAverage, int period, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
         {
             float squareSum = 0.0f;
             float tmp = 0.0f;
@@ -611,7 +611,7 @@ namespace StockAnalyzer.StockMath
             for (int i = 0; i < this.Values.Count(); i++)
             {
                 referenceAverageVal = referenceAverage.Values[i];
-                if (i < bbTimePeriod)
+                if (i < period)
                 {
                     // Calculate BB
                     if (i == 0)
@@ -635,12 +635,12 @@ namespace StockAnalyzer.StockMath
                 else
                 {
                     squareSum = 0.0f;
-                    for (int j = i - bbTimePeriod + 1; j <= i; j++)
+                    for (int j = i - period + 1; j <= i; j++)
                     {
                         tmp = this.Values[j] - referenceAverageVal;
                         squareSum += tmp * tmp;
                     }
-                    tmp = (float)Math.Sqrt(squareSum / (double)bbTimePeriod);
+                    tmp = (float)Math.Sqrt(squareSum / (double)period);
                     upBB = BBUpCoef * tmp;
                     downBB = BBDownCoef * tmp;
                 }
@@ -648,7 +648,7 @@ namespace StockAnalyzer.StockMath
                 if (bbDownSerie != null) { bbDownSerie.Values[i] = referenceAverageVal + downBB; }
             }
         }
-        public void CalculateBBEX(FloatSerie referenceAverage, int bbTimePeriod, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
+        public void CalculateBBEX(FloatSerie referenceAverage, int period, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
         {
             float squareSum = 0.0f;
             float tmp = 0.0f;
@@ -664,7 +664,7 @@ namespace StockAnalyzer.StockMath
             for (int i = 0; i < this.Values.Count(); i++)
             {
                 referenceAverageVal = referenceAverage.Values[i];
-                if (i < bbTimePeriod)
+                if (i < period)
                 {
                     // Calculate BB
                     if (i == 0)
@@ -688,12 +688,12 @@ namespace StockAnalyzer.StockMath
                 else
                 {
                     squareSum = 0.0f;
-                    for (int j = i - bbTimePeriod + 1; j <= i; j++)
+                    for (int j = i - period + 1; j <= i; j++)
                     {
                         tmp = this.Values[j] - referenceAverageVal;
                         squareSum += tmp * tmp;
                     }
-                    tmp = (float)Math.Sqrt(squareSum / (double)bbTimePeriod);
+                    tmp = (float)Math.Sqrt(squareSum / (double)period);
 
                     float tt = tmp / referenceAverageVal;
 
@@ -1321,8 +1321,6 @@ namespace StockAnalyzer.StockMath
             }
             return result;
         }
-        #endregion
-        #region statistic function
         #endregion
 
         internal FloatSerie CalculateSARTrail(float accelerationFactorInit, float accelerationFactorStep)

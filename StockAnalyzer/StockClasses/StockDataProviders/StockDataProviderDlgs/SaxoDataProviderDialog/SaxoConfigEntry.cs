@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -36,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             return entries;
         }
 
-        public static void SaveToFile(IList<SaxoConfigEntry> entries, string fileName)
+        public static void SaveToFile(IEnumerable<SaxoConfigEntry> entries, string fileName)
         {
             using var sr = new StreamWriter(fileName, false);
             foreach (var entry in entries.OrderBy(e => e.StockName))
@@ -45,6 +46,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     entry.ISIN + "," +
                     entry.StockName
                     );
+            }
+        }
+
+        public static void RemoveEntry(string Isin, string fileName)
+        {
+            try
+            {
+                var entries = LoadFromFile(fileName);
+                SaveToFile(entries.Where(e => e.ISIN != Isin), fileName);
+            }
+            catch (Exception ex)
+            {
+                StockLogging.StockLog.Write(ex);
             }
         }
     }

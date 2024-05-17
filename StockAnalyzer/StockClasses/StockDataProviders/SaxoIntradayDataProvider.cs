@@ -402,5 +402,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             Process.Start($"https://fr-be.structured-products.saxo/products/{stockSerie.ISIN}");
         }
+
+        public override bool RemoveEntry(StockSerie stockSerie)
+        {
+            SaxoConfigEntry.RemoveEntry(stockSerie.ISIN, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+
+            return true;
+        }
     }
 }

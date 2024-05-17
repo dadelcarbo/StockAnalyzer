@@ -35,5 +35,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         bool DownloadIntradayData(StockSerie stockSerie);
         void InitDictionary(StockDictionary stockDictionary, bool download);
         void OpenInDataProvider(StockSerie stockSerie);
+        /// <summary>
+        /// Return true if removed, otherwise need to exclude
+        /// </summary>
+        /// <param name="stockSerie"></param>
+        /// <returns></returns>
+        bool RemoveEntry(StockSerie stockSerie);
     }
 }

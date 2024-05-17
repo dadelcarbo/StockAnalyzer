@@ -400,5 +400,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             MessageBox.Show($"Open in {this.GetType().Name.Replace("DataProvider", "")} not implemeted", "Error", MessageBoxButton.OK);
         }
+
+        public virtual bool RemoveEntry(StockSerie stockSerie)
+        {
+            return false;
+        }
     }
 }
