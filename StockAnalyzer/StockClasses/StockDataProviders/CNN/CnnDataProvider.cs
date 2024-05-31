@@ -106,14 +106,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
         {
             try
             {
+                var cacheFilePath = Path.Combine(DataFolder + WEB_CACHE_FOLDER, "fearGreed.json");
+                if (File.Exists(cacheFilePath) && File.GetCreationTime(cacheFilePath).Date == DateTime.Today)
+                {
+                    return File.ReadAllText(cacheFilePath);
+                }
+
                 if (httpClient == null)
                 {
-                    var cacheFilePath = Path.Combine(DataFolder + WEB_CACHE_FOLDER, "fearGreed.json");
-                    if (File.Exists(cacheFilePath) && File.GetCreationTime(cacheFilePath).Date == DateTime.Today)
-                    {
-                        return null;
-                    }
-
                     var handler = new HttpClientHandler();
                     handler.AutomaticDecompression = ~DecompressionMethods.None;
                     httpClient = new HttpClient(handler);
