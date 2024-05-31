@@ -172,7 +172,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return res;
         }
 
-        static readonly DateTime refDate = new DateTime(1970, 01, 01);
         public string FormatURL(string symbol, DateTime startDate, DateTime endDate, string interval)
         {
             var startTime = (int)(startDate - refDate).TotalSeconds;

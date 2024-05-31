@@ -227,7 +227,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CitiFirst
             }
         }
 
-        static readonly DateTime refDate = new DateTime(1970, 01, 01);
         private static bool ParseIntradayData(StockSerie stockSerie, string fileName)
         {
             var res = false;

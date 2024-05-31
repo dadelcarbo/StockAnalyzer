@@ -101,7 +101,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return res;
         }
 
-        static readonly DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
         public string FormatURL(long ticker, DateTime startDate, DateTime endDate)
         {
             var interval = "D";

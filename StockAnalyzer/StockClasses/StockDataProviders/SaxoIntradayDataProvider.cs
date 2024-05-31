@@ -384,8 +384,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        static readonly DateTime refDate = new DateTime(1970, 01, 01) + (DateTime.Now - DateTime.UtcNow);
-
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
             //Process.Start(Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));

@@ -16,7 +16,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         SaxoIntraday,
         VontobelIntraday,
         Saxo,
-        Citifirst
+        Citifirst,
+        CNN,
     }
 
     public delegate void DownloadingStockEventHandler(string text);

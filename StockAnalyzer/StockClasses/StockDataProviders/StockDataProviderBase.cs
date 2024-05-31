@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.CitiFirst;
+using StockAnalyzer.StockClasses.StockDataProviders.CNN;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
 using StockAnalyzer.StockLogging;
@@ -15,6 +16,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public abstract class StockDataProviderBase : IStockDataProvider
     {
+        protected static readonly DateTime refDate = new DateTime(1970, 01, 01);
+
         protected bool needDownload = true;
 
         public const int ARCHIVE_START_YEAR = 2000;
@@ -130,6 +133,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         break;
                     case StockDataProvider.Saxo:
                         dataProvider = new SaxoDataProvider();
+                        break;
+                    case StockDataProvider.CNN:
+                        dataProvider = new CnnDataProvider();
                         break;
                     case StockDataProvider.Citifirst:
                         dataProvider = new CitifirstDataProvider();
