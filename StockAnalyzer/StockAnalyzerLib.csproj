@@ -250,8 +250,6 @@
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoJson.cs" />
-    <Compile Include="StockClasses\StockDataProviders\CitiFirst\CitifirstDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\CitiFirst\CitifirstJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\CNN\CnnDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\CNN\CnnJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoDataProvider.cs" />

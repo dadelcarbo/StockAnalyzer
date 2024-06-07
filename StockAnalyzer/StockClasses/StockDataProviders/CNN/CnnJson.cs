@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
     public class Fear_And_Greed_Historical
     {
-        public long timestamp { get; set; }
+        public decimal timestamp { get; set; }
         public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
@@ -43,14 +43,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
     public class Datum
     {
-        public long x { get; set; }
+        public double x { get; set; }
         public float y { get; set; }
         public string rating { get; set; }
     }
 
     public class Market_Momentum_Sp500
     {
-        public long timestamp { get; set; }
+        public decimal timestamp { get; set; }
         public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
@@ -58,7 +58,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
     public class Market_Momentum_Sp125
     {
-        public long timestamp { get; set; }
+        public decimal timestamp { get; set; }
         public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
@@ -66,7 +66,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
     public class Stock_Price_Strength
     {
-        public long timestamp { get; set; }
+        public decimal timestamp { get; set; }
         public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
@@ -74,15 +74,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
     public class Stock_Price_Breadth
     {
-        public long timestamp { get; set; }
-        public int score { get; set; }
+        public decimal timestamp { get; set; }
+        public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
     }
 
     public class Put_Call_Options
     {
-        public long timestamp { get; set; }
+        public decimal timestamp { get; set; }
         public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
@@ -90,23 +90,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
     public class Market_Volatility_Vix
     {
-        public long timestamp { get; set; }
-        public int score { get; set; }
+        public decimal timestamp { get; set; }
+        public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
     }
 
     public class Market_Volatility_Vix_50
     {
-        public long timestamp { get; set; }
-        public int score { get; set; }
+        public decimal timestamp { get; set; }
+        public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
     }
 
     public class Junk_Bond_Demand
     {
-        public long timestamp { get; set; }
+        public decimal timestamp { get; set; }
         public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
@@ -114,8 +114,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
     public class Safe_Haven_Demand
     {
-        public long timestamp { get; set; }
-        public int score { get; set; }
+        public decimal timestamp { get; set; }
+        public float score { get; set; }
         public string rating { get; set; }
         public Datum[] data { get; set; }
     }

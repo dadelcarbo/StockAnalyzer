@@ -167,4 +167,48 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
 
     #endregion
+
+
+    ////////////////////////////////
+    ///
+
+
+    public class UnderlyingRoot
+    {
+        public Datum data { get; set; }
+        public string status { get; set; }
+    }
+
+    public class Datum
+    {
+        public Filters filters { get; set; }
+    }
+
+    public class Filters
+    {
+        public Firstlevel firstLevel { get; set; }
+    }
+
+    public class Firstlevel
+    {
+        public Underlyings underlying { get; set; }
+    }
+
+    public class Underlyings
+    {
+        public string label { get; set; }
+        public string type { get; set; }
+        public int order { get; set; }
+        public Dictionary<string, SearchUnderlying> list { get; set; }
+        public bool showOptionAll { get; set; }
+        public bool showActionButtons { get; set; }
+    }
+
+
+    public class SearchUnderlying
+    {
+        public string label { get; set; }
+        public int value { get; set; }
+    }
+
 }

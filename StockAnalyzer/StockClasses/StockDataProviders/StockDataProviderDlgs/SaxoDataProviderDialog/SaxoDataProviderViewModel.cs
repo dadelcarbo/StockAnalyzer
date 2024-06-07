@@ -20,12 +20,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             try
             {
                 this.configFile = cfgFile;
-                var jsonData = HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/search/*?productsSize=1&underlyingsSize=700&locale=fr_BE");
+                var jsonData = HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE"); // "https://fr-be.structured-products.saxo/page-api/search/*?productsSize=10&underlyingsSize=700&locale=fr_BE");
+                                               
                 if (!string.IsNullOrEmpty(jsonData))
                 {
-                    var result = JsonConvert.DeserializeObject<SaxoUnderlyings>(jsonData);
-                    this.Underlyings = result?.entries?.FirstOrDefault(e => e.key == "underlyings")?.entries;
-
+                    var result = JsonConvert.DeserializeObject<UnderlyingRoot>(jsonData);
+                    var underlyings = result?.data?.filters?.firstLevel?.underlying?.list;
+                    this.Underlyings = new List<Entry>();
                     // Load config file
                     List<string> underlyingFile = File.Exists(SaxoIntradayDataProvider.SaxoUnderlyingFile) ? File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).ToList() : new List<string>();
                     var ids = underlyingFile.Select(l => l.Split(',')[0]).ToList();
