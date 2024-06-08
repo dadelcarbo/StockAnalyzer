@@ -177,8 +177,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var startTime = (int)(startDate - refDate).TotalSeconds;
             var endTime = (int)(endDate - refDate).TotalSeconds;
 
-            return $"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?symbol={symbol}&period1={startTime}&period2={endTime}&useYfid=true&interval={interval}&includePrePost=false&events=div%7Csplit%7Cearn&lang=en-US&region=US&crumb=8hqjAI5r.C2&corsDomain=finance.yahoo.com";
+            return $"https://query2.finance.yahoo.com/v8/finance/chart/{symbol}?period1={startTime}&period2={endTime}&interval={interval}&includePrePost=false&events=div%7Csplit%7Cearn&lang=en-US&region=US";
         }
+
         public string FormatQuoteURL(string symbol)
         {
             return $"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbol}";
@@ -241,7 +242,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     lastDate = stockSerie.ValueArray[stockSerie.LastCompleteIndex].DATE.Date;
                     if (lastDate >= DateTime.Today)
                         return false;
-                    url = FormatURL(stockSerie.Symbol, lastDate.AddMonths(-1), DateTime.Today, "1d");
+                    url = FormatURL(stockSerie.Symbol, new DateTime(lastDate.Year, lastDate.Month, 1), DateTime.Today, "1d");
                 }
                 else
                 {
@@ -265,7 +266,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             StockLog.Write(response);
                             return false;
                         }
-                        StockLog.Write(response);
                         nbTries--;
                     }
                     catch (Exception ex)
