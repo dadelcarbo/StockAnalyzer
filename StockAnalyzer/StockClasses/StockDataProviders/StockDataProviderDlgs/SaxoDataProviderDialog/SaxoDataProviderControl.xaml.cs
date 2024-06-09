@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         {
             if (e.AddedItems.Count > 0)
             {
-                (this.DataContext as SaxoDataProviderViewModel).UnderlyingChanged((Entry)e.AddedItems[0]);
+                (this.DataContext as SaxoDataProviderViewModel).UnderlyingChanged((SearchUnderlying)e.AddedItems[0]);
             }
         }
     }

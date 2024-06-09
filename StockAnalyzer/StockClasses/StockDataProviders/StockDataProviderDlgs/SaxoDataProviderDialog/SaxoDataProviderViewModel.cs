@@ -20,18 +20,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             try
             {
                 this.configFile = cfgFile;
-                var jsonData = HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE"); // "https://fr-be.structured-products.saxo/page-api/search/*?productsSize=10&underlyingsSize=700&locale=fr_BE");
-                                               
+                var jsonData = HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
+                // "https://fr-be.structured-products.saxo/page-api/search/*?productsSize=10&underlyingsSize=700&locale=fr_BE");
+
                 if (!string.IsNullOrEmpty(jsonData))
                 {
                     var result = JsonConvert.DeserializeObject<UnderlyingRoot>(jsonData);
                     var underlyings = result?.data?.filters?.firstLevel?.underlying?.list;
-                    this.Underlyings = new List<Entry>();
+                    this.Underlyings = underlyings.Values.ToList();
                     // Load config file
                     List<string> underlyingFile = File.Exists(SaxoIntradayDataProvider.SaxoUnderlyingFile) ? File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).ToList() : new List<string>();
-                    var ids = underlyingFile.Select(l => l.Split(',')[0]).ToList();
+                    var ids = underlyingFile.Select(l => int.Parse(l.Split(',')[0])).ToList();
 
-                    var newIds = this.Underlyings.Where(u => !ids.Contains(u.key)).Select(u => u.key + "," + u.value + ",").ToList();
+                    var newIds = this.Underlyings.Where(u => !ids.Contains(u.value)).Select(u => u.value + "," + u.label + ",").ToList();
                     if (newIds.Count > 0)
                     {
                         foreach (var newId in newIds)
@@ -60,8 +61,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             }
         }
 
-        private List<Entry> underlyings;
-        public List<Entry> Underlyings { get => underlyings; set => SetProperty(ref underlyings, value); }
+        private List<SearchUnderlying> underlyings;
+        public List<SearchUnderlying> Underlyings { get => underlyings; set => SetProperty(ref underlyings, value); }
 
         private List<SaxoProduct> products;
         public List<SaxoProduct> Products { get => products; set => SetProperty(ref products, value); }
@@ -69,15 +70,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         private ObservableCollection<SaxoConfigEntry> entries;
         public ObservableCollection<SaxoConfigEntry> Entries { get => entries; set => SetProperty(ref entries, value); }
 
-        Entry previousEntry;
-        public void UnderlyingChanged(Entry entry)
+        SearchUnderlying previousEntry;
+        public void UnderlyingChanged(SearchUnderlying entry)
         {
             if (entry == previousEntry)
                 return;
             var newProducts = new List<SaxoProduct>();
             try
             {
-                var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?rowsPerPage=1000&underlying={entry.key}&locale=fr_BE");
+                var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?rowsPerPage=1000&underlying={entry.value}&locale=fr_BE");
                 //var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/list?page=1&rowsPerPage=1000&underlying={entry.key}&locale=fr_BE");
                 if (!string.IsNullOrEmpty(jsonData))
                 {

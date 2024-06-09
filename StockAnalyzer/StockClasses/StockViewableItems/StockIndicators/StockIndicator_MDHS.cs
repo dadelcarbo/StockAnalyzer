@@ -26,11 +26,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             int period = (int)this.parameters[0];
-            if (period > stockSerie.Count)
-            {
-                this.CreateEventSeries(stockSerie.Count);
-                return;
-            }
 
             // Calculate MDH Channel
             FloatSerie upLine = new FloatSerie(stockSerie.Count);
@@ -43,7 +38,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             downLine[0] = closeSerie[0];
             midLine[0] = closeSerie[0];
 
-            for (int i = 1; i <= period; i++)
+            for (int i = 1; i < Math.Min(period + 1, stockSerie.Count); i++)
             {
                 upLine[i] = closeSerie.GetMax(0, i);
                 downLine[i] = closeSerie.GetMin(0, i);

@@ -17,8 +17,8 @@
             <Label Margin="2" Content="Underlying"/>
             <telerik:RadAutoCompleteBox SelectionMode="Single"
                                         ItemsSource="{Binding Underlyings}"      
-                                        DisplayMemberPath="value"  
-                                        TextSearchPath="value"
+                                        DisplayMemberPath="label"  
+                                        TextSearchPath="label"
                                         TextSearchMode="Contains"
                                         WatermarkContent="Search underlying"
                                         NoResultsContent="No results found"

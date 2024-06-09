@@ -3,18 +3,10 @@
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
 {
     #region Underlying
-    public class Entry
-    {
-        public string key { get; set; }
-        public string title { get; set; }
-        public List<Entry> entries { get; set; }
-        public string value { get; set; }
-        public string url { get; set; }
-    }
 
     public class SaxoUnderlyings
     {
-        public List<Entry> entries { get; set; }
+        public List<SearchUnderlying> entries { get; set; }
     }
 
     #endregion
@@ -203,7 +195,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         public bool showOptionAll { get; set; }
         public bool showActionButtons { get; set; }
     }
-
 
     public class SearchUnderlying
     {
