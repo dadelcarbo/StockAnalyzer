@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -85,6 +86,36 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         #endregion
         #region STATIC HELPERS
+
+        static protected List<StockDailyValue> FixMinuteBars(IEnumerable<StockDailyValue> bars, int nbMinutes)
+        {
+            var previousBar = bars.First();
+            var newBars = new List<StockDailyValue>() { previousBar };
+
+            foreach (StockDailyValue bar in bars.Skip(1))
+            {
+                if (previousBar.DATE.Date == bar.DATE.Date)
+                {
+                    while ((bar.DATE - previousBar.DATE).Minutes > nbMinutes)
+                    {
+                        previousBar = new StockDailyValue(
+                            previousBar.CLOSE,
+                            previousBar.CLOSE,
+                            previousBar.CLOSE,
+                            previousBar.CLOSE,
+                            0,
+                            previousBar.DATE.AddMinutes(nbMinutes));
+                        newBars.Add(previousBar);
+                    }
+                }
+                newBars.Add(bar);
+                previousBar = bar;
+            }
+
+            return newBars;
+        }
+
+
         public static bool LoadSerieData(StockSerie serie)
         {
             IStockDataProvider dataProvider = GetDataProvider(serie.DataProvider);

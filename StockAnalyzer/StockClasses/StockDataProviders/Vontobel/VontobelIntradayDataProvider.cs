@@ -127,18 +127,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
                     }
                     else
                     {
-                        lastDate = refDate.AddMilliseconds(vontobelData.payload.series[0].points.Min(p => p.timestamp));
+                        lastDate = refDate.AddMilliseconds(vontobelData.payload.series[0].points.Min(p => p.timestamp)).ToLocalTime();
                     }
                     int nbNewBars = 0;
+                    List<StockDailyValue> newBars = new List<StockDailyValue>();
                     foreach (var bar in vontobelData.payload.series[0].points.Reverse())
                     {
-                        var newBar = new StockDailyValue(bar.bid, bar.bid, bar.bid, bar.bid, 0, refDate.AddMilliseconds(bar.timestamp));
-                        stockSerie.Add(newBar.DATE, newBar);
+                        var newBar = new StockDailyValue(bar.bid, bar.bid, bar.bid, bar.bid, 0, refDate.AddMilliseconds(bar.timestamp).ToLocalTime());
+                        newBars.Add(newBar);
+                        //stockSerie.Add(newBar.DATE, newBar);
                         nbNewBars++;
                     }
 
                     if (nbNewBars > 0)
                     {
+                        newBars = FixMinuteBars(newBars, 5);
+                        foreach (var bar in newBars)
+                        {
+                            stockSerie.Add(bar.DATE, bar);
+                        }
+
                         var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
                         var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 

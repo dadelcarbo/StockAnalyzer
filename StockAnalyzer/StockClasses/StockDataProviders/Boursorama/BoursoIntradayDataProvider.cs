@@ -198,33 +198,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
             return new DateTime(year, month, day).AddMinutes(minutes);
         }
-        static private List<StockDailyValue> Fix1MinuteBars(IEnumerable<StockDailyValue> bars)
-        {
-            var previousBar = bars.First();
-            var newBars = new List<StockDailyValue>() { previousBar };
-
-            foreach (StockDailyValue bar in bars.Skip(1))
-            {
-                if (previousBar.DATE.Date == bar.DATE.Date)
-                {
-                    while ((bar.DATE - previousBar.DATE).Minutes > 1)
-                    {
-                        previousBar = new StockDailyValue(
-                            previousBar.CLOSE,
-                            previousBar.CLOSE,
-                            previousBar.CLOSE,
-                            previousBar.CLOSE,
-                            0,
-                            previousBar.DATE.AddMinutes(1));
-                        newBars.Add(previousBar);
-                    }
-                }
-                newBars.Add(bar);
-                previousBar = bar;
-            }
-
-            return newBars;
-        }
 
         private static bool ParseBoursoData(StockSerie stockSerie, string fileName)
         {
@@ -244,7 +217,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                 var bars = boursoData?.d?.QuoteTab?.Select(d => new StockDailyValue(d.o, d.h, d.l, d.c, d.v, BoursoIntradayDateToDateTime(d.d))).Where(b => b.DATE >= lastDate).ToList();
                 if (bars.Count > 0)
                 {
-                    bars = Fix1MinuteBars(bars);
+                    bars = FixMinuteBars(bars, 1);
 
                     foreach (var bar in bars)
                     {
