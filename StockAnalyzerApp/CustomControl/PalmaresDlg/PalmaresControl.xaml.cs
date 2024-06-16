@@ -65,7 +65,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             {
                 column.IsVisible = true;
                 var header = ViewModel.Indicator1.Split('(')[0];
-                column.Header = header;
+                column.Header = ViewModel.Indicator1;
                 if (header == "ROR" || header == "ROD" || header == "ROC" || header == "VCP")
                 {
                     column.DataFormatString = "P2";
@@ -84,7 +84,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             {
                 column.IsVisible = true;
                 var header = ViewModel.Indicator2.Split('(')[0];
-                column.Header = header;
+                column.Header = ViewModel.Indicator2;
                 if (header == "ROR" || header == "ROD" || header == "ROC" || header == "VCP")
                 {
                     column.DataFormatString = "P2";
@@ -103,7 +103,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             {
                 column.IsVisible = true;
                 var header = ViewModel.Indicator3.Split('(')[0];
-                column.Header = header;
+                column.Header = ViewModel.Indicator3;
                 if (header == "ROR" || header == "ROD" || header == "ROC" || header == "VCP")
                 {
                     column.DataFormatString = "P2";
