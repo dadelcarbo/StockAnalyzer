@@ -25,7 +25,10 @@ namespace Saxo.OpenAPI.TradingServices
         }
         private static readonly List<Instrument> InstrumentCache;
 
-        static readonly string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
+        //static readonly string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
+
+        static readonly string ASSET_TYPES = "MutualFund%2CCertificateUncappedCapitalProtection%2CCertificateCappedCapitalProtected%2CCertificateDiscount%2CCertificateCappedOutperformance%2CCertificateCappedBonus%2CCertificateExpress%2CCertificateTracker%2CCertificateUncappedOutperformance%2CCertificateBonus%2CCertificateConstantLeverage%2CStock%2CEtf%2CEtc%2CEtn%2CFund%2CRights%2CMiniFuture%2CWarrantKnockOut%2CWarrantOpenEndKnockOut%2CWarrantDoubleKnockOut%2CSrdOnStock%2CSrdOnEtf%2CIpoOnStock%2CCompanyWarrant%2CStockIndex";
+
         public Instrument GetInstrumentByIsin(string isin)
         {
             try
@@ -37,9 +40,13 @@ namespace Saxo.OpenAPI.TradingServices
                 }
                 else
                 {
-                    var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes={ASSET_TYPES}";
+                    var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes={ASSET_TYPES}&includeNonTradable=true";
                     var instruments = Get<Instruments>(method);
-                    if (instruments.Data.Length > 1)
+                    if (instruments.Data.Length == 0)
+                    {
+                        return null;
+                    }
+                    else if (instruments.Data.Length > 1)
                     {
                         instrument = instruments.Data.FirstOrDefault(i => i.ExchangeId.StartsWith("PAR"));
                         instrument ??= instruments.Data.First();

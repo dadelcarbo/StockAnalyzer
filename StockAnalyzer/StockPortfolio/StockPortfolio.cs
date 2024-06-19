@@ -830,14 +830,14 @@ namespace StockAnalyzer.StockPortfolio
                 var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
                 if (instrument == null)
                 {
-                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return 0;
                 }
 
                 var instrumentDetail = instrumentService.GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
                 if (instrumentDetail == null)
                 {
-                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return 0;
                 }
                 decimal stop = instrumentDetail.RoundToTickSize(stopValue);
@@ -886,14 +886,14 @@ namespace StockAnalyzer.StockPortfolio
                 var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
                 if (instrument == null)
                 {
-                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return 0;
                 }
 
                 var instrumentDetail = instrumentService.GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
                 if (instrumentDetail == null)
                 {
-                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return 0;
                 }
 
@@ -1118,14 +1118,14 @@ namespace StockAnalyzer.StockPortfolio
                 var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
                 if (instrument == null)
                 {
-                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return null;
                 }
 
                 var instrumentDetail = instrumentService.GetInstrumentDetailsById(instrument.Identifier, instrument.AssetType, account);
                 if (instrumentDetail == null)
                 {
-                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.StockName} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return null;
                 }
                 return instrumentDetail;
