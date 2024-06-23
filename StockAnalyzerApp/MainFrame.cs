@@ -158,6 +158,8 @@ namespace StockAnalyzerApp
                         portfolio = value;
                         this.graphCloseControl.ForceRefresh();
                     }
+                    if (portfolio == null)
+                        return;
 
                     // Update Connectivity Status
                     if (portfolio.SaxoSilentLogin())
@@ -488,6 +490,8 @@ namespace StockAnalyzerApp
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portfolio data...";
 
+            var portfolioDataProvider = PortfolioDataProvider.GetDataProvider(StockDataProvider.Portfolio);
+            portfolioDataProvider.InitDictionary(StockDictionary, false);
             InitialisePortfolioCombo();
             Portfolio = PortfolioDataProvider.Portfolios.First();
 
