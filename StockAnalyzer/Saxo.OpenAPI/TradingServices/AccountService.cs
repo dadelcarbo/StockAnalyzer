@@ -80,7 +80,7 @@ namespace Saxo.OpenAPI.TradingServices
                     return null;
                 return JsonConvert.DeserializeObject<ClosedPositions>(content);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
