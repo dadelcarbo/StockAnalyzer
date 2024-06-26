@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using StockAnalyzer.StockLogging;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -38,6 +39,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                         position.Theme = this.TradeViewModel.Theme;
                         position.BarDuration = this.TradeViewModel.BarDuration;
                     }
+                }
+                else
+                {
+                    StockLog.Write("orderId=0");
                 }
             }
             else if (this.TradeViewModel.LimitOrder)
