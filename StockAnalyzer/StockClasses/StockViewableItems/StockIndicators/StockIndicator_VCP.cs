@@ -11,20 +11,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override bool RequiresVolumeData => false;
 
-        public override string[] ParameterNames => new string[] { "LongPeriod", "ShortPeriod" };
+        public override string[] ParameterNames => new string[] { "LongPeriod", "ShortPeriod", "ROR Trigger" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 35, 3 };
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
+        public override Object[] ParameterDefaultValues => new Object[] { 35, 3, 0.2f };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 10f) };
         public override string[] SerieNames => new string[] { "VCP(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Black, 1) };
-                return seriePens;
-            }
-        }
+        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black, 1) };
+
         HLine[] lines;
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(.25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }) };
 
@@ -32,21 +26,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             var longPeriod = (int)parameters[0];
             var shortPeriod = (int)parameters[1];
+            var rorTrigger = (float)parameters[2];
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             var rorSerie = stockSerie.GetIndicator($"ROR({longPeriod})").Series[0];
 
             FloatSerie vcpSerie = new FloatSerie(stockSerie.Count);
             for (int i = longPeriod; i < stockSerie.Count; i++)
             {
-                var longRangeHigh = highSerie.GetMax(i - longPeriod + 1, i);
-                var longRangeLow = lowSerie.GetMin(i - longPeriod + 1, i);
-                var shortRangeHigh = highSerie.GetMax(i - shortPeriod + 1, i);
-                var shortRangeLow = lowSerie.GetMin(i - shortPeriod + 1, i);
-
-                //vcpSerie[i] = (longRangeHigh - longRangeLow) / (shortRangeHigh - shortRangeLow);
-                vcpSerie[i] = rorSerie[i] / (shortRangeHigh - shortRangeLow);
+                if (rorSerie[i] > rorTrigger)
+                {
+                    var longRangeHigh = highSerie.GetMax(i - longPeriod + 1, i);
+                    var longRangeLow = lowSerie.GetMin(i - longPeriod + 1, i);
+                    var shortRangeHigh = highSerie.GetMax(i - shortPeriod + 1, i);
+                    var shortRangeLow = lowSerie.GetMin(i - shortPeriod + 1, i);
+                    vcpSerie[i] = (longRangeHigh - longRangeLow) / (shortRangeHigh - shortRangeLow);
+                }
             }
 
             this.Series[0] = vcpSerie;
