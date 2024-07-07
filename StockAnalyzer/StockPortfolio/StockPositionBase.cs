@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -41,11 +42,11 @@ namespace StockAnalyzer.StockPortfolio
         {
             if (this.IsClosed)
             {
-                Console.WriteLine($"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} EndDate:{ExitDate.Value.ToShortDateString()}");
+                StockLog.Write($"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} EndDate:{ExitDate.Value.ToShortDateString()}");
             }
             else
             {
-                Console.WriteLine($"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} Opened");
+                StockLog.Write($"Name: {StockName} Qty:{EntryQty} StartDate:{EntryDate.ToShortDateString()} Opened");
             }
         }
 

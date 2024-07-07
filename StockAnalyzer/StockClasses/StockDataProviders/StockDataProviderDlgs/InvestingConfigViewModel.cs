@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockWeb;
+﻿using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System.Collections.Generic;
@@ -94,7 +95,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             InvestingConfigEntry.SaveToFile(this.Entries, Path.Combine(Folders.PersonalFolder, FileName));
 
-            System.Console.WriteLine(Settings.Default.InvestingUrlRoot);
+            StockLog.Write(Settings.Default.InvestingUrlRoot);
             Settings.Default.Save();
         }
         private ICommand _addCommand;

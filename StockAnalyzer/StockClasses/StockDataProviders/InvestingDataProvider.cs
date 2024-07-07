@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        Console.WriteLine("Investing Daily Entry: " + row[2] + " already in stockDictionary");
+                        StockLog.Write("Investing Daily Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }

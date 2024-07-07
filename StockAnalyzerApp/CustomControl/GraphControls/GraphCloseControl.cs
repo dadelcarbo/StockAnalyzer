@@ -1972,7 +1972,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 point2 = new PointF(mouseValuePoint.X, point1.Y);
             }
-            Console.WriteLine("DrawingMode: " + this.DrawingMode + "DrawingStep: " + this.DrawingStep);
+            StockLog.Write("DrawingMode: " + this.DrawingMode + "DrawingStep: " + this.DrawingStep);
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddLine:

@@ -52,6 +52,7 @@ namespace StockAnalyzer.StockClasses
             ITALIA,
             GERMANY,
             SPAIN,
+            NASDAQ,
             USA,
             SAXO,
             INDICES,
@@ -3119,7 +3120,7 @@ namespace StockAnalyzer.StockClasses
             //bars.Reverse();
             if (this.ValueArray.Length != stockSerie.Count)
             {
-                Console.WriteLine("Here!");
+                StockLog.Write("Here!");
             }
             // Initialise the serie
             stockSerie.Initialise();

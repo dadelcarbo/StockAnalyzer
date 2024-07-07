@@ -245,7 +245,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
                     }
                     else
                     {
-                        Console.WriteLine("Vontobel Intraday Entry: " + row[1] + " already in stockDictionary");
+                        StockLog.Write("Vontobel Intraday Entry: " + row[1] + " already in stockDictionary");
                     }
                 }
             }

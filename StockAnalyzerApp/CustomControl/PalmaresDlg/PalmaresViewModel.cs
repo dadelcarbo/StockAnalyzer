@@ -266,6 +266,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 canceled = false;
             }
             ProgressVisibility = Visibility.Visible;
+            this.Progress = 0;
 
             #region Sanity Check
             IStockIndicator viewableSeries1 = null;
@@ -325,6 +326,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             Lines = new ObservableCollection<PalmaresLine>();
             OnPropertyChanged("Lines");
+            await Task.Delay(10);
 
             try
             {

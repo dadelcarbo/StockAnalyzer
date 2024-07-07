@@ -139,7 +139,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             GenerateColumns();
 
-            await Task.Run(async () => await this.ViewModel.CalculateAsync());
+            await this.ViewModel.CalculateAsync();
 
             this.Cursor = Cursors.Arrow;
         }

@@ -2,6 +2,7 @@
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -200,7 +201,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
                             trades.Add(trade);
                             if (stop > 0 && trade.Gain < 0 && trade.Gain < -0.01 * this.stop)
                             {
-                                Console.WriteLine("Here");
+                                StockLog.Write("Here");
                             }
                             trade = null;
                         }

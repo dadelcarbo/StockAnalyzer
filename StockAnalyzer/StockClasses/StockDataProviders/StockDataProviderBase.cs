@@ -270,7 +270,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    StockLog.Write(e.Message);
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace StockAnalyzer.StockAgent
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"EntryTarget: {this.GetType()} Exception: {ex.Message}");
+                StockLog.Write($"EntryTarget: {this.GetType()} Exception: {ex.Message}");
                 return false;
             }
         }

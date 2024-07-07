@@ -80,7 +80,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        Console.WriteLine("YahooIntraday Daily Entry: " + row[2] + " already in stockDictionary");
+                        StockLog.Write("YahooIntraday Daily Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }

@@ -317,6 +317,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_TRAILATR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_Amsterdam.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreenerBase.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMAHL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMCCLELLAN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTURTLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILMONTREUX.cs" />
