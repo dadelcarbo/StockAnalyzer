@@ -63,6 +63,13 @@
                     <TextBox Text="{Binding Indicator3}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
+            <GroupBox Header="ATH" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox Content="ATH Only" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="75" IsChecked="{Binding AthOnly}"/>
+                    <telerik:RadNumericUpDown Value="{Binding Ath1}" Minimum="1" Maximum="1000" NumberDecimalDigits="0" Height="24" Margin="1" VerticalContentAlignment="Center"/>
+                    <telerik:RadNumericUpDown Value="{Binding Ath2}" Minimum="0" Maximum="1000" NumberDecimalDigits="0" Height="24" Margin="1" VerticalContentAlignment="Center"/>
+                </StackPanel>
+            </GroupBox>
             <GroupBox Header="Execute" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal" Margin="1">
                     <Button Content="{Binding RunStatus}" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>

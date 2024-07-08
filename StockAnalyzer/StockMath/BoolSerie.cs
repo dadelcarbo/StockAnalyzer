@@ -8,7 +8,7 @@ namespace StockAnalyzer.StockMath
         public string Name { get; set; }
         public bool[] Values { get; set; }
 
-        public BoolSerie(int size, string name)
+        public BoolSerie(int size, string name = null)
         {
             this.Values = new bool[size];
             this.Name = name;
@@ -44,6 +44,27 @@ namespace StockAnalyzer.StockMath
             }
             return res;
         }
+
+        public bool Or(int startIndex, int endIndex)
+        {
+            var res = false;
+            for (int i = startIndex; !res && i <= endIndex; i++)
+            {
+                res |= Values[i];
+            }
+            return res;
+        }
+
+        public bool And(int startIndex, int endIndex)
+        {
+            var res = true;
+            for (int i = startIndex; res && i <= endIndex; i++)
+            {
+                res &= Values[i];
+            }
+            return res;
+        }
+
 
 
         public int Count => this.Values.Count();

@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
         public override object[] ParameterDefaultValues => new Object[] { 175, 35 };
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(0, 500) };
         public override string[] ParameterNames => new string[] { "Trigger", "Period" };
 
         public override string[] SerieNames => new string[] { $"ATH({this.Parameters[0]},{this.Parameters[1]})" };
@@ -22,8 +22,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
-            FloatSerie indexSerie = new FloatSerie(stockSerie.Count);
-            this.series[0] = indexSerie;
+            BoolSerie athBoolSerie = new BoolSerie(stockSerie.Count);
+            FloatSerie athSerie = new FloatSerie(stockSerie.Count);
+            this.series[0] = athSerie;
             this.Series[0].Name = this.Name;
 
             int trigger = (int)this.Parameters[0];
@@ -42,9 +43,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         break;
                     }
                 }
-                indexSerie[i] = highest ? 1.0f : 0.0f;
+                athBoolSerie[i] = highest;
 
-                if (indexSerie[i] > indexSerie[i - 1])
+            }
+            for (int i = trigger + period; i < stockSerie.Count; i++)
+            {
+                athSerie[i] = athBoolSerie.Or(i - period, i) ? 1.0f : 0.0f;
+
+                if (athSerie[i] > athSerie[i - 1])
                 {
                     this.eventSeries[0][i] = true;
                 }

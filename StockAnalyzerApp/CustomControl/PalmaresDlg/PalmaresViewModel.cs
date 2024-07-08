@@ -91,6 +91,48 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        private bool athOnly = false;
+        public bool AthOnly
+        {
+            get { return athOnly; }
+            set
+            {
+                if (value != athOnly)
+                {
+                    athOnly = value;
+                    OnPropertyChanged("AthOnly");
+                }
+            }
+        }
+
+        private int ath1 = 175;
+        public int Ath1
+        {
+            get { return ath1; }
+            set
+            {
+                if (value != ath1)
+                {
+                    ath1 = value;
+                    OnPropertyChanged("Ath1");
+                }
+            }
+        }
+
+        private int ath2 = 35;
+        public int Ath2
+        {
+            get { return ath2; }
+            set
+            {
+                if (value != ath2)
+                {
+                    ath2 = value;
+                    OnPropertyChanged("Ath2");
+                }
+            }
+        }
+
         private bool bullOnly = true;
         public bool BullOnly
         {
@@ -159,6 +201,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         }
 
         public ObservableCollection<string> Settings { get; set; }
+
         private string setting;
         public string Setting
         {
@@ -365,11 +408,22 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     var endIndex = stockSerie.LastIndex;
 
+
+                    #region Calculate ATH
+                    var ath = stockSerie.GetIndicator($"ATH({ath1},{ath2})").Series[0][endIndex] > 0.5f;
+                    if (!ath && athOnly)
+                        continue;
+                    #endregion
+
+
+
                     var lastBar = stockSerie.Values.ElementAt(endIndex);
                     float lastValue = lastBar.CLOSE;
                     var firstValue = closeSerie[endIndex - 1];
                     float barVariation = (lastValue - firstValue) / firstValue;
                     var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
+
+
 
                     float stopValue = float.NaN;
                     if (trailStopSerie != null)
@@ -402,8 +456,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         }
                     }
 
-                    #region Calculate variation
-
+                    #region Calculate Highest
                     int highest = 0;
                     for (int i = endIndex - 1; i > 0; i--)
                     {
@@ -416,8 +469,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                             break;
                         }
                     }
-
                     #endregion
+
                     #region Calculate Indicators
                     float stockIndicator1 = float.NaN;
                     if (viewableSeries1 != null)
@@ -435,6 +488,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
                     }
                     #endregion
+
 
                     Lines.Add(new PalmaresLine
                     {

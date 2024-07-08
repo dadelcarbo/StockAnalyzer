@@ -368,6 +368,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Indicator1 = this.ViewModel.Indicator1,
                     Indicator2 = this.ViewModel.Indicator2,
                     Indicator3 = this.ViewModel.Indicator3,
+
+                    AthOnly = this.ViewModel.AthOnly,
+                    Ath1 = this.ViewModel.Ath1,
+                    Ath2 = this.ViewModel.Ath2,
+
                     Stop = this.ViewModel.Stop,
                     BullOnly = this.ViewModel.BullOnly,
                     Screener = this.ViewModel.Screener,
@@ -410,6 +415,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
                 this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
                 this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
+
+                this.ViewModel.AthOnly = palmaresSettings.AthOnly;
+                this.ViewModel.Ath1 = palmaresSettings.Ath1;
+                this.ViewModel.Ath2 = palmaresSettings.Ath2;
+
                 this.ViewModel.Screener = palmaresSettings.Screener;
                 this.ViewModel.Stop = palmaresSettings.Stop;
                 this.ViewModel.BullOnly = palmaresSettings.BullOnly;
