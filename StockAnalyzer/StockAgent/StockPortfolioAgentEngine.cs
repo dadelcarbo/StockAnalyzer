@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,7 @@ namespace StockAnalyzer.StockAgent
 
                     if (agent.CanClose(index))
                     {
-                        Console.WriteLine($"{date.ToShortDateString()} - Sell {trade.Serie.StockName}");
+                        StockLog.Write($"{date.ToShortDateString()} - Sell {trade.Serie.StockName}");
                         trade.CloseAtOpen(index + 1);
                         equity += trade.ExitAmount;
                         cash += trade.ExitAmount;
@@ -105,7 +106,7 @@ namespace StockAnalyzer.StockAgent
                     {
                         foreach (var tuple in buyOpportunities.OrderByDescending(b => b.Item2.RankSerie[b.Item1]).Take(nbBuys))
                         {
-                            Console.WriteLine($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
+                            StockLog.Write($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
                             var trade = new StockTrade(tuple.Item2.StockSerie, tuple.Item1 + 1);
 
                             trade.Qty = (int)(cash / (positionManagement.MaxPositions - openTrades.Count) / trade.EntryValue);
@@ -120,7 +121,7 @@ namespace StockAnalyzer.StockAgent
                         float portfolioRisk = equity * 0.01f * positionManagement.PortfolioRisk;
                         foreach (var tuple in buyOpportunities.OrderByDescending(b => b.Item2.RankSerie[b.Item1]))
                         {
-                            Console.WriteLine($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
+                            StockLog.Write($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
                             var trade = new StockTrade(tuple.Item2.StockSerie, tuple.Item1 + 1);
 
                             // Calculate position sizing
@@ -140,8 +141,8 @@ namespace StockAnalyzer.StockAgent
 
                 equityCurve[i] = new EquityValue { X = i, Y = equity, Ref = refEquity, NbPos = openTrades.Count };
                 i++;
-                Console.WriteLine($"Equity:{equity}");
-                Console.WriteLine($"Cash:{cash}");
+                StockLog.Write($"Equity:{equity}");
+                StockLog.Write($"Cash:{cash}");
             }
         }
 

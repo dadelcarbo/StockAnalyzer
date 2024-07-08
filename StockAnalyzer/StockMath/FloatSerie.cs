@@ -1197,6 +1197,7 @@ namespace StockAnalyzer.StockMath
             }
             return false;
         }
+
         public bool IsTopIsh(int index)
         {
             if (index > 0 && index < this.Count - 1)

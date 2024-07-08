@@ -87,7 +87,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     downloads.Remove(url);
                     return res;
                 }
-                Console.WriteLine("DL-HttpGetFromInvesting: " + Thread.CurrentThread.ManagedThreadId);
+                StockLog.Write("DL-HttpGetFromInvesting: " + Thread.CurrentThread.ManagedThreadId);
                 Task.Run(() => DownloadData(url));
 
                 int tries = 100;
@@ -109,18 +109,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             while (wb.IsBusy)
             {
-                Console.WriteLine("DL-Wait busy web browser");
+                StockLog.Write("DL-Wait busy web browser");
                 Thread.Sleep(100);
             }
-            Console.WriteLine("DL-DownloadData: " + Thread.CurrentThread.ManagedThreadId);
+            StockLog.Write("DL-DownloadData: " + Thread.CurrentThread.ManagedThreadId);
             wb.Navigate(url.ToString());
         }
 
         static readonly SortedDictionary<string, string> downloads = new SortedDictionary<string, string>();
         private static void Wb_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
-            Console.WriteLine("DL-Wb_Navigated: " + Thread.CurrentThread.ManagedThreadId);
-            Console.WriteLine(wb.DocumentText);
+            StockLog.Write("DL-Wb_Navigated: " + Thread.CurrentThread.ManagedThreadId);
+            StockLog.Write(wb.DocumentText);
             downloads.Add(e.Url.ToString(), wb.DocumentText);
         }
 
@@ -315,7 +315,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        Console.WriteLine("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
+                        StockLog.Write("Investing Intraday Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }

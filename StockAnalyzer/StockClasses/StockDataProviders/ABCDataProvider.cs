@@ -330,6 +330,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ITALIA);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.GERMANY);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SPAIN);
+            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.NASDAQ);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120, false);
             DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC_AT, false);
@@ -475,6 +476,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 "IT" => "i",
                                 "ES" => "m",
                                 "PT" => "I",
+                                "US" => "u",
                                 _ => string.Empty
                             };
                             stockDictionary.Add(stockName, stockSerie);
@@ -546,6 +548,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.SECTORS_CAC:
                     return line.StartsWith("QS");
                 case StockSerie.Groups.USA:
+                case StockSerie.Groups.NASDAQ:
                     return line.StartsWith("US");
                 case StockSerie.Groups.ITALIA:
                     return line.StartsWith("IT");
@@ -746,6 +749,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.GERMANY:
                     abcGroup = "germanyf";
                     break;
+                case StockSerie.Groups.NASDAQ:
+                    abcGroup = "nasu";
+                    break;
                 case StockSerie.Groups.SRD:
                     abcGroup = "srdp";
                     break;
@@ -911,6 +917,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.ITALIA);
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.GERMANY);
                             DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.SPAIN);
+                            DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.NASDAQ);
                             return true;
                         }
                     }
@@ -971,6 +978,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.ITALIA);
                                 DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.GERMANY);
                                 DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.SPAIN);
+                                DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.NASDAQ);
                             }
                         }
 
@@ -1060,7 +1068,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     downloadingGroups = "True";
                     var groups = new StockSerie.Groups[] {
                         StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL,
-                        StockSerie.Groups.ITALIA, StockSerie.Groups.GERMANY, StockSerie.Groups.SPAIN,
+                        StockSerie.Groups.ITALIA, StockSerie.Groups.GERMANY, StockSerie.Groups.SPAIN, StockSerie.Groups.NASDAQ,
                         StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
 
                     foreach (var group in groups)

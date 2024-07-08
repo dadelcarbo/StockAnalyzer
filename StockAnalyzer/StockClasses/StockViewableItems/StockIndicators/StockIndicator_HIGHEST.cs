@@ -9,33 +9,27 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string Definition => "Calculate the number of bars the current bar is the highest.\r\nEvent is raised when gap with previous value exceeds the trigger parameter.";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
-        public override object[] ParameterDefaultValues => new Object[] { 20 };
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
+        public override object[] ParameterDefaultValues => new Object[] { 0 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
         public override string[] ParameterNames => new string[] { "Trigger" };
 
         public override string[] SerieNames => new string[] { "HIGHEST(" + this.Parameters[0].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Black) };
-                return seriePens;
-            }
-        }
+        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
+
         public override HLine[] HorizontalLines => null;
 
         public override void ApplyTo(StockSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
-            FloatSerie indexSerie = new FloatSerie(stockSerie.Count);
-            this.series[0] = indexSerie;
+            FloatSerie highestSerie = new FloatSerie(stockSerie.Count);
+            this.series[0] = highestSerie;
             this.Series[0].Name = this.Name;
 
-            int trigger = Math.Max(1, (int)this.Parameters[0]);
+            int maxIn = (int)this.Parameters[0];
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-            for (int i = trigger; i < stockSerie.Count; i++)
+            for (int i = maxIn + 1; i < stockSerie.Count; i++)
             {
                 int count = 0;
                 for (int j = i - 1; j >= 0; j--)
@@ -49,12 +43,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         break;
                     }
                 }
-                indexSerie[i] = count;
+                highestSerie[i] = count;
 
-                if (indexSerie[i] - indexSerie[i - 1] >= trigger)
+                if (highestSerie[i] > highestSerie[i - 1])
                 {
                     this.eventSeries[0][i] = true;
                 }
+            }
+            if (maxIn >= 1)
+            {
+                FloatSerie indexSerie = new FloatSerie(stockSerie.Count);
+                for (int i = maxIn; i < stockSerie.Count; i++)
+                {
+                    indexSerie[i] = highestSerie.GetMax(i - maxIn, i);
+                }
+                this.series[0] = indexSerie;
             }
         }
         static readonly string[] eventNames = new string[] { "NewHigh" };

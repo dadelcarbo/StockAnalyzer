@@ -378,7 +378,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        Console.WriteLine("Saxo Intraday Entry: " + row[1] + " already in stockDictionary");
+                        StockLog.Write("Saxo Intraday Entry: " + row[1] + " already in stockDictionary");
                     }
                 }
             }

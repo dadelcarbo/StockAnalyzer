@@ -185,7 +185,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        Console.WriteLine("SocGen Intraday Entry: " + row[2] + " already in stockDictionary");
+                        StockLog.Write("SocGen Intraday Entry: " + row[2] + " already in stockDictionary");
                     }
                 }
             }
