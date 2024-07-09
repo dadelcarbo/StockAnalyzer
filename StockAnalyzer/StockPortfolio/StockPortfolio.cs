@@ -656,7 +656,7 @@ namespace StockAnalyzer.StockPortfolio
                 return;
 
             var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
-            if (this.Performance == null || this.Performance.Balance.AccountValue.Last().Date < lastCacDate)
+            if (this.Performance?.Balance?.AccountValue == null || this.Performance.Balance.AccountValue.Last().Date < lastCacDate)
             {
                 this.Performance = accountService.GetPerformance(account);
                 this.MaxValue = Math.Max(this.MaxValue, this.Performance.Balance.AccountValue.Max(v => v.Value));
