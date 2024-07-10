@@ -929,6 +929,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             var allianzSerie = stockDictionary["ALLIANZ SE"];
                             if (allianzSerie.Initialise() && allianzSerie.Count > 0)
                                 this.needDownload = allianzSerie.LastValue.DATE < lastLoadedCAC40Date;
+
+                            if (!needDownload)
+                            {
+                                var appleSerie = stockDictionary["APPLE INC."];
+                                if (appleSerie.Initialise() && appleSerie.Count > 0)
+                                    this.needDownload = appleSerie.LastValue.DATE < lastLoadedCAC40Date;
+                            }
                         }
                         if (!needDownload)
                             return true;

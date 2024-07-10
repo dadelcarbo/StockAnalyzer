@@ -12,7 +12,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public string Indicator2 { get; set; }
         public string Indicator3 { get; set; }
         public bool AthOnly { get; set; }
-        public int Ath1 { get; set; }
+        public int Ath1 { get; set; } = 1;
         public int Ath2 { get; set; }
         public string Stop { get; set; }
         public bool BullOnly { get; set; }
