@@ -51,7 +51,6 @@ namespace StockAnalyzer.StockClasses
             ITALIA,
             GERMANY,
             SPAIN,
-            NASDAQ,
             USA,
             SAXO,
             INDICES,
