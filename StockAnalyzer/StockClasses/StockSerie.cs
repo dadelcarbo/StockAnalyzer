@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -72,6 +71,7 @@ namespace StockAnalyzer.StockClasses
             TURBO,
             Portfolio,
             Replay,
+            ALL_STOCKS,
             ALL
         }
 
@@ -2832,6 +2832,8 @@ namespace StockAnalyzer.StockClasses
             {
                 case Groups.ALL:
                     return true;
+                case Groups.ALL_STOCKS:
+                    return DataProvider == StockDataProvider.ABC;
                 case Groups.CAC40:
                     return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
                 case Groups.SBF120:
