@@ -157,10 +157,19 @@ namespace StockAnalyzer.StockClasses
         {
             return "Date,Open,High,Low,Close,Volume,Adj Close";
         }
+
         public override string ToString()
         {
-            return DATE.ToString("s") + "," + OPEN.ToString(usCulture) + "," + HIGH.ToString(usCulture) + "," + LOW.ToString(usCulture) + "," + CLOSE.ToString(usCulture)
-                + "," + VOLUME.ToString(usCulture);
+            return DATE.ToString("s") + "," + OPEN.ToString(usCulture) + "," + HIGH.ToString(usCulture) + "," + LOW.ToString(usCulture) + "," + CLOSE.ToString(usCulture) + "," + VOLUME.ToString(usCulture);
+        }
+
+        internal void ApplyRatio(float ratio)
+        {
+            this.OPEN *= ratio;
+            this.HIGH *= ratio;
+            this.LOW *= ratio;
+            this.CLOSE *= ratio;
+            this.VOLUME = (long)(this.VOLUME / ratio);
         }
         #endregion
 

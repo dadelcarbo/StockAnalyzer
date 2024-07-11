@@ -1,3 +1,5 @@
+using System;
+
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public enum StockDataProvider
@@ -41,5 +43,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         /// <param name="stockSerie"></param>
         /// <returns></returns>
         bool RemoveEntry(StockSerie stockSerie);
+
+        void ApplySplit(StockSerie stockSerie, DateTime date, float ratio);
+        void ApplyTrim(StockSerie stockSerie, DateTime upToDate);
     }
 }

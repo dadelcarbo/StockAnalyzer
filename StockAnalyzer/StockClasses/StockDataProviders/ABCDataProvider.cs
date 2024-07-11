@@ -1573,5 +1573,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 Process.Start(url);
             }
         }
+
+        public override void ApplySplit(StockSerie stockSerie, DateTime date, float ratio)
+        {
+            if (!stockSerie.Initialise())
+                return;
+
+            var barDuration = stockSerie.BarDuration;
+            stockSerie.BarDuration = BarDuration.Daily;
+
+            foreach(var value in stockSerie.Values.Where(v=>v.DATE < date))
+            {
+                value.ApplyRatio(ratio);
+            }
+
+            SaveToCSV(stockSerie);
+
+            stockSerie.BarDuration = barDuration;
+        }
     }
 }

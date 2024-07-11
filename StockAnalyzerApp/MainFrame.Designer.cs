@@ -82,8 +82,10 @@ namespace StockAnalyzerApp
             this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stockSplitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.palmaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
             this.agentTunningMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -568,19 +570,21 @@ namespace StockAnalyzerApp
             // analysisMenuItem
             // 
             this.analysisMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.stockScannerMenuItem,
-            this.palmaresMenuItem,
-            this.toolStripSeparator10,
-            this.agentTunningMenuItem,
-            this.portfolioSimulationMenuItem,
-            this.toolStripSeparator8,
-            this.showAlertDialogMenuItem,
-            this.showAlertDefDialogMenuItem,
-            this.tweetMenuItem,
-            this.sectorMenuItem,
-            this.bestTrendMenuItem,
-            this.expectedValueMenuItem,
-            this.statisticsMenuItem});
+                this.stockSplitMenuItem,
+                this.toolStripSeparator19,
+                this.stockScannerMenuItem,
+                this.palmaresMenuItem,
+                this.toolStripSeparator10,
+                this.agentTunningMenuItem,
+                this.portfolioSimulationMenuItem,
+                this.toolStripSeparator8,
+                this.showAlertDialogMenuItem,
+                this.showAlertDefDialogMenuItem,
+                this.tweetMenuItem,
+                this.sectorMenuItem,
+                this.bestTrendMenuItem,
+                this.expectedValueMenuItem,
+                this.statisticsMenuItem });
             this.analysisMenuItem.Name = "analysisMenuItem";
             this.analysisMenuItem.Size = new System.Drawing.Size(62, 20);
             this.analysisMenuItem.Text = "Analysis";
@@ -591,6 +595,18 @@ namespace StockAnalyzerApp
             this.stockScannerMenuItem.Size = new System.Drawing.Size(240, 22);
             this.stockScannerMenuItem.Text = "Stock Scanner";
             this.stockScannerMenuItem.Click += new System.EventHandler(this.stockScannerMenuItem_Click);
+            // 
+            // stockSplitMenuItem
+            // 
+            this.stockSplitMenuItem.Name = "stockSplitMenuItem";
+            this.stockSplitMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.stockSplitMenuItem.Text = "Stock Split";
+            this.stockSplitMenuItem.Click += new System.EventHandler(this.stockSplitMenuItem_Click);
+            // 
+            // toolStripSeparator19
+            // 
+            this.toolStripSeparator19.Name = "toolStripSeparator19";
+            this.toolStripSeparator19.Size = new System.Drawing.Size(237, 6);
             // 
             // palmaresMenuItem
             // 
@@ -1574,6 +1590,7 @@ namespace StockAnalyzerApp
         private ToolStripButton copyIsinBtn;
         private ToolStripSeparator toolStripSeparator8;
         private ToolStripSeparator toolStripSeparator20;
+        private ToolStripSeparator toolStripSeparator19;
         private ToolStripMenuItem currentPortfolioMenuItem;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
         private ToolStripMenuItem marketReplayViewMenuItem;
@@ -1637,6 +1654,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem eraseDrawingsToolStripMenuItem;
         private ToolStripMenuItem eraseAllDrawingsToolStripMenuItem;
         private ToolStripMenuItem stockScannerMenuItem;
+        private ToolStripMenuItem stockSplitMenuItem;
         private ToolStripSeparator toolStripSeparator18;
         private ToolStripMenuItem saveThemeMenuItem;
         private ToolStripMenuItem newAnalysisMenuItem;

@@ -4,8 +4,6 @@ using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
-using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -34,6 +32,7 @@ using StockAnalyzerApp.CustomControl.PalmaresControl;
 using StockAnalyzerApp.CustomControl.PortfolioDlg;
 using StockAnalyzerApp.CustomControl.SectorDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
+using StockAnalyzerApp.CustomControl.SplitDlg;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
 using StockAnalyzerApp.CustomControl.TweetDlg;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
@@ -3375,6 +3374,18 @@ namespace StockAnalyzerApp
             this.NotifyThemeChanged += stockScannerDlg.OnThemeChanged;
             this.NotifyBarDurationChanged += stockScannerDlg.OnBarDurationChanged;
 
+        }
+        #endregion
+        #region Stock Split Dlg
+        private StockSplitDlg stockSplitDlg = null;
+        private void stockSplitMenuItem_Click(object sender, EventArgs e)
+        {
+            var stockSplitDlg = new StockSplitDlg();
+            var res = stockSplitDlg.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                this.ApplyTheme();
+            }
         }
         #endregion
 

@@ -582,6 +582,15 @@
     <Compile Include="CustomControl\ListViewEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControl\SplitDlg\StockSplitControl.xaml.cs">
+      <DependentUpon>StockSplitControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SplitDlg\StockSplitDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\SplitDlg\StockSplitDlg.Designer.cs">
+      <DependentUpon>StockSplitDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\StockAlertDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -839,6 +848,9 @@
     <EmbeddedResource Include="CustomControl\PreferenceDialog.resx">
       <DependentUpon>PreferenceDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SplitDlg\StockSplitDlg.resx">
+      <DependentUpon>StockSplitDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\StockAlertDlg.resx">
       <DependentUpon>StockAlertDlg.cs</DependentUpon>
@@ -1146,6 +1158,10 @@
     <Page Include="CustomControl\SectorDlg\SectorUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControl\SplitDlg\StockSplitControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml">
       <SubType>Designer</SubType>

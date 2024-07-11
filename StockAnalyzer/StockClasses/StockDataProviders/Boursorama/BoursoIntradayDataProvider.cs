@@ -246,5 +246,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
         {
             Process.Start($"https://finance.yahoo.com/quote/{stockSerie.Symbol}");
         }
+
+        public override void ApplyTrim(StockSerie stockSerie, DateTime Date)
+        {
+            if (!stockSerie.Initialise())
+                return;
+
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
+            stockSerie.SaveToCSVFromDateToDate(archiveFileName, Date, stockSerie.LastValue.DATE);
+
+        }
     }
 }

@@ -427,7 +427,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         #endregion
 
-
         public virtual void OpenInDataProvider(StockSerie stockSerie)
         {
             MessageBox.Show($"Open in {this.GetType().Name.Replace("DataProvider", "")} not implemeted", "Error", MessageBoxButton.OK);
@@ -436,6 +435,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public virtual bool RemoveEntry(StockSerie stockSerie)
         {
             return false;
+        }
+
+        public virtual void ApplySplit(StockSerie stockSerie, DateTime Date, float ratio)
+        {
+            return;
+        }
+        public virtual void ApplyTrim(StockSerie stockSerie, DateTime Date)
+        {
+            return;
         }
     }
 }
