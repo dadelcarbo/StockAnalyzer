@@ -477,6 +477,7 @@ namespace StockAnalyzerApp
             // Generate breadth 
             if (Settings.Default.GenerateBreadth)
             {
+                
                 foreach (StockSerie stockserie in this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
                 {
                     StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;

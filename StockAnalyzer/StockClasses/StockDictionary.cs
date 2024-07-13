@@ -128,6 +128,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -202,7 +204,7 @@ namespace StockAnalyzer.StockClasses
             }
             if (breadthSerie.Count == 0)
             {
-                this.Remove(breadthSerie.StockName);
+             //   this.Remove(breadthSerie.StockName);
             }
             else
             {
@@ -285,6 +287,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -387,6 +391,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -489,6 +495,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -591,6 +599,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -693,6 +703,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -800,6 +812,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -899,6 +913,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -1024,6 +1040,9 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName) && s.Initialise() && s.Count > 50).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
+            
             #region Load component series
             foreach (StockSerie serie in indexComponents)
             {
@@ -1148,6 +1167,9 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName) && s.Initialise() && s.Count > 50).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
+
             #region Load component series
             foreach (StockSerie serie in indexComponents)
             {
@@ -1317,6 +1339,8 @@ namespace StockAnalyzer.StockClasses
             }
             int sectorId = int.Parse(breadthSerie.Symbol);
             StockSerie[] indexComponents = this.Values.Where(s => s.SectorId == sectorId).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;
@@ -1422,6 +1446,8 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indexComponents.Length == 0)
+                return false;
 
             DateTime lastIndiceDate = indiceSerie.Keys.Last(d => d.Date == d);
             DateTime lastBreadthDate = DateTime.MinValue;

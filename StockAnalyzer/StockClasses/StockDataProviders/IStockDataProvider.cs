@@ -12,13 +12,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Portfolio,
         Generated,
         Replay,
-        Breadth,
         Investing,
         BoursoIntraday,
         SaxoIntraday,
         VontobelIntraday,
         Saxo,
-        CNN
+        CNN,
+        Breadth
     }
 
     public delegate void DownloadingStockEventHandler(string text);
