@@ -338,11 +338,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static string configPath => Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadConfig.txt");
         static string defaultConfigPath => Path.Combine(Folders.PersonalFolder, "DownloadConfig.txt");
 
+        static List<ABCDownloadGroup> downloadGroups = null;
+
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
             CreateDirectories();
 
             stockDictionary = dictionary;
+
+            // Load Download Config
+            downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions
+            {
+                Converters = { new JsonStringEnumConverter() }
+            });
 
             // Load Config files
             string fileName = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
@@ -351,26 +359,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 File.WriteAllText(fileName, defaultConfigFile);
             }
             InitFromFile(download, fileName);
-            foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
-            {
-                StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
-            }
-
-            // Load Download Config
-            var downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions
-            {
-                Converters = { new JsonStringEnumConverter() }
-            });
-
-
-            var cacSerie = stockDictionary["CAC40"];
-            cacSerie.Initialise();
-            var lastCacDate = cacSerie.LastValue.DATE;
 
             // Intialize
             foreach (var config in downloadGroups)
             {
-                if (DownloadFromAbc(config, config.LastDownloaded < lastCacDate))
+                if (DownloadFromAbc(config))
                 {
                     config.LastDownload = DateTime.Now;
                 }
@@ -387,9 +380,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 Converters = { new JsonStringEnumConverter() }
             });
             File.WriteAllText(configPath, json);
+
+            // For analysis only
+            foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
+            {
+                StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
+            }
         }
 
-        private bool DownloadFromAbc(ABCDownloadGroup config, bool downloadGroup)
+        private bool DownloadFromAbc(ABCDownloadGroup config)
         {
             var destFolder = config.LabelOnly ? DataFolder + ABC_DAILY_CFG_GROUP_FOLDER : DataFolder + ABC_DAILY_CFG_FOLDER;
             string fileName = Path.Combine(destFolder, config.Group.ToString() + ".txt");
@@ -411,7 +410,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     InitFromLibelleFile(fileName);
 
-                    return downloadGroup ? DownloadGroupFromAbc(config) : false;
+                    return config.LastDownloaded < lastDownloadedCAC40Date ? DownloadGroupFromAbc(config) : false;
                 }
                 if (config.Group == StockSerie.Groups.SRD || config.Group == StockSerie.Groups.SRD_LO)
                 {
@@ -445,7 +444,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             else
             {
-                MessageBox.Show($"Reference serie:{config.RefSerie} not found for group {config.Group}", "Download conifguration error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Reference serie:{config.RefSerie} not found for group {config.Group}", "Download configuration error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -740,7 +739,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             StockLog.Write("ABC Entry: " + row[1] + " already in stockDictionary");
                         }
-                        if (download && this.needDownload)
+                        if (download)
                         {
                             NotifyProgress($"Downloading {stockSerie.StockName}");
                             this.DownloadABCData(stockSerie);
@@ -846,68 +845,78 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         private static string GetABCGroup(StockSerie.Groups stockGroup)
         {
-            string abcGroup = null;
-            switch (stockGroup)
-            {
-                case StockSerie.Groups.EURO_A:
-                    abcGroup = "eurolistap";
-                    break;
-                case StockSerie.Groups.EURO_B:
-                    abcGroup = "eurolistbp";
-                    break;
-                case StockSerie.Groups.EURO_C:
-                    abcGroup = "eurolistcp";
-                    break;
-                case StockSerie.Groups.ALTERNEXT:
-                    abcGroup = "eurogp";
-                    break;
-                case StockSerie.Groups.SECTORS_CAC:
-                    abcGroup = "indicessecp";
-                    break;
-                case StockSerie.Groups.BELGIUM:
-                    abcGroup = "belg";
-                    break;
-                case StockSerie.Groups.HOLLAND:
-                    abcGroup = "holln";
-                    break;
-                case StockSerie.Groups.PORTUGAL:
-                    abcGroup = "lisboal";
-                    break;
-                case StockSerie.Groups.CAC40:
-                    abcGroup = "xcac40p";
-                    break;
-                case StockSerie.Groups.SBF120:
-                    abcGroup = "xsbf120p";
-                    break;
-                case StockSerie.Groups.CAC_AT:
-                    abcGroup = "xcacatp";
-                    break;
-                case StockSerie.Groups.USA:
-                    abcGroup = "usau";
-                    break;
-                case StockSerie.Groups.SPAIN:
-                    abcGroup = "spainm";
-                    break;
-                case StockSerie.Groups.ITALIA:
-                    abcGroup = "italiai";
-                    break;
-                case StockSerie.Groups.GERMANY:
-                    abcGroup = "germanyf";
-                    break;
-                //case StockSerie.Groups.NASDAQ:
-                //    abcGroup = "nasu";
-                //    break;
-                case StockSerie.Groups.SRD:
-                    abcGroup = "srdp";
-                    break;
-                case StockSerie.Groups.SRD_LO:
-                    abcGroup = "srdlop";
-                    break;
-                default:
-                    StockLog.Write($"StockGroup {stockGroup} is not supported in ABC Bourse");
-                    break;
-            }
-            return abcGroup;
+            var groupConfig = downloadGroups.FirstOrDefault(g => g.Group == stockGroup);
+            //if (groupConfig == null)
+            //{
+            //    MessageBox.Show($"Group {stockGroup} not defined in configuration file", "Download configuration error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return null;
+            //}
+
+            return groupConfig?.AbcCode;
+
+
+            //string abcGroup = null;
+            //switch (stockGroup)
+            //{
+            //    case StockSerie.Groups.EURO_A:
+            //        abcGroup = "eurolistap";
+            //        break;
+            //    case StockSerie.Groups.EURO_B:
+            //        abcGroup = "eurolistbp";
+            //        break;
+            //    case StockSerie.Groups.EURO_C:
+            //        abcGroup = "eurolistcp";
+            //        break;
+            //    case StockSerie.Groups.ALTERNEXT:
+            //        abcGroup = "eurogp";
+            //        break;
+            //    case StockSerie.Groups.SECTORS_CAC:
+            //        abcGroup = "indicessecp";
+            //        break;
+            //    case StockSerie.Groups.BELGIUM:
+            //        abcGroup = "belg";
+            //        break;
+            //    case StockSerie.Groups.HOLLAND:
+            //        abcGroup = "holln";
+            //        break;
+            //    case StockSerie.Groups.PORTUGAL:
+            //        abcGroup = "lisboal";
+            //        break;
+            //    case StockSerie.Groups.CAC40:
+            //        abcGroup = "xcac40p";
+            //        break;
+            //    case StockSerie.Groups.SBF120:
+            //        abcGroup = "xsbf120p";
+            //        break;
+            //    case StockSerie.Groups.CAC_AT:
+            //        abcGroup = "xcacatp";
+            //        break;
+            //    case StockSerie.Groups.USA:
+            //        abcGroup = "usau";
+            //        break;
+            //    case StockSerie.Groups.SPAIN:
+            //        abcGroup = "spainm";
+            //        break;
+            //    case StockSerie.Groups.ITALIA:
+            //        abcGroup = "italiai";
+            //        break;
+            //    case StockSerie.Groups.GERMANY:
+            //        abcGroup = "germanyf";
+            //        break;
+            //    //case StockSerie.Groups.NASDAQ:
+            //    //    abcGroup = "nasu";
+            //    //    break;
+            //    case StockSerie.Groups.SRD:
+            //        abcGroup = "srdp";
+            //        break;
+            //    case StockSerie.Groups.SRD_LO:
+            //        abcGroup = "srdlop";
+            //        break;
+            //    default:
+            //        StockLog.Write($"StockGroup {stockGroup} is not supported in ABC Bourse");
+            //        break;
+            //}
+            //return abcGroup;
         }
         private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group, bool intraday = false)
         {
@@ -1031,8 +1040,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        DateTime lastLoadedCAC40Date = new DateTime(LOAD_START_YEAR, 1, 1);
-        DateTime lastDownloadedCAC40Date;
+        DateTime lastDownloadedCAC40Date = DateTime.MaxValue;
         bool happyNewMonth = false;
         public bool DownloadABCData(StockSerie stockSerie)
         {
@@ -1040,73 +1048,42 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 return false;
+
             this.LoadData(stockSerie);
             if (stockSerie.Count == 0)
             {
-                ForceDownloadData(stockSerie);
+                return ForceDownloadData(stockSerie);
             }
-            else
+
+            // Check if up to date
+            var lastLoadedDate = stockSerie.Keys.Last();
+            if (stockSerie.StockName != "CAC40" && lastLoadedDate >= lastDownloadedCAC40Date)
+                return true;
+
+            var fileName = stockSerie.ISIN + "_" + stockSerie.Symbol + "_" + stockSerie.StockGroup.ToString() + ".csv";
+            if (this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, lastLoadedDate.AddDays(1), DateTime.Today, stockSerie.ISIN))
             {
-                // Check if up to date
-                var lastLoadedDate = stockSerie.Keys.Last();
-                if (stockSerie.StockName != "CAC40" && lastLoadedDate >= lastDownloadedCAC40Date)
-                    return true;
+                stockSerie.IsInitialised = false;
 
-                var fileName = stockSerie.ISIN + "_" + stockSerie.Symbol + "_" + stockSerie.StockGroup.ToString() + ".csv";
-                if (this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, lastLoadedDate.AddDays(1), DateTime.Today, stockSerie.ISIN))
+                if (stockSerie.StockName == "CAC40")
                 {
-                    stockSerie.IsInitialised = false;
                     this.LoadData(stockSerie);
-
-                    if (stockSerie.StockName == "CAC40")
-                    {
-                        lastDownloadedCAC40Date = stockSerie.Keys.Last();
-                        this.needDownload = lastDownloadedCAC40Date > lastLoadedCAC40Date;
-                        happyNewMonth = lastDownloadedCAC40Date.Month != DateTime.Today.Month || lastDownloadedCAC40Date.Month != lastLoadedCAC40Date.Month;
-                        if (needDownload)
-                        {
-                            var startDate = lastLoadedCAC40Date.AddDays(1);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.EURO_A);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.EURO_B);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.EURO_C);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.ALTERNEXT);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.SECTORS_CAC);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.BELGIUM);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.HOLLAND);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.PORTUGAL);
-                        }
-
-                        //var allianzSerie = stockDictionary["ALLIANZ SE"];
-                        //if (allianzSerie.Initialise() && allianzSerie.LastValue.DATE < lastDownloadedCAC40Date)
-                        //{
-                        //    var startDate = allianzSerie.LastValue.DATE.AddDays(1);
-                        //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.ITALIA);
-                        //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.GERMANY);
-                        //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.SPAIN);
-                        //}
-
-                        //var appleSerie = stockDictionary["APPLE INC."];
-                        //if (appleSerie.Initialise() && appleSerie.LastValue.DATE < lastDownloadedCAC40Date)
-                        //{
-                        //    var startDate = appleSerie.LastValue.DATE.AddDays(1);
-                        //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.USA);
-                        //}
-                    }
-
+                    lastDownloadedCAC40Date = stockSerie.Keys.Last();
+                    happyNewMonth = lastDownloadedCAC40Date.Month != DateTime.Today.Month || lastDownloadedCAC40Date.Month != lastLoadedDate.Month;
                     this.SaveToCSV(stockSerie, happyNewMonth);
 
                     File.Delete(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
                 }
-                else // Failed loading data, could be because data is up to date.
+            }
+            else // Failed loading data, could be because data is up to date.
+            {
+                if (stockSerie.StockName == "CAC40")
                 {
-                    if (stockSerie.StockName == "CAC40")
-                    {
-                        lastDownloadedCAC40Date = stockSerie.Keys.Last();
-                        this.needDownload = false;
-                        happyNewMonth = false;
-                    }
+                    lastDownloadedCAC40Date = stockSerie.Keys.Last();
+                    happyNewMonth = false;
                 }
             }
+
             return true;
         }
 
@@ -1117,122 +1094,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 this.LoadData(stockSerie);
-                if (stockSerie.StockName == "CAC40")
-                {
-                    if (stockSerie.Count == 0)
-                    {
-                        var fileName = stockSerie.ISIN + "_" + stockSerie.Symbol + "_" + stockSerie.StockGroup.ToString() + ".csv";
-                        if (ForceDownloadData(stockSerie))
-                        {
-                            this.needDownload = true;
-                            var startDate = new DateTime(LOAD_START_YEAR, 1, 1);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.EURO_A);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.EURO_B);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.EURO_C);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.ALTERNEXT);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.SECTORS_CAC);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.BELGIUM);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.HOLLAND);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.PORTUGAL);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.ITALIA);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.GERMANY);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.SPAIN);
-                            //DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.USA);
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        lastLoadedCAC40Date = stockSerie.Count > 0 ? stockSerie.Keys.Last() : new DateTime(LOAD_START_YEAR, 1, 1);
-                        if (lastLoadedCAC40Date.Date == DateTime.Today)
-                        {
-                            lastDownloadedCAC40Date = lastLoadedCAC40Date;
-                            this.needDownload = false;
-                            var allianzSerie = stockDictionary["ALLIANZ SE"];
-                            if (allianzSerie.Initialise() && allianzSerie.Count > 0)
-                                this.needDownload = allianzSerie.LastValue.DATE < lastLoadedCAC40Date;
-
-                            if (!needDownload)
-                            {
-                                var appleSerie = stockDictionary["APPLE INC."];
-                                if (appleSerie.Initialise() && appleSerie.Count > 0)
-                                    this.needDownload = appleSerie.LastValue.DATE < lastLoadedCAC40Date;
-                            }
-                        }
-                        if (!needDownload)
-                            return true;
-                    }
-                }
                 if (stockSerie.Count == 0)
                 {
-                    ForceDownloadData(stockSerie);
+                    return ForceDownloadData(stockSerie);
                 }
-                else
-                {
-                    // Check if up to date
-                    var lastLoadedDate = stockSerie.Keys.Last();
-                    if (stockSerie.StockName != "CAC40" && lastLoadedDate >= lastDownloadedCAC40Date)
-                        return true;
-
-                    var fileName = stockSerie.ISIN + "_" + stockSerie.Symbol + "_" + stockSerie.StockGroup.ToString() + ".csv";
-                    if (this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, lastLoadedDate.AddDays(1), DateTime.Today, stockSerie.ISIN))
-                    {
-                        stockSerie.IsInitialised = false;
-                        this.LoadData(stockSerie);
-
-                        if (stockSerie.StockName == "CAC40")
-                        {
-                            lastDownloadedCAC40Date = stockSerie.Keys.Last();
-                            this.needDownload = lastDownloadedCAC40Date > lastLoadedCAC40Date;
-                            happyNewMonth = lastDownloadedCAC40Date.Month != DateTime.Today.Month || lastDownloadedCAC40Date.Month != lastLoadedCAC40Date.Month;
-                            //if (needDownload)
-                            //{
-                            //    var startDate = lastLoadedCAC40Date.AddDays(1);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.EURO_A);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.EURO_B);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.EURO_C);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.ALTERNEXT);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.SECTORS_CAC);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.BELGIUM);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.HOLLAND);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, lastDownloadedCAC40Date, StockSerie.Groups.PORTUGAL);
-                            //}
-
-                            //var allianzSerie = stockDictionary["ALLIANZ SE"];
-                            //if (allianzSerie.Initialise() && allianzSerie.LastValue.DATE < lastDownloadedCAC40Date)
-                            //{
-                            //    var startDate = allianzSerie.LastValue.DATE.AddDays(1);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.ITALIA);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.GERMANY);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.SPAIN);
-                            //}
-
-                            //var appleSerie = stockDictionary["APPLE INC."];
-                            //if (appleSerie.Initialise() && appleSerie.LastValue.DATE < lastDownloadedCAC40Date)
-                            //{
-                            //    var startDate = appleSerie.LastValue.DATE.AddDays(1);
-                            //    DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, StockSerie.Groups.USA);
-                            //}
-                        }
-
-                        this.SaveToCSV(stockSerie, happyNewMonth);
-
-                        File.Delete(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
-                    }
-                    else // Failed loading data, could be because data is up to date.
-                    {
-                        if (stockSerie.StockName == "CAC40")
-                        {
-                            lastDownloadedCAC40Date = stockSerie.Keys.Last();
-                            this.needDownload = false;
-                            happyNewMonth = false;
-                        }
-                    }
-                }
-                return true;
             }
-            stockSerie.Initialise();
-            return true;
+
+            return stockSerie.Initialise();
         }
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
