@@ -114,9 +114,10 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateAdvDeclSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
-            if (this.ContainsKey("CAC40"))
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
             {
-                indiceSerie = this["CAC40"];
+                indiceSerie = this[refSerieName];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -204,7 +205,7 @@ namespace StockAnalyzer.StockClasses
             }
             if (breadthSerie.Count == 0)
             {
-             //   this.Remove(breadthSerie.StockName);
+                //   this.Remove(breadthSerie.StockName);
             }
             else
             {
@@ -272,10 +273,12 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateSTOKFBreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
+
             StockSerie indiceSerie = null;
-            if (this.ContainsKey("CAC40"))
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
             {
-                indiceSerie = this["CAC40"];
+                indiceSerie = this[refSerieName];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -376,10 +379,12 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateSTOKBreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
+
             StockSerie indiceSerie = null;
-            if (this.ContainsKey("CAC40"))
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
             {
-                indiceSerie = this["CAC40"];
+                indiceSerie = this[refSerieName];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -480,10 +485,12 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateRSIBreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
+
             StockSerie indiceSerie = null;
-            if (this.ContainsKey("CAC40"))
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
             {
-                indiceSerie = this["CAC40"];
+                indiceSerie = this[refSerieName];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -584,10 +591,12 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateSTOKSBreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
+
             StockSerie indiceSerie = null;
-            if (this.ContainsKey("CAC40"))
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
             {
-                indiceSerie = this["CAC40"];
+                indiceSerie = this[refSerieName];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -688,10 +697,12 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateEMABreadthSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
+
             StockSerie indiceSerie = null;
-            if (this.ContainsKey("CAC40"))
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
             {
-                indiceSerie = this["CAC40"];
+                indiceSerie = this[refSerieName];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -797,10 +808,12 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateHigherThanHLTrailSerie(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
+
             StockSerie indiceSerie = null;
-            if (this.ContainsKey("CAC40"))
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
             {
-                indiceSerie = this["CAC40"];
+                indiceSerie = this[refSerieName];
                 if (!indiceSerie.Initialise())
                 {
                     return false;
@@ -905,9 +918,17 @@ namespace StockAnalyzer.StockClasses
         }
         public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
-            StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie
-
-            if (!indiceSerie.Initialise())
+            StockSerie indiceSerie = null;
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
+            {
+                indiceSerie = this[refSerieName];
+                if (!indiceSerie.Initialise())
+                {
+                    return false;
+                }
+            }
+            else
             {
                 return false;
             }
@@ -1005,9 +1026,18 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             int nbStocks = 10;
-            StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie
 
-            if (!indiceSerie.Initialise())
+            StockSerie indiceSerie = null;
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
+            {
+                indiceSerie = this[refSerieName];
+                if (!indiceSerie.Initialise())
+                {
+                    return false;
+                }
+            }
+            else
             {
                 return false;
             }
@@ -1042,7 +1072,7 @@ namespace StockAnalyzer.StockClasses
             StockSerie[] indexComponents = this.Values.Where(s => s.BelongsToGroup(indexName) && s.Initialise() && s.Count > 50).ToArray();
             if (indexComponents.Length == 0)
                 return false;
-            
+
             #region Load component series
             foreach (StockSerie serie in indexComponents)
             {
@@ -1132,9 +1162,18 @@ namespace StockAnalyzer.StockClasses
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             int nbStocks = 10;
-            StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie
 
-            if (!indiceSerie.Initialise())
+            StockSerie indiceSerie = null;
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
+            {
+                indiceSerie = this[refSerieName];
+                if (!indiceSerie.Initialise())
+                {
+                    return false;
+                }
+            }
+            else
             {
                 return false;
             }
@@ -1431,10 +1470,12 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateHigherThanMMSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Replace("MM", ""));
+
             StockSerie indiceSerie = null;
-            if (this.ContainsKey("CAC40"))
+            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            if (this.ContainsKey(refSerieName))
             {
-                indiceSerie = this["CAC40"];
+                indiceSerie = this[refSerieName];
                 if (!indiceSerie.Initialise())
                 {
                     return false;

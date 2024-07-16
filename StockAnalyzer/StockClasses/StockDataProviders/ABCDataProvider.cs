@@ -379,6 +379,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
                 Converters = { new JsonStringEnumConverter() }
             });
+             
             File.WriteAllText(configPath, json);
 
             // For analysis only
@@ -447,53 +448,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 MessageBox.Show($"Reference serie:{config.RefSerie} not found for group {config.Group}", "Download configuration error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-        }
-
-        public void InitDictionaryOld(StockDictionary dictionary, bool download)
-        {
-            CreateDirectories();
-
-            stockDictionary = dictionary;
-
-            // Init From LBL file
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_A);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_B);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.EURO_C);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ALTERNEXT);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SRD, false);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SRD_LO, false);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.BELGIUM);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.HOLLAND);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.PORTUGAL);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.ITALIA);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.GERMANY);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SPAIN);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.USA);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC40, false);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.SBF120, false);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, StockSerie.Groups.CAC_AT, false);
-            DownloadLibelleFromABC(DataFolder + ABC_DAILY_CFG_FOLDER, StockSerie.Groups.SECTORS_CAC);
-
-            // Load Config files
-            string fileName = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
-            if (!File.Exists(fileName))
-            {
-                File.WriteAllText(fileName, defaultConfigFile);
-            }
-            InitFromFile(download, fileName);
-            foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
-            {
-                StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
-            }
-
-            // Download Sectors Composition
-            //foreach (var sector in SectorCodes)
-            //{
-            //    if (DownloadSectorFromABC(DataFolder + ABC_DAILY_CFG_SECTOR_FOLDER, sector.Code))
-            //    {
-            //        InitFromSector(sector);
-            //    }
-            //}
         }
 
         private void InitFromSector(SectorCode sector)
@@ -693,7 +647,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case StockSerie.Groups.SECTORS_CAC:
                     return line.StartsWith("QS");
                 case StockSerie.Groups.USA:
-                    return line.StartsWith("US");
+                    return line.StartsWith("US") || line.StartsWith("CA");
                 case StockSerie.Groups.ITALIA:
                     return line.StartsWith("IT");
                 case StockSerie.Groups.GERMANY:
@@ -1440,14 +1394,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                     }
                 }
-                // Sanity Check
-                //foreach (string name in cac40List)
-                //{
-                //   if (!stockDictionary.ContainsKey(name))
-                //   {
-                //      StockLog.Write("CAC 40 Stock not in dico: " + name);
-                //   }
-                //}
             }
 
             return cac40List.Contains(stockSerie.StockName);
