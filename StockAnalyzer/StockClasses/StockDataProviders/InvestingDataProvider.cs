@@ -247,7 +247,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico, CONFIG_FILE_USER);
+            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico, CONFIG_FILE_USER) { StartPosition = FormStartPosition.CenterScreen };
             return configDlg.ShowDialog();
         }
 

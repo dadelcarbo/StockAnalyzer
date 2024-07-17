@@ -84,8 +84,8 @@ namespace StockAnalyzerApp.CustomControl.HorseRaceDlgs
             }
         }
 
-        static readonly List<string> groups = StockDictionary.Instance.GetValidGroupNames();
-        public List<string> Groups => HorseRaceViewModel.groups;
+        static readonly List<StockSerie.Groups> groups = StockDictionary.Instance.GetValidGroups();
+        public List<StockSerie.Groups> Groups => HorseRaceViewModel.groups;
 
         private string indicator1Name;
 

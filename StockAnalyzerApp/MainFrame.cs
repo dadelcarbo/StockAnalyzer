@@ -1,5 +1,4 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
-using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -27,6 +26,7 @@ using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
+using StockAnalyzerApp.CustomControl.InstrumentDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
 using StockAnalyzerApp.CustomControl.PalmaresControl;
 using StockAnalyzerApp.CustomControl.PortfolioDlg;
@@ -57,7 +57,7 @@ using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
-using Tweetinvi.Models.V2;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace StockAnalyzerApp
 {
@@ -421,7 +421,7 @@ namespace StockAnalyzerApp
                 }
 
                 Settings.Default.UserId = Environment.UserName;
-                PreferenceDialog prefDlg = new PreferenceDialog();
+                PreferenceDialog prefDlg = new PreferenceDialog() { StartPosition = FormStartPosition.CenterScreen };
                 DialogResult res = prefDlg.ShowDialog();
                 if (res == DialogResult.Cancel)
                 {
@@ -477,7 +477,7 @@ namespace StockAnalyzerApp
             // Generate breadth 
             if (Settings.Default.GenerateBreadth)
             {
-                
+
                 foreach (StockSerie stockserie in this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
                 {
                     StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;
@@ -2518,7 +2518,7 @@ namespace StockAnalyzerApp
             List<ToolStripItem> groupMenuItems = new List<ToolStripItem>();
             ToolStripMenuItem groupSubMenuItem;
 
-            List<string> validGroups = this.StockDictionary.GetValidGroupNames();
+            var validGroups = this.StockDictionary.GetValidGroups().Select(g => g.ToString());
             bool selectedGroupFound = false;
             foreach (string groupName in validGroups)
             {
@@ -2562,8 +2562,8 @@ namespace StockAnalyzerApp
         {
             // Clean existing menus
             this.secondarySerieMenuItem.DropDownItems.Clear();
-            List<string> validGroups = this.StockDictionary.GetValidGroupNames();
-            ToolStripMenuItem[] groupMenuItems = new ToolStripMenuItem[validGroups.Count];
+            var validGroups = this.StockDictionary.GetValidGroups().Select(g => g.ToString());
+            ToolStripMenuItem[] groupMenuItems = new ToolStripMenuItem[validGroups.Count()];
 
             int i = 0;
             foreach (string group in validGroups)
@@ -2625,12 +2625,13 @@ namespace StockAnalyzerApp
         }
         #endregion
 
+        #region Palmares dialog
         private PalmaresDlg palmaresDlg = null;
         private void palmaresMenuItem_Click(object sender, EventArgs e)
         {
             if (palmaresDlg == null)
             {
-                palmaresDlg = new PalmaresDlg();
+                palmaresDlg = new PalmaresDlg() { StartPosition = FormStartPosition.CenterScreen };
                 palmaresDlg.palmaresControl1.ViewModel.BarDuration = BarDuration.Daily;
                 palmaresDlg.palmaresControl1.ViewModel.Group = this.Group;
 
@@ -2649,6 +2650,34 @@ namespace StockAnalyzerApp
             palmaresDlg.palmaresControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
             this.palmaresDlg = null;
         }
+        #endregion
+
+        #region Instruments dialog
+        private InstrumentDlg instrumentsDlg = null;
+        private void instrumentsMenuItem_Click(object sender, EventArgs e)
+        {
+            if (instrumentsDlg == null)
+            {
+                instrumentsDlg = new InstrumentDlg() { StartPosition = FormStartPosition.CenterScreen };
+
+                instrumentsDlg.instrumentsControl1.ViewModel.Group = this.Group;
+
+                instrumentsDlg.FormClosing += new FormClosingEventHandler(instrumentsDlg_FormClosing);
+                instrumentsDlg.instrumentsControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                instrumentsDlg.Show();
+            }
+            else
+            {
+                instrumentsDlg.Activate();
+            }
+        }
+        private void instrumentsDlg_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            instrumentsDlg.instrumentsControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+            this.instrumentsDlg = null;
+        }
+        #endregion
+
         public bool changingGroup = false;
         private void OnSelectedStockGroupChanged(string stockGroup)
         {
@@ -2787,7 +2816,7 @@ namespace StockAnalyzerApp
 
             if (portfolioDlg == null)
             {
-                portfolioDlg = new PortfolioDlg();
+                portfolioDlg = new PortfolioDlg() { StartPosition = FormStartPosition.CenterScreen };
                 portfolioDlg.FormClosing += (a, b) => { this.portfolioDlg = null; };
                 portfolioDlg.Show();
             }
@@ -2799,7 +2828,7 @@ namespace StockAnalyzerApp
 
         private void nameMappingMenuItem_Click(object sender, EventArgs e)
         {
-            var dlg = new StockAnalyzer.StockPortfolio.NameMappingDlg.NameMappingDlg();
+            var dlg = new StockAnalyzer.StockPortfolio.NameMappingDlg.NameMappingDlg() { StartPosition = FormStartPosition.CenterScreen };
             dlg.Show();
         }
         private void portfolioReportMenuItem_Click(object sender, EventArgs e)
@@ -2830,7 +2859,7 @@ namespace StockAnalyzerApp
         {
             if (agentTunningDialog == null)
             {
-                agentTunningDialog = new AgentSimulationDlg();
+                agentTunningDialog = new AgentSimulationDlg() { StartPosition = FormStartPosition.CenterScreen };
                 agentTunningDialog.agentSimulationControl.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
                 agentTunningDialog.FormClosed += (a, b) =>
                 {
@@ -2849,7 +2878,7 @@ namespace StockAnalyzerApp
         {
             if (portfolioSimulationDialog == null)
             {
-                portfolioSimulationDialog = new PortfolioSimulationDlg();
+                portfolioSimulationDialog = new PortfolioSimulationDlg() { StartPosition = FormStartPosition.CenterScreen };
                 portfolioSimulationDialog.portfolioSimulationControl1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
 
                 portfolioSimulationDialog.FormClosed += (a, b) =>
@@ -3381,7 +3410,7 @@ namespace StockAnalyzerApp
         private StockSplitDlg stockSplitDlg = null;
         private void stockSplitMenuItem_Click(object sender, EventArgs e)
         {
-            var stockSplitDlg = new StockSplitDlg();
+            var stockSplitDlg = new StockSplitDlg() { StartPosition = FormStartPosition.CenterScreen };
             var res = stockSplitDlg.ShowDialog();
             if (res == DialogResult.OK)
             {
@@ -3393,7 +3422,7 @@ namespace StockAnalyzerApp
         private void scriptEditorMenuItem_Click(object sender, EventArgs e)
         {
             if (this.currentStockSerie == null) return;
-            ScriptDlg scriptEditor = new ScriptDlg();
+            ScriptDlg scriptEditor = new ScriptDlg() { StartPosition = FormStartPosition.CenterScreen };
             scriptEditor.Show();
         }
 
@@ -3533,7 +3562,7 @@ namespace StockAnalyzerApp
         #region MULTI TIME FRAME VIEW
         void multipleTimeFrameViewMenuItem_Click(object sender, EventArgs e)
         {
-            MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg();
+            MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg() { StartPosition = FormStartPosition.CenterScreen };
             mtg.Initialize(this.selectedGroup, this.currentStockSerie);
             mtg.WindowState = FormWindowState.Maximized;
             mtg.ShowDialog();
@@ -3868,7 +3897,7 @@ namespace StockAnalyzerApp
         {
             if (statisticsDlg == null)
             {
-                statisticsDlg = new StatisticsDlg();
+                statisticsDlg = new StatisticsDlg() { StartPosition = FormStartPosition.CenterScreen };
                 statisticsDlg.Disposed += statisticsDlg_Disposed;
                 statisticsDlg.Show();
             }
@@ -3889,7 +3918,7 @@ namespace StockAnalyzerApp
         {
             if (expectedValueDlg == null)
             {
-                expectedValueDlg = new ExpectedValueDlg();
+                expectedValueDlg = new ExpectedValueDlg() { StartPosition = FormStartPosition.CenterScreen };
                 expectedValueDlg.Disposed += expectedValueDlg_Disposed;
                 expectedValueDlg.Show();
             }
@@ -3995,7 +4024,7 @@ namespace StockAnalyzerApp
         {
             if (drawingDlg == null)
             {
-                drawingDlg = new DrawingDlg();
+                drawingDlg = new DrawingDlg() { StartPosition = FormStartPosition.CenterScreen };
                 drawingDlg.drawingControl1.SelectedStockAndDurationChanged += OnSelectedStockAndDurationChanged;
                 drawingDlg.Disposed += delegate
                 {
@@ -4036,7 +4065,7 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                StockIndicatorSelectorDlg indicatorSelectorDialog = new StockIndicatorSelectorDlg(this.themeDictionary[this.CurrentTheme]);
+                StockIndicatorSelectorDlg indicatorSelectorDialog = new StockIndicatorSelectorDlg(this.themeDictionary[this.CurrentTheme]) { StartPosition = FormStartPosition.CenterScreen };
                 indicatorSelectorDialog.ThemeEdited += new OnThemeEditedHandler(indicatorSelectorDialog_ThemeEdited);
 
                 if (indicatorSelectorDialog.ShowDialog() == DialogResult.OK)
@@ -4862,7 +4891,7 @@ namespace StockAnalyzerApp
         {
             if (prefDlg == null)
             {
-                prefDlg = new PreferenceDialog();
+                prefDlg = new PreferenceDialog() { StartPosition = FormStartPosition.CenterScreen };
                 prefDlg.FormClosed += PrefDlg_FormClosed;
             }
             prefDlg.Show();

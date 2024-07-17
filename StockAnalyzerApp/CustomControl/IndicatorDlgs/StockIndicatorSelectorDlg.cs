@@ -674,7 +674,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 case "VolumeGraph":
                     return;
                 default:
-                    addDlg = new AddDecoratorDlg();
+                    addDlg = new AddDecoratorDlg() { StartPosition = FormStartPosition.CenterParent };
                     break;
             }
             if (addDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -736,7 +736,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 case "VolumeGraph":
                     return;
                 default:
-                    addDlg = new AddTrailDlg();
+                    addDlg = new AddTrailDlg() { StartPosition = FormStartPosition.CenterParent };
                     break;
             }
             if (addDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -788,12 +788,12 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             switch (treeNode.Text)
             {
                 case "CloseGraph":
-                    addDlg = new AddIndicatorDlg(true);
+                    addDlg = new AddIndicatorDlg(true) { StartPosition = FormStartPosition.CenterParent };
                     break;
                 case "VolumeGraph":
                     return;
                 default:
-                    addDlg = new AddIndicatorDlg(false);
+                    addDlg = new AddIndicatorDlg(false) { StartPosition = FormStartPosition.CenterParent };
                     break;
             }
             if (addDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -871,7 +871,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             switch (treeNode.Text)
             {
                 case "CloseGraph":
-                    addDlg = new AddCloudDlg();
+                    addDlg = new AddCloudDlg() { StartPosition = FormStartPosition.CenterParent };
                     break;
                 case "VolumeGraph":
                 default:
@@ -971,7 +971,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.lineColorPanel.Parent = curveConfigBox;
             this.lineColorPanel.Visible = true;
             this.lineColorPanel.Enabled = true;
-            this.lineColorPanel.BackColor = Color.FromArgb(255,fillNode.Color);
+            this.lineColorPanel.BackColor = Color.FromArgb(255, fillNode.Color);
 
             this.visibleCheckBox.Parent = curveConfigBox;
             this.visibleCheckBox.Visible = true;
@@ -2176,7 +2176,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             switch (stockNode.Text)
             {
                 case "CloseGraph":
-                    addDlg = new AddPaintBarDlg();
+                    addDlg = new AddPaintBarDlg() { StartPosition = FormStartPosition.CenterParent };
                     break;
                 default:
                     return;
@@ -2222,7 +2222,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             switch (stockNode.Text)
             {
                 case "CloseGraph":
-                    addDlg = new AddAutoDrawingDlg();
+                    addDlg = new AddAutoDrawingDlg() { StartPosition = FormStartPosition.CenterParent };
                     break;
                 default:
                     return;
@@ -2267,7 +2267,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             switch (stockNode.Text)
             {
                 case "CloseGraph":
-                    addDlg = new AddTrailStopDlg();
+                    addDlg = new AddTrailStopDlg() { StartPosition = FormStartPosition.CenterParent };
                     break;
                 default:
                     return;

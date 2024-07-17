@@ -84,6 +84,7 @@ namespace StockAnalyzerApp
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockSplitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.palmaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.instrumentsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
             this.agentTunningMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -574,6 +575,7 @@ namespace StockAnalyzerApp
                 this.toolStripSeparator19,
                 this.stockScannerMenuItem,
                 this.palmaresMenuItem,
+                this.instrumentsMenuItem,
                 this.toolStripSeparator10,
                 this.agentTunningMenuItem,
                 this.portfolioSimulationMenuItem,
@@ -615,6 +617,14 @@ namespace StockAnalyzerApp
             this.palmaresMenuItem.Text = "Palmares";
             this.palmaresMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
             this.palmaresMenuItem.Click += new System.EventHandler(this.palmaresMenuItem_Click);
+            // 
+            // instrumentsMenuItem
+            // 
+            this.instrumentsMenuItem.Name = "instrumentsMenuItem";
+            this.instrumentsMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.instrumentsMenuItem.Text = "Instruments";
+            this.instrumentsMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F7;
+            this.instrumentsMenuItem.Click += new System.EventHandler(this.instrumentsMenuItem_Click);
             // 
             // toolStripSeparator10
             // 
@@ -1563,6 +1573,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem portfolioMenuItem;
         private ToolStripButton magnetStripBtn;
         private ToolStripMenuItem palmaresMenuItem;
+        private ToolStripMenuItem instrumentsMenuItem;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel statusLabel;
         private ToolStripProgressBar progressBar;

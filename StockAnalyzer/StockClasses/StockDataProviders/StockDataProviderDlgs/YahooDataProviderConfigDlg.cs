@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 
             // Init group combo box
             this.groupComboBox.Items.Clear();
-            this.groupComboBox.Items.AddRange(stockDico.GetValidGroupNames().ToArray());
+            this.groupComboBox.Items.AddRange(stockDico.GetValidGroups().Select(g => g.ToString()).ToArray());
 
             string[] userGroups = { "USER1", "USER2", "USER3" };
             foreach (string group in userGroups)

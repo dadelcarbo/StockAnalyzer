@@ -378,7 +378,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            var configDlg = new YahooDataProviderConfigDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+            var configDlg = new YahooDataProviderConfigDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER)) { StartPosition = FormStartPosition.CenterScreen };
             return configDlg.ShowDialog();
         }
 

@@ -30,7 +30,7 @@ namespace StockAnalyzerApp.CustomControl
             this.barDuration = barDuration;
 
             // Initialise group combo box
-            groupComboBox.Items.AddRange(this.stockDictionary.GetValidGroupNames().ToArray());
+            groupComboBox.Items.AddRange(this.stockDictionary.GetValidGroups().Cast<object>().ToArray());
             groupComboBox.SelectedItem = stockGroup.ToString();
             groupComboBox.SelectedValueChanged += new EventHandler(groupComboBox_SelectedValueChanged);
 

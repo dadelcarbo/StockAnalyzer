@@ -2415,7 +2415,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
             viewModel.Stop = viewModel.StopNames?.FirstOrDefault();
 
-            var addAlertDlg = new AddStockAlertDlg(viewModel);
+            var addAlertDlg = new AddStockAlertDlg(viewModel) { StartPosition = FormStartPosition.CenterScreen };
             addAlertDlg.ShowDialog();
         }
         float FindStopValueFromTheme()
@@ -2470,7 +2470,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             this.IsBuying = true;
             this.OnMouseValueChanged += openTradeViewModel.OnOrderValueChanged;
-            OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel);
+            OpenPositionDlg openPositionDlg = new OpenPositionDlg(openTradeViewModel) { StartPosition = FormStartPosition.CenterScreen };
             openPositionDlg.Show(this);
             openPositionDlg.FormClosed += (a, b) =>
             {
@@ -2530,7 +2530,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             this.IsSelling = true;
             this.OnMouseValueChanged += closeTradeViewModel.OnOrderValueChanged;
-            var closePositionDlg = new ClosePositionDlg(closeTradeViewModel);
+            var closePositionDlg = new ClosePositionDlg(closeTradeViewModel) { StartPosition = FormStartPosition.CenterScreen };
             closePositionDlg.Show(this);
             closePositionDlg.FormClosed += (a, b) =>
             {

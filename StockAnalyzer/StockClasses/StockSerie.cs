@@ -154,14 +154,14 @@ namespace StockAnalyzer.StockClasses
 
         public bool IsPortfolioSerie { get; set; }
         public int LastIndex => this.ValueArray.Length - 1;
-        public int LastCompleteIndex => this.ValueArray.Last().IsComplete ? this.Count - 1 : this.Count - 2;
+        public int LastCompleteIndex => this.LastIndex > 0 ? (this.ValueArray.Last().IsComplete ? this.Count - 1 : this.Count - 2) : -1;
 
         public StockSerie SecondarySerie { get; set; }
         public StockDailyValue LastValue { get; private set; }
         public bool HasVolume { get; private set; }
 
         /// <summary>
-        /// Indicates if a stock has good liquitiy by on the last (period) bars by average a exchange in million of Euro.
+        /// Indicates if a stock has good liquitiy on the last (period) bars by average a exchange in million of Euro.
         /// </summary>
         /// <param name="trigger">0.1 indicates 100K€</param>
         /// <returns></returns>
@@ -2827,6 +2827,10 @@ namespace StockAnalyzer.StockClasses
         public bool BelongsToGroup(Groups group)
         {
             if (StockAnalysis != null && StockAnalysis.Excluded) return false;
+            return BelongsToGroupFull(group);
+        }
+        public bool BelongsToGroupFull(Groups group)
+        {
             switch (group)
             {
                 case Groups.ALL:

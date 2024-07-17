@@ -29,12 +29,12 @@ namespace StockAnalyzer.StockClasses
             StockPortfolio.StockPortfolio.PriceProvider = this;
         }
 
-        private static List<string> validGroups = null;
-        public List<string> GetValidGroupNames()
+        private static List<StockSerie.Groups> validGroups = null;
+        public List<StockSerie.Groups> GetValidGroups()
         {
             if (validGroups == null)
             {
-                validGroups = new List<string>();
+                validGroups = new List<StockSerie.Groups>();
                 foreach (StockSerie.Groups group in Enum.GetValues(typeof(StockSerie.Groups)))
                 {
                     if (!this.Values.Any(s => s.BelongsToGroup(group)) || group == StockSerie.Groups.ALL ||
@@ -42,11 +42,12 @@ namespace StockAnalyzer.StockClasses
                     {
                         continue;
                     }
-                    validGroups.Add(group.ToString());
+                    validGroups.Add(group);
                 }
             }
             return validGroups;
         }
+
         #region RANK Calculation
         public void CalculateRank(StockSerie.Groups group, string indicatorName, BarDuration duration, string destinationFolder)
         {

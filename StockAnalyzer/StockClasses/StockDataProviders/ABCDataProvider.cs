@@ -335,8 +335,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         static readonly string defaultConfigFile = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
 
-        static string configPath => Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadConfig.txt");
-        static string defaultConfigPath => Path.Combine(Folders.PersonalFolder, "DownloadConfig.txt");
+        static string configPath => Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "AbcDownloadConfig.txt");
+        static string defaultConfigPath => Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
 
         static List<ABCDownloadGroup> downloadGroups = null;
 
@@ -542,6 +542,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (File.Exists(defaultConfigPath))
                     File.Copy(defaultConfigPath, configPath);
+            }
+            else
+            {
+                if (File.Exists(defaultConfigPath) && File.GetLastWriteTime(defaultConfigPath) > File.GetLastWriteTime(configPath))
+                {
+                    File.Copy(defaultConfigPath, configPath);
+                }
             }
         }
         private void InitFromLibelleFile(string fileName)
@@ -1362,7 +1369,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #region IConfigDialog Implementation
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            EuronextDataProviderConfigDlg configDlg = new EuronextDataProviderConfigDlg(stockDico);
+            EuronextDataProviderConfigDlg configDlg = new EuronextDataProviderConfigDlg(stockDico) { StartPosition = FormStartPosition.CenterScreen };
             return configDlg.ShowDialog();
         }
 
