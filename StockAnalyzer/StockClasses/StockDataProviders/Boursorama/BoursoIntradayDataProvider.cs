@@ -42,8 +42,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             var archiveFileName = DataFolder + ARCHIVE_FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
             if (File.Exists(archiveFileName))
             {
-                stockSerie.ReadFromCSVFile(archiveFileName);
-                res = true;
+                if (File.GetLastWriteTime(archiveFileName) > DateTime.Today.AddDays(-7))
+                {
+                    stockSerie.ReadFromCSVFile(archiveFileName);
+                    res = true;
+                }
             }
 
             var fileName = DataFolder + FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
