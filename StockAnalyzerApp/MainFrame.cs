@@ -2,6 +2,7 @@
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
@@ -1457,6 +1458,15 @@ namespace StockAnalyzerApp
                 }
                 this.currentStockSerie = newSerie;
 
+                if (BoursoIntradayDataProvider.ContainsSerie(newSerie))
+                {
+                    intradayButton.CheckState = CheckState.Checked;
+                }
+                else
+                {
+                    intradayButton.CheckState = CheckState.Unchecked;
+                }
+
                 #region Set Window Title
                 string id;
                 if (CurrentStockSerie.Symbol == CurrentStockSerie.StockName)
@@ -2429,6 +2439,20 @@ namespace StockAnalyzerApp
             else
             {
                 this.stockNameComboBox.SelectedIndex = this.stockNameComboBox.Items.Count - 1;
+            }
+        }
+
+
+        private void intradayButton_Click(object sender, EventArgs e)
+        {
+            if (this.intradayButton.CheckState == CheckState.Checked)
+            {
+                BoursoIntradayDataProvider.RemoveSerie(this.CurrentStockSerie);
+            }
+            else
+            {
+                BoursoIntradayDataProvider.AddSerie(this.CurrentStockSerie);
+                this.intradayButton.CheckState = CheckState.Checked;
             }
         }
         #endregion

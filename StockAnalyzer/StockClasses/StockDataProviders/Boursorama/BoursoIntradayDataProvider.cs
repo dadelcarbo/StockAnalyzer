@@ -327,5 +327,30 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             var archiveFileName = DataFolder + ARCHIVE_FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
             stockSerie.SaveToCSVFromDateToDate(archiveFileName, Date, stockSerie.LastValue.DATE);
         }
+
+
+        static string[] configLines;
+        public static void AddSerie(StockSerie serie)
+        {
+            if (!ContainsSerie(serie))
+            {
+                configLines = configLines.Append($"{serie.ISIN};{serie.StockName};{serie.Symbol}").ToArray();
+                File.WriteAllLines(Path.Combine(Folders.PersonalFolder, CONFIG_FILE), configLines);
+            }
+        }
+        public static void RemoveSerie(StockSerie serie)
+        {
+            if (ContainsSerie(serie))
+            {
+                configLines = configLines.Where(x => !x.Contains(serie.ISIN)).ToArray();
+                File.WriteAllLines(Path.Combine(Folders.PersonalFolder, CONFIG_FILE), configLines);
+            }
+        }
+        public static bool ContainsSerie(StockSerie serie)
+        {
+            configLines ??= File.ReadAllLines(Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
+            return !string.IsNullOrEmpty(serie.ISIN) && configLines.Any(l => l.Contains(serie.ISIN));
+        }
+
     }
 }
