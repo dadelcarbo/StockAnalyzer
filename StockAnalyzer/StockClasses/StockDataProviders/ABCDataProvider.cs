@@ -379,7 +379,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
                 Converters = { new JsonStringEnumConverter() }
             });
-             
+
             File.WriteAllText(configPath, json);
 
             // For analysis only
@@ -1026,15 +1026,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 stockSerie.IsInitialised = false;
 
+                this.LoadData(stockSerie);
+
                 if (stockSerie.StockName == "CAC40")
                 {
-                    this.LoadData(stockSerie);
                     lastDownloadedCAC40Date = stockSerie.Keys.Last();
                     happyNewMonth = lastDownloadedCAC40Date.Month != DateTime.Today.Month || lastDownloadedCAC40Date.Month != lastLoadedDate.Month;
-                    this.SaveToCSV(stockSerie, happyNewMonth);
-
-                    File.Delete(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
                 }
+
+                this.SaveToCSV(stockSerie, happyNewMonth);
+                File.Delete(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
             }
             else // Failed loading data, could be because data is up to date.
             {

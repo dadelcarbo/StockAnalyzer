@@ -9,7 +9,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows.Forms;
-using System.Windows.Navigation;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 {
@@ -55,9 +54,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             {
                 if (ParseBoursoData(stockSerie, fileName))
                 {
-                    var lastDate = stockSerie.Keys.Last(); //.Date.AddDays(-1);
+                    var lastDate = stockSerie.Keys.Last();
 
-                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
+                    // Clean data gaps
+                    var startDate = lastDate;
+                    var gap = new TimeSpan(4, 0, 0, 0);
+                    foreach(var date in stockSerie.Keys.Reverse())
+                    {
+                        if (startDate - date > gap)
+                            break;
+                        startDate = date;
+                    }
+
+                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, startDate, lastDate);
                     File.Delete(fileName);
                 }
                 else
@@ -257,7 +266,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
             var archiveFileName = DataFolder + ARCHIVE_FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
             stockSerie.SaveToCSVFromDateToDate(archiveFileName, Date, stockSerie.LastValue.DATE);
-
         }
     }
 }
