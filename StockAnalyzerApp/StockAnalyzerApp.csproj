@@ -982,6 +982,7 @@
     <Content Include="Resources\AddWinRatio.bmp" />
     <Content Include="Resources\Backward-icon.png" />
     <Content Include="Resources\BarChart.bmp" />
+    <Content Include="Resources\binoculars.png" />
     <Content Include="Resources\ButtonFastForward.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

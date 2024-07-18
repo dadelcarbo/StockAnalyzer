@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +10,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows.Forms;
-using System.Windows.Navigation;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 {
@@ -17,6 +17,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
     {
         private static readonly string FOLDER = @"\intraday\BoursoIntraday";
         private static readonly string ARCHIVE_FOLDER = @"\archive\intraday\BoursoIntraday";
+
+        private static readonly string CONFIG_FILE = "BoursoIntradayDownload.cfg";
+
+
+        public string UserConfigFileName => CONFIG_FILE;
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -31,6 +36,59 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             }
 
             this.needDownload = download;
+
+            // Load Config files
+            if (download)
+            {
+                InitFromFile(Path.Combine(Folders.PersonalFolder, UserConfigFileName), stockDictionary);
+            }
+        }
+
+        private void InitFromFile(string fileName, StockDictionary stockDictionary)
+        {
+            if (File.Exists(fileName))
+            {
+                using StreamReader sr = new StreamReader(fileName, true);
+                string line;
+                sr.ReadLine(); // Skip first line
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    if (line.StartsWith("$"))
+                        break;
+
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                    {
+                        string[] row = line.Split(';');
+                        if (row.Length == 3)
+                        {
+                            if (stockDictionary.ContainsKey(row[1]))
+                            {
+                                var stockSerie = stockDictionary[row[1]];
+                                if (stockSerie.ISIN == row[0] && stockSerie.Symbol == row[2])
+                                {
+                                    var archiveFileName = DataFolder + ARCHIVE_FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
+                                    if (!File.Exists(archiveFileName) || File.GetLastWriteTime(archiveFileName) > DateTime.Today.AddDays(-3))
+                                    {
+                                        if (DownloadDailyData(stockSerie))
+                                        {
+                                            LoadData(stockSerie);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show($"Inconsistent config: {line}", "Boursorama intraday error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Inconsistent config: {line}, 3 fields expected", "Boursorama intraday error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
         }
 
         public override bool SupportsIntradayDownload => true;
@@ -55,9 +113,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             {
                 if (ParseBoursoData(stockSerie, fileName))
                 {
-                    var lastDate = stockSerie.Keys.Last(); //.Date.AddDays(-1);
+                    var lastDate = stockSerie.Keys.Last();
 
-                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
+                    // Clean data gaps
+                    var startDate = lastDate;
+                    var gap = new TimeSpan(4, 0, 0, 0);
+                    foreach (var date in stockSerie.Keys.Reverse())
+                    {
+                        if (startDate - date > gap)
+                            break;
+                        startDate = date;
+                    }
+
+                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, startDate, lastDate);
                     File.Delete(fileName);
                 }
                 else
@@ -90,6 +158,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                 "IT" => $"1g{stockSerie.Symbol}",
                 "ES" => $"FF55-{stockSerie.Symbol}",
                 "US" => $"{stockSerie.Symbol}",
+                "CA" => $"{stockSerie.Symbol}",
                 _ => null
             };
             if (stockSerie.BelongsToGroup(StockSerie.Groups.EURO_A_B_C) && prefix != "LU")
@@ -126,7 +195,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             StockLog.Write("DownloadDailyData for " + stockSerie.StockName);
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
-                NotifyProgress("Downloading daily data for " + stockSerie.StockName);
+                NotifyProgress("Downloading intraday data for " + stockSerie.StockName);
 
                 if (DownloadHistory.ContainsKey(stockSerie.ISIN) && DownloadHistory[stockSerie.ISIN] > DateTime.Now.AddMinutes(-2))
                 {
@@ -257,7 +326,31 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
             var archiveFileName = DataFolder + ARCHIVE_FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
             stockSerie.SaveToCSVFromDateToDate(archiveFileName, Date, stockSerie.LastValue.DATE);
-
         }
+
+
+        static string[] configLines;
+        public static void AddSerie(StockSerie serie)
+        {
+            if (!ContainsSerie(serie))
+            {
+                configLines = configLines.Append($"{serie.ISIN};{serie.StockName};{serie.Symbol}").ToArray();
+                File.WriteAllLines(Path.Combine(Folders.PersonalFolder, CONFIG_FILE), configLines);
+            }
+        }
+        public static void RemoveSerie(StockSerie serie)
+        {
+            if (ContainsSerie(serie))
+            {
+                configLines = configLines.Where(x => !x.Contains(serie.ISIN)).ToArray();
+                File.WriteAllLines(Path.Combine(Folders.PersonalFolder, CONFIG_FILE), configLines);
+            }
+        }
+        public static bool ContainsSerie(StockSerie serie)
+        {
+            configLines ??= File.ReadAllLines(Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
+            return !string.IsNullOrEmpty(serie.ISIN) && configLines.Any(l => l.Contains(serie.ISIN));
+        }
+
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.Models;
 using StockAnalyzer.StockLogging;
 using System;
-using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
