@@ -68,11 +68,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                                 if (stockSerie.ISIN == row[0] && stockSerie.Symbol == row[2])
                                 {
                                     var archiveFileName = DataFolder + ARCHIVE_FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
-                                    if (!File.Exists(archiveFileName) || File.GetLastWriteTime(archiveFileName) > DateTime.Today.AddDays(-3))
+                                    if (!File.Exists(archiveFileName) || File.GetLastWriteTime(archiveFileName) < DateTime.Today.AddDays(-3))
                                     {
                                         if (DownloadDailyData(stockSerie))
                                         {
+                                            stockSerie.BarDuration = BarDuration.M_5;
                                             LoadData(stockSerie);
+                                            stockSerie.BarDuration = BarDuration.Daily;
                                         }
                                     }
                                 }

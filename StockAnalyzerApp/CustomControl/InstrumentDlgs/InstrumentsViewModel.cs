@@ -30,7 +30,8 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 {
                     group = value;
                     OnPropertyChanged("Group");
-                    this.Lines?.Clear();
+                    this.Lines = new ObservableCollection<StockSerie>(StockDictionary.Instance.Values.Where(s => s.BelongsToGroupFull(this.group)));
+
                     OnPropertyChanged("Lines");
                 }
             }
@@ -115,7 +116,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             ProgressVisibility = Visibility.Visible;
             this.Progress = 0;
 
-            Lines = new ObservableCollection<StockSerie>();
+            Lines.Clear();
             OnPropertyChanged("Lines");
             await Task.Delay(10);
 

@@ -41,6 +41,7 @@
                              SelectionChanged="RadGridView_SelectionChanged">
             <telerik:RadGridView.Columns>
                 <telerik:GridViewDataColumn Header="Excluded" DataMemberBinding="{Binding StockAnalysis.Excluded}"/>
+                <telerik:GridViewDataColumn Header="Intraday" DataMemberBinding="{Binding Intraday}"/>
                 <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding StockGroup}"/>
 
                 <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}"/>

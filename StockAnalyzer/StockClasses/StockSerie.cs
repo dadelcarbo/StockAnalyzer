@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -2879,6 +2880,8 @@ namespace StockAnalyzer.StockClasses
         {
             return this.BelongsToGroup((Groups)Enum.Parse(typeof(Groups), groupName));
         }
+
+        public bool Intraday => BoursoIntradayDataProvider.ContainsSerie(this);
 
         #region Advanced Data Access (min/max ...)
         private DateTime[] dateArray = null;
