@@ -353,7 +353,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             });
 
             // Load Config files
-            string fileName = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
+            string fileName = Path.Combine(Folders.PersonalFolder, UserConfigFileName);
             if (!File.Exists(fileName))
             {
                 File.WriteAllText(fileName, defaultConfigFile);
