@@ -2448,6 +2448,7 @@ namespace StockAnalyzerApp
             if (this.intradayButton.CheckState == CheckState.Checked)
             {
                 BoursoIntradayDataProvider.RemoveSerie(this.CurrentStockSerie);
+                this.intradayButton.CheckState = CheckState.Unchecked;
             }
             else
             {
