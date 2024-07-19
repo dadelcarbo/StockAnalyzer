@@ -35,7 +35,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             // Parse YahooIntradayDownload.cfg file
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
-            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));  // 
         }
 
         private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)

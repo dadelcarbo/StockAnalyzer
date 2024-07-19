@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 {
     class SaxoDataProviderViewModel : NotifyPropertyChangedBase
     {
+        public SaxoDataProviderViewModel()
+        {
+            
+        }
         public SaxoDataProviderViewModel(StockDictionary stockDico, string cfgFile)
         {
             try
@@ -64,17 +69,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         private List<SearchUnderlying> underlyings;
         public List<SearchUnderlying> Underlyings { get => underlyings; set => SetProperty(ref underlyings, value); }
 
+        private SearchUnderlying underlying;
+        public SearchUnderlying Underlying { get => underlying; set => SetProperty(ref underlying, value); }
+
         private List<SaxoProduct> products;
         public List<SaxoProduct> Products { get => products; set => SetProperty(ref products, value); }
 
         private ObservableCollection<SaxoConfigEntry> entries;
         public ObservableCollection<SaxoConfigEntry> Entries { get => entries; set => SetProperty(ref entries, value); }
 
-        SearchUnderlying previousEntry;
         public void UnderlyingChanged(SearchUnderlying entry)
         {
-            if (entry == previousEntry)
-                return;
             var newProducts = new List<SaxoProduct>();
             try
             {
@@ -85,25 +90,40 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     var result = JsonConvert.DeserializeObject<SaxoResult>(jsonData);
                     foreach (var p in result?.data?.groups?.products)
                     {
-                        double parsed;
+                        double parsed = 0.0;
+                        double leverage = 0.0;
+                        if (double.TryParse(p.leverage.value, out parsed))
+                        {
+                            if (minLeverage != 0 && maxLeverage != 0)
+                            {
+                                if (parsed < minLeverage || parsed > maxLeverage)
+                                    continue;
+                            }
+                            leverage = parsed;
+                        }
+                        double? bid = null;
+                        if (p.bid.value != null && double.TryParse(p.bid.value.value, out parsed))
+                        {
+                            if (minBid != 0 && maxBid != 0)
+                            {
+                                if (parsed < minBid || parsed > maxBid)
+                                    continue;
+                            }
+                            bid = parsed;
+                        }
+
                         var product = new SaxoProduct
                         {
                             ISIN = p.isin.value,
                             StockName = p.name.value,
                             Type = p.type.value,
-                            Ratio = p.ratioCalculated.value
+                            Ratio = p.ratioCalculated.value,
+                            Leverage = leverage,
+                            Bid = bid
                         };
                         if (p.ask.value != null && double.TryParse(p.ask.value.value, out parsed))
                         {
                             product.Ask = parsed;
-                        }
-                        if (p.bid.value != null && double.TryParse(p.bid.value.value, out parsed))
-                        {
-                            product.Bid = parsed;
-                        }
-                        if (double.TryParse(p.leverage.value, out parsed))
-                        {
-                            product.Leverage = parsed;
                         }
                         if (product.StockName.Contains("long"))
                         {
@@ -112,11 +132,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                         else
                         {
                             product.Type += " Short";
-                            product.Leverage = -product.Leverage;
                         }
                         newProducts.Add(product);
                     }
-                    previousEntry = entry;
                 }
             }
             catch (Exception ex)
@@ -222,5 +240,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
         private SaxoProduct selectedProduct;
         public SaxoProduct SelectedProduct { get => selectedProduct; set => SetProperty(ref selectedProduct, value); }
+
+        private double minLeverage;
+        public double MinLeverage { get => minLeverage; set => SetProperty(ref minLeverage, value); }
+
+        private double maxLeverage;
+        public double MaxLeverage { get => maxLeverage; set => SetProperty(ref maxLeverage, value); }
+
+        private double minBid;
+        public double MinBid { get => minBid; set => SetProperty(ref minBid, value); }
+
+        private double maxBid;
+        public double MaxBid { get => maxBid; set => SetProperty(ref maxBid, value); }
+
+        private CommandBase searchCommand;
+        public ICommand SearchCommand => searchCommand ??= new CommandBase(Search);
+
+        private void Search()
+        {
+            if (this.underlying == null)
+                return;
+
+            this.UnderlyingChanged(this.underlying);
+
+        }
     }
 }

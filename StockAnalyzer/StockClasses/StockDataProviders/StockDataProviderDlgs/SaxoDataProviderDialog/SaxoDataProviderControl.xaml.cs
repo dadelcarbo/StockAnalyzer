@@ -12,13 +12,5 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             InitializeComponent();
             this.DataContext = new SaxoDataProviderViewModel(stockDico, cfgFile);
         }
-
-        private void RadAutoCompleteBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0)
-            {
-                (this.DataContext as SaxoDataProviderViewModel).UnderlyingChanged((SearchUnderlying)e.AddedItems[0]);
-            }
-        }
     }
 }
