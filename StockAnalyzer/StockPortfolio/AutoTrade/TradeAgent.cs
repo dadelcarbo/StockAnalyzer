@@ -14,7 +14,11 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
     {
         public delegate void AgentStateChangedHandler(TradeAgent sender);
 
-        public event AgentStateChangedHandler AgentStateChanged;
+        public event AgentStateChangedHandler StateChanged;
+
+        public delegate void AgentPositionChangedHandler(TradeAgent sender);
+
+        public event AgentPositionChangedHandler PositionChanged;
 
         public int Id { get; set; }
         public bool Ready { get; set; }
@@ -29,7 +33,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         StockTimer timer { get; set; }
 
         private bool running;
-        public bool Running { get => running; set { if (value != running) { running = value; AgentStateChanged?.Invoke(this); } } }
+        public bool Running { get => running; set { if (value != running) { running = value; StateChanged?.Invoke(this); } } }
 
         public void Start()
         {
@@ -53,9 +57,11 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
             }
         }
 
-        public TradePosition Position { get; set; }
+        public TradePosition Position { get => position; set { if (position != value) { position = value; PositionChanged?.Invoke(this); } } }
+
         public List<TradePosition> Positions { get; private set; } = new List<TradePosition>();
         public int index = -1;
+        private TradePosition position;
 
         private void TimerEllapsed()
         {
@@ -114,7 +120,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         private void ProcessBuyRequest(TradeRequest tradeRequest)
         {
             // Position size for trade risk
-            var ptfRisk = this.Portfolio.RiskFreeValue * this.Portfolio.MaxRisk;
+            var ptfRisk = this.Portfolio.RiskFreeValue * this.Portfolio.AutoTradeRisk;
             var unitRisk = tradeRequest.Value - tradeRequest.Stop;
             tradeRequest.Qty = (int)Math.Floor(ptfRisk / unitRisk);
             if (tradeRequest.Qty <= 0)

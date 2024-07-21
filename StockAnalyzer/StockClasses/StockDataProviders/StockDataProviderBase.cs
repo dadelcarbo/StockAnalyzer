@@ -158,6 +158,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case StockDataProvider.SaxoIntraday:
                         dataProvider = new SaxoIntradayDataProvider();
                         break;
+                    case StockDataProvider.SaxoIntraday_M5:
+                        dataProvider = new SaxoIntradayM5DataProvider();
+                        break;
                     case StockDataProvider.VontobelIntraday:
                         dataProvider = new VontobelIntradayDataProvider();
                         break;

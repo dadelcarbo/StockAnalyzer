@@ -25,8 +25,8 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                 Agents.Add(new TradeAgent()
                 {
                     BarDuration = BarDuration.M_5,
-                    StockSerie = StockDictionary.Instance["FUT_IND_NASDAQ"],
-                    Strategy = TradeStrategyManager.CreateInstance("Test"),
+                    StockSerie = StockDictionary.Instance["TURBO_DAX LONG"],
+                    Strategy = TradeStrategyManager.CreateInstance("Bottom"),
                     Portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == "AutoTradeTest"),
                     Ready = true
                 });
@@ -36,8 +36,8 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                 Agents.Add(new TradeAgent()
                 {
                     BarDuration = BarDuration.M_5,
-                    StockSerie = StockDictionary.Instance["FUT_IND_NASDAQ"],
-                    Strategy = TradeStrategyManager.CreateInstance("Test"),
+                    StockSerie = StockDictionary.Instance["TURBO_DAX LONG"],
+                    Strategy = TradeStrategyManager.CreateInstance("Bottom"),
                     Portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == "AutoTradeTest"),
                     Ready = true
                 });

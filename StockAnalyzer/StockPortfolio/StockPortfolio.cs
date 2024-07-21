@@ -89,6 +89,8 @@ namespace StockAnalyzer.StockPortfolio
         public float MaxValue { get; set; }
 
         public float MaxRisk { get; set; }
+
+        public float AutoTradeRisk { get; set; } = 0.001f;
         public float MaxPositionSize { get; set; }
         [JsonIgnore]
         public float Return => (TotalValue - InitialBalance) / InitialBalance;

@@ -15,6 +15,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Investing,
         BoursoIntraday,
         SaxoIntraday,
+        SaxoIntraday_M5,
         VontobelIntraday,
         Saxo,
         CNN,

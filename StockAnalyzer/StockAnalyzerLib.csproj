@@ -250,6 +250,7 @@
     <Compile Include="StockClasses\StockDataProviders\CNN\CnnDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\CNN\CnnJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SaxoIntradayM5DataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoConfigEntry.cs" />
@@ -349,6 +350,7 @@
     <Compile Include="StockPortfolio\AutoTrade\TradeEngine.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradePosition.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeRequest.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\BottomStrategy.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\TestStrategy.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\TradeStrategyManager.cs" />
     <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">
