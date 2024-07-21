@@ -16,12 +16,12 @@ using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
-using StockAnalyzer.StockPortfolio.StockStrategy;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
+using StockAnalyzerApp.CustomControl.AutoTradeDlg;
 using StockAnalyzerApp.CustomControl.DrawingDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
@@ -794,23 +794,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        public void ProcessStrategies(List<BarDuration> barDurations)
-        {
-            var referenceSerie = StockDictionary["ERAMET"];
-            referenceSerie.Initialise();
-            foreach (var date in referenceSerie.Keys.Skip(100))
-            {
-                StockStrategyEngine.ProcessStrategies(barDurations, date);
-            }
-            var portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == "_StrategyTest");
-
-            var balance = 1000f;
-            foreach (var position in portfolio.ClosedPositions)
-            {
-                balance += (position.ExitValue.Value - position.EntryValue) * position.EntryQty;
-            }
-            StockLog.Write($"Balance: {balance}");
-        }
         public void GenerateIntradayAlert(List<BarDuration> barDurations)
         {
             using (new MethodLogger(this, showTimerDebug))
@@ -2872,6 +2855,25 @@ namespace StockAnalyzerApp
             foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
             {
                 this.GeneratePortfolioReportFile(p);
+            }
+        }
+
+        #endregion
+
+        #region Auto Trading
+
+        AutoTradeDlg autoTradeDlg = null;
+        private void autoTradeMenuItem_Click(object sender, EventArgs e)
+        {
+            if (autoTradeDlg == null)
+            {
+                autoTradeDlg = new AutoTradeDlg() { StartPosition = FormStartPosition.CenterScreen };
+                autoTradeDlg.FormClosing += (a, b) => { this.autoTradeDlg = null; };
+                autoTradeDlg.Show();
+            }
+            else
+            {
+                autoTradeDlg.Activate();
             }
         }
 

@@ -34,7 +34,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>323</ApplicationRevision>
+    <ApplicationRevision>324</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -305,6 +305,16 @@
       <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertViewModel.cs" />
+    <Compile Include="CustomControl\AutoTradeDlg\AutoTradeControl.xaml.cs">
+      <DependentUpon>AutoTradeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\AutoTradeDlg\AutoTradeDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\AutoTradeDlg\AutoTradeDlg.Designer.cs">
+      <DependentUpon>AutoTradeDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\AutoTradeDlg\AutoTradeViewModel.cs" />
     <Compile Include="CustomControl\InstrumentDlgs\InstrumentsControl.xaml.cs">
       <DependentUpon>InstrumentsControl.xaml</DependentUpon>
     </Compile>
@@ -713,6 +723,9 @@
     <EmbeddedResource Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.resx">
       <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\AutoTradeDlg\AutoTradeDlg.resx">
+      <DependentUpon>AutoTradeDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\InstrumentDlgs\InstrumentsDlg.resx">
       <DependentUpon>InstrumentsDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -1118,6 +1131,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlert.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\AutoTradeDlg\AutoTradeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

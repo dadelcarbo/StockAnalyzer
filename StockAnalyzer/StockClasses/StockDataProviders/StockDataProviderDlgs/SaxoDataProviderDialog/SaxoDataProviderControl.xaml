@@ -27,7 +27,7 @@
                                         VerticalContentAlignment="Center" VerticalAlignment="Center">
             </telerik:RadAutoCompleteBox>
             <Label Margin="2" Content="Leverage Min:"/>
-            <TextBox Text="{Binding MinLeverage}" VerticalContentAlignment="Center" VerticalAlignment="Center" Width="20"/>
+            <telerik:RadNumericUpDown Value="{Binding MinLeverage}" VerticalContentAlignment="Center" VerticalAlignment="Center" Width="20"/>
             <Label Margin="2" Content="Max:"/>
             <TextBox Text="{Binding MaxLeverage}" VerticalContentAlignment="Center" VerticalAlignment="Center" Width="20"/>
 

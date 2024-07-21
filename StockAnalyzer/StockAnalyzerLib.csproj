@@ -344,6 +344,13 @@
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />
     <Compile Include="StockHelpers\TaskExtension.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\ITradeStrategy.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradeAgent.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradeEngine.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradePosition.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradeRequest.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\TestStrategy.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\TradeStrategyManager.cs" />
     <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -360,8 +367,6 @@
     <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
     <Compile Include="StockPortfolio\StockOrderBase.cs" />
     <Compile Include="StockPortfolio\StockPositionBase.cs" />
-    <Compile Include="StockPortfolio\StockStrategy\StockStrategy.cs" />
-    <Compile Include="StockPortfolio\StockStrategy\StockStrategyEngine.cs" />
     <Compile Include="StockPortfolio\StockTradeOperation.cs" />
     <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />

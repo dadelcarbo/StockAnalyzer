@@ -48,6 +48,12 @@ namespace StockAnalyzer.StockAgent
             agentNames.Sort();
             return agentNames;
         }
+        static public IStockAgent CreateInstance(string shortName)
+        {
+            Type type = typeof(IStockAgent).Assembly.GetType($"StockAnalyzer.StockAgent.Agents.{shortName}Agent");
+            return (IStockAgent)Activator.CreateInstance(type);
+        }
+
 
         protected float EntryStopValue { get; private set; }
         protected IStockEntryStop EntryStopAgent { get; private set; }
@@ -233,12 +239,6 @@ namespace StockAnalyzer.StockAgent
                 }
             }
             return children;
-        }
-
-        static public IStockAgent CreateInstance(string shortName)
-        {
-            Type type = typeof(IStockAgent).Assembly.GetType($"StockAnalyzer.StockAgent.Agents.{shortName}Agent");
-            return (IStockAgent)Activator.CreateInstance(type);
         }
 
         public override string ToString()

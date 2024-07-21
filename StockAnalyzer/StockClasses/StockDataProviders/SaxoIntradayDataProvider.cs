@@ -59,6 +59,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     line = sr.ReadLine();
                     if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                    if (line.StartsWith("$")) break;
 
                     var row = line.Split(',');
                     var stockName = row[2];
@@ -340,6 +341,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     line = sr.ReadLine();
                     if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                    if (line.StartsWith("$")) break;
 
                     var row = line.Split(',');
                     if (!stockDictionary.ContainsKey(row[1]))

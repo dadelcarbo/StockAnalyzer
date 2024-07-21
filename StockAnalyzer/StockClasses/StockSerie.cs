@@ -11,7 +11,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockPortfolio.StockStrategy;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -309,7 +308,7 @@ namespace StockAnalyzer.StockClasses
                 }
                 return;
             }
-            using MethodLogger ml = new MethodLogger(typeof(StockSerie), true, $"{this.StockName} Previous:{this.barDuration} New:{newBarDuration}");
+            using MethodLogger ml = new MethodLogger(typeof(StockSerie), false, $"{this.StockName} Previous:{this.barDuration} New:{newBarDuration}");
             if (!this.Initialise() || (newBarDuration == this.barDuration))
             {
                 this.barDuration = newBarDuration;
@@ -401,7 +400,7 @@ namespace StockAnalyzer.StockClasses
                 IStockIndicator indicator = StockIndicatorManager.CreateIndicator(indicatorName);
                 if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
                 {
-                    StockLog.Write($"{indicatorName} to {this.StockName} - {this.BarDuration}");
+                    StockLog.Write($"{indicatorName} to {this.StockName} - {this.BarDuration}", false);
                     indicator.ApplyTo(this);
                     AddIndicatorSerie(indicator, indicatorName);
                     return indicator;
@@ -825,41 +824,6 @@ namespace StockAnalyzer.StockClasses
 
             return false;
         }
-        public bool MatchEvent(StockStrategyEvent strategyEvent, BarDuration duration, int index = -1)
-        {
-            BarDuration currentBarDuration = this.BarDuration;
-            try
-            {
-                this.BarDuration = duration;
-                IStockEvent stockEvent = null;
-                IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(strategyEvent.IndicatorType + "|" + strategyEvent.Indicator);
-                if (this.HasVolume || !indicator.RequiresVolumeData)
-                {
-                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
-                }
-                else
-                {
-                    return false;
-                }
-
-                if (index == -1)
-                    index = LastCompleteIndex;
-
-                int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, strategyEvent.Event);
-                if (eventIndex == -1)
-                {
-                    StockLog.Write("Event " + strategyEvent.Event + " not found in " + indicator.Name);
-                }
-                return stockEvent.Events[eventIndex][index];
-            }
-            finally
-            {
-                this.BarDuration = currentBarDuration;
-            }
-
-            return false;
-        }
-
 
         public bool MatchEventsAnd(List<StockAlertDef> indicators)
         {

@@ -143,7 +143,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             CalculateTickSize();
 
             // Calculate position size according to money management
-            var qty = (int)Math.Ceiling(this.Portfolio.MaxRisk * this.Portfolio.TotalValue / (this.EntryValue - this.StopValue));
+            var qty = (int)Math.Floor(this.Portfolio.MaxRisk * this.Portfolio.TotalValue / (this.EntryValue - this.StopValue));
             qty = Math.Min(qty, (int)(this.Portfolio.MaxPositionSize * this.Portfolio.TotalValue / this.EntryValue));
             this.EntryQty = qty;
         }

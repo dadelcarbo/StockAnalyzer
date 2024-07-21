@@ -241,10 +241,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         private SaxoProduct selectedProduct;
         public SaxoProduct SelectedProduct { get => selectedProduct; set => SetProperty(ref selectedProduct, value); }
 
-        private double minLeverage;
+        private double minLeverage = 2;
         public double MinLeverage { get => minLeverage; set => SetProperty(ref minLeverage, value); }
 
-        private double maxLeverage;
+        private double maxLeverage = 6;
         public double MaxLeverage { get => maxLeverage; set => SetProperty(ref maxLeverage, value); }
 
         private double minBid;

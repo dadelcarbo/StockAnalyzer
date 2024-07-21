@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 
 namespace StockAnalyzer.StockHelpers
@@ -16,13 +17,25 @@ namespace StockAnalyzer.StockHelpers
         public static bool TimerSuspended { get; set; }
 
         private readonly Timer timer;
-        const int refreshPeriod = 10000; // 10 seconds
+
+        /// <summary>
+        /// 5 seconds
+        /// </summary>
+        const int refreshPeriod = 5000;
 
         static public List<StockTimer> Timers = new List<StockTimer>();
         public static void StopAll()
         {
             Timers.ForEach((t) => t.timer.Dispose());
             Timers.Clear();
+        }
+
+        public static void Stop(StockTimer timer)
+        {
+            if (Timers.Contains(timer))
+                Timers.Remove(timer);
+
+            timer.timer.Dispose();
         }
 
         readonly private TimeSpan startTime, endTime, period;
@@ -34,30 +47,16 @@ namespace StockAnalyzer.StockHelpers
             this.period = period;
 
             this.TimerTick += callback;
-            this.timer = new Timer(refreshPeriod) { AutoReset = true, Enabled = true };
+            this.timer = new Timer(period.TotalMilliseconds) { AutoReset = true, Enabled = true };
             this.timer.Elapsed += Timer_Elapsed;
             Timers.Add(this);
         }
 
-        int previousTick = 0;
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var time = DateTime.Now.TimeOfDay;
-            if (TimerSuspended || time < startTime)
+            var time = e.SignalTime.TimeOfDay;
+            if (TimerSuspended || time < startTime || time > endTime)
                 return;
-            if (time > endTime)
-            {
-                this.timer.Stop();
-                return;
-            }
-            var timeSeconds = time.TotalSeconds;
-            var periodSeconds = period.TotalSeconds;
-            var currentTick = (int)(timeSeconds / periodSeconds);
-            if (currentTick == previousTick)
-            {
-                return;
-            }
-            previousTick = currentTick;
 
             TimerTick?.Invoke();
         }
@@ -79,13 +78,19 @@ namespace StockAnalyzer.StockHelpers
             { BarDuration.M_15, new PeriodTick { Tick = 0, PeriodSeconds = 60*15} },
             { BarDuration.M_30, new PeriodTick { Tick = 0, PeriodSeconds = 60*30} },
             { BarDuration.H_1, new PeriodTick { Tick = 0, PeriodSeconds = 60*60} },
+            { BarDuration.H_2, new PeriodTick { Tick = 0, PeriodSeconds = 60*120} },
+            { BarDuration.H_3, new PeriodTick { Tick = 0, PeriodSeconds = 60*180} },
+            { BarDuration.H_4, new PeriodTick { Tick = 0, PeriodSeconds = 60*240} },
             };
 
+        public static StockTimer CreatePeriodicTimer(TimeSpan startTime, TimeSpan endTime, TimeSpan period, StockTimerCallback callback)
+        {
+            return new StockTimer(startTime, endTime, period, callback);
+        }
         public static StockTimer CreateAlertTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback)
         {
             return new StockTimer(startTime, endTime, callback);
         }
-
 
         private StockTimer(TimeSpan startTime, TimeSpan endTime, StockAlertTimerCallback callback)
         {
@@ -93,7 +98,7 @@ namespace StockAnalyzer.StockHelpers
             this.endTime = endTime;
 
             this.AlertTimerTick += callback;
-            this.timer = new Timer(refreshPeriod) { AutoReset = true, Enabled = true };
+            this.timer = new Timer(10000) { AutoReset = true, Enabled = true };
             this.timer.Elapsed += Timer_Elapsed1;
             Timers.Add(this);
         }
@@ -104,7 +109,7 @@ namespace StockAnalyzer.StockHelpers
             if (TimerSuspended || time < startTime || time > endTime)
                 return;
 
-            var timeSeconds = time.TotalSeconds;
+            var timeSeconds = (int)time.TotalSeconds;
             var barDurations = new List<BarDuration>();
             foreach (var tickPeriod in periodTicks)
             {
@@ -118,6 +123,40 @@ namespace StockAnalyzer.StockHelpers
             if (barDurations.Count > 0)
             {
                 AlertTimerTick?.Invoke(barDurations);
+            }
+        }
+
+        public static StockTimer CreateDurationTimer(BarDuration duration, TimeSpan startTime, TimeSpan endTime, StockTimerCallback callback)
+        {
+            return new StockTimer(duration, startTime, endTime, callback);
+        }
+        private StockTimer(BarDuration duration, TimeSpan startTime, TimeSpan endTime, StockTimerCallback callback)
+        {
+            this.durationTicks = periodTicks[duration].PeriodSeconds;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.TimerTick += callback;
+
+            this.timer = new Timer(500) { AutoReset = true, Enabled = true };
+            this.timer.Elapsed += DurationTimer_Elapsed;
+            Timers.Add(this);
+        }
+
+        int durationTicks;
+
+        TimeSpan previousTickTime;
+        private void DurationTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            var time = new TimeSpan(e.SignalTime.Hour, e.SignalTime.Minute, 0);
+            if (TimerSuspended || previousTickTime == time || time < startTime || time > endTime)
+                return;
+
+            var timeSeconds = (int)time.TotalSeconds;
+
+            if (timeSeconds % durationTicks == 0)
+            {
+                previousTickTime = time;
+                TimerTick?.Invoke();
             }
         }
     }

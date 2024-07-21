@@ -1,8 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using global::StockAnalyzerApp.CustomControl;
-using StockAnalyzerApp.CustomControl.GraphControls;
-using StockAnalyzerSettings.Properties;
+﻿using System.Windows.Forms;
 
 namespace StockAnalyzerApp
 {
@@ -91,12 +87,14 @@ namespace StockAnalyzerApp
             this.portfolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
             this.tweetMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bestTrendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sectorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expectedValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoTradeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameMappingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -695,15 +693,30 @@ namespace StockAnalyzerApp
             this.statisticsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F12)));
             this.statisticsMenuItem.Click += new System.EventHandler(this.statisticsMenuItem_Click);
             // 
+            // toolStripSeparator21
+            // 
+            this.toolStripSeparator21.Name = "toolStripSeparator21";
+            this.toolStripSeparator21.Size = new System.Drawing.Size(237, 6);
+            // 
             // portfolioMenuItem
             // 
             this.portfolioMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoTradeMenuItem,
+            this.toolStripSeparator21,
             this.currentPortfolioMenuItem,
             this.nameMappingMenuItem,
             this.portfolioReportMenuItem});
             this.portfolioMenuItem.Name = "portfolioMenuItem";
             this.portfolioMenuItem.Size = new System.Drawing.Size(77, 20);
             this.portfolioMenuItem.Text = "Portfolios";
+            // 
+            // autoTradeMenuItem
+            // 
+            this.autoTradeMenuItem.Name = "autoTradeMenuItem";
+            this.autoTradeMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(System.Windows.Forms.Keys.F8));
+            this.autoTradeMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.autoTradeMenuItem.Text = "Auto Trading";
+            this.autoTradeMenuItem.Click += new System.EventHandler(this.autoTradeMenuItem_Click);
             // 
             // currentPortfolioMenuItem
             // 
@@ -1613,9 +1626,11 @@ namespace StockAnalyzerApp
         private ToolStripButton fastForwardBtn;
         private ToolStripButton copyIsinBtn;
         private ToolStripSeparator toolStripSeparator8;
-        private ToolStripSeparator toolStripSeparator20;
         private ToolStripSeparator toolStripSeparator19;
+        private ToolStripSeparator toolStripSeparator20;
+        private ToolStripSeparator toolStripSeparator21;
         private ToolStripMenuItem currentPortfolioMenuItem;
+        private ToolStripMenuItem autoTradeMenuItem;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
         private ToolStripMenuItem marketReplayViewMenuItem;
         private ToolStripMenuItem multipleTimeFrameViewMenuItem;

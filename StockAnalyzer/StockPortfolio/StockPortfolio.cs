@@ -859,9 +859,10 @@ namespace StockAnalyzer.StockPortfolio
                     default:
                         break;
                 }
+
+                this.Refresh();
                 if (!string.IsNullOrEmpty(orderResponse?.OrderId))
                 {
-                    this.Refresh();
                     return long.Parse(orderResponse?.OrderId);
                 }
             }
