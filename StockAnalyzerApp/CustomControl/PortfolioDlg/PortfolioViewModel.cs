@@ -46,6 +46,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float MaxRisk { get => Portfolio.MaxRisk; set => Portfolio.MaxRisk = value; }
         [Property("P2", "2-Risk")]
         public float MaxPositionSize { get => Portfolio.MaxPositionSize; set => Portfolio.MaxPositionSize = value; }
+        [Property("P2", "2-Risk")]
+        public float AutoTradeRisk { get => Portfolio.AutoTradeRisk; set => Portfolio.AutoTradeRisk = value; }
 
 
         [Property(null, "3-Saxo")]

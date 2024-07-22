@@ -71,6 +71,7 @@ namespace Saxo.OpenAPI.TradingServices
                 return null;
             }
         }
+
         public ClosedPositions GetClosedPositions(Account account)
         {
             try

@@ -1,9 +1,4 @@
 ﻿using StockAnalyzer.StockClasses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 {
@@ -33,7 +28,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 
             if (emaLong[index - 1] < emashort[index - 1] && emaLong[index - 1] > emashort[index])
             {
-                return new TradeRequest { BuySell = BuySell.Sell, StockSerie = stockSerie, Value = dailyValue.CLOSE, Stop = dailyValue.LOW };
+                return new TradeRequest { BuySell = BuySell.Buy, StockSerie = stockSerie, Value = dailyValue.CLOSE, Stop = dailyValue.LOW };
             }
             return null;
         }
@@ -58,7 +53,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 
             if (emaLong[index - 1] > emashort[index - 1] && emaLong[index - 1] < emashort[index])
             {
-                return new TradeRequest { BuySell = BuySell.Buy, StockSerie = stockSerie, Value = dailyValue.CLOSE };
+                return new TradeRequest { BuySell = BuySell.Sell, StockSerie = stockSerie, Value = dailyValue.CLOSE };
             }
 
             return null;

@@ -5,6 +5,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
 {
     public class TradePosition
     {
+        public long Id { get; set; }
         public DateTime OpenDate { get; set; }
         public StockSerie StockSerie { get; set; }
         public int Qty { get; set; }

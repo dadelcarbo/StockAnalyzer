@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
 {
     public class TradeEngine
     {
-        public static bool IsTest { get; set; } = true;
+        public static bool IsTest { get; set; } = false;
         public List<TradeAgent> Agents { get; set; } = new List<TradeAgent>();
 
         static TradeEngine instance;
@@ -36,9 +36,9 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                 Agents.Add(new TradeAgent()
                 {
                     BarDuration = BarDuration.M_5,
-                    StockSerie = StockDictionary.Instance["TURBO_DAX LONG"],
-                    Strategy = TradeStrategyManager.CreateInstance("Bottom"),
-                    Portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == "AutoTradeTest"),
+                    StockSerie = StockDictionary.Instance["TURBO_DAX5M SHORT"],
+                    Strategy = TradeStrategyManager.CreateInstance("Switch"),
+                    Portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == "@SaxoTitre"),
                     Ready = true
                 });
             }
@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         public bool IsRunning { get; set; }
         public void Start()
         {
-            foreach (var agent in Agents.Where(a => a.Ready))
+            foreach (var agent in Agents.Where(a => a.Ready && a.Portfolio.SaxoSilentLogin()))
             {
                 agent.Start();
             }

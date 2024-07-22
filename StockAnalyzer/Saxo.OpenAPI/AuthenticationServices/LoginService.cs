@@ -95,7 +95,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 }
 
                 // Establish Session
-                Clipboard.SetText(clientId);
+                try { Clipboard.SetText(clientId); } catch { }
                 var token = LoginHelpers.GoLogin(session.App);
                 if (token != null)
                 {

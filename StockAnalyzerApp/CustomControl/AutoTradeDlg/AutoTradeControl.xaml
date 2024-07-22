@@ -23,19 +23,20 @@
                     <GroupBox Header="Engine" Grid.Row="0" Height="150">
                         <Button FontSize="30" Content="{Binding StartButtonText}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding StartCmd}"/>
                     </GroupBox>
-                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding Agents}" AutoGenerateColumns="False" IsReadOnly="True" RowIndicatorVisibility="Collapsed">
+                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AgentRuns}" AutoGenerateColumns="False" IsReadOnly="True" RowIndicatorVisibility="Collapsed">
                         <telerik:RadGridView.ColumnGroups>
                             <telerik:GridViewColumnGroup Name="Definition" Header="Agent Definition" />
                             <telerik:GridViewColumnGroup Name="Run" Header="Run"/>
+                            <telerik:GridViewColumnGroup Name="Portfolio" Header="Portfolio"/>
                             <telerik:GridViewColumnGroup Name="Position" Header="Position"/>
                         </telerik:RadGridView.ColumnGroups>
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" ColumnGroupName="Definition"/>
-                            <telerik:GridViewDataColumn Header="Portfolio" DataMemberBinding="{Binding Portfolio.Name}" ColumnGroupName="Definition"/>
-                            <telerik:GridViewDataColumn Header="Instrument" DataMemberBinding="{Binding StockSerie.StockName}" ColumnGroupName="Definition"/>
-                            <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ColumnGroupName="Definition"/>
-                            <telerik:GridViewDataColumn Header="Strategy" DataMemberBinding="{Binding Strategy.Name}" ColumnGroupName="Definition"/>
-                            <telerik:GridViewDataColumn Header="Ready" DataMemberBinding="{Binding Ready}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Agent.Id}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewDataColumn Header="Strategy" DataMemberBinding="{Binding Agent.Strategy.Name}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewDataColumn Header="Instrument" DataMemberBinding="{Binding Agent.StockSerie.StockName}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Agent.BarDuration}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewDataColumn Header="Portfolio" DataMemberBinding="{Binding Agent.Portfolio.Name}" ColumnGroupName="Portfolio"/>
+                            <telerik:GridViewDataColumn Header="Connected" DataMemberBinding="{Binding IsConnected}" ColumnGroupName="Portfolio"/>
 
                             <telerik:GridViewDataColumn Header="State" DataMemberBinding="{Binding State}"/>
                             <telerik:GridViewDataColumn Header="Position" DataMemberBinding="{Binding Position}"/>

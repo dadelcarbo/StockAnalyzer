@@ -92,7 +92,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 using var wc = new WebClient();
                 wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                var url = FormatIntradayURL(stockSerie.ISIN, "1D");
 
                 try
                 {
@@ -104,6 +103,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         DownloadHistory.Add(stockSerie.Symbol, DateTime.Now);
                     }
+                    var url = FormatIntradayURL(stockSerie.ISIN, "2D");
                     var jsonData = SaxoIntradayM5DataProvider.HttpGetFromSaxo(url);
                     var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
                     if (saxoData?.series?[0]?.data == null)
@@ -122,36 +122,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        lastDate = saxoData.series[0].data.First().x;
-                    }
-                    var date = lastDate;
-                    StockDailyValue newBar = null;
-                    foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
-                    {
-                        if (newBar == null)
+                        List<StockDailyValue> m5Bar = DownloadDataM5FromH1(stockSerie);
+                        if (m5Bar != null)
                         {
-                            newBar = new StockDailyValue(bar.y, bar.y, bar.y, bar.y, 0, date);
+                            foreach (var bar in m5Bar)
+                            {
+                                stockSerie.Add(bar.DATE, bar);
+                            }
+                            lastDate = stockSerie.Keys.Last();
                         }
                         else
                         {
-                            var minute = (bar.x.Minute / 5) * 5;
-                            if (minute == newBar.DATE.Minute)
-                            {
-                                newBar.HIGH = Math.Max(newBar.HIGH, bar.y);
-                                newBar.LOW = Math.Min(newBar.LOW, bar.y);
-                                newBar.CLOSE = bar.y;
-                            }
-                            else
-                            {
-                                date = date.AddMinutes(5);
-                                stockSerie.Add(newBar.DATE, newBar);
-                                newBar = new StockDailyValue(newBar.CLOSE, bar.y, bar.y, bar.y, 0, date);
-                            }
+                            lastDate = saxoData.series[0].data.First().x;
                         }
                     }
-                    if (newBar != null)
+                    DateTime date = DateTime.Today.AddHours(8);
+                    foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
                     {
-                        stockSerie.Add(date, newBar);
+                        var newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.r.low);
+                        stockSerie.Add(newBar.DATE, newBar);
                     }
 
                     var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
@@ -170,6 +159,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return false;
         }
+
+        private List<StockDailyValue> DownloadDataM5FromH1(StockSerie stockSerie)
+        {
+            try
+            {
+                var url = FormatIntradayURL(stockSerie.ISIN, "1W");
+                var jsonData = SaxoIntradayM5DataProvider.HttpGetFromSaxo(url);
+                var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
+                if (saxoData?.series?[0]?.data == null)
+                    return null;
+
+                return FixMinuteBars(saxoData.series[0].data.Where(bar => bar.x < DateTime.Today).Select(bar => new StockDailyValue(bar.y, bar.y, bar.y, bar.y, 0, bar.x)), 5);
+            }
+            catch (Exception e)
+            {
+                StockLog.Write(e);
+            }
+            return null;
+        }
+
         public bool DownloadIntradayDataH1(StockSerie stockSerie)
         {
             //if (stockSerie.Uic != 0)
@@ -236,6 +245,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     else
                     {
                         lastDate = saxoData.series[0].data.First().x.AddTicks(-1);
+
+
+
                     }
                     int nbNewBars = 0;
                     foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())

@@ -87,6 +87,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #endregion
         #region STATIC HELPERS
 
+        /// <summary>
+        /// Fix Minutes bars. If some bars are missing they are added to match the nbMinutes parameter
+        /// </summary>
+        /// <param name="bars"></param>
+        /// <param name="nbMinutes"></param>
+        /// <returns></returns>
         static protected List<StockDailyValue> FixMinuteBars(IEnumerable<StockDailyValue> bars, int nbMinutes)
         {
             var previousBar = bars.First();
@@ -96,7 +102,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (previousBar.DATE.Date == bar.DATE.Date)
                 {
-                    while ((bar.DATE - previousBar.DATE).Minutes > nbMinutes)
+                    while ((bar.DATE - previousBar.DATE).TotalMinutes > nbMinutes)
                     {
                         previousBar = new StockDailyValue(
                             previousBar.CLOSE,
