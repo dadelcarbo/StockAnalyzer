@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Windows;
 using System.Xml.Serialization;
 
@@ -820,6 +821,49 @@ namespace StockAnalyzer.StockPortfolio
                 }
             }
         }
+
+        public Position[] SaxoGetPositions()
+        {
+            using var ml = new MethodLogger(this, true, this.Name);
+            try
+            {
+                return accountService?.GetPositions(account);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public Position SaxoGetPosition(StockSerie stockSerie)
+        {
+            using var ml = new MethodLogger(this, true, this.Name);
+            try
+            {
+                var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
+                if (instrument == null)
+                    return null;
+
+                return accountService?.GetPositions(account).FirstOrDefault(p => p.PositionBase.Uic == instrument.Identifier);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public Position SaxoGetPosition(long positionId)
+        {
+            using var ml = new MethodLogger(this, true, this.Name);
+            try
+            {
+                return accountService?.GetPositionById(account, positionId);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
 
         public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = false)
         {

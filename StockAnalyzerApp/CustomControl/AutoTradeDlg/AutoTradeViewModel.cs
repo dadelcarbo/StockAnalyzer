@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockPortfolio.AutoTrade;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -17,6 +18,7 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
              return;
 
             Agents = new ObservableCollection<TradeAgent>(engine.Agents);
+            AgentRuns = new ObservableCollection<AgentRunViewModel>(engine.Agents.Where(a=>a.Ready).Select(a=> new AgentRunViewModel(a)));
         }
 
         #region Start & Stop
@@ -45,6 +47,9 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
         #endregion
 
         public ObservableCollection<TradeAgent> Agents { get; private set; }
+
+
+        public ObservableCollection<AgentRunViewModel> AgentRuns { get; private set; }
 
     }
 }

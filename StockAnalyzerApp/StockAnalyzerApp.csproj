@@ -305,6 +305,7 @@
       <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertViewModel.cs" />
+    <Compile Include="CustomControl\AutoTradeDlg\AgentRunViewModel.cs" />
     <Compile Include="CustomControl\AutoTradeDlg\AutoTradeControl.xaml.cs">
       <DependentUpon>AutoTradeControl.xaml</DependentUpon>
     </Compile>

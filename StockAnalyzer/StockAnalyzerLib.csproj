@@ -345,6 +345,7 @@
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />
     <Compile Include="StockHelpers\TaskExtension.cs" />
+    <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\SwitchStrategy.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\ITradeStrategy.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeAgent.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeEngine.cs" />
