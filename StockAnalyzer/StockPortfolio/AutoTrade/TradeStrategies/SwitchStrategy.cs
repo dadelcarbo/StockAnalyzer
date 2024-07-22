@@ -4,7 +4,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 {
     public class SwitchStrategy : ITradeStrategy
     {
-        public string Name => "Bottom";
+        public string Name => "Switch";
         public string Description => "Systematicaly buy or sell, just for testing";
 
         public TradeRequest TryToOpenPosition(StockSerie stockSerie, BarDuration duration, int index = -1)

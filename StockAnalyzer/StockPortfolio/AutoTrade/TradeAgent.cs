@@ -68,7 +68,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
 
 
                 var startTime = new TimeSpan(8, 0, 0);
-                var endTime = new TimeSpan(22, 00, 0);
+                var endTime = new TimeSpan(23, 00, 0);
                 //var startTime = new TimeSpan(0, 0, 0);
                 //var endTime = new TimeSpan(23, 59, 0);
                 timer = StockTimer.CreateDurationTimer(this.BarDuration, startTime, endTime, TimerEllapsed);
@@ -253,7 +253,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
             }
             else
             {
-                var position = this.Portfolio.Positions.FirstOrDefault(p => p.StockName == this.StockSerie.StockName);
+                var position = this.Portfolio.Positions.Where(p => p.StockName == this.StockSerie.StockName).OrderByDescending(p=>p.EntryDate).FirstOrDefault();
                 if (position != null)
                 {
                     var orderIdString = Portfolio.SaxoClosePosition(position, OrderType.Market);
@@ -262,17 +262,18 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                         StockLog.Write($"{this} Saxo close position failed");
                         return;
                     }
-
                     var orderId = long.Parse(orderIdString);
-                    var order = Portfolio.SaxoOrders.FirstOrDefault(o => o.OrderId == orderId);
-                    if (order == null)
+
+                    var orderActivity = Portfolio.SaxoGetOrderActivities(orderId).FirstOrDefault(o=>o.Status == "FinalFill");
+
+                    if (orderActivity == null)
                     {
                         StockLog.Write($"{this} Saxo order not found for {tradeRequest}");
                         return;
                     }
 
-                    this.Position.CloseDate = order.ActivityTime;
-                    this.Position.ActualCloseValue = order.ExecutionPrice;
+                    this.Position.CloseDate = orderActivity.ActivityTime;
+                    this.Position.ActualCloseValue = orderActivity.ExecutionPrice;
                     this.Position.TheoriticalCloseValue = tradeRequest.Value;
                     this.Position = null;
                 }

@@ -268,6 +268,20 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
+
+        public OrderActivities GetOrderActivities(Account account, long orderId)
+        {
+            try
+            {
+                var method = $"cs/v1/audit/orderactivities/?$top={10000}&$skiptoken={0}&ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&OrderId={orderId}";
+
+                return Get<OrderActivities>(method);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
+            }
+        }
     }
 
 

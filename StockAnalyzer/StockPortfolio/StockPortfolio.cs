@@ -835,6 +835,31 @@ namespace StockAnalyzer.StockPortfolio
             }
         }
 
+        public OpenedOrder[] SaxoGetOrders()
+        {
+            using var ml = new MethodLogger(this, true, this.Name);
+            try
+            {
+                return orderService?.GetOpenedOrders(account)?.Data;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public OrderActivity[] SaxoGetOrderActivities(long orderId)
+        {
+            using var ml = new MethodLogger(this, true, this.Name);
+            try
+            {
+                return orderService?.GetOrderActivities(account, orderId)?.Data;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public Position SaxoGetPosition(StockSerie stockSerie)
         {
             using var ml = new MethodLogger(this, true, this.Name);
