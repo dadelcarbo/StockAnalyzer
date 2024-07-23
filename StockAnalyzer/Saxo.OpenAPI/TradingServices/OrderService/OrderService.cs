@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json.Serialization;
 
@@ -162,7 +163,7 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-        public OrderResponse SellMarketOrder(Account account, Instrument instrument, int qty)
+        public OrderResponse SellMarketOrder(Account account, Instrument instrument, int qty, bool cancelOrders)
         {
             var orderRequest = new OrderRequest
             {
@@ -172,7 +173,8 @@ namespace Saxo.OpenAPI.TradingServices
                 OrderType = SaxoOrderType.Market.ToString(),
                 BuySell = "Sell",
                 Amount = qty,
-                OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() }
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() },
+                CancelOrders = cancelOrders
             };
             return PostOrder(orderRequest);
         }
@@ -224,12 +226,26 @@ namespace Saxo.OpenAPI.TradingServices
             return Post<OrderResponse>("trade/v2/orders", order);
         }
 
-        public OpenedOrders GetOpenedOrders(Account account)
+        /// <summary>
+        /// Return all orders for account, or only for specified UIC
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="uic"></param>
+        /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
+        public OpenedOrder[] GetOpenedOrders(Account account, long uic = 0)
         {
             try
             {
                 var res = Get<OpenedOrders>($"port/v1/orders/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
-                return res;
+                if (uic == 0)
+                {
+                    return res?.Data?.Where(o => o.Uic == uic).ToArray();
+                }
+                else
+                {
+                    return res?.Data;
+                }
             }
             catch (Exception ex)
             {

@@ -253,10 +253,10 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
             }
             else
             {
-                var position = this.Portfolio.Positions.Where(p => p.StockName == this.StockSerie.StockName).OrderByDescending(p=>p.EntryDate).FirstOrDefault();
+                var position =this.Portfolio.SaxoGetPosition(this.Position.Id);
                 if (position != null)
                 {
-                    var orderIdString = Portfolio.SaxoClosePosition(position, OrderType.Market);
+                    var orderIdString = Portfolio.SaxoClosePosition(this.Position.Id);
                     if (string.IsNullOrEmpty(orderIdString))
                     {
                         StockLog.Write($"{this} Saxo close position failed");

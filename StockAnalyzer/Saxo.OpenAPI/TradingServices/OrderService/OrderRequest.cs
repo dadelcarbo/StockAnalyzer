@@ -51,6 +51,7 @@ namespace Saxo.OpenAPI.TradingServices
         public decimal OrderPrice { get; set; }
         public OrderRequest[] Orders { get; set; }
         public bool ManualOrder { get; set; }
+        public bool CancelOrders { get; set; }
     }
 
     public class SlaveOrderRequest
