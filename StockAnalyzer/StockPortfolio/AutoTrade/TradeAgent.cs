@@ -253,19 +253,17 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
             }
             else
             {
-                var position =this.Portfolio.SaxoGetPosition(this.Position.Id);
+                var position = this.Portfolio.SaxoGetPosition(this.Position.Id);
                 if (position != null)
                 {
-                    var orderIdString = Portfolio.SaxoClosePosition(this.Position.Id);
-                    if (string.IsNullOrEmpty(orderIdString))
+                    var orderId = Portfolio.SaxoClosePosition(this.Position.Id);
+                    if (orderId == 0)
                     {
                         StockLog.Write($"{this} Saxo close position failed");
                         return;
                     }
-                    var orderId = long.Parse(orderIdString);
 
-                    var orderActivity = Portfolio.SaxoGetOrderActivities(orderId).FirstOrDefault(o=>o.Status == "FinalFill");
-
+                    var orderActivity = Portfolio.SaxoGetOrderActivities(orderId).FirstOrDefault(o => o.Status == "FinalFill");
                     if (orderActivity == null)
                     {
                         StockLog.Write($"{this} Saxo order not found for {tradeRequest}");

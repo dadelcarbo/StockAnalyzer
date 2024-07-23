@@ -1042,13 +1042,17 @@ namespace StockAnalyzer.StockPortfolio
             }
             return null;
         }
-        public string SaxoClosePosition(long positionId)
+        public long SaxoClosePosition(long positionId)
         {
             using var ml = new MethodLogger(this, true, this.Name);
             try
             {
-                if (!this.SaxoLogin())
-                    return null;
+                if (!this.SaxoSilentLogin())
+                    return 0;
+
+                var position = this.SaxoGetPosition(positionId);
+                if (position == null)
+                    return 0;
 
                 // Close related Orders
                 var openOrders = this.SaxoGetOrders();
@@ -1060,45 +1064,15 @@ namespace StockAnalyzer.StockPortfolio
                     }
                 }
 
-                OrderResponse orderResponse = orderResponse = orderService.SellMarketOrder(account, instrument, position.EntryQty);
-                //switch (orderType)
-                //{
-                //    case OrderType.Market:
-                //        if (position.TrailStopId != 0)
-                //        {
-                //            if (!orderService.CancelOrder(account, position.TrailStopId))
-                //                return null;
-                //        }
-                //        if (position.LimitOrderId != 0)
-                //        {
-                //            if (!orderService.CancelOrder(account, position.LimitOrderId))
-                //                return null;
-                //        }
-                //        orderResponse = orderService.SellMarketOrder(account, instrument, position.EntryQty);
-                //        break;
-                //    case OrderType.Limit:
-                //        decimal value = instrumentDetail.RoundToTickSize(exitValue);
-                //        if (position.LimitOrderId != 0)
-                //        {
-                //            orderResponse = orderService.PatchOrder(account, instrument, position.LimitOrderId, SaxoOrderType.Market.ToString(), "Sell", position.EntryQty, 0);
-                //        }
-                //        else
-                //        {
-                //            orderResponse = orderService.SellLimitOrder(account, instrument, position.EntryQty, instrumentDetail.RoundToTickSize(exitValue));
-                //            long.TryParse(orderResponse?.OrderId, out var id);
-                //            position.LimitOrderId = id;
-                //        }
-                //        break;
-                //    case OrderType.Threshold:
-                //        break;
-                //}
-                return orderResponse?.OrderId;
+                var instrument = this.GetInstrument(position.PositionBase.Uic);
+                OrderResponse orderResponse = orderResponse = orderService.SellMarketOrder(account, instrument, (int)position.PositionBase.Amount, true);
+                return orderResponse?.OrderId == null ? 0 : long.Parse(orderResponse.OrderId);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            return null;
+            return 0;
         }
 
         public string SaxoClosePosition(StockPosition position, OrderType orderType, float exitValue = 0.0f)
