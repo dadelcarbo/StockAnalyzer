@@ -20,6 +20,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     Directory.CreateDirectory(Folders.Portfolio);
                 }
+                if (!Directory.Exists(Folders.AutoTrade))
+                {
+                    Directory.CreateDirectory(Folders.AutoTrade);
+                }
                 if (!Directory.Exists(Folders.Strategy))
                 {
                     Directory.CreateDirectory(Folders.Strategy);

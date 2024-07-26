@@ -15,10 +15,10 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
         public AutoTradeViewModel()
         {
             if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-             return;
+                return;
 
-            Agents = new ObservableCollection<TradeAgent>(engine.Agents);
-            AgentRuns = new ObservableCollection<AgentRunViewModel>(engine.Agents.Where(a=>a.Ready).Select(a=> new AgentRunViewModel(a)));
+            AgentDefs = TradeAgentDef.AgentDefs;
+            AgentRuns = new ObservableCollection<AgentRunViewModel>(engine.Agents.Where(a => !a.AgentDef.Draft).Select(a => new AgentRunViewModel(a)));
         }
 
         #region Start & Stop
@@ -46,7 +46,7 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
 
         #endregion
 
-        public ObservableCollection<TradeAgent> Agents { get; private set; }
+        public ObservableCollection<TradeAgentDef> AgentDefs { get; private set; }
 
 
         public ObservableCollection<AgentRunViewModel> AgentRuns { get; private set; }

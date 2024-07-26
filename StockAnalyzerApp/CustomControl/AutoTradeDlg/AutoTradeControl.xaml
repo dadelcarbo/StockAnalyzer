@@ -23,7 +23,8 @@
                     <GroupBox Header="Engine" Grid.Row="0" Height="150">
                         <Button FontSize="30" Content="{Binding StartButtonText}" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding StartCmd}"/>
                     </GroupBox>
-                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding AgentRuns}" AutoGenerateColumns="False" IsReadOnly="True" RowIndicatorVisibility="Collapsed">
+                    <telerik:RadGridView Name="AgentRunGrid" Grid.Row="1" ItemsSource="{Binding AgentRuns}" AutoGenerateColumns="False" IsReadOnly="True" RowIndicatorVisibility="Collapsed"   
+                                         SelectionChanged="AgentRunGrid_SelectionChanged">
                         <telerik:RadGridView.ColumnGroups>
                             <telerik:GridViewColumnGroup Name="Definition" Header="Agent Definition" />
                             <telerik:GridViewColumnGroup Name="Run" Header="Run"/>
@@ -31,21 +32,50 @@
                             <telerik:GridViewColumnGroup Name="Position" Header="Position"/>
                         </telerik:RadGridView.ColumnGroups>
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Agent.Id}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewToggleRowDetailsColumn />
+
+                            <telerik:GridViewColumn>
+                                <telerik:GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <telerik:RadButton Content="Start"
+											   Command="{Binding StartCommand}"
+											   CommandParameter="{Binding}" 
+                                               telerik:TouchManager.TouchMode="HitTestHidden"/>
+                                    </DataTemplate>
+                                </telerik:GridViewColumn.CellTemplate>
+                            </telerik:GridViewColumn>
+                            <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Agent.AgentDef.Id}" ColumnGroupName="Definition"/>
                             <telerik:GridViewDataColumn Header="Strategy" DataMemberBinding="{Binding Agent.Strategy.Name}" ColumnGroupName="Definition"/>
                             <telerik:GridViewDataColumn Header="Instrument" DataMemberBinding="{Binding Agent.StockSerie.StockName}" ColumnGroupName="Definition"/>
-                            <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Agent.BarDuration}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Agent.AgentDef.BarDuration}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Agent.AgentDef.Theme}" ColumnGroupName="Definition"/>
                             <telerik:GridViewDataColumn Header="Portfolio" DataMemberBinding="{Binding Agent.Portfolio.Name}" ColumnGroupName="Portfolio"/>
                             <telerik:GridViewDataColumn Header="Connected" DataMemberBinding="{Binding IsConnected}" ColumnGroupName="Portfolio"/>
 
                             <telerik:GridViewDataColumn Header="State" DataMemberBinding="{Binding State}"/>
-                            <telerik:GridViewDataColumn Header="Position" DataMemberBinding="{Binding Position}"/>
+                            <telerik:GridViewDataColumn Header="ID" DataMemberBinding="{Binding Position.Id}"  ColumnGroupName="Position"/>
+                            <telerik:GridViewDataColumn Header="TheoriticalOpenValue" DataMemberBinding="{Binding Position.TheoriticalOpenValue}"  ColumnGroupName="Position"/>
+                            <telerik:GridViewDataColumn Header="ActualOpenValue" DataMemberBinding="{Binding Position.ActualOpenValue}"  ColumnGroupName="Position"/>
+                            <telerik:GridViewDataColumn Header="ID" DataMemberBinding="{Binding Position.Id}"  ColumnGroupName="Position"/>
 
                         </telerik:RadGridView.Columns>
+                        <telerik:RadGridView.RowDetailsTemplate>
+                            <DataTemplate>
+
+                                <TabControl>
+                                    <TabItem Header="Requests">
+                                        <telerik:RadGridView ItemsSource="{Binding Agent.TradeRequests}" IsReadOnly="True" RowIndicatorVisibility="Collapsed" ShowGroupPanel="False"/>
+                                    </TabItem>
+                                    <TabItem Header="Positions">
+                                        <telerik:RadGridView ItemsSource="{Binding Agent.Positions}" IsReadOnly="True" RowIndicatorVisibility="Collapsed" ShowGroupPanel="False"/>
+                                    </TabItem>
+                                </TabControl>
+                            </DataTemplate>
+                        </telerik:RadGridView.RowDetailsTemplate>
                     </telerik:RadGridView>
                 </Grid>
             </TabItem>
-            
+
             <TabItem Header="Definition">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -55,14 +85,16 @@
                     <GroupBox Header="Agent" Grid.Row="0" Height="150">
                         <Label Content="Agent parameters ..."/>
                     </GroupBox>
-                    <telerik:RadGridView Grid.Row="1" ItemsSource="{Binding Agents}" AutoGenerateColumns="False" IsReadOnly="True" RowIndicatorVisibility="Collapsed">
+                    <telerik:RadGridView Name="AgentDefsGrid" Grid.Row="1" ItemsSource="{Binding AgentDefs}" AutoGenerateColumns="False" IsReadOnly="True" RowIndicatorVisibility="Collapsed"
+                                         SelectionChanged="AgentDefsGrid_SelectionChanged">
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}"/>
-                            <telerik:GridViewDataColumn Header="Portfolio" DataMemberBinding="{Binding Portfolio.Name}"/>
-                            <telerik:GridViewDataColumn Header="Instrument" DataMemberBinding="{Binding StockSerie.StockName}"/>
+                            <telerik:GridViewDataColumn Header="Portfolio" DataMemberBinding="{Binding PortfolioName}"/>
+                            <telerik:GridViewDataColumn Header="Instrument" DataMemberBinding="{Binding StockName}"/>
                             <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding BarDuration}"/>
-                            <telerik:GridViewDataColumn Header="Strategy" DataMemberBinding="{Binding Strategy.Name}"/>
-                            <telerik:GridViewDataColumn Header="Ready" DataMemberBinding="{Binding Ready}"/>
+                            <telerik:GridViewDataColumn Header="Strategy" DataMemberBinding="{Binding StrategyName}"/>
+                            <telerik:GridViewDataColumn Header="Ready" DataMemberBinding="{Binding Draft}"/>
+                            <telerik:GridViewDataColumn Header="Ready" DataMemberBinding="{Binding Theme}"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>

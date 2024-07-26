@@ -163,7 +163,7 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-        public OrderResponse SellMarketOrder(Account account, Instrument instrument, int qty, bool cancelOrders)
+        public OrderResponse SellMarketOrder(Account account, Instrument instrument, int qty)
         {
             var orderRequest = new OrderRequest
             {
@@ -173,8 +173,7 @@ namespace Saxo.OpenAPI.TradingServices
                 OrderType = SaxoOrderType.Market.ToString(),
                 BuySell = "Sell",
                 Amount = qty,
-                OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() },
-                CancelOrders = cancelOrders
+                OrderDuration = new OrderDuration { DurationType = OrderDurationType.DayOrder.ToString() }
             };
             return PostOrder(orderRequest);
         }
@@ -238,7 +237,7 @@ namespace Saxo.OpenAPI.TradingServices
             try
             {
                 var res = Get<OpenedOrders>($"port/v1/orders/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}");
-                if (uic == 0)
+                if (uic != 0)
                 {
                     return res?.Data?.Where(o => o.Uic == uic).ToArray();
                 }

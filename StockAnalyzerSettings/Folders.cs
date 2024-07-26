@@ -12,6 +12,7 @@ namespace StockAnalyzerSettings
         public static string Palmares => Path.Combine(Settings.Default.PersonalFolder, "Palmares");
         public static string Tweets => Path.Combine(Settings.Default.PersonalFolder, "Tweets");
         public static string AlertDef => Path.Combine(Settings.Default.PersonalFolder, "Alert");
+        public static string AutoTrade => Path.Combine(Settings.Default.PersonalFolder, "AutoTrade");
         public static string Report => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Report");
         public static string AlertLog => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Alerts");
         public static string Log => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Log");

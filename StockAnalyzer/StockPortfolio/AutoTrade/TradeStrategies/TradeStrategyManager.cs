@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockAgent;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,8 +35,16 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 
         static public ITradeStrategy CreateInstance(string shortName)
         {
-            Type type = typeof(ITradeStrategy).Assembly.GetType($"StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies.{shortName}Strategy");
-            return (ITradeStrategy)Activator.CreateInstance(type);
+            try
+            {
+                Type type = typeof(ITradeStrategy).Assembly.GetType($"StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies.{shortName}Strategy");
+                return (ITradeStrategy)Activator.CreateInstance(type);
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+            return null;
         }
         #endregion
     }

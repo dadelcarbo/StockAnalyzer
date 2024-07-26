@@ -11,6 +11,9 @@ namespace StockAnalyzer.StockHelpers
         public delegate void StockTimerCallback();
         public event StockTimerCallback TimerTick;
 
+        public delegate void EndOfDayHandler();
+        public event EndOfDayHandler OnEndOfDay;
+
         public delegate void StockAlertTimerCallback(List<BarDuration> barDurations);
         public event StockAlertTimerCallback AlertTimerTick;
 
@@ -148,6 +151,12 @@ namespace StockAnalyzer.StockHelpers
         private void DurationTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             var time = new TimeSpan(e.SignalTime.Hour, e.SignalTime.Minute, 0);
+
+            if (time > endTime)
+            {
+                this.OnEndOfDay?.Invoke();
+            }
+
             if (TimerSuspended || previousTickTime == time || time < startTime || time > endTime)
                 return;
 

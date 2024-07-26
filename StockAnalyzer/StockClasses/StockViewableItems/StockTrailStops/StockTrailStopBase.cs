@@ -39,6 +39,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         protected FloatSerie[] series;
         public FloatSerie[] Series => series;
 
+        public FloatSerie LongStopSerie => series?[0];
+        public FloatSerie ShortStopSerie => series?[1];
+
         public string[] ExtraNames => new string[] { "ReentryRange", "DistToReentry", "BarsInReentry" };
 
         protected FloatSerie[] extras;

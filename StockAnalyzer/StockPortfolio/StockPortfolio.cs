@@ -546,7 +546,7 @@ namespace StockAnalyzer.StockPortfolio
         {
             using var ml = new MethodLogger(this, true, this.Name);
             if (this.IsSimu)
-                return false;
+                return true;
 
             if (string.IsNullOrEmpty(SaxoAccountId))
             {
@@ -973,7 +973,7 @@ namespace StockAnalyzer.StockPortfolio
                 switch (orderType)
                 {
                     case OrderType.Market:
-                        orderResponse = orderService.SellMarketOrder(account, instrument, qty, false);
+                        orderResponse = orderService.SellMarketOrder(account, instrument, qty);
                         break;
                     case OrderType.Limit:
                         decimal limit = instrumentDetail.RoundToTickSize(orderValue);
@@ -1055,17 +1055,17 @@ namespace StockAnalyzer.StockPortfolio
                     return 0;
 
                 // Close related Orders
-                var openOrders = this.SaxoGetOrders();
+                var openOrders = this.SaxoGetOrders(position.PositionBase.Uic);
                 if (openOrders != null)
                 {
-                    foreach (var order in openOrders.Where(o => o.BuySell == "Sell" && o.RelatedPositionId == positionId))
+                    foreach (var order in openOrders.Where(o => o.BuySell == "Sell"))
                     {
                         orderService.CancelOrder(account, order.OrderId);
                     }
                 }
 
                 var instrument = this.GetInstrument(position.PositionBase.Uic);
-                OrderResponse orderResponse = orderResponse = orderService.SellMarketOrder(account, instrument, (int)position.PositionBase.Amount, true);
+                OrderResponse orderResponse = orderResponse = orderService.SellMarketOrder(account, instrument, (int)position.PositionBase.Amount);
                 return orderResponse?.OrderId == null ? 0 : long.Parse(orderResponse.OrderId);
             }
             catch (Exception ex)
@@ -1111,7 +1111,7 @@ namespace StockAnalyzer.StockPortfolio
                             if (!orderService.CancelOrder(account, position.LimitOrderId))
                                 return null;
                         }
-                        orderResponse = orderService.SellMarketOrder(account, instrument, position.EntryQty, false);
+                        orderResponse = orderService.SellMarketOrder(account, instrument, position.EntryQty);
                         break;
                     case OrderType.Limit:
                         decimal value = instrumentDetail.RoundToTickSize(exitValue);

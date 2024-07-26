@@ -27,7 +27,7 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
 
         private void Agent_PositionChanged(TradeAgent sender)
         {
-            this.OnPropertyChanged(nameof(State));
+            this.OnPropertyChanged(nameof(Position));
         }
         public State State => Agent.Running ? State.Running : State.Stopped;
 

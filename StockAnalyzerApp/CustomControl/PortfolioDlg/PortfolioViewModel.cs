@@ -32,13 +32,15 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property(null, "1-General")]
         public string Name { get => Portfolio.Name; set => Portfolio.Name = value; }
         [Property(null, "1-General")]
-        public float Balance => Portfolio.Balance;
+        public float Cash => Portfolio.Balance;
         [Property(null, "1-General")]
         public float Value => Portfolio.TotalValue;
         [Property(null, "1-General")]
         public float RiskFreeValue => Portfolio.RiskFreeValue;
         [Property("P2", "1-General")]
         public float Drawdown => Portfolio.DrawDown;
+        [Property(null, "1-General")]
+        public float MaxValue => Portfolio.MaxValue;
 
         [Property(null, "2-Risk")]
         public int MaxPositions { get => Portfolio.MaxPositions; set => Portfolio.MaxPositions = value; }

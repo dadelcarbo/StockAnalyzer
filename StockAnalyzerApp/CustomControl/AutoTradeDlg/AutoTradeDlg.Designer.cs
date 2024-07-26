@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.autoTradeControl1 = new CustomControl.AutoTradeDlg.AutoTradeControl();
+            this.autoTradeControl1 = new CustomControl.AutoTradeDlg.AutoTradeControl(this);
             this.SuspendLayout();
             // 
             // elementHost1
@@ -57,6 +57,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private CustomControl.AutoTradeDlg.AutoTradeControl autoTradeControl1;
+        public CustomControl.AutoTradeDlg.AutoTradeControl autoTradeControl1;
     }
 }

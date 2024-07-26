@@ -2,6 +2,7 @@
 using StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Instrumentation;
 using System.Text;
@@ -13,41 +14,92 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
     public class TradeEngine
     {
         public static bool IsTest { get; set; } = false;
-        public List<TradeAgent> Agents { get; set; } = new List<TradeAgent>();
+        public ObservableCollection<TradeAgent> Agents { get; set; }
 
         static TradeEngine instance;
         public static TradeEngine Instance => instance ??= new TradeEngine();
 
         private TradeEngine()
         {
-            if (IsTest)
+            var agentDefs = TradeAgentDef.AgentDefs;
+            if (agentDefs.Count == 0)
             {
-                Agents.Add(new TradeAgent()
+                agentDefs.Add(new TradeAgentDef()
                 {
+                    Id = -1,
                     BarDuration = BarDuration.M_5,
-                    StockSerie = StockDictionary.Instance["TURBO_DAX LONG"],
-                    Strategy = TradeStrategyManager.CreateInstance("Bottom"),
-                    Portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == "AutoTradeTest"),
-                    Ready = true
+                    StockName = "TURBO_DAX5M LONG",
+                    StrategyName = "TrailAtr",
+                    PortfolioName = "AutoTradeTest",
+                    Draft = false,
+                    AutoStart = false
                 });
+                agentDefs.Add(new TradeAgentDef()
+                {
+                    Id = -2,
+                    BarDuration = BarDuration.M_5,
+                    StockName = "TURBO_DAX5M SHORT",
+                    StrategyName = "TrailAtr",
+                    PortfolioName = "AutoTradeTest",
+                    Draft = false,
+                    AutoStart = false
+                });
+                agentDefs.Add(new TradeAgentDef()
+                {
+                    Id = 1,
+                    BarDuration = BarDuration.M_5,
+                    StockName = "TURBO_DAX5M LONG",
+                    StrategyName = "TrailAtr",
+                    PortfolioName = "@SaxoTitre",
+                    Draft = false,
+                    AutoStart = false
+                });
+                agentDefs.Add(new TradeAgentDef()
+                {
+                    Id = 2,
+                    BarDuration = BarDuration.M_5,
+                    StockName = "TURBO_DAX5M SHORT",
+                    StrategyName = "TrailAtr",
+                    PortfolioName = "@SaxoTitre",
+                    Draft = false,
+                    AutoStart = false
+                });
+                agentDefs.Add(new TradeAgentDef()
+                {
+                    Id = 3,
+                    BarDuration = BarDuration.H_2,
+                    StockName = "TURBO_DAX LONG",
+                    StrategyName = "TrailAtr",
+                    PortfolioName = "@SaxoTitre",
+                    Draft = false,
+                    AutoStart = false
+                });
+                agentDefs.Add(new TradeAgentDef()
+                {
+                    Id = 4,
+                    BarDuration = BarDuration.H_2,
+                    StockName = "TURBO_DAX SHORT",
+                    StrategyName = "TrailAtr",
+                    PortfolioName = "@SaxoTitre",
+                    Draft = false,
+                    AutoStart = false
+                });
+
+                TradeAgentDef.Save();
             }
-            else
+
+            this.Agents = new ObservableCollection<TradeAgent>(agentDefs.Select(ad => new TradeAgent(ad)));
+
+            foreach (var agent in Agents.Where(a => a.AgentDef.AutoStart && a.Portfolio.SaxoLogin()))
             {
-                Agents.Add(new TradeAgent()
-                {
-                    BarDuration = BarDuration.M_5,
-                    StockSerie = StockDictionary.Instance["TURBO_DAX5M SHORT"],
-                    Strategy = TradeStrategyManager.CreateInstance("Switch"),
-                    Portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == "@SaxoTitre"),
-                    Ready = true
-                });
+                agent.Start();
             }
         }
 
         public bool IsRunning { get; set; }
         public void Start()
         {
-            foreach (var agent in Agents.Where(a => a.Ready && a.Portfolio.SaxoSilentLogin()))
+            foreach (var agent in Agents.Where(a => !a.AgentDef.Draft && a.Portfolio.SaxoLogin()))
             {
                 agent.Start();
             }
