@@ -113,6 +113,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             var stockSerie = StockDictionary.GetSerie(stockName, isin);
             if (stockSerie != null && SelectedStockChanged != null)
             {
+                this.Form.TopMost = true;
                 StockAnalyzerForm.MainFrame.Activate();
                 if (duration != null)
                 {
@@ -122,7 +123,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 {
                     this.SelectedStockChanged(stockSerie.StockName, true);
                 }
-                this.Form.TopMost = true;
                 this.Form.TopMost = false;
             }
         }

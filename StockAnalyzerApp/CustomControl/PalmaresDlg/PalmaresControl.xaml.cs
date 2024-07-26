@@ -150,6 +150,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             if (line == null) return;
 
+            this.Form.TopMost = true;
             StockAnalyzerForm.MainFrame.Activate();
             if (string.IsNullOrEmpty(this.ViewModel.Theme))
             {
@@ -163,7 +164,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             {
                 this.SelectedStockAndThemeChanged(line.Name, ViewModel.BarDuration, this.ViewModel.Theme, true);
             }
-            this.Form.TopMost = true;
             this.Form.TopMost = false;
         }
 

@@ -54,6 +54,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
 
             if (SelectedStockChanged != null)
             {
+                this.Form.TopMost = true;
                 StockAnalyzerForm.MainFrame.Activate();
                 if (!string.IsNullOrEmpty(alert.Theme))
                 {
@@ -68,7 +69,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog
                         StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alertDef.IndicatorFullName);
                     }
                 }
-                this.Form.TopMost = true;
                 this.Form.TopMost = false;
             }
         }

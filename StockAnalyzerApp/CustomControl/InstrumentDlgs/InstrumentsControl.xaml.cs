@@ -50,10 +50,10 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             if (line == null) return;
 
+            this.Form.TopMost = true;
             StockAnalyzerForm.MainFrame.Activate();
             this.SelectedStockChanged(line.StockName, BarDuration.Daily, true);
 
-            this.Form.TopMost = true;
             this.Form.TopMost = false;
         }
 

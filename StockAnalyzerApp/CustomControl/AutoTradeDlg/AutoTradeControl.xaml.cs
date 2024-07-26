@@ -44,6 +44,7 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
 
         void UpdateMainWindow(TradeAgentDef agent)
         {
+            this.form.TopMost = true;
             StockAnalyzerForm.MainFrame.Activate();
             if (!string.IsNullOrEmpty(agent.Theme))
             {
@@ -59,7 +60,6 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
                 //    StockAnalyzerForm.MainFrame.SetThemeFromIndicator(alertDef.IndicatorFullName);
                 //}
             }
-            this.form.TopMost = true;
             this.form.TopMost = false;
         }
     }
