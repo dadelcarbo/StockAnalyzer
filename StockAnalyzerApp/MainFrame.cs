@@ -4188,7 +4188,7 @@ namespace StockAnalyzerApp
         }
 
         private bool repaintSuspended = false;
-        private void ApplyTheme()
+        public void ApplyTheme()
         {
             using (new MethodLogger(this, showTimerDebug))
             {

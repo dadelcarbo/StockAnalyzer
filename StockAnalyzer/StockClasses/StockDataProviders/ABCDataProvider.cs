@@ -1633,6 +1633,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             SaveToCSV(stockSerie);
 
+            stockSerie.IsInitialised = false;
             stockSerie.BarDuration = barDuration;
         }
     }

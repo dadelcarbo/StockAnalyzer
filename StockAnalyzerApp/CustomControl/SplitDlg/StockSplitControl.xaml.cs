@@ -1,18 +1,7 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace StockAnalyzerApp.CustomControl.SplitDlg
 {
@@ -36,6 +25,8 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             if (dataProvider == null) { return; }
 
             dataProvider.ApplySplit(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date, (float)Before / (float)After);
+
+            StockAnalyzerForm.MainFrame.ApplyTheme();
         }
 
         private void ApplyTrimButton_Click(object sender, RoutedEventArgs e)
@@ -44,6 +35,8 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             if (dataProvider == null) { return; }
 
             dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date);
+
+            StockAnalyzerForm.MainFrame.ApplyTheme();
         }
     }
 }
