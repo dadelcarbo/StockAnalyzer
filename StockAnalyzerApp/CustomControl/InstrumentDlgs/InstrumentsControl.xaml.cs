@@ -57,5 +57,19 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             this.Form.TopMost = false;
         }
 
+        private void Export_Onclick(object sender, RoutedEventArgs e)
+        {
+            string exportFile = Path.Combine(Folders.PersonalFolder, $@"Instrument.xlsx");
+
+            using (FileStream fileStream = new FileStream(exportFile, FileMode.Create, FileAccess.Write))
+            {
+                var options = new GridViewDocumentExportOptions()
+                {
+                    ShowColumnHeaders = true,
+                    ExportDefaultStyles = true
+                };
+                this.gridView.ExportToXlsx(fileStream, options);
+            }
+        }
     }
 }

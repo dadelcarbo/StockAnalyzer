@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 
@@ -15,6 +16,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] SerieNames => new string[] { "OSC UNCH", $"EMA({parameters[1]})", $"EMA({parameters[0]})", "SUM/10" };
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.DarkRed) };
 
+        public override Area[] Areas => areas ??= new StockDrawing.Area[]
+            {
+                new Area {Name="Bull", Color = Color.FromArgb(64, Color.Green), Visibility = true },
+                new Area {Name="Bear", Color = Color.FromArgb(64, Color.Red), Visibility = true }
+            };
+
         public override void ApplyTo(StockSerie stockSerie)
         {
             var fastEma = stockSerie.GetIndicator($"EMA({parameters[0]})").Series[0];
@@ -28,6 +35,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Series[2] = fastEma;
             this.Series[3] = lowSerie;
 
+            this.Areas[0].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[0].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[1].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[1].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
+
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
@@ -35,8 +47,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             for (int i = 2; i < stockSerie.Count; i++)
             {
                 int eventIndex = 0;
-                this.Events[eventIndex++][i] = fastEma[i] > slowEma[i];
-                this.Events[eventIndex++][i] = fastEma[i] <= slowEma[i];
+                bool bullish = fastEma[i] > slowEma[i];
+                this.Events[eventIndex++][i] = bullish;
+                this.Events[eventIndex++][i] = !bullish;
+                if (bullish)
+                {
+                    this.areas[0].UpLine[i] = unchSerie[i];
+                    this.areas[0].DownLine[i] = fastEma[i];
+                }
+                else
+                {
+                    this.areas[1].UpLine[i] = fastEma[i];
+                    this.areas[1].DownLine[i] = unchSerie[i];
+                }
 
                 this.Events[eventIndex++][i] = closeSerie[i - 1] <= unchSerie[i - 1] && closeSerie[i] > unchSerie[i];
                 this.Events[eventIndex++][i] = closeSerie[i - 1] <= fastEma[i - 1] && closeSerie[i] > fastEma[i];

@@ -26,6 +26,11 @@
                     <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="120" VerticalAlignment="Center"/>
 
                     <Button Content="{Binding RunStatus}" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
+                    <Button x:Name="exportToExcel" Height="24" Width="24"  VerticalAlignment="Center"
+                            Visibility="{Binding ExportEnabled, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
+                            Click="Export_Onclick">
+                        <Image Source="../../Resources/Excel.png" />
+                    </Button>
 
                     <telerik:RadProgressBar Minimum="0" Maximum="{Binding NbStocks}" Value="{Binding Progress}"
                                                     Width="100" Height="10" Margin="1" Visibility="{Binding ProgressVisibility, Mode=OneWay}"/>

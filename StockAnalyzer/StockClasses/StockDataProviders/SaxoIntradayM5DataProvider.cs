@@ -114,9 +114,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     DateTime lastDate = DateTime.MinValue;
                     if (stockSerie.Count > 0)
                     {
+                        lastDate = stockSerie.Keys.Last();
                         if (stockSerie.Keys.Last().Date == DateTime.Today)
                         {
-                            lastDate = stockSerie.Keys.Last();
                             stockSerie.RemoveLast();
                         }
                     }
@@ -125,7 +125,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         List<StockDailyValue> m5Bar = DownloadDataM5FromH1(stockSerie);
                         if (m5Bar != null)
                         {
-                            foreach (var bar in m5Bar)
+                            var end = saxoData.series[0]?.data.Count > 0 ? saxoData.series[0].data[0].r.low : DateTime.MaxValue;
+
+                            foreach (var bar in m5Bar.Where(b => b.DATE < end))
                             {
                                 stockSerie.Add(bar.DATE, bar);
                             }
@@ -137,19 +139,24 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                     }
                     DateTime date = DateTime.Today.AddHours(8);
-                    foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
+                    bool update = false;
+                    foreach (var bar in saxoData.series[0].data.Where(b => b.r.low > lastDate && b.y > 0).ToList())
                     {
                         var newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.r.low);
                         stockSerie.Add(newBar.DATE, newBar);
+
+                        update = true;
                     }
 
-                    var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                    var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+                    if (update)
+                    {
+                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                        var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
-                    var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
+                        var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().Date;
 
-                    stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
-
+                        stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, lastArchiveDate);
+                    }
                     return true;
                 }
                 catch (Exception e)

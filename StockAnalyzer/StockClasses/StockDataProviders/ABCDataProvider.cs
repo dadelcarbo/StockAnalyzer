@@ -547,6 +547,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 if (File.Exists(defaultConfigPath) && File.GetLastWriteTime(defaultConfigPath) > File.GetLastWriteTime(configPath))
                 {
+                    File.Delete(configPath);
                     File.Copy(defaultConfigPath, configPath);
                 }
             }
@@ -562,7 +563,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
-                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
                         string[] row = line.Split(';');
                         string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
@@ -570,21 +571,39 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         {
                             StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
 
-                            stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN.Substring(0, 2) switch
+                            var abcSuffix = group switch
                             {
-                                null => string.Empty,
-                                "FR" => "p",
-                                "QS" => "p",
-                                "BE" => "g",
-                                "NL" => "n",
-                                "DE" => "f",
-                                "DK" => "f",
-                                "IT" => "i",
-                                "ES" => "m",
-                                "PT" => "I",
-                                "US" => "u",
+                                StockSerie.Groups.EURO_A => "p",
+                                StockSerie.Groups.EURO_B => "p",
+                                StockSerie.Groups.EURO_C => "p",
+                                StockSerie.Groups.ALTERNEXT => "p",
+
+                                StockSerie.Groups.BELGIUM => "g",
+                                StockSerie.Groups.HOLLAND => "n",
+                                StockSerie.Groups.PORTUGAL => "I",
+                                StockSerie.Groups.ITALIA => "i",
+                                StockSerie.Groups.GERMANY => "f",
+                                StockSerie.Groups.SPAIN => "m",
+                                StockSerie.Groups.USA => "u",
                                 _ => string.Empty
                             };
+
+                            stockSerie.ABCName = stockSerie.Symbol + abcSuffix;
+                            //+ stockSerie.ISIN.Substring(0, 2) switch
+                            //{
+                            //    null => string.Empty,
+                            //    "FR" => "p",
+                            //    "QS" => "p",
+                            //    "BE" => "g",
+                            //    "NL" => "n",
+                            //    "DE" => "f",
+                            //    "DK" => "f",
+                            //    "IT" => "i",
+                            //    "ES" => "m",
+                            //    "PT" => "I",
+                            //    "US" => "u",
+                            //    _ => string.Empty
+                            //};
                             stockDictionary.Add(stockName, stockSerie);
                         }
                         else
