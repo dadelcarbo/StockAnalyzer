@@ -21,12 +21,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\SaxoIntraday";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\SaxoIntraday";
         static private readonly string CONFIG_FILE = "SaxoIntradayDownload.cfg";
-        static private readonly string CONFIG_FILE_USER = "SaxoIntradayDownload.user.cfg";
         static private readonly string SAXO_ID_FILE = "SaxoUnderlyings.cfg";
 
         static public string SaxoUnderlyingFile => Path.Combine(Folders.PersonalFolder, SAXO_ID_FILE);
 
-        public string UserConfigFileName => CONFIG_FILE_USER;
+        public string UserConfigFileName => CONFIG_FILE;
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -46,7 +45,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             // Parse SaxoIntradayDownload.cfg file
             this.needDownload = download;
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
-            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
         }
 
         private void InitSaxoIds(StockDictionary stockDictionary, string fileName)
@@ -393,7 +391,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico, long? saxoId)
         {
-            var configDlg = new SaxoDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER), saxoId) { StartPosition = FormStartPosition.CenterScreen };
+            var configDlg = new SaxoDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE), saxoId) { StartPosition = FormStartPosition.CenterScreen };
             configDlg.ShowDialog();
 
             return DialogResult.OK;
@@ -408,7 +406,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool RemoveEntry(StockSerie stockSerie)
         {
-            SaxoConfigEntry.RemoveEntry(stockSerie.ISIN, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+            SaxoConfigEntry.RemoveEntry(stockSerie.ISIN, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
 
             return true;
         }
