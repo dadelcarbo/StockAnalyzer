@@ -27,10 +27,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent(StockDictionary stockDico, string cfgFile)
+        private void InitializeComponent(StockDictionary stockDico, string cfgFile, long? saxoId)
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.saxoDataProviderControl1 = new StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog.SaxoDataProviderControl(stockDico, cfgFile);
+            this.saxoDataProviderControl1 = new StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog.SaxoDataProviderControl(stockDico, cfgFile, saxoId);
             this.SuspendLayout();
             // 
             // elementHost1

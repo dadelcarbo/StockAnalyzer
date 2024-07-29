@@ -347,10 +347,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             stockDictionary = dictionary;
 
             // Load Download Config
-            downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions
-            {
-                Converters = { new JsonStringEnumConverter() }
-            });
+            downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath),
+                new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
 
             // Load Config files
             string fileName = Path.Combine(Folders.PersonalFolder, UserConfigFileName);
@@ -363,7 +361,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             // Intialize
             foreach (var config in downloadGroups)
             {
-                if (DownloadFromAbc(config))
+                if (InitAbcGroup(config, download))
                 {
                     config.LastDownload = DateTime.Now;
                 }
@@ -389,34 +387,35 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private bool DownloadFromAbc(ABCDownloadGroup config)
+        private bool InitAbcGroup(ABCDownloadGroup config, bool download)
         {
             var destFolder = config.LabelOnly ? DataFolder + ABC_DAILY_CFG_GROUP_FOLDER : DataFolder + ABC_DAILY_CFG_FOLDER;
             string fileName = Path.Combine(destFolder, config.Group.ToString() + ".txt");
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            if (download && !File.Exists(fileName) || File.GetLastWriteTime(fileName) < DateTime.Now.AddDays(-7)) // File is older than 7 days
             {
-                if (!File.Exists(fileName) || File.GetLastWriteTime(fileName) < DateTime.Now.AddDays(-7)) // File is older than 7 days
+                try
                 {
-                    try
-                    {
-                        this.DownloadLabels(destFolder, config.Group.ToString() + ".txt", config.AbcCode);
-                    }
-                    catch (Exception ex)
-                    {
-                        StockLog.Write(ex);
-                    }
+                    this.DownloadLabels(destFolder, config.Group.ToString() + ".txt", config.AbcCode);
                 }
-
-                if (!config.LabelOnly)
+                catch (Exception ex)
                 {
-                    InitFromLibelleFile(fileName);
+                    StockLog.Write(ex);
+                }
+            }
 
+            if (!config.LabelOnly)
+            {
+                InitFromLibelleFile(fileName);
+
+                if (download)
+                {
                     return config.LastDownloaded < lastDownloadedCAC40Date ? DownloadGroupFromAbc(config) : false;
                 }
-                if (config.Group == StockSerie.Groups.SRD || config.Group == StockSerie.Groups.SRD_LO)
-                {
-                    InitSRDFromLibelleFile(fileName, config.Group);
-                }
+                else return false;
+            }
+            if (config.Group == StockSerie.Groups.SRD || config.Group == StockSerie.Groups.SRD_LO)
+            {
+                InitSRDFromLibelleFile(fileName, config.Group);
             }
 
             return true;

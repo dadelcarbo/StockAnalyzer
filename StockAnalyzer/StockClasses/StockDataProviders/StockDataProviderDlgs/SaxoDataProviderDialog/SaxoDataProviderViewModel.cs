@@ -16,11 +16,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 {
     class SaxoDataProviderViewModel : NotifyPropertyChangedBase
     {
-        public SaxoDataProviderViewModel()
-        {
-            
-        }
-        public SaxoDataProviderViewModel(StockDictionary stockDico, string cfgFile)
+        public SaxoDataProviderViewModel(StockDictionary stockDico, string cfgFile, long? saxoId)
         {
             try
             {
@@ -35,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     this.Underlyings = underlyings.Values.ToList();
                     // Load config file
                     List<string> underlyingFile = File.Exists(SaxoIntradayDataProvider.SaxoUnderlyingFile) ? File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).ToList() : new List<string>();
-                    var ids = underlyingFile.Select(l => int.Parse(l.Split(',')[0])).ToList();
+                    var ids = underlyingFile.Select(l => long.Parse(l.Split(',')[0])).ToList();
 
                     var newIds = this.Underlyings.Where(u => !ids.Contains(u.value)).Select(u => u.value + "," + u.label + ",").ToList();
                     if (newIds.Count > 0)
@@ -59,6 +55,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     }
                 }
                 this.Entries = new ObservableCollection<SaxoConfigEntry>(SaxoConfigEntry.LoadFromFile(cfgFile));
+
+                if (saxoId != null)
+                {
+                    this.Underlying = this.Underlyings.FirstOrDefault(u => u.value == saxoId);
+                    this.UnderlyingChanged();
+                }
             }
             catch (Exception ex)
             {
@@ -78,12 +80,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         private ObservableCollection<SaxoConfigEntry> entries;
         public ObservableCollection<SaxoConfigEntry> Entries { get => entries; set => SetProperty(ref entries, value); }
 
-        public void UnderlyingChanged(SearchUnderlying entry)
+        public void UnderlyingChanged()
         {
+            if (this.underlying == null)
+                return;
+
             var newProducts = new List<SaxoProduct>();
             try
             {
-                var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?rowsPerPage=1000&underlying={entry.value}&locale=fr_BE");
+                var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?rowsPerPage=1000&underlying={this.underlying.value}&locale=fr_BE");
                 //var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/list?page=1&rowsPerPage=1000&underlying={entry.key}&locale=fr_BE");
                 if (!string.IsNullOrEmpty(jsonData))
                 {
@@ -258,11 +263,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
         private void Search()
         {
-            if (this.underlying == null)
-                return;
-
-            this.UnderlyingChanged(this.underlying);
-
+            this.UnderlyingChanged();
         }
     }
 }

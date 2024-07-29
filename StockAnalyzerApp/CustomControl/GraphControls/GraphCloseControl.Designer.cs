@@ -24,6 +24,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInPEAPerfMenu = new MenuItem();
             this.openInZBMenu = new MenuItem();
             this.openInDataProvider = new MenuItem();
+            this.openSaxoIntradyConfigDlg = new MenuItem();
             this.separator1 = new MenuItem();
             this.separator2 = new MenuItem();
             this.separator3 = new MenuItem();
@@ -41,7 +42,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator3,
             this.openInPEAPerfMenu,
             this.openInZBMenu,
-            this.openInDataProvider});
+            this.openInDataProvider,
+            this.openSaxoIntradyConfigDlg});
             // 
             // buyMenu
             // 
@@ -100,11 +102,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInZBMenu.Text = "Open in Zone Bourse";
             this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
             // 
-            // openInSocGenMenu
+            // openInDataProvider
             // 
             this.openInDataProvider.Index = index++;
             this.openInDataProvider.Text = "Open in Data Provider";
             this.openInDataProvider.Click += new System.EventHandler(this.openInDataProvider_Click);
+            // 
+            // openSaxoIntradyConfigDlg
+            // 
+            this.openSaxoIntradyConfigDlg.Index = index++;
+            this.openSaxoIntradyConfigDlg.Text = "Search saxo turbo";
+            this.openSaxoIntradyConfigDlg.Click += new System.EventHandler(this.openSaxoIntradyConfigDlg_Click);
             // 
             // GraphCloseControl
             // 
@@ -124,6 +132,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem openInPEAPerfMenu;
         private MenuItem openInZBMenu;
         private MenuItem openInDataProvider;
+        private MenuItem openSaxoIntradyConfigDlg;
         #endregion
     }
 }

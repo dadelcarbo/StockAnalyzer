@@ -7,10 +7,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
     /// </summary>
     public partial class SaxoDataProviderControl : UserControl
     {
-        public SaxoDataProviderControl(StockDictionary stockDico, string cfgFile)
+        public SaxoDataProviderControl(StockDictionary stockDico, string cfgFile, long? saxoId)
         {
             InitializeComponent();
-            this.DataContext = new SaxoDataProviderViewModel(stockDico, cfgFile);
+            this.DataContext = new SaxoDataProviderViewModel(stockDico, cfgFile, saxoId);
         }
     }
 }

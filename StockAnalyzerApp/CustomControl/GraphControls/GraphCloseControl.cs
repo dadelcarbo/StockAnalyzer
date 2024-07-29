@@ -1747,6 +1747,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         this.sellMenu.Visible = Portfolio?.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
                         this.cancelMenu.Visible = Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault() != null;
                         this.buyMenu.Visible = !(this.sellMenu.Visible || this.cancelMenu.Visible);
+                        this.openSaxoIntradyConfigDlg.Visible = this.serie?.SaxoId > 0;
                         this.contextMenu.Show(this, e.Location);
                     }
                 }
@@ -2579,6 +2580,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         void openInDataProvider_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInDataProvider();
+        }
+        void openSaxoIntradyConfigDlg_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.serie?.SaxoId);
         }
         #endregion
     }

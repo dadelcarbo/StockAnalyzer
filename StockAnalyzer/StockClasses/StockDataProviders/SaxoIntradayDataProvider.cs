@@ -388,9 +388,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            //Process.Start(Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
+            return this.ShowDialog(stockDico, null);
+        }
 
-            var configDlg = new SaxoDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER)) { StartPosition = FormStartPosition.CenterScreen };
+        public DialogResult ShowDialog(StockDictionary stockDico, long? saxoId)
+        {
+            var configDlg = new SaxoDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER), saxoId) { StartPosition = FormStartPosition.CenterScreen };
             configDlg.ShowDialog();
 
             return DialogResult.OK;

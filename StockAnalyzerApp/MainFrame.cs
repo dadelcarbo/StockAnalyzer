@@ -458,7 +458,8 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Initialize stock dictionary...";
             StockSplashScreen.ProgressVal = 30;
 
-            StockDataProviderBase.InitStockDictionary(this.StockDictionary, Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable(), new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
+            var download = Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable();
+            StockDataProviderBase.InitStockDictionary(this.StockDictionary, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
             //
             InitialiseThemeCombo();
@@ -5063,6 +5064,21 @@ namespace StockAnalyzerApp
                 return;
             }
             dataProvider.OpenInDataProvider(this.CurrentStockSerie);
+        }
+        internal void OpenSaxoIntradyConfigDlg(long? saxoId)
+        {
+            SaxoIntradayDataProvider dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.SaxoIntraday) as SaxoIntradayDataProvider;
+            if (dataProvider == null)
+            {
+                return;
+            }
+            if (dataProvider.ShowDialog(this.StockDictionary, saxoId) == DialogResult.OK)
+            {
+                dataProvider.InitDictionary(this.StockDictionary, true);
+                this.CreateGroupMenuItem();
+                this.CreateSecondarySerieMenuItem();
+                this.InitialiseStockCombo(true);
+            }
         }
     }
 }

@@ -199,7 +199,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
     public class SearchUnderlying
     {
         public string label { get; set; }
-        public int value { get; set; }
+        public long value { get; set; }
     }
 
 }
