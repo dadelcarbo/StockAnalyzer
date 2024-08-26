@@ -318,16 +318,19 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
         public override void OpenInDataProvider(StockSerie stockSerie)
         {
-            Process.Start($"https://finance.yahoo.com/quote/{stockSerie.Symbol}");
+            string url = $"https://finance.yahoo.com/quote/{stockSerie.Symbol}";
+            Process.Start(url);
         }
 
-        public override void ApplyTrim(StockSerie stockSerie, DateTime Date)
+        public override void ApplyTrim(StockSerie stockSerie, DateTime date)
         {
             if (!stockSerie.Initialise())
                 return;
 
             var archiveFileName = DataFolder + ARCHIVE_FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
-            stockSerie.SaveToCSVFromDateToDate(archiveFileName, Date, stockSerie.LastValue.DATE);
+            stockSerie.SaveToCSVFromDateToDate(archiveFileName, date, stockSerie.LastValue.DATE);
+
+            stockSerie.IsInitialised = false;
         }
 
 

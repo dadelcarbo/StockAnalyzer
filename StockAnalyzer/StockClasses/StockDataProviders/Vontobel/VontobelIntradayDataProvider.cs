@@ -19,12 +19,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\VontobelIntraday";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\VontobelIntraday";
         static private readonly string CONFIG_FILE = "VontobelIntradayDownload.cfg";
-        static private readonly string CONFIG_FILE_USER = "VontobelIntradayDownload.user.cfg";
         static private readonly string VONTOBEL_ID_FILE = "VontobelUnderlyings.cfg";
 
         static public string VontobelUnderlyingFile => Path.Combine(Folders.PersonalFolder, VONTOBEL_ID_FILE);
 
-        public string UserConfigFileName => CONFIG_FILE_USER;
+        public string UserConfigFileName => CONFIG_FILE;
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -42,7 +41,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
             // Parse VontobelIntradayDownload.cfg file
             this.needDownload = download;
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
-            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
         }
 
         public override bool SupportsIntradayDownload => true;
@@ -254,10 +252,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            //Process.Start(Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
-
-            //var configDlg = new VontobelDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
-            //configDlg.ShowDialog();
+            var path = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
+            Process.Start(path);
 
             return DialogResult.OK;
         }

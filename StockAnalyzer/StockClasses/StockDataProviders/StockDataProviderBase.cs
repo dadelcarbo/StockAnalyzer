@@ -291,11 +291,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 configDialogs = new List<IConfigDialog>();
                 configDialogs.Add(new ABCDataProvider());
-                configDialogs.Add(new InvestingIntradayDataProvider());
-                configDialogs.Add(new InvestingDataProvider());
                 configDialogs.Add(new SaxoIntradayDataProvider());
                 configDialogs.Add(new YahooDataProvider());
-                configDialogs.Add(new BoursoIntradayDataProvider());
+                configDialogs.Add(new YahooIntradayDataProvider());
+                configDialogs.Add(new SocGenIntradayDataProvider());
+                configDialogs.Add(new VontobelIntradayDataProvider());
             }
             return configDialogs;
         }

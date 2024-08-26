@@ -56,7 +56,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
            : base(float.MinValue, float.MaxValue)
         {
         }
-        public ParamRangeFloat(Object minValue, Object maxValue)
+        public ParamRangeFloat(float minValue, float maxValue)
            : base(minValue, maxValue)
         {
         }

@@ -18,9 +18,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\SocGenIntraday";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\SocGenIntraday";
         static private readonly string CONFIG_FILE = "SocGenIntradayDownload.cfg";
-        static private readonly string CONFIG_FILE_USER = "SocGenIntradayDownload.user.cfg";
 
-        public string UserConfigFileName => CONFIG_FILE_USER;
+        public string UserConfigFileName => CONFIG_FILE;
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -36,7 +35,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             // Parse SocGenIntradayDownload.cfg file
             this.needDownload = download;
             InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
-            InitFromFile(stockDictionary, download, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER));
         }
 
         public override bool SupportsIntradayDownload => true;
@@ -236,16 +234,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            throw new NotImplementedException();
-            //var configDlg = new SocGenIntradayDataProviderConfigDlg(stockDico, this.UserConfigFileName);
-            //return configDlg.ShowDialog();
+            var path = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
+            Process.Start(path);
+
+            return DialogResult.OK;
         }
 
         public override string DisplayName => "SocGen Intraday";
 
         public override void OpenInDataProvider(StockSerie stockSerie)
         {
-            var url = $"https://bourse.societegenerale.fr/product-details/{stockSerie.Symbol}";
+            var url = "https://bourse.societegenerale.fr/product-details/{stockSerie.Symbol}";
             Process.Start(url);
         }
     }

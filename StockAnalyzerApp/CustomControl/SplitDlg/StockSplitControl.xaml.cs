@@ -15,7 +15,7 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             InitializeComponent();
         }
 
-        public DateTime Date { get; set; } = DateTime.Today;
+        public DateTime Date { get; set; } = DateTime.Today.AddDays(-7);
         public int Before { get; set; } = 1;
         public int After { get; set; } = 1;
 
@@ -31,7 +31,7 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
 
         private void ApplyTrimButton_Click(object sender, RoutedEventArgs e)
         {
-            var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.BoursoIntraday);
+            var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
             if (dataProvider == null) { return; }
 
             dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date);

@@ -204,22 +204,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
-            //if (stockSerie.Uic != 0)
-            //{
-            //    var chartService = new ChartService();
-            //    var dailyValues = chartService.GetData(stockSerie.Uic, BarDuration.M_5);
-            //    if (dailyValues != null)
-            //    {
-            //        stockSerie.IsInitialised = false;
-            //        foreach (var newBar in dailyValues)
-            //        {
-            //            stockSerie.Add(newBar.DATE, newBar);
-            //        }
-            //        stockSerie.Initialise();
-            //        return true;
-            //    }
-            //}
-
             if (stockSerie.Count > 0)
             {
                 if (DownloadHistory.ContainsKey(stockSerie.Symbol) && DownloadHistory[stockSerie.Symbol] > DateTime.Now.AddSeconds(-30))
@@ -409,6 +393,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             SaxoConfigEntry.RemoveEntry(stockSerie.ISIN, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
 
             return true;
+        }
+
+        public override void ApplyTrim(StockSerie stockSerie, DateTime date)
+        {
+            if (!stockSerie.Initialise())
+                return;
+
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            stockSerie.SaveToCSVFromDateToDate(archiveFileName, date, stockSerie.LastValue.DATE);
+
+            stockSerie.IsInitialised = false;
         }
     }
 }
