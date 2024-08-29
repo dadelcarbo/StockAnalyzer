@@ -31,16 +31,16 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             StockAnalyzerForm.MainFrame.ApplyTheme();
         }
 
-        public bool AllDataProviderSeries { get; set; }
+        public bool AllGroupSeries { get; set; }
 
         private void ApplyTrimButton_Click(object sender, RoutedEventArgs e)
         {
             var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
             if (dataProvider == null) { return; }
 
-            if (AllDataProviderSeries)
+            if (AllGroupSeries)
             {
-                foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.DataProvider == StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider))
+                foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.StockGroup == StockAnalyzerForm.MainFrame.CurrentStockSerie.StockGroup))
                 {
                     dataProvider.ApplyTrim(stockSerie, this.Date);
                 }

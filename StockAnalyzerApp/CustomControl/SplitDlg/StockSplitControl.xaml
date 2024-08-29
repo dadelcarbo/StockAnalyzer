@@ -28,7 +28,7 @@
                     <Label Content="Date"></Label>
                     <DatePicker SelectedDate="{Binding Date}" VerticalContentAlignment="Center"></DatePicker>
                     <Label Content="All series in data provider" VerticalContentAlignment="Center"></Label>
-                    <CheckBox IsChecked="{Binding AllDataProviderSeries}" VerticalAlignment="Center"></CheckBox>
+                    <CheckBox IsChecked="{Binding AllGroupSeries}" VerticalAlignment="Center"></CheckBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                     <Button Content="Apply" Click="ApplyTrimButton_Click" Margin="2"></Button>
