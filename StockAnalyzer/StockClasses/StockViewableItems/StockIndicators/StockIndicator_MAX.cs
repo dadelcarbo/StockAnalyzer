@@ -1,0 +1,35 @@
+﻿using StockAnalyzer.StockMath;
+using System;
+using System.Drawing;
+
+namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
+{
+    public class StockIndicator_MAX : StockIndicatorBase
+    {
+        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
+
+        public override object[] ParameterDefaultValues => new Object[] { "ROR(35)", 35 };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(0, 500) };
+        public override string[] ParameterNames => new string[] { "Indicator", "Lookback" };
+
+        public override string[] SerieNames => new string[] { $"MAX({this.Parameters[0].ToString()})" };
+
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
+
+        public override void ApplyTo(StockSerie stockSerie)
+        {
+            FloatSerie indicatorSerie = stockSerie.GetIndicator(this.parameters[0].ToString().Replace("_", ",")).Series[0];
+
+            this.series[0] = indicatorSerie.MaxSerie((int)this.parameters[1]);
+            this.SetSerieNames();
+
+            CreateEventSeries(stockSerie.Count);
+        }
+
+        static readonly string[] eventNames = new string[] { };
+        public override string[] EventNames => eventNames;
+
+        static readonly bool[] isEvent = new bool[] { };
+        public override bool[] IsEvent => isEvent;
+    }
+}

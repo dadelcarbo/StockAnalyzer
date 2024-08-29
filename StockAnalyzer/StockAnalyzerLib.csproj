@@ -288,6 +288,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TURTLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloud_TRENDBODY2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATH.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MAX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DRAWDOWN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MCCLELLANCONV.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LAKERATIO.cs" />

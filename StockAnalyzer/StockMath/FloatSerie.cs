@@ -1005,6 +1005,36 @@ namespace StockAnalyzer.StockMath
             return new FloatSerie(serie);
         }
 
+        public FloatSerie MaxSerie(int lookback)
+        {
+            float[] maxSerie = new float[this.Count];
+            maxSerie[0] = this[0];
+            for (int i = 1; i < lookback; i++)
+            {
+                maxSerie[i] = Math.Max(maxSerie[i - 1], this[i]);
+            }
+            for (int i = lookback; i < this.Count; i++)
+            {
+                maxSerie[i] = this.GetMax(i - lookback + 1, i);
+            }
+            return new FloatSerie(maxSerie);
+        }
+        public FloatSerie MinSerie(int lookback)
+        {
+            float[] minSerie = new float[this.Count];
+            minSerie[0] = this[0];
+            for (int i = 1; i < lookback; i++)
+            {
+                minSerie[i] = Math.Min(minSerie[i - 1], this[i]);
+            }
+            for (int i = lookback; i < this.Count; i++)
+            {
+                minSerie[i] = this.GetMin(i - lookback + 1, i);
+            }
+
+            return new FloatSerie(minSerie);
+        }
+
         public static FloatSerie MaxSerie(FloatSerie serie1, FloatSerie serie2)
         {
             if (serie1.Count != serie2.Count) throw new InvalidOperationException("Cannot get maximun serie as size in different");
