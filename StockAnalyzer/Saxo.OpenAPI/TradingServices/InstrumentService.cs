@@ -27,7 +27,7 @@ namespace Saxo.OpenAPI.TradingServices
 
         //static readonly string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
 
-        static readonly string ASSET_TYPES = "MutualFund%2CCertificateUncappedCapitalProtection%2CCertificateCappedCapitalProtected%2CCertificateDiscount%2CCertificateCappedOutperformance%2CCertificateCappedBonus%2CCertificateExpress%2CCertificateTracker%2CCertificateUncappedOutperformance%2CCertificateBonus%2CCertificateConstantLeverage%2CStock%2CEtf%2CEtc%2CEtn%2CFund%2CRights%2CMiniFuture%2CWarrantKnockOut%2CWarrantOpenEndKnockOut%2CWarrantDoubleKnockOut%2CSrdOnStock%2CSrdOnEtf%2CIpoOnStock%2CCompanyWarrant%2CStockIndex";
+        static readonly string ASSET_TYPES = "MutualFund%2CCertificateUncappedCapitalProtection%2CCertificateCappedCapitalProtected%2CCertificateDiscount%2CCertificateCappedOutperformance%2CCertificateCappedBonus%2CCertificateExpress%2CCertificateTracker%2CCertificateUncappedOutperformance%2CCertificateBonus%2CCertificateConstantLeverage%2CStock%2CEtf%2CEtc%2CEtn%2CFund%2CRights%2CMiniFuture%2CWarrantKnockOut%2CWarrantOpenEndKnockOut%2CWarrantDoubleKnockOut%2CIpoOnStock%2CCompanyWarrant%2CStockIndex"; // %2CSrdOnStock%2CSrdOnEtf
 
         public Instrument GetInstrumentByIsin(string isin)
         {
@@ -49,7 +49,8 @@ namespace Saxo.OpenAPI.TradingServices
                     else if (instruments.Data.Length > 1)
                     {
                         instrument = instruments.Data.FirstOrDefault(i => i.ExchangeId.StartsWith("PAR"));
-                        instrument ??= instruments.Data.First();
+                        instrument ??= instruments.Data.FirstOrDefault(i => i.AssetType == "Stock");
+                        instrument ??= instruments.Data[0];
                         InstrumentCache.Add(instrument);
                     }
                     else if (instruments.Data.Length == 1)
