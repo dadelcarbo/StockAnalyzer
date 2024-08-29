@@ -264,5 +264,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
         {
             Process.Start($"https://markets.vontobel.com/fr-fr/produits/leverage/leverage-short/{stockSerie.ISIN}");
         }
+
+        public override void ApplyTrim(StockSerie stockSerie, DateTime date)
+        {
+            if (!stockSerie.Initialise())
+                return;
+
+            var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
+            stockSerie.SaveToCSVFromDateToDate(archiveFileName, date, stockSerie.LastValue.DATE);
+
+            stockSerie.IsInitialised = false;
+        }
     }
 }

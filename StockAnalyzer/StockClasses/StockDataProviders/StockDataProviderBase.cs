@@ -446,11 +446,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return false;
         }
 
-        public virtual void ApplySplit(StockSerie stockSerie, DateTime Date, float ratio)
+        public virtual void ApplySplit(StockSerie stockSerie, DateTime date, float ratio)
         {
             return;
         }
-        public virtual void ApplyTrim(StockSerie stockSerie, DateTime Date)
+        public virtual void ApplyTrim(StockSerie stockSerie, DateTime date)
         {
             return;
         }

@@ -1,5 +1,7 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders;
+﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,13 +31,24 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             StockAnalyzerForm.MainFrame.ApplyTheme();
         }
 
+        public bool AllDataProviderSeries { get; set; }
+
         private void ApplyTrimButton_Click(object sender, RoutedEventArgs e)
         {
             var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
             if (dataProvider == null) { return; }
 
-            dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date);
-
+            if (AllDataProviderSeries)
+            {
+                foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.DataProvider == StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider))
+                {
+                    dataProvider.ApplyTrim(stockSerie, this.Date);
+                }
+            }
+            else
+            {
+                dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date);
+            }
             StockAnalyzerForm.MainFrame.ApplyTheme();
         }
     }
