@@ -12,15 +12,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(0, 500) };
         public override string[] ParameterNames => new string[] { "Indicator", "Lookback" };
 
-        public override string[] SerieNames => new string[] { $"MAX({this.Parameters[0].ToString()})" };
+        public override string[] SerieNames => new string[] { $"MAX({this.Parameters[0]})", $"{this.Parameters[0]}" };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.DarkRed), new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot } };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie indicatorSerie = stockSerie.GetIndicator(this.parameters[0].ToString().Replace("_", ",")).Series[0];
 
             this.series[0] = indicatorSerie.MaxSerie((int)this.parameters[1]);
+            this.series[1] = indicatorSerie;
             this.SetSerieNames();
 
             CreateEventSeries(stockSerie.Count);

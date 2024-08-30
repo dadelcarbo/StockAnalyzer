@@ -1092,7 +1092,7 @@ namespace StockAnalyzer.StockClasses
                 min = lowSerie.GetMin(i - period, i);
                 serie[i] = (closeSerie[i] - min) / min;
             }
-            serie.Name = "ROR_" + period.ToString();
+            serie.Name = $"ROR_{period}";
             return serie;
         }
         public FloatSerie CalculateRateOfDecline(int period)
@@ -1105,14 +1105,14 @@ namespace StockAnalyzer.StockClasses
             for (int i = 1; i < Math.Min(period, this.Count); i++)
             {
                 max = highSerie.GetMax(0, i);
-                serie[i] = (closeSerie[i] - max) / max;
+                serie[i] = -(closeSerie[i] - max) / max;
             }
             for (int i = period; i < this.Count; i++)
             {
                 max = highSerie.GetMax(i - period, i);
-                serie[i] = (closeSerie[i] - max) / max;
+                serie[i] = -(closeSerie[i] - max) / max;
             }
-            serie.Name = "ROD_" + period.ToString();
+            serie.Name = $"ROD_{period}";
             return serie;
         }
         public FloatSerie CalculateRateOfChange(int period)
@@ -1127,7 +1127,7 @@ namespace StockAnalyzer.StockClasses
             {
                 serie[i] = (closeSerie[i] - closeSerie[i - period]) / closeSerie[i - period];
             }
-            serie.Name = "ROC_" + period.ToString();
+            serie.Name = $"ROC_{period}";
             return serie;
         }
         public FloatSerie CalculateOnBalanceVolume()
@@ -1202,7 +1202,7 @@ namespace StockAnalyzer.StockClasses
                     fastOscillatorSerie[i] = Math.Min(70.0f, fastOscillatorSerie[i]);
                 }
             }
-            fastOscillatorSerie.Name = "FastK(" + period.ToString() + ")";
+            fastOscillatorSerie.Name = $"FastK({period})";
             return fastOscillatorSerie;
         }
         public FloatSerie CalculateFastBodyOscillator(int period)
@@ -1234,7 +1234,7 @@ namespace StockAnalyzer.StockClasses
                     fastOscillatorSerie[i] = Math.Min(70.0f, fastOscillatorSerie[i]);
                 }
             }
-            fastOscillatorSerie.Name = "FastK(" + period.ToString() + ")";
+            fastOscillatorSerie.Name = $"FastK({period})";
             return fastOscillatorSerie;
         }
         public void CalculateEMATrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
