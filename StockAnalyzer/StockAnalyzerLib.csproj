@@ -276,7 +276,7 @@
     <Compile Include="StockClasses\StockDataProviders\Vontobel\VontobelModel.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\YahooJson.cs" />
+    <Compile Include="StockClasses\StockDataProviders\Yahoo\YahooJson.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
     <Compile Include="StockClasses\StockSortedDictionary.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXNEW.cs" />

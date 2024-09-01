@@ -92,46 +92,38 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
                 return;
             }
 
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            try
             {
-                try
-                {
-                    this.Cursor = Cursors.WaitCursor;
+                this.Cursor = Cursors.WaitCursor;
 
-                    using WebClient wc = new WebClient();
-                    wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-                    string url = "https://query1.finance.yahoo.com/v1/finance/search?q=" + this.symbolTextBox.Text.Replace("^", "%5E") + "&lang=en-US&region=US&quotesCount=6&newsCount=0&listsCount=2&enableFuzzyQuery=false&quotesQueryId=tss_match_phrase_query&multiQuoteQueryId=multi_quote_single_token_query&newsQueryId=news_cie_vespa&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true&enableResearchReports=true&enableCulturalAssets=true&researchReportsCount=2";
-                    string value = wc.DownloadString(url);
-
-                    var searchResult = YahooSearchResult.FromJson(value);
-                    if (searchResult.count > 0)
-                    {
-                        succeeded = true;
-                        this.symbolTextBox.Text = searchResult.quotes[0].symbol?.ToUpper();
-                        this.nameTextBox.Text = searchResult.quotes[0].shortname?.ToUpper();
-                    }
-                    else
-                    {
-                        succeeded = false;
-                    }
-                }
-                catch
+                YahooSearchResult searchResult = YahooDataProvider.SearchFromYahoo(this.symbolTextBox.Text.Replace("^", "%5E"));
+                if (searchResult != null && searchResult.count > 0)
                 {
-                    succeeded = false;
-                }
-                finally
-                {
-                    this.Cursor = Cursors.Arrow;
-                }
-                if (succeeded)
-                {
-                    step1GroupBox.Enabled = false;
-                    step2GroupBox.Enabled = true;
+                    succeeded = true;
+                    this.symbolTextBox.Text = searchResult.quotes[0].symbol?.ToUpper();
+                    this.nameTextBox.Text = searchResult.quotes[0].shortname?.ToUpper();
                 }
                 else
                 {
-                    MessageBox.Show(DataProviderString.DlgContent_SymbolNotFound, DataProviderString.DlgTitle_SymbolNotFound, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    succeeded = false;
                 }
+            }
+            catch
+            {
+                succeeded = false;
+            }
+            finally
+            {
+                this.Cursor = Cursors.Arrow;
+            }
+            if (succeeded)
+            {
+                step1GroupBox.Enabled = false;
+                step2GroupBox.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show(DataProviderString.DlgContent_SymbolNotFound, DataProviderString.DlgTitle_SymbolNotFound, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void personalListView_MouseClick(object sender, MouseEventArgs e)

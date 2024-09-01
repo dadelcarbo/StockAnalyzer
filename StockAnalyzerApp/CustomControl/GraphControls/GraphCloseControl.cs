@@ -2581,6 +2581,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.OpenInDataProvider();
         }
+        void openInYahoo_Click(object sender, System.EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.OpenInYahoo();
+        }
         void openSaxoIntradyConfigDlg_Click(object sender, System.EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.serie?.SaxoId);

@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -5064,6 +5065,18 @@ namespace StockAnalyzerApp
                 return;
             }
             dataProvider.OpenInDataProvider(this.CurrentStockSerie);
+        }
+        internal void OpenInYahoo()
+        {
+            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
+                return;
+
+            YahooSearchResult searchResult = YahooDataProvider.SearchFromYahoo(this.currentStockSerie.ISIN);
+            if (searchResult != null && searchResult.count > 0)
+            {
+                string url = $"https://finance.yahoo.com/quote/{searchResult.quotes[0].symbol}/";
+                Process.Start(url);
+            }
         }
         internal void OpenSaxoIntradyConfigDlg(long? saxoId)
         {

@@ -388,5 +388,50 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             Process.Start($"https://finance.yahoo.com/quote/{stockSerie.Symbol}");
         }
+
+        public static YahooSearchResult SearchFromYahoo(string search)
+        {
+            try
+            {
+                if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                {
+                    var url = $"https://query1.finance.yahoo.com/v1/finance/search?q={search}&lang=en-US&region=US&quotesCount=6&newsCount=3&listsCount=2&enableFuzzyQuery=false&quotesQueryId=tss_match_phrase_query&multiQuoteQueryId=multi_quote_single_token_query&newsQueryId=news_cie_vespa&enableCb=true&enableNavLinks=true&enableEnhancedTrivialQuery=true&enableResearchReports=true&enableCulturalAssets=true&enableLogoUrl=true&recommendCount=5";
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        using (var request = new HttpRequestMessage(new HttpMethod("GET"), url))
+                        {
+                            request.Headers.TryAddWithoutValidation("accept", "*/*");
+                            request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
+                            request.Headers.TryAddWithoutValidation("cookie", "axids=gam=y-5J2nTa1E2uKm8p1bbIqpxhNS3sTM5.Ex~A&dv360=eS1tNmVfdElaRTJ1RnJDM2c5ME4xZDlwdHl3SWpDVHlFbX5B&ydsp=y-RCkPhNpE2uJyZDkAH.iHpHvzehVTcIj_~A&tbla=y-pSAoiWFE2uJyQltidu8WhcDOgc5wSCuA~A; tbla_id=54179619-0b64-44db-8b66-35bf83addca6-tuctcfb6c39; GUC=AQABCAFm00Jm_kIZFgP4&s=AQAAAAi6SdKt&g=ZtH2iw; A1=d=AQABBLfmAWYCEJRSJ0er9K5iY9-55MkC5CcFEgABCAFC02b-ZuUzb2UB9qMAAAcIs-YBZmr6HEI&S=AQAAAuzFUXctpl8HLY6VzAlcdsE; A3=d=AQABBLfmAWYCEJRSJ0er9K5iY9-55MkC5CcFEgABCAFC02b-ZuUzb2UB9qMAAAcIs-YBZmr6HEI&S=AQAAAuzFUXctpl8HLY6VzAlcdsE; A1S=d=AQABBLfmAWYCEJRSJ0er9K5iY9-55MkC5CcFEgABCAFC02b-ZuUzb2UB9qMAAAcIs-YBZmr6HEI&S=AQAAAuzFUXctpl8HLY6VzAlcdsE; EuConsent=CP8B3EAP8B3EAAOACBFRBFFoAP_gAEPgACiQJhNB9G7WTXFneXp2YPskOYUX0VBJ4MAwBgCBAcABzBIUIAwGVmAzJEyIICACGAIAIGJBIABtGAhAQEAAYIAFAABIAEEAABAAIGAAACAAAABACAAAAAAAAAAQgEAXMBQgmAZEAFoIQUhAhgAgAQAAAAAEAIgBAgQAEAAAQAAICAAIACgAAgAAAAAAAAAEAFAIEQAAAAECAotkfQTBADINSogCLAkJCIQMIIEAIgoCACgQAAAAECAAAAmCAoQBgEqMBEAIAQAAAAAAAAQEACAAACABCAAIAAgQAAAAAQAAAAACAAAEAAAAAAAAAAAAAAAAAAAAAAAAAMQAhBAACAACAAgoAAAABAAAAAAAAAARAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAQAAAAAAAABAAILAAA; PRF=t%3D1EX.SG%252BEXM.BR%252BMTRK.AS%252BLCOR.MI%252BWT%252BJUVE.MI%252BFCT.MI%252BBUD%252BNKLA%252BBMPS.MI%252BRIOT%252BMSFT%252BNVDA%252BAAPL%252BRIVN%26qke-neo%3Dfalse%26qct-neo%3Dbar; cmp=t=1725211700&j=1&u=1---&v=40");
+                            request.Headers.TryAddWithoutValidation("origin", "https://finance.yahoo.com");
+                            request.Headers.TryAddWithoutValidation("priority", "u=1, i");
+                            request.Headers.TryAddWithoutValidation("referer", "https://finance.yahoo.com");
+                            request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"128\", \"Not;A=Brand\";v=\"24\", \"Microsoft Edge\";v=\"128\"");
+                            request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                            request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
+                            request.Headers.TryAddWithoutValidation("sec-fetch-dest", "empty");
+                            request.Headers.TryAddWithoutValidation("sec-fetch-mode", "cors");
+                            request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-site");
+                            request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0");
+
+                            var response = httpClient.SendAsync(request).Result;
+                            if (response.IsSuccessStatusCode)
+                            {
+                                return YahooSearchResult.FromJson(response.Content.ReadAsStringAsync().Result);
+                            }
+                            else
+                            {
+                                StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return null;
+        }
     }
 }

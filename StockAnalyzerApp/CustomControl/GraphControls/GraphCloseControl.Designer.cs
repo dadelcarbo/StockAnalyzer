@@ -24,6 +24,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInPEAPerfMenu = new MenuItem();
             this.openInZBMenu = new MenuItem();
             this.openInDataProvider = new MenuItem();
+            this.openInYahoo = new MenuItem();
             this.openSaxoIntradyConfigDlg = new MenuItem();
             this.separator1 = new MenuItem();
             this.separator2 = new MenuItem();
@@ -43,6 +44,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInPEAPerfMenu,
             this.openInZBMenu,
             this.openInDataProvider,
+            this.openInYahoo,
             this.openSaxoIntradyConfigDlg});
             // 
             // buyMenu
@@ -108,6 +110,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInDataProvider.Text = "Open in Data Provider";
             this.openInDataProvider.Click += new System.EventHandler(this.openInDataProvider_Click);
             // 
+            // openInYahoo
+            // 
+            this.openInYahoo.Index = index++;
+            this.openInYahoo.Text = "Open in Yahoo";
+            this.openInYahoo.Click += new System.EventHandler(this.openInYahoo_Click);
+            // 
             // openSaxoIntradyConfigDlg
             // 
             this.openSaxoIntradyConfigDlg.Index = index++;
@@ -132,6 +140,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem openInPEAPerfMenu;
         private MenuItem openInZBMenu;
         private MenuItem openInDataProvider;
+        private MenuItem openInYahoo;
         private MenuItem openSaxoIntradyConfigDlg;
         #endregion
     }
