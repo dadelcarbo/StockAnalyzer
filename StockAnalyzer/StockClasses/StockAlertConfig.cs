@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows;
-using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -80,20 +80,17 @@ namespace StockAnalyzer.StockClasses
             {
                 if (allAlertDefs == null)
                 {
-                    string alertFileName = Path.Combine(AlertDefFolder, "AlertDefUserDefined.xml");
+                    string alertFileName = Path.Combine(AlertDefFolder, "AlertDefUserDefined.json");
                     // Parse alert lists
                     if (File.Exists(alertFileName))
                     {
                         try
                         {
-                            using var fs = new FileStream(alertFileName, FileMode.Open);
-                            System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings
-                            {
-                                IgnoreWhitespace = true
-                            };
-                            System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                            var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                            allAlertDefs = (List<StockAlertDef>)serializer.Deserialize(xmlReader);
+                            allAlertDefs = JsonSerializer.Deserialize<List<StockAlertDef>>(File.ReadAllText(alertFileName),
+                                new JsonSerializerOptions
+                                {
+                                    Converters = { new JsonStringEnumConverter() }
+                                });
                         }
                         catch (Exception e)
                         {
@@ -148,22 +145,14 @@ namespace StockAnalyzer.StockClasses
                         rank += 10;
                     }
                 }
-                string alertFileName = AlertDefFolder + $@"\AlertDefUserDefined.xml";
-                // Parse alert lists
-                using var fs = new FileStream(alertFileName, FileMode.Create);
 
-                var settings = new System.Xml.XmlWriterSettings
-                {
-                    Indent = true,
-                    NewLineOnAttributes = true
-                };
-                var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                var serializer = new XmlSerializer(typeof(List<StockAlertDef>));
-                serializer.Serialize(xmlWriter, allAlertDefs.OrderBy(a => a.BarDuration).OrderBy(a => a.Rank).ToList());
-
-
-                alertFileName = AlertDefFolder + $@"\AlertDefUserDefined.json";
-                File.WriteAllText(alertFileName, JsonSerializer.Serialize(allAlertDefs.OrderBy(a => a.BarDuration).OrderBy(a => a.Rank).ToList()));
+                string alertFileName = Path.Combine(AlertDefFolder, "AlertDefUserDefined.json");
+                File.WriteAllText(alertFileName, JsonSerializer.Serialize(allAlertDefs.OrderBy(a => a.BarDuration).ThenBy(a => a.Rank).ToList(),
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        Converters = { new JsonStringEnumConverter() }
+                    }));
             }
         }
 

@@ -1010,6 +1010,7 @@ namespace StockAnalyzerApp
                                 stockSerie.BarDuration = alertDef.BarDuration;
                                 var values = stockSerie.GetValues(alertDef.BarDuration);
                                 int lastIndex = alertDef.BarDuration == BarDuration.Daily || alertDef.BarDuration == BarDuration.Weekly || alertDef.BarDuration == BarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
+                                lastIndex = stockSerie.LastCompleteIndex;
 
                                 var dailyValue = values.ElementAt(lastIndex);
                                 if (dailyValue.DATE < alertConfig.AlertLog.StartDate)
@@ -3265,7 +3266,7 @@ namespace StockAnalyzerApp
                             continue;
 
                         var values = stockSerie.GetValues(alertDef.BarDuration);
-                        int lastIndex = stockSerie.LastIndex;
+                        int lastIndex = stockSerie.LastCompleteIndex;
                         var dailyValue = values.ElementAt(lastIndex);
                         if (stockSerie.MatchEvent(alertDef, lastIndex))
                         {
