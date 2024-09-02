@@ -562,7 +562,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
-                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
                     {
                         string[] row = line.Split(';');
                         string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
@@ -627,7 +627,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
-                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
                         string[] row = line.Split(';');
                         string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
@@ -651,36 +651,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-
         private bool IsinMatchGroup(StockSerie.Groups group, string line)
         {
-            switch (group)
-            {
-                case StockSerie.Groups.EURO_A:
-                case StockSerie.Groups.EURO_B:
-                case StockSerie.Groups.EURO_C:
-                case StockSerie.Groups.ALTERNEXT:
-                case StockSerie.Groups.SRD:
-                case StockSerie.Groups.SRD_LO:
-                    return true;
-                case StockSerie.Groups.BELGIUM:
-                    return line.StartsWith("BE");
-                case StockSerie.Groups.HOLLAND:
-                    return line.StartsWith("NL");
-                case StockSerie.Groups.PORTUGAL:
-                    return line.StartsWith("PT");
-                case StockSerie.Groups.SECTORS_CAC:
-                    return line.StartsWith("QS");
-                case StockSerie.Groups.USA:
-                    return line.StartsWith("US") || line.StartsWith("CA");
-                case StockSerie.Groups.ITALIA:
-                    return line.StartsWith("IT");
-                case StockSerie.Groups.GERMANY:
-                    return line.StartsWith("DE") || line.StartsWith("DK") || line.StartsWith("AT");
-                case StockSerie.Groups.SPAIN:
-                    return line.StartsWith("ES");
-            }
-            throw new ArgumentException($"Group: {group} not supported in ABC");
+            // Add only European instruments for PEA country.
+            if (line.StartsWith("BR") || line.StartsWith("CH") || line.StartsWith("CI") || line.StartsWith("CN") || line.StartsWith("CW") || line.StartsWith("GB") || line.StartsWith("GG") || line.StartsWith("IE"))
+                return false;
+            if (line.StartsWith("US") || line.StartsWith("CA") || line.StartsWith("AN") || line.StartsWith("AU") || line.StartsWith("BMG"))
+                return group == StockSerie.Groups.USA;
+
+            if (line.StartsWith("QS"))
+                return group == StockSerie.Groups.SECTORS_CAC;
+
+            return true;
         }
 
         private void InitFromFile(bool download, string fileName)

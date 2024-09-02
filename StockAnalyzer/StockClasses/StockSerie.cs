@@ -81,6 +81,8 @@ namespace StockAnalyzer.StockClasses
         public string ABCName { get; set; }
 
         public StockDataProvider DataProvider { get; private set; }
+
+        public string IsinPrefix => ISIN?.Substring(0, 2);
         public string ISIN { get; set; }
         /// <summary>
         /// Investing.com ticker used for download
@@ -94,7 +96,6 @@ namespace StockAnalyzer.StockClasses
 
         public bool SRD { get; set; }
         public bool SRD_LO { get; set; }
-
         public int SectorId { get; set; }
 
         public string ProductType { get; set; }

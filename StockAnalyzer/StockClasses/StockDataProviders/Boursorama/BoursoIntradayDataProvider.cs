@@ -311,6 +311,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
+            var path = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
+            Process.Start(path);
+
             return DialogResult.OK;
         }
 
