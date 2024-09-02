@@ -12,10 +12,10 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
                     <Label Content="Date"></Label>
                     <DatePicker SelectedDate="{Binding Date}" VerticalContentAlignment="Center"></DatePicker>
-                    <Label Content="Before"></Label>
-                    <TextBox Text="{Binding Before}" Width="30" VerticalContentAlignment="Center"></TextBox>
                     <Label Content="After"></Label>
                     <TextBox Text="{Binding After}" Width="30" VerticalContentAlignment="Center"></TextBox>
+                    <Label Content="Before"></Label>
+                    <TextBox Text="{Binding Before}" Width="30" VerticalContentAlignment="Center"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                     <Button Content="Apply" Click="ApplySplitButton_Click" Margin="2"></Button>
@@ -27,7 +27,7 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
                     <Label Content="Date"></Label>
                     <DatePicker SelectedDate="{Binding Date}" VerticalContentAlignment="Center"></DatePicker>
-                    <Label Content="All series in data provider" VerticalContentAlignment="Center"></Label>
+                    <Label Content="All series in group" VerticalContentAlignment="Center"></Label>
                     <CheckBox IsChecked="{Binding AllGroupSeries}" VerticalAlignment="Center"></CheckBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">

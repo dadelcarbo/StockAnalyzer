@@ -35,18 +35,19 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
 
         private void ApplyTrimButton_Click(object sender, RoutedEventArgs e)
         {
-            var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
-            if (dataProvider == null) { return; }
-
             if (AllGroupSeries)
             {
                 foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.StockGroup == StockAnalyzerForm.MainFrame.CurrentStockSerie.StockGroup))
                 {
+                    var dataProvider = StockDataProviderBase.GetDataProvider(stockSerie.DataProvider);
+                    if (dataProvider == null) { continue; }
                     dataProvider.ApplyTrim(stockSerie, this.Date);
                 }
             }
             else
             {
+                var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
+                if (dataProvider == null) { return; }
                 dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date);
             }
             StockAnalyzerForm.MainFrame.ApplyTheme();
