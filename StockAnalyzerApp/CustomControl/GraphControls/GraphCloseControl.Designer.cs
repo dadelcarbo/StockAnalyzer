@@ -41,10 +41,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator2,
             this.agendaMenu,
             this.separator3,
-            this.openInPEAPerfMenu,
-            this.openInZBMenu,
             this.openInDataProvider,
+            this.openInZBMenu,
             this.openInYahoo,
+            this.openInPEAPerfMenu,
             this.openSaxoIntradyConfigDlg});
             // 
             // buyMenu

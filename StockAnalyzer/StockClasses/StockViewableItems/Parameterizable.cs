@@ -169,7 +169,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                         }
                         break;
                     case "String":
-                        this.parameters[i] = parameters[i];
+                        if (this.ParameterRanges[i].isInRange(parameters[i]))
+                        {
+                            this.parameters[i] = parameters[i];
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid input parameter: " + ParameterNames[i] + " type: " + this.ParameterTypes[i].ToString() + " expected");
+                        }
                         break;
                     case "StockSerie":
                         this.parameters[i] = parameters[i];

@@ -47,6 +47,7 @@
                 <telerik:GridViewDataColumn ToolTip="{Binding Date}" Header="Date" DataMemberBinding="{Binding Date, Converter={StaticResource StockDateConverter}}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StockGroup}" Header="Group" DataMemberBinding="{Binding StockGroup}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StockName}" Header="Stock" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
+                <telerik:GridViewDataColumn ToolTip="{Binding AlertRank}" Header="Alert&#xA;Rank" DataMemberBinding="{Binding AlertRank, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding AlertDescription}" Header="Alert&#xA;Description" DataMemberBinding="{Binding AlertDescription, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding Theme}" Header="Theme" DataMemberBinding="{Binding Theme, Mode=OneWay}" IsReadOnly="True"/>
                 <telerik:GridViewDataColumn ToolTip="{Binding StopValue}" Header="Stop&#xA;Value" DataMemberBinding="{Binding StopValue, Mode=OneWay}" IsReadOnly="True"/>

@@ -881,16 +881,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group, bool intraday = false)
         {
-            try
+            if (!File.Exists(fileName)) return false;
+            StockSerie stockSerie = null;
+            using StreamReader sr = new StreamReader(fileName, true);
+            string previousISIN = string.Empty;
+            DateTime date = File.GetLastWriteTime(fileName);
+            while (!sr.EndOfStream)
             {
-                if (!File.Exists(fileName)) return false;
-                StockSerie stockSerie = null;
-                using StreamReader sr = new StreamReader(fileName, true);
-                string previousISIN = string.Empty;
-                DateTime date = File.GetLastWriteTime(fileName);
-                while (!sr.EndOfStream)
+                string line = sr.ReadLine().Replace(",", ".");
+                try
                 {
-                    string line = sr.ReadLine().Replace(",", ".");
                     string[] row = line.Split(';');
                     if (previousISIN != row[0])
                     {
@@ -937,11 +937,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                StockLog.Write(e);
-                return false;
+                catch (Exception e)
+                {
+                    StockLog.Write(line);
+                    StockLog.Write(e);
+                    return false;
+                }
             }
             return true;
         }

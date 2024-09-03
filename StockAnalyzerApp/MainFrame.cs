@@ -956,7 +956,7 @@ namespace StockAnalyzerApp
                     }
                     else
                     {
-                        (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
+                        //  (StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider).DownloadAllGroupsIntraday();
                         alertConfig.AlertLog.Alerts.Clear();
                     }
                     foreach (var alertDef in alertDefs.OrderBy(a => a.Rank))
@@ -5076,6 +5076,11 @@ namespace StockAnalyzerApp
             if (searchResult != null && searchResult.count > 0)
             {
                 string url = $"https://finance.yahoo.com/quote/{searchResult.quotes[0].symbol}/";
+                Process.Start(url);
+            }
+            else
+            {
+                string url = $"https://finance.yahoo.com/";
                 Process.Start(url);
             }
         }
