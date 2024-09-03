@@ -3218,7 +3218,7 @@ namespace StockAnalyzerApp
         {
             const string rowTemplate = @"
          <tr>
-             <td style=""font-size:14px;"">%COL1%</td>
+             <td style=""font-size:11px;"">%COL1%</td>
              <td style=""font-size:11px;"">%GROUP%</td>
              <td>%COL2.1%</td>
              <td>%COL2.2%</td>
@@ -3246,7 +3246,7 @@ namespace StockAnalyzerApp
                 indexSerie.BarDuration = BarDuration.Daily;
 
                 var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
-                var rankFormat = rankIndicator.StartsWith("RO") ? "P2" : "#.##";
+                var rankFormat = rankIndicator.Contains("RO") ? "P2" : "#.##";
                 var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
 
                 foreach (StockSerie stockSerie in stockList)
