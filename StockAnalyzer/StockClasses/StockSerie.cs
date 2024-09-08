@@ -3537,15 +3537,15 @@ namespace StockAnalyzer.StockClasses
 
             return newSerie;
         }
-        public FloatSerie GenerateSecondarySerieFromOtherSerie(StockSerie otherSerie, BarDuration barDuration)
+        public FloatSerie GenerateSecondarySerieFromOtherSerie(StockSerie otherSerie, BarDuration duration)
         {
-            if (!otherSerie.Initialise())
+            if (duration >= BarDuration.M_5 || !otherSerie.Initialise())
             {
                 return null;
             }
             BarDuration currentBarDuration = this.barDuration;
-            otherSerie.BarDuration = barDuration;
-            this.barDuration = barDuration;
+            otherSerie.BarDuration = duration;
+            this.barDuration = duration;
 
             FloatSerie newSerie = new FloatSerie(this.Count);
             newSerie.Name = otherSerie.StockName;
