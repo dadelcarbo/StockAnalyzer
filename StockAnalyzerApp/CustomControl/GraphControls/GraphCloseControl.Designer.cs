@@ -92,18 +92,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator3.Index = index++;
             this.separator3.Text = "-";
             // 
-            // openInPEAPerf
-            // 
-            this.openInPEAPerfMenu.Index = index++;
-            this.openInPEAPerfMenu.Text = "Open in PEAPerformance";
-            this.openInPEAPerfMenu.Click += new System.EventHandler(this.openInPEAPerf_Click);
-            // 
-            // openInZBMenu
-            // 
-            this.openInZBMenu.Index = index++;
-            this.openInZBMenu.Text = "Open in Zone Bourse";
-            this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
-            // 
             // openInDataProvider
             // 
             this.openInDataProvider.Index = index++;
@@ -115,6 +103,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInYahoo.Index = index++;
             this.openInYahoo.Text = "Open in Yahoo";
             this.openInYahoo.Click += new System.EventHandler(this.openInYahoo_Click);
+            // 
+            // openInPEAPerf
+            // 
+            this.openInPEAPerfMenu.Index = index++;
+            this.openInPEAPerfMenu.Text = "Open in PEAPerformance";
+            this.openInPEAPerfMenu.Click += new System.EventHandler(this.openInPEAPerf_Click);
+            // 
+            // openInZBMenu
+            // 
+            this.openInZBMenu.Index = index++;
+            this.openInZBMenu.Text = "Open in Zone Bourse";
+            this.openInZBMenu.Click += new System.EventHandler(this.openInZBMenu_Click);
             // 
             // openSaxoIntradyConfigDlg
             // 

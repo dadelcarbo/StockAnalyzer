@@ -2984,7 +2984,7 @@ namespace StockAnalyzerApp
             string picturehtml = string.Empty;
 
             var positions = portfolio?.Positions.OrderBy(p => p.StockName).ToList();
-            if (positions == null || positions.Count == 0)
+            if (positions == null)
             {
                 return string.Empty;
             }
