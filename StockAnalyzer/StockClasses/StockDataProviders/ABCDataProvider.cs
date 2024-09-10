@@ -568,6 +568,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
                         if (!stockDictionary.ContainsKey(stockName))
                         {
+                            var existingInstrument = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
+                            if (existingInstrument != null)
+                            {
+                                StockLog.Write($"Duplicate ISIN {row[0]}:{group}:{stockName} already listed from {existingInstrument.StockGroup}:{existingInstrument.StockName}");
+                                continue;
+                            }
                             StockSerie stockSerie = new StockSerie(stockName, row[2], row[0], group, StockDataProvider.ABC, BarDuration.Daily);
 
                             var abcSuffix = group switch
@@ -607,7 +613,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                         else
                         {
-                            StockLog.Write(line + " already in group " + stockDictionary[stockName].StockGroup);
+                            StockLog.Write("Duplicate " +group + ";" + line + " already in group " + stockDictionary[stockName].StockGroup);
                         }
                     }
                 }

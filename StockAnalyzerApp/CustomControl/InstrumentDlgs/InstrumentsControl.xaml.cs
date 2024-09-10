@@ -5,6 +5,7 @@ using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
@@ -59,17 +60,30 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
         private void Export_Onclick(object sender, RoutedEventArgs e)
         {
-            string exportFile = Path.Combine(Folders.PersonalFolder, $@"Instrument.xlsx");
 
-            using (FileStream fileStream = new FileStream(exportFile, FileMode.Create, FileAccess.Write))
+            Cursor cursor = this.Cursor;
+            this.Cursor = Cursors.Wait;
+            try
             {
-                var options = new GridViewDocumentExportOptions()
+                string exportFile = Path.Combine(Folders.PersonalFolder, $@"Instrument.xlsx");
+
+                using (FileStream fileStream = new FileStream(exportFile, FileMode.Create, FileAccess.Write))
                 {
-                    ShowColumnHeaders = true,
-                    ExportDefaultStyles = true
-                };
-                this.gridView.ExportToXlsx(fileStream, options);
+                    var options = new GridViewDocumentExportOptions()
+                    {
+                        ShowColumnHeaders = true,
+                        ExportDefaultStyles = true
+                    };
+                    this.gridView.ExportToXlsx(fileStream, options);
+                }
+                Process.Start(Folders.PersonalFolder);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Excel Generation Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            this.Cursor = cursor;
         }
     }
 }
