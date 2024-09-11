@@ -411,7 +411,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     return config.LastDownloaded < lastDownloadedCAC40Date ? DownloadGroupFromAbc(config) : false;
                 }
-                else return false;
+                else
+                    return false;
             }
             if (config.Group == StockSerie.Groups.SRD || config.Group == StockSerie.Groups.SRD_LO)
             {
@@ -434,6 +435,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 refSerie.Initialise();
                 if (config.LastDownloaded < refSerie.LastValue.DATE)
                 {
+                    // Force Report Generation
+                    var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
+                    if (File.Exists(fileName))
+                        File.Delete(fileName);
+
                     config.LastDownloaded = refSerie.LastValue.DATE;
                     return true;
                 }
@@ -613,7 +619,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         }
                         else
                         {
-                            StockLog.Write("Duplicate " +group + ";" + line + " already in group " + stockDictionary[stockName].StockGroup);
+                            StockLog.Write("Duplicate " + group + ";" + line + " already in group " + stockDictionary[stockName].StockGroup);
                         }
                     }
                 }

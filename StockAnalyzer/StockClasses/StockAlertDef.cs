@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses
@@ -39,13 +40,16 @@ namespace StockAnalyzer.StockClasses
 
         public string IndicatorType { get; set; }
         public string IndicatorName { get; set; }
+        [JsonIgnore]
         public string IndicatorFullName => IndicatorType + "|" + IndicatorName;
         public string EventName { get; set; }
+        [JsonIgnore]
         public string EventFullName => EventName + "=>" + IndicatorFullName;
 
         public string FilterType { get; set; }
         public string FilterName { get; set; }
         public string FilterEventName { get; set; }
+        [JsonIgnore]
         public string FilterFullName => FilterType == null || FilterName == null ? null : FilterType + "|" + FilterName;
         public BarDuration FilterDuration { get; set; } = new BarDuration();
 
