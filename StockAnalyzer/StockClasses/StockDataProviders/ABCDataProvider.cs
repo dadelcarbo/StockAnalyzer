@@ -968,10 +968,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 StockLog.Write("Network is Available");
                 stockSerie.IsInitialised = false;
                 int nbFile = 0;
+                var isin = stockSerie.ISIN;
+                if (stockSerie.StockGroup == StockSerie.Groups.USA)
+                    isin += "u";
                 for (int i = DateTime.Today.Year - 1; i >= ARCHIVE_START_YEAR; i--)
                 {
                     fileName = filePattern.Replace("*", i.ToString());
-                    if (!this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, new DateTime(i, 1, 1), new DateTime(i, 12, 31), stockSerie.ISIN))
+                    if (!this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, new DateTime(i, 1, 1), new DateTime(i, 12, 31), isin))
                     {
                         break;
                     }
@@ -979,7 +982,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
                 int year = DateTime.Today.Year;
                 fileName = filePattern.Replace("*", year.ToString());
-                if (this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, new DateTime(year, 1, 1), DateTime.Today, stockSerie.ISIN))
+                if (this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, new DateTime(year, 1, 1), DateTime.Today, isin))
                 {
                     nbFile++;
                 }

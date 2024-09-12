@@ -370,6 +370,7 @@
     </Compile>
     <Compile Include="StockPortfolio\SaxoOperation.cs" />
     <Compile Include="StockPortfolio\SaxoPosition.cs" />
+    <Compile Include="StockPortfolio\Saxo\SaxoPortfolio.cs" />
     <Compile Include="StockPortfolio\StockNameMapping.cs" />
     <Compile Include="StockPortfolio\SaxoPositionChange.cs" />
     <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
