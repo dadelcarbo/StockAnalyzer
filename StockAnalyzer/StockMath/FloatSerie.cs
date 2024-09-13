@@ -1007,6 +1007,7 @@ namespace StockAnalyzer.StockMath
 
         public FloatSerie MaxSerie(int lookback)
         {
+            lookback = Math.Min(lookback, this.Count);
             float[] maxSerie = new float[this.Count];
             maxSerie[0] = this[0];
             for (int i = 1; i < lookback; i++)
@@ -1021,6 +1022,7 @@ namespace StockAnalyzer.StockMath
         }
         public FloatSerie MinSerie(int lookback)
         {
+            lookback = Math.Min(lookback, this.Count);
             float[] minSerie = new float[this.Count];
             minSerie[0] = this[0];
             for (int i = 1; i < lookback; i++)

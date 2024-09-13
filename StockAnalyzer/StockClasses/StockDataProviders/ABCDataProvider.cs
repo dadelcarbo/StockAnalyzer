@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -333,7 +332,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool SupportsIntradayDownload => Settings.Default.SupportIntraday;
 
-        static readonly string defaultConfigFile = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
+        static readonly string defaultConfigFileContent = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
 
         static string configPath => Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "AbcDownloadConfig.txt");
         static string defaultConfigPath => Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
@@ -342,23 +341,35 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
+            stockDictionary = dictionary;
             CreateDirectories();
 
-            stockDictionary = dictionary;
-
-            // Load Download Config
-            downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath),
-                new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
+            #region init group config file
+            if (!File.Exists(configPath))
+            {
+                if (File.Exists(defaultConfigPath))
+                    File.Copy(defaultConfigPath, configPath);
+            }
+            else
+            {
+                if (File.Exists(defaultConfigPath) && File.GetLastWriteTime(defaultConfigPath) > File.GetLastWriteTime(configPath))
+                {
+                    File.Delete(configPath);
+                    File.Copy(defaultConfigPath, configPath);
+                }
+            }
+            downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
+            #endregion
 
             // Load Config files
             string fileName = Path.Combine(Folders.PersonalFolder, UserConfigFileName);
             if (!File.Exists(fileName))
             {
-                File.WriteAllText(fileName, defaultConfigFile);
+                File.WriteAllText(fileName, defaultConfigFileContent);
             }
             InitFromFile(download, fileName);
 
-            // Intialize
+            // Intialize Groups
             foreach (var config in downloadGroups)
             {
                 if (InitAbcGroup(config, download))
@@ -374,7 +385,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var json = JsonSerializer.Serialize(downloadGroups, new JsonSerializerOptions
             {
                 WriteIndented = true,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
                 Converters = { new JsonStringEnumConverter() }
             });
 
@@ -540,20 +551,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     // Purge files at each start
                     File.Delete(file);
-                }
-            }
-
-            if (!File.Exists(configPath))
-            {
-                if (File.Exists(defaultConfigPath))
-                    File.Copy(defaultConfigPath, configPath);
-            }
-            else
-            {
-                if (File.Exists(defaultConfigPath) && File.GetLastWriteTime(defaultConfigPath) > File.GetLastWriteTime(configPath))
-                {
-                    File.Delete(configPath);
-                    File.Copy(defaultConfigPath, configPath);
                 }
             }
         }

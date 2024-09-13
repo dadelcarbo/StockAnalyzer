@@ -106,7 +106,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var url = FormatIntradayURL(stockSerie.ISIN, "2D");
                     var jsonData = SaxoIntradayM5DataProvider.HttpGetFromSaxo(url);
                     var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
-                    if (saxoData?.series?[0]?.data == null)
+                    if (saxoData?.series?[0]?.data == null || saxoData?.series?[0]?.data.Count == 0)
                         return false;
 
                     stockSerie.IsInitialised = false;
@@ -174,7 +174,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 var url = FormatIntradayURL(stockSerie.ISIN, "1W");
                 var jsonData = SaxoIntradayM5DataProvider.HttpGetFromSaxo(url);
                 var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
-                if (saxoData?.series?[0]?.data == null)
+                if (saxoData?.series?[0]?.data == null || saxoData?.series?[0]?.data.Count == 0)
                     return null;
 
                 return FixMinuteBars(saxoData.series[0].data.Where(bar => bar.x < DateTime.Today).Select(bar => new StockDailyValue(bar.y, bar.y, bar.y, bar.y, 0, bar.x)), 5);
