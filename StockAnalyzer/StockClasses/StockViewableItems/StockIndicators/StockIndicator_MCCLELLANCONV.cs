@@ -31,9 +31,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var lowSerie = slowEma - oscSerie;
 
             this.Series[0] = unchSerie;
+            this.Series[0].Name = this.SerieNames[0];
             this.Series[1] = slowEma;
             this.Series[2] = fastEma;
             this.Series[3] = lowSerie;
+            this.Series[3].Name = this.SerieNames[3];
 
             this.Areas[0].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
             this.Areas[0].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
@@ -52,11 +54,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.Events[eventIndex++][i] = !bullish;
                 if (bullish)
                 {
+                    this.Events[eventIndex++][i] = closeSerie[i] > unchSerie[i];
+                    this.Events[eventIndex++][i] = false;
+
                     this.areas[0].UpLine[i] = unchSerie[i];
                     this.areas[0].DownLine[i] = fastEma[i];
                 }
                 else
                 {
+                    this.Events[eventIndex++][i] = false;
+                    this.Events[eventIndex++][i] = closeSerie[i] < unchSerie[i];
+
                     this.areas[1].UpLine[i] = fastEma[i];
                     this.areas[1].DownLine[i] = unchSerie[i];
                 }
@@ -68,7 +76,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        static readonly string[] eventNames = new string[] { "Bullish", "Bearish", "Broken Unc Up", "Broken fast Up", "Broken Slow Up", "Broken Low Up" };
+        static readonly string[] eventNames = new string[] { "Bullish", "Bearish", "Strong", "Weak", "Broken Unc Up", "Broken fast Up", "Broken Slow Up", "Broken Low Up" };
         public override string[] EventNames => eventNames;
         static readonly bool[] isEvent = new bool[] { false, false, true, true, true, true };
         public override bool[] IsEvent => isEvent;

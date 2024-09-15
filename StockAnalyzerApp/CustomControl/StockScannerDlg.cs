@@ -31,7 +31,7 @@ namespace StockAnalyzerApp.CustomControl
 
             // Initialise group combo box
             groupComboBox.Items.AddRange(this.stockDictionary.GetValidGroups().Cast<object>().ToArray());
-            groupComboBox.SelectedItem = stockGroup.ToString();
+            groupComboBox.SelectedItem = stockGroup;
             groupComboBox.SelectedValueChanged += new EventHandler(groupComboBox_SelectedValueChanged);
 
             periodComboBox.SelectedIndex = 0;
@@ -180,7 +180,7 @@ namespace StockAnalyzerApp.CustomControl
 
         void groupComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (groupComboBox.SelectedItem.ToString() == "INTRADAY")
+            if (groupComboBox.SelectedItem.Equals(StockSerie.Groups.INTRADAY))
             {
                 this.refreshDataCheckBox.CheckState = CheckState.Checked;
             }
@@ -190,7 +190,7 @@ namespace StockAnalyzerApp.CustomControl
             }
             if (SelectStockGroupChanged != null)
             {
-                SelectStockGroupChanged(groupComboBox.SelectedItem.ToString());
+                SelectStockGroupChanged((StockSerie.Groups)groupComboBox.SelectedItem);
             }
         }
         /// <summary>

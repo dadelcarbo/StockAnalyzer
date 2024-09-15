@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
@@ -48,6 +47,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
+                    if (line.StartsWith("$"))
+                        break;
                     if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
                         string[] row = line.Split(',');

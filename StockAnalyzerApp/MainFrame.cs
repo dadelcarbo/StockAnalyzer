@@ -54,6 +54,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Markup;
@@ -73,7 +74,7 @@ namespace StockAnalyzerApp
         public delegate void SelectedStockAndDurationAndThemeChangedEventHandler(string stockName, BarDuration barDuration, string theme, bool activateMainWindow);
         public delegate void SelectedStockAndDurationAndIndexChangedEventHandler(string stockName, int startIndex, int endIndex, BarDuration barDuration, bool activateMainWindow);
 
-        public delegate void SelectedStockGroupChangedEventHandler(string stockgroup);
+        public delegate void SelectedStockGroupChangedEventHandler(StockSerie.Groups stockgroup);
 
         public delegate void SelectedStrategyChangedEventHandler(string strategyName);
 
@@ -2570,7 +2571,7 @@ namespace StockAnalyzerApp
             Settings.Default.SelectedGroup = sender.ToString();
             Settings.Default.Save();
 
-            this.OnSelectedStockGroupChanged(sender.ToString());
+            this.OnSelectedStockGroupChanged((StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), sender.ToString()));
         }
 
         #region MENU CREATION
@@ -2695,19 +2696,20 @@ namespace StockAnalyzerApp
         #endregion
 
         public bool changingGroup = false;
-        private void OnSelectedStockGroupChanged(string stockGroup)
+        private void OnSelectedStockGroupChanged(StockSerie.Groups stockGroup)
         {
             try
             {
                 changingGroup = true;
-                StockSerie.Groups newGroup = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), stockGroup);
+                StockSerie.Groups newGroup = stockGroup;
                 if (this.selectedGroup != newGroup)
                 {
                     this.selectedGroup = newGroup;
 
                     foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
                     {
-                        groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup;
+                        groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup.ToString();
+                        break;
                     }
                     InitialiseStockCombo(true);
                     SetDurationForStockGroup(newGroup);
@@ -3151,6 +3153,29 @@ namespace StockAnalyzerApp
 
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary["McClellanSum.EURO_A"], "EUROA_SUM", 770);
                 htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
+            }
+
+            // Find Pattern
+
+            string pattern = @"%%.*?%%";
+
+            // Instantiate the regular expression object.
+            Regex regex = new Regex(pattern);
+
+            // Match the regular expression pattern against the input string.
+            MatchCollection matches = regex.Matches(htmlReportTemplate);
+
+            foreach (Match match in matches)
+            {
+                var fields = match.Value.Replace("%%", "").Split('|');
+                var stockName = fields[0];
+                //var duration = fields[1];
+                var theme = fields[2];
+                var nbBars = int.Parse(fields[3]);
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, nbBars);
+                string data = $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+
+                htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
             }
 
             StockSplashScreen.CloseForm(true);
