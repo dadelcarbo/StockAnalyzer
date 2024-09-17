@@ -614,17 +614,24 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     // Display values and dates
                                     float lastValue = this.mainSerie[EndIndex];
                                     string lastValueString;
-                                    if (lastValue > 100000000)
+                                    if (string.IsNullOrEmpty(stockIndicator.SerieFormats?[i]))
                                     {
-                                        lastValueString = (lastValue / 1000000).ToString("0.#") + "M";
-                                    }
-                                    else if (lastValue > 100000)
-                                    {
-                                        lastValueString = (lastValue / 1000).ToString("0.#") + "K";
+                                        if (lastValue > 100000000)
+                                        {
+                                            lastValueString = (lastValue / 1000000).ToString("0.#") + "M";
+                                        }
+                                        else if (lastValue > 100000)
+                                        {
+                                            lastValueString = (lastValue / 1000).ToString("0.#") + "K";
+                                        }
+                                        else
+                                        {
+                                            lastValueString = lastValue.ToString("0.##");
+                                        }
                                     }
                                     else
                                     {
-                                        lastValueString = lastValue.ToString("0.##");
+                                        lastValueString = lastValue.ToString(stockIndicator.SerieFormats?[i]);
                                     }
 
                                     aGraphic.DrawString(lastValueString, axisFont, Brushes.Black, GraphRectangle.Right + 1, Math.Max(points.Last().Y - 8, GraphRectangle.Top));
@@ -768,7 +775,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0 && !float.IsNaN(stockIndicator.Series[i][this.lastMouseIndex]))
                     {
-                        value += BuildTabbedString(stockIndicator.Series[i].Name, stockIndicator.Series[i][this.lastMouseIndex], 12) + "\r\n";
+                        value += BuildTabbedString(stockIndicator.Series[i].Name, stockIndicator.Series[i][this.lastMouseIndex], 12, stockIndicator.SerieFormats?[i]) + "\r\n";
                     }
                 }
             }
@@ -1618,24 +1625,31 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.drawingItems.RemoveAll(di => di.IsPersistent);
             }
         }
-        protected string BuildTabbedString(string type, float value, int tabLocation)
+        protected string BuildTabbedString(string type, float value, int tabLocation, string format = null)
         {
             string valueString;
-            if (value > 10000000)
+            if (string.IsNullOrEmpty(format))
             {
-                valueString = (value / 1000000).ToString("0.###") + "M";
-            }
-            else if (value > 100000)
-            {
-                valueString = (value / 1000).ToString("0.###") + "K";
-            }
-            else if (value > 10)
-            {
-                valueString = value.ToString("0.##");
+                if (value > 10000000)
+                {
+                    valueString = (value / 1000000).ToString("0.###") + "M";
+                }
+                else if (value > 100000)
+                {
+                    valueString = (value / 1000).ToString("0.###") + "K";
+                }
+                else if (value > 10)
+                {
+                    valueString = value.ToString("0.##");
+                }
+                else
+                {
+                    valueString = value.ToString("0.####");
+                }
             }
             else
             {
-                valueString = value.ToString("0.####");
+                valueString = value.ToString(format);
             }
             return (type + ":").PadRight(tabLocation) + valueString;
         }

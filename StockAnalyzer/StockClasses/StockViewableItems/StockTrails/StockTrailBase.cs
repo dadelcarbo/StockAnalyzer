@@ -57,6 +57,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
         protected FloatSerie[] series;
         public FloatSerie[] Series => series;
 
+        protected string[] serieFormats = null;
+        virtual public string[] SerieFormats => serieFormats;
+
         abstract public Pen[] SeriePens { get; }
         public virtual HLine[] HorizontalLines => null;
         #region IStockEvent implementation

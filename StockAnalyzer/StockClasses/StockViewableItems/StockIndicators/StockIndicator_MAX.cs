@@ -18,7 +18,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie indicatorSerie = stockSerie.GetIndicator(this.parameters[0].ToString().Replace("_", ",")).Series[0];
+            var indicator = stockSerie.GetIndicator(this.parameters[0].ToString().Replace("_", ","));
+            if (!string.IsNullOrEmpty(indicator.SerieFormats?[0]))
+            {
+                this.serieFormats = new string[] { indicator.SerieFormats[0], indicator.SerieFormats[0] };
+            }
+            FloatSerie indicatorSerie = indicator.Series[0];
 
             this.series[0] = indicatorSerie.MaxSerie((int)this.parameters[1]);
             this.series[1] = indicatorSerie;

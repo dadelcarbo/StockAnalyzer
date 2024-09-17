@@ -3,7 +3,7 @@ using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Web;
+
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public abstract class StockIndicatorBase : Parameterizable, IStockIndicator, IStockText
@@ -42,6 +42,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
             return themeString;
         }
+
+        protected string[] serieFormats = null;
+        virtual public string[] SerieFormats => serieFormats;
 
         protected FloatSerie[] series;
         public FloatSerie[] Series => series;
