@@ -5,6 +5,9 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockAlert : IEquatable<StockAlert>
     {
+        public StockAlert()
+        {
+        }
         public DateTime Date { get; set; }
         public string StockName { get; set; }
         public string StockGroup { get; set; }
