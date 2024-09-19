@@ -215,9 +215,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
             this.MinValue = string.Empty;
             this.MaxValue = string.Empty;
         }
+        string[] values;
+        public ParamRangeString(string[] values)
+        {
+            this.values = values;
+            this.MinValue = string.Empty;
+            this.MaxValue = string.Empty;
+        }
 
         public override bool isInRange(Object value)
         {
+            if (value != null)
+            {
+                return values.Contains(value.ToString());
+            }
             return value != null && !string.IsNullOrWhiteSpace(value.ToString());
         }
 

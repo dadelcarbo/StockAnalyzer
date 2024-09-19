@@ -42,6 +42,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
         }
         public static void RefreshSessions()
         {
+            using MethodLogger ml = new MethodLogger(typeof(LoginService), true);
             foreach (var session in Sessions.Where(s => s.HasTokenExpired()))
             {
                 if (!session.HasRefreshTokenExpired())
@@ -60,8 +61,10 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 }
             }
         }
+
         public static LoginSession Login(string clientId, string appFolder, bool isSimu)
         {
+            using MethodLogger ml = new MethodLogger(typeof(LoginService), true, $"clientId:{clientId}");
             try
             {
                 // Check if session already exists
@@ -82,6 +85,10 @@ namespace Saxo.OpenAPI.AuthenticationServices
                     CurrentSession = session;
                     return session;
                 }
+                else
+                {
+                    StockLog.Write($"ClientId:{clientId} Token has expired");
+                }
                 if (!session.HasRefreshTokenExpired())
                 {
                     var refreshToken = LoginHelpers.RefreshToken(session);
@@ -92,6 +99,10 @@ namespace Saxo.OpenAPI.AuthenticationServices
                         CurrentSession = session;
                         return session;
                     }
+                }
+                else
+                {
+                    StockLog.Write($"ClientId:{clientId} RefreshToken has expired");
                 }
 
                 // Establish Session
@@ -136,6 +147,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
 
         public static LoginSession SilentLogin(string clientId, string appFolder, bool isSimu)
         {
+            using MethodLogger ml = new MethodLogger(typeof(LoginService), true, $"clientId:{clientId}");
             try
             {
                 // Check if session already exists
@@ -155,6 +167,10 @@ namespace Saxo.OpenAPI.AuthenticationServices
                         CurrentSession = session;
                         return session;
                     }
+                    else
+                    {
+                        StockLog.Write($"ClientId:{clientId} Token has expired");
+                    }
                     if (!session.HasRefreshTokenExpired())
                     {
                         var refreshToken = LoginHelpers.RefreshToken(session);
@@ -167,6 +183,10 @@ namespace Saxo.OpenAPI.AuthenticationServices
                             return session;
                         }
                     }
+                    else
+                    {
+                        StockLog.Write($"ClientId:{clientId} RefreshToken has expired");
+                    }
                 }
                 else
                 {
@@ -174,6 +194,10 @@ namespace Saxo.OpenAPI.AuthenticationServices
                     {
                         CurrentSession = session;
                         return session;
+                    }
+                    else
+                    {
+                        StockLog.Write($"ClientId:{clientId} Token has expired");
                     }
                     if (!session.HasRefreshTokenExpired())
                     {
@@ -185,6 +209,10 @@ namespace Saxo.OpenAPI.AuthenticationServices
                             CurrentSession = session;
                             return session;
                         }
+                    }
+                    else
+                    {
+                        StockLog.Write($"ClientId:{clientId} RefreshToken has expired");
                     }
                 }
             }

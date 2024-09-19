@@ -751,10 +751,12 @@ namespace StockAnalyzerApp
         private void RefreshTimer_Tick()
         {
             using var ml = new MethodLogger(this, showTimerDebug);
+
+            LoginService.RefreshSessions();
+
             if (refreshing)
                 return;
             refreshing = true;
-            LoginService.RefreshSessions();
             return; // §§§§
 
             using (new MethodLogger(this, showTimerDebug))

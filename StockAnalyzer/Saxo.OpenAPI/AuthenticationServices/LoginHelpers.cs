@@ -53,13 +53,23 @@ namespace Saxo.OpenAPI.AuthenticationServices
 
         public static Token RefreshToken(LoginSession session)
         {
-            var authService = new PkceAuthService();
-            if (string.IsNullOrEmpty(session.Token.RefreshToken))
-                throw new ArgumentException("Invalid refresh token");
+            Token token = null;
+            try
+            {
+                using MethodLogger ml = new MethodLogger(typeof(LoginHelpers), true);
+                var authService = new PkceAuthService();
+                if (string.IsNullOrEmpty(session.Token.RefreshToken))
+                    throw new ArgumentException("Invalid refresh token");
 
-            var token = authService.RefreshToken(session.App, session.Token.RefreshToken);
-            token.CreationDate = DateTime.Now;
+                token = authService.RefreshToken(session.App, session.Token.RefreshToken);
+                token.CreationDate = DateTime.Now;
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
             return token;
+
         }
 
         private static int GetRandomUnusedPort()
