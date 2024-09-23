@@ -64,15 +64,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var p = Portfolios.FirstOrDefault(p => p.Name == stockSerie.StockName);
 
             stockSerie.IsInitialised = false;
-            p.GetPerformance();
-            if (p?.Performance?.Balance?.AccountValue == null)
+            if (p.AccountValue == null)
                 return false;
 
-            foreach (var v in p.Performance.Balance.AccountValue)
+            foreach (var v in p.AccountValue)
             {
                 stockSerie.Add(v.Date, new StockDailyValue(v.Value, v.Value, v.Value, v.Value, 0, v.Date));
             }
-            var lastAccountValue = p.Performance.Balance.AccountValue.Last();
+            var lastAccountValue = p.AccountValue.Last();
             var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
             if (lastAccountValue.Date.Date <= DateTime.Today && DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {

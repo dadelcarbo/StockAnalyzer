@@ -222,20 +222,6 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             }
         }
 
-        public void GetPerformance()
-        {
-            if (!this.SaxoLogin())
-                return;
-
-            var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
-            if (this.Performance?.Balance?.AccountValue == null || this.Performance.Balance.AccountValue.Last().Date < lastCacDate)
-            {
-                this.Performance = accountService.GetPerformance(account);
-                this.MaxValue = Math.Max(this.MaxValue, this.Performance.Balance.AccountValue.Max(v => v.Value));
-            }
-        }
-
-
         public Position[] SaxoGetPositions()
         {
             using var ml = new MethodLogger(this, true, this.Name);

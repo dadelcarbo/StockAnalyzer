@@ -167,6 +167,7 @@ namespace StockAnalyzerApp
                     // Update Connectivity Status
                     if (portfolio.SaxoSilentLogin())
                     {
+                        portfolio.Refresh();
                         this.portfolioStatusLbl.Image = global::StockAnalyzerApp.Properties.Resources.GreenIcon;
                         this.portfolioStatusLbl.ToolTipText = "Connected";
                     }

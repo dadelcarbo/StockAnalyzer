@@ -568,7 +568,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
                     {
                         string[] row = line.Split(';');
-                        string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
+                        string stockName = row[1].ToUpper(); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
                         if (!stockDictionary.ContainsKey(stockName))
                         {
                             var existingInstrument = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
@@ -585,6 +585,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 StockSerie.Groups.EURO_B => "p",
                                 StockSerie.Groups.EURO_C => "p",
                                 StockSerie.Groups.ALTERNEXT => "p",
+                                StockSerie.Groups.FOREX => "p",
 
                                 StockSerie.Groups.BELGIUM => "g",
                                 StockSerie.Groups.HOLLAND => "n",
@@ -669,7 +670,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 return group == StockSerie.Groups.USA;
 
             if (line.StartsWith("QS"))
-                return group == StockSerie.Groups.SECTORS_CAC;
+                return group == StockSerie.Groups.SECTORS_CAC || group == StockSerie.Groups.FOREX;
 
             return true;
         }
