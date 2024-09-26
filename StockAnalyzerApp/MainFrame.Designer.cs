@@ -1370,7 +1370,7 @@ namespace StockAnalyzerApp
             this.graphCloseControl.Location = new System.Drawing.Point(0, 24);
             this.graphCloseControl.Magnetism = false;
             this.graphCloseControl.Name = "graphCloseControl";
-            this.graphCloseControl.ScaleInvisible = true;
+            this.graphCloseControl.ScaleInvisible = false;
             this.graphCloseControl.SecondaryFloatSerie = null;
             this.graphCloseControl.SecondaryPen = null;
             this.graphCloseControl.ShowGrid = false;
