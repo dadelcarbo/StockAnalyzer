@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockLogging;
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 
 namespace Saxo.OpenAPI.TradingServices
@@ -35,17 +38,36 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
-        public Performance GetPerformance(Account account)
+        public TimeSeries[] GetAccountValue(Account account, DateTime fromDate)
         {
             try
             {
-                var url = $"hist/v4/performance/timeseries/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&StandardPeriod=AllTime";
-                return Get<Performance>(url);
+                var period = "AllTime";
+                if (fromDate.Year == DateTime.Today.Year)
+                {
+                    if (fromDate.Month == DateTime.Today.Month)
+                    {
+                        period = "Month";
+                    }
+                    else
+                    {
+                        period = "Year";
+                    }
+                }
+
+                var url = $"hist/v4/performance/timeseries/?ClientKey={account.ClientKey}&AccountKey={account.AccountKey}&FieldGroups=Balance_AccountValue&StandardPeriod={period}";
+                var perf = Get<Performance>(url);
+
+                if (perf?.Balance?.AccountValue != null)
+                {
+                    return perf.Balance.AccountValue.Where(ts => ts.Date >= fromDate).ToArray();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                StockLog.Write(ex);
             }
+            return null;
         }
 
         public Position[] GetPositions(Account account)
@@ -318,6 +340,7 @@ namespace Saxo.OpenAPI.TradingServices
         public TimeSeries[] YearlyProfitLoss { get; set; }
     }
 
+    [DebuggerDisplay("{Date}-{Value}")]
     public class TimeSeries
     {
         public DateTime Date { get; set; }

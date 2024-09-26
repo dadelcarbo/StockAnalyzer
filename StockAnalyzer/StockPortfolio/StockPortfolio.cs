@@ -187,6 +187,7 @@ namespace StockAnalyzer.StockPortfolio
                 {
                     if (portfolio.LastSyncDate < portfolio.CreationDate)
                         portfolio.LastSyncDate = portfolio.CreationDate;
+
                     StockPortfolio.Portfolios.Add(portfolio);
                 }
                 foreach (var position in StockPortfolio.Portfolios.SelectMany(p => p.Positions))
@@ -596,7 +597,9 @@ namespace StockAnalyzer.StockPortfolio
             }
             return true;
         }
-        public Performance Performance { get; set; }
+
+        public TimeSeries[] AccountValue { get; set; }
+
         public void Refresh()
         {
             using var ml = new MethodLogger(this, true, this.Name);
@@ -604,6 +607,9 @@ namespace StockAnalyzer.StockPortfolio
             {
                 if (!this.SaxoLogin())
                     return;
+
+
+                this.GetPerformance();
 
                 // Update portfolio balance
                 var balance = accountService.GetBalance(account);
@@ -655,14 +661,24 @@ namespace StockAnalyzer.StockPortfolio
 
         public void GetPerformance()
         {
-            if (!this.SaxoLogin())
+            if (!this.SaxoSilentLogin())
                 return;
 
-            var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
-            if (this.Performance?.Balance?.AccountValue == null || this.Performance.Balance.AccountValue.Last().Date < lastCacDate)
+            if (this.AccountValue == null || this.AccountValue.Length == 0)
             {
-                this.Performance = accountService.GetPerformance(account);
-                this.MaxValue = Math.Max(this.MaxValue, this.Performance.Balance.AccountValue.Max(v => v.Value));
+                this.AccountValue = accountService.GetAccountValue(account, this.CreationDate);
+            }
+            else
+            {
+                var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
+                if (this.AccountValue.Last().Date < lastCacDate)
+                {
+                    var newAccountValues = accountService.GetAccountValue(account, this.AccountValue.Last().Date);
+                    if (newAccountValues == null && newAccountValues.Length > 0)
+                    {
+                        this.AccountValue = this.AccountValue.Concat(newAccountValues).ToArray();
+                    }
+                }
             }
         }
         public void AddSaxoActivityOrder(OrderActivity activityOrder)
