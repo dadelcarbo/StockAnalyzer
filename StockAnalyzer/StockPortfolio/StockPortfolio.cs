@@ -674,7 +674,7 @@ namespace StockAnalyzer.StockPortfolio
                 if (this.AccountValue.Last().Date < lastCacDate)
                 {
                     var newAccountValues = accountService.GetAccountValue(account, this.AccountValue.Last().Date);
-                    if (newAccountValues == null && newAccountValues.Length > 0)
+                    if (newAccountValues != null && newAccountValues.Length > 0)
                     {
                         this.AccountValue = this.AccountValue.Concat(newAccountValues).ToArray();
                     }
