@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SupportResistance;
 
-        public override string[] ParameterNames => new string[] { "Indicator", "Smoothing" };
+        public override string[] ParameterNames => new string[] { "Indicator", "SignalPeriod" };
 
         public override Object[] ParameterDefaultValues => new Object[] { "STOKS(30_3_3)", 3 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(1, 500) };
