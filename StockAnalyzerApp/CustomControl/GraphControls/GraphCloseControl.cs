@@ -251,11 +251,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     this.DrawStockText(aGraphic, this.CurveList.Cloud.StockTexts);
 
-                    var bullColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[0].Color.R, this.CurveList.Cloud.SeriePens[0].Color.G, this.CurveList.Cloud.SeriePens[0].Color.B);
+                    var bullColor = Color.FromArgb(this.CurveList.Cloud.SeriePens[0].Color.A, this.CurveList.Cloud.SeriePens[0].Color.R, this.CurveList.Cloud.SeriePens[0].Color.G, this.CurveList.Cloud.SeriePens[0].Color.B);
                     var bullBrush = new SolidBrush(bullColor);
                     var bullPen = this.CurveList.Cloud.SeriePens[0];
 
-                    var bearColor = Color.FromArgb(92, this.CurveList.Cloud.SeriePens[1].Color.R, this.CurveList.Cloud.SeriePens[1].Color.G, this.CurveList.Cloud.SeriePens[1].Color.B);
+                    var bearColor = Color.FromArgb(this.CurveList.Cloud.SeriePens[1].Color.A, this.CurveList.Cloud.SeriePens[1].Color.R, this.CurveList.Cloud.SeriePens[1].Color.G, this.CurveList.Cloud.SeriePens[1].Color.B);
                     var bearBrush = new SolidBrush(bearColor);
                     var bearPen = this.CurveList.Cloud.SeriePens[1];
 
