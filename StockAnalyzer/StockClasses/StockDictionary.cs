@@ -1023,7 +1023,7 @@ namespace StockAnalyzer.StockClasses
             }
             return true;
         }
-        public bool GenerateIndiceBestROC(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
+        public bool GenerateIndiceBest(string speedIndicator, StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
             int nbStocks = 10;
@@ -1083,7 +1083,7 @@ namespace StockAnalyzer.StockClasses
                 }
                 serie.Initialise();
                 serie.BarDuration = barDuration;
-                serie.GetIndicator($"ROC({period})");
+                serie.GetIndicator($"{speedIndicator}({period})");
             }
             #endregion
             long vol;
@@ -1110,16 +1110,20 @@ namespace StockAnalyzer.StockClasses
                 {
                     bestSeries.Clear();
                     List<Tuple<StockSerie, float>> tuples = new List<Tuple<StockSerie, float>>();
+
                     // Reselect list of stock at the beging of the month
                     foreach (StockSerie serie in indexComponents.Where(s => s.Keys.First() <= value.DATE))
                     {
                         index = serie.IndexOf(value.DATE);
                         if (index >= 1)
                         {
-                            float ROC = serie.GetIndicator($"ROC({period})").Series[0][index - 1];
-                            if (ROC > 0)
+                            if (serie.GetSerie(StockDataType.EXCHANGED)[index - 1] > 250000f)
                             {
-                                tuples.Add(new Tuple<StockSerie, float>(serie, ROC));
+                                float speed = serie.GetIndicator($"{speedIndicator}({period})").Series[0][index - 1];
+                                if (speed > 0)
+                                {
+                                    tuples.Add(new Tuple<StockSerie, float>(serie, speed));
+                                }
                             }
                         }
                     }

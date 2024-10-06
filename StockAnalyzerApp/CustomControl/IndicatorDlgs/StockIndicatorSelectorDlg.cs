@@ -938,6 +938,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
             this.lineColorPanel.Parent = curveConfigBox;
             this.lineColorPanel.BackColor = Color.FromArgb(255, curveNode.CurvePen.Color);
+            this.opacityTrackBar.Enabled = (curveNode.Name == "Bull" || curveNode.Name == "Bear");
+            this.opacityTrackBar.Visible = this.opacityTrackBar.Enabled;
 
             if (curveNode.SupportVisibility)
             {
@@ -1359,16 +1361,13 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
                         if (!(stockNode is FillNode))
                         {
-                            IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
+                            IStockVisibility viewableItem = viewableItemNode.ViewableItem;
                             viewableItem.SerieVisibility[stockNode.Index] = stockNode.Visible;
                         }
                         else
                         {
                             if (viewableItemNode.ViewableItem is IStockIndicator)
                                 (viewableItemNode.ViewableItem as IStockIndicator).Areas[(stockNode as FillNode).AreaIndex].Visibility = stockNode.Visible;
-
-                            //if (viewableItemNode.ViewableItem is IStockCloud)
-                            //    (viewableItemNode.ViewableItem as IStockCloud). = stockNode.Visible;
                         }
                     }
                     break;
@@ -1390,7 +1389,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     else
                     {
                         ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
-                        IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
+                        IStockVisibility viewableItem = viewableItemNode.ViewableItem;
                         viewableItem.SerieVisibility[stockNode.Index] = stockNode.Visible;
                     }
                     break;
