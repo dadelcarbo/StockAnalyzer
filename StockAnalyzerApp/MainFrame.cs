@@ -4499,13 +4499,13 @@ namespace StockAnalyzerApp
                                         {
                                             curveList.Insert(0,
                                                 new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.LOW), Pens.Black,
-                                                    false));
+                                                    true));
                                         }
                                         if (curveList.FindIndex(c => c.DataSerie.Name == "HIGH") < 0)
                                         {
                                             curveList.Insert(0,
                                                 new GraphCurveType(CurrentStockSerie.GetSerie(StockDataType.HIGH), Pens.Black,
-                                                    false));
+                                                    true));
                                         }
                                         if (curveList.FindIndex(c => c.DataSerie.Name == "OPEN") < 0)
                                         {
