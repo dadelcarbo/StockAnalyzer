@@ -88,7 +88,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
                     string fileName = stockSerie.Symbol + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
                     string archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + fileName;
-                    var lastDate = stockSerie.Keys.Last().AddDays(-5);
+                    var lastDate = stockSerie.Keys.Last().Date == DateTime.Today ? stockSerie.Keys.Last().AddDays(-1): stockSerie.Keys.Last();
                     stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
 
                     return true;

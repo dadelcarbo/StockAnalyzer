@@ -308,7 +308,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.groupBoxList.Add(lineConfigBox);
             this.groupBoxList.Add(graphConfigBox);
             this.groupBoxList.Add(paintBarGroupBox);
-            this.groupBoxList.Add(cloudGroupBox);
             this.groupBoxList.Add(trailStopGroupBox);
 
             suspendPreview = false;
@@ -480,11 +479,11 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                         treeNode1 = new CloudNode(stockCloud.Name, this.indicatorMenuStrip, stockCloud);
                                         for (int i = 0; i < stockCloud.SeriesCount; i++)
                                         {
-                                            CurveNode curveNode = new CurveNode(stockCloud.SerieNames[i], null, stockCloud.SeriePens[i], true, stockCloud.SerieVisibility[i]);
-                                            treeNode1.Nodes.Add(curveNode);
+                                            var fileNode = new FillNode(stockCloud.SerieNames[i], null, stockCloud.SeriePens[i].Color, i, stockCloud.SerieVisibility[i]);
+                                            treeNode1.Nodes.Add(fileNode);
 
-                                            curveNode.ImageKey = treeNode1.ImageKey;
-                                            curveNode.SelectedImageKey = treeNode1.SelectedImageKey;
+                                            fileNode.ImageKey = treeNode1.ImageKey;
+                                            fileNode.SelectedImageKey = treeNode1.SelectedImageKey;
                                         }
                                         treeNode.Nodes.Add(treeNode1);
                                     }
@@ -938,7 +937,9 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.thicknessComboBox.Enabled = true;
 
             this.lineColorPanel.Parent = curveConfigBox;
-            this.lineColorPanel.BackColor = curveNode.CurvePen.Color;
+            this.lineColorPanel.BackColor = Color.FromArgb(255, curveNode.CurvePen.Color);
+            this.opacityTrackBar.Enabled = (curveNode.Name == "Bull" || curveNode.Name == "Bear");
+            this.opacityTrackBar.Visible = this.opacityTrackBar.Enabled;
 
             if (curveNode.SupportVisibility)
             {
@@ -955,7 +956,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.curvePreviewLabel.Parent = this.curveConfigBox;
             this.previewPanel.Parent = this.curveConfigBox;
 
-            this.opacityTrackBar.Visible = false;
+            //this.opacityTrackBar.Visible = false;
 
             this.suspendPreview = false;
             this.previewPanel.Refresh();
@@ -1010,12 +1011,12 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
             this.lineTypeComboBox.SelectedItem = eventNode.CurvePen.DashStyle.ToString();
             this.thicknessComboBox.SelectedItem = (int)eventNode.CurvePen.Width;
-            this.lineColorPanel.BackColor = eventNode.CurvePen.Color;
+            this.lineColorPanel.BackColor = Color.FromArgb(255, eventNode.CurvePen.Color);
 
             this.curvePreviewLabel.Parent = this.curveConfigBox;
             this.previewPanel.Parent = this.curveConfigBox;
 
-            this.opacityTrackBar.Visible = false;
+            //this.opacityTrackBar.Visible = false;
 
             this.suspendPreview = false;
             this.previewPanel.Refresh();
@@ -1360,13 +1361,13 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
                         if (!(stockNode is FillNode))
                         {
-                            IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
+                            IStockVisibility viewableItem = viewableItemNode.ViewableItem;
                             viewableItem.SerieVisibility[stockNode.Index] = stockNode.Visible;
                         }
                         else
                         {
-                            var indicator = (IStockIndicator)viewableItemNode.ViewableItem;
-                            indicator.Areas[(stockNode as FillNode).AreaIndex].Visibility = stockNode.Visible;
+                            if (viewableItemNode.ViewableItem is IStockIndicator)
+                                (viewableItemNode.ViewableItem as IStockIndicator).Areas[(stockNode as FillNode).AreaIndex].Visibility = stockNode.Visible;
                         }
                     }
                     break;
@@ -1388,7 +1389,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     else
                     {
                         ViewableItemNode viewableItemNode = (ViewableItemNode)stockNode.Parent;
-                        IStockVisibility viewableItem = (IStockVisibility)viewableItemNode.ViewableItem;
+                        IStockVisibility viewableItem = viewableItemNode.ViewableItem;
                         viewableItem.SerieVisibility[stockNode.Index] = stockNode.Visible;
                     }
                     break;
@@ -1459,7 +1460,10 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             var fillNode = (FillNode)this.treeView1.SelectedNode;
             fillNode.Color = Color.FromArgb(this.opacityTrackBar.Value, fillNode.Color);
             ViewableItemNode vn = (ViewableItemNode)fillNode.Parent;
-            (vn.ViewableItem as IStockIndicator).Areas[fillNode.AreaIndex].Color = fillNode.Color;
+            if (vn.ViewableItem is IStockIndicator)
+                (vn.ViewableItem as IStockIndicator).Areas[fillNode.AreaIndex].Color = fillNode.Color;
+            if (vn.ViewableItem is IStockCloud)
+                (vn.ViewableItem as IStockCloud).SeriePens[fillNode.AreaIndex].Color = fillNode.Color;
             this.previewPanel.Refresh();
         }
         private void thicknessComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1549,7 +1553,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                 break;
                         }
 
-                        this.lineColorPanel.BackColor = colorDlg.Color;
+                        this.lineColorPanel.BackColor = Color.FromArgb(255, colorDlg.Color);
                         this.SaveCustomColors(this.colorDlg.CustomColors);
                     }
                     this.previewPanel.Refresh();
@@ -1562,7 +1566,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         fillNode.Color = Color.FromArgb(this.opacityTrackBar.Value, colorDlg.Color);
                         ViewableItemNode vn = (ViewableItemNode)stockNode.Parent;
                         (vn.ViewableItem as IStockIndicator).Areas[fillNode.AreaIndex].Color = fillNode.Color;
-                        this.lineColorPanel.BackColor = colorDlg.Color;
+                        this.lineColorPanel.BackColor = Color.FromArgb(255, colorDlg.Color);
                         this.SaveCustomColors(this.colorDlg.CustomColors);
                     }
                     this.previewPanel.Refresh();
@@ -1728,11 +1732,11 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.lineTypeComboBox.Parent = lineConfigBox;
             this.thicknessComboBox.Parent = lineConfigBox;
             this.lineColorPanel.Parent = lineConfigBox;
-            this.opacityTrackBar.Visible = false;
+            //this.opacityTrackBar.Visible = false;
 
             this.lineTypeComboBox.SelectedItem = lineNode.CurvePen.DashStyle.ToString();
             this.thicknessComboBox.SelectedItem = (int)lineNode.CurvePen.Width;
-            this.lineColorPanel.BackColor = lineNode.CurvePen.Color;
+            this.lineColorPanel.BackColor = Color.FromArgb(255, lineNode.CurvePen.Color);
             this.lineValueTextBox.Text = lineNode.LineValue.ToString();
         }
 
@@ -1742,7 +1746,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             {
                 ((LineNode)this.treeView1.SelectedNode).LineValue = lineLevel;
                 ((LineNode)this.treeView1.SelectedNode).Text = "LINE_" + this.lineValueTextBox.Text;
-                this.lineValueTextBox.BackColor = this.treeView1.BackColor;
+                this.lineValueTextBox.BackColor = Color.FromArgb(255, this.treeView1.BackColor);
                 e.Cancel = false;
             }
             else
@@ -1879,10 +1883,10 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         ActivatePaintBarConfigPanel((CurveNode)treeNode);
                     }
-                    if (((StockNode)treeNode.Parent).Type == NodeType.Cloud)
-                    {
-                        ActivateCloudConfigPanel((CurveNode)treeNode);
-                    }
+                    // @@@@ if (((StockNode)treeNode.Parent).Type == NodeType.Cloud)
+                    //{
+                    //    ActivateCloudConfigPanel((CurveNode)treeNode);
+                    //}
                     else if (treeNode is FillNode)
                     {
                         ActivateAreaConfigPanel((FillNode)treeNode);
@@ -1940,7 +1944,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.gridColorPanel.BackColor = graphNode.GraphGridColor;
             this.showGridCheckBox.Checked = graphNode.GraphShowGrid;
 
-            this.opacityTrackBar.Visible = false;
+            //this.opacityTrackBar.Visible = false;
 
             this.suspendPreview = false;
             this.graphPreviewPanel.Refresh();
@@ -2104,9 +2108,9 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
             this.lineTypeComboBox.SelectedItem = curveNode.CurvePen.DashStyle.ToString();
             this.thicknessComboBox.SelectedItem = (int)curveNode.CurvePen.Width;
-            this.lineColorPanel.BackColor = curveNode.CurvePen.Color;
+            this.lineColorPanel.BackColor = Color.FromArgb(255, curveNode.CurvePen.Color);
 
-            this.opacityTrackBar.Visible = false;
+            //this.opacityTrackBar.Visible = false;
 
             this.curvePreviewLabel.Parent = this.paintBarGroupBox;
             this.previewPanel.Parent = this.paintBarGroupBox;
@@ -2116,40 +2120,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
         #endregion
 
-        #region CLOUD PARAMATERS
-        private void ActivateCloudConfigPanel(CurveNode curveNode)
-        {
-            this.MakeVisible(this.cloudGroupBox);
-            this.suspendPreview = true;
-
-            this.lineTypeComboBox.Parent = this.cloudGroupBox;
-            this.thicknessComboBox.Parent = this.cloudGroupBox;
-            this.lineColorPanel.Parent = this.cloudGroupBox;
-
-            if (curveNode.SupportVisibility)
-            {
-                this.visibleCheckBox.Parent = cloudGroupBox;
-                this.visibleCheckBox.Visible = true;
-                this.visibleCheckBox.Checked = curveNode.Visible;
-            }
-            else
-            {
-                this.visibleCheckBox.Visible = false;
-            }
-
-            this.lineTypeComboBox.SelectedItem = curveNode.CurvePen.DashStyle.ToString();
-            this.thicknessComboBox.SelectedItem = (int)curveNode.CurvePen.Width;
-            this.lineColorPanel.BackColor = curveNode.CurvePen.Color;
-
-            this.opacityTrackBar.Visible = false;
-
-            this.curvePreviewLabel.Parent = this.cloudGroupBox;
-            this.previewPanel.Parent = this.cloudGroupBox;
-            this.suspendPreview = false;
-            this.previewPanel.Refresh();
-        }
-
-        #endregion
         private void applyButton_Click(object sender, EventArgs e)
         {
             ThemeEdited?.Invoke(this.GetTheme());

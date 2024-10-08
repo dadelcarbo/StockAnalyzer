@@ -114,7 +114,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 case "EQW":
                     return stockDictionary.GenerateIndiceEqualWeight(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "ROC":
-                    return stockDictionary.GenerateIndiceBestROC(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                    return stockDictionary.GenerateIndiceBest("ROC", stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                case "ROR":
+                    return stockDictionary.GenerateIndiceBest("ROR", stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                case "ROD":
+                    return stockDictionary.GenerateIndiceBest("ROD", stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "OSC":
                     return stockDictionary.GenerateIndiceBestOSC(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "HL":

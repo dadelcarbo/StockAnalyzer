@@ -71,7 +71,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.curvePreviewLabel = new System.Windows.Forms.Label();
             this.previewPanel = new System.Windows.Forms.Panel();
             this.paintBarGroupBox = new System.Windows.Forms.GroupBox();
-            this.cloudGroupBox = new System.Windows.Forms.GroupBox();
             this.trailStopGroupBox = new System.Windows.Forms.GroupBox();
             this.graphMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.indicatorMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -385,12 +384,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.paintBarGroupBox.Name = "paintBarGroupBox";
             this.paintBarGroupBox.TabStop = false;
             // 
-            // cloudGroupBox
-            // 
-            resources.ApplyResources(this.cloudGroupBox, "cloudGroupBox");
-            this.cloudGroupBox.Name = "cloudGroupBox";
-            this.cloudGroupBox.TabStop = false;
-            // 
             // trailStopGroupBox
             // 
             resources.ApplyResources(this.trailStopGroupBox, "trailStopGroupBox");
@@ -521,7 +514,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.Controls.Add(this.lineConfigBox);
             this.Controls.Add(this.indicatorConfigBox);
             this.Controls.Add(this.paintBarGroupBox);
-            this.Controls.Add(this.cloudGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -550,7 +542,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.GroupBox curveConfigBox;
         private System.Windows.Forms.GroupBox lineConfigBox;
         private System.Windows.Forms.GroupBox paintBarGroupBox;
-        private System.Windows.Forms.GroupBox cloudGroupBox;
         private System.Windows.Forms.GroupBox trailStopGroupBox;
         private System.Windows.Forms.ContextMenuStrip graphMenuStrip;
         private System.Windows.Forms.ContextMenuStrip indicatorMenuStrip;
