@@ -36,6 +36,8 @@
             <Label Margin="2" Content="Max:"/>
             <TextBox Text="{Binding MaxBid}" VerticalContentAlignment="Center" VerticalAlignment="Center" Width="20"/>
 
+            <CheckBox Content="XL Only" IsChecked="{Binding XlOnly}" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+
             <Button Command="{Binding SearchCommand}" Margin="4" >Search</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

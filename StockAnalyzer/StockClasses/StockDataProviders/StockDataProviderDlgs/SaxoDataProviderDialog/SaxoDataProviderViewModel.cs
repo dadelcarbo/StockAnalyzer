@@ -95,6 +95,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     var result = JsonConvert.DeserializeObject<SaxoResult>(jsonData);
                     foreach (var p in result?.data?.groups?.products)
                     {
+                        if (xlOnly && !p.type.value.Contains("XL"))
+                            continue;
                         double parsed = 0.0;
                         double leverage = 0.0;
                         if (double.TryParse(p.leverage.value, out parsed))
@@ -246,17 +248,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         private SaxoProduct selectedProduct;
         public SaxoProduct SelectedProduct { get => selectedProduct; set => SetProperty(ref selectedProduct, value); }
 
-        private double minLeverage = 2;
+        private double minLeverage = 0;
         public double MinLeverage { get => minLeverage; set => SetProperty(ref minLeverage, value); }
 
-        private double maxLeverage = 6;
+        private double maxLeverage = 0;
         public double MaxLeverage { get => maxLeverage; set => SetProperty(ref maxLeverage, value); }
 
-        private double minBid;
+        private double minBid = 4;
         public double MinBid { get => minBid; set => SetProperty(ref minBid, value); }
 
-        private double maxBid;
+        private double maxBid = 6;
         public double MaxBid { get => maxBid; set => SetProperty(ref maxBid, value); }
+
+        private bool xlOnly = true;
+        public bool XlOnly { get => xlOnly; set => SetProperty(ref xlOnly, value); }
 
         private CommandBase searchCommand;
         public ICommand SearchCommand => searchCommand ??= new CommandBase(Search);
