@@ -121,7 +121,7 @@
             this.durationComboBox.FormattingEnabled = true;
             this.durationComboBox.Location = new System.Drawing.Point(5, 5);
             this.durationComboBox.Name = "durationComboBox";
-            this.durationComboBox.Size = new System.Drawing.Size(209, 21);
+            this.durationComboBox.Size = new System.Drawing.Size(100, 21);
             this.durationComboBox.TabIndex = 2;
             // 
             // graphScrollerControl

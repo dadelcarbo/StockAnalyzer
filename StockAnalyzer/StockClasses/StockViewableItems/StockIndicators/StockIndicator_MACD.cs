@@ -36,6 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return lines;
             }
         }
+        public override string[] SerieFormats => serieFormats ??= new string[] { "P2", "P2", "P2" };
         public override void ApplyTo(StockSerie stockSerie)
         {
             var fastMA = stockSerie.GetIndicator($"EMA({this.parameters[1]})").Series[0];

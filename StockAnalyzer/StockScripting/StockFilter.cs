@@ -41,8 +41,10 @@ namespace StockAnalyzer.StockScripting
             // Compile the script to execute
             string filterSource = filterClassTemplate.Replace("<FILTER_NAME>", stockFilterName).Replace("<FILTER_CODE>", stockFilterScript);
 
-            Dictionary<string, string> providerOptions = new Dictionary<string, string>();
-            providerOptions.Add("CompilerVersion", "v3.5");
+            Dictionary<string, string> providerOptions = new Dictionary<string, string>
+            {
+                { "CompilerVersion", "v3.5" }
+            };
             CSharpCodeProvider codeProvider = new CSharpCodeProvider(providerOptions);
 
             System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters();

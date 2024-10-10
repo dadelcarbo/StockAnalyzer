@@ -104,11 +104,11 @@ namespace StockAnalyzerApp.CustomControl
             // 
             // stockNameComboBox
             // 
-            this.stockNameComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.stockNameComboBox.Dock = System.Windows.Forms.DockStyle.Left;
             this.stockNameComboBox.FormattingEnabled = true;
             this.stockNameComboBox.Location = new System.Drawing.Point(3, 3);
             this.stockNameComboBox.Name = "stockNameComboBox";
-            this.stockNameComboBox.Size = new System.Drawing.Size(121, 21);
+            this.stockNameComboBox.Size = new System.Drawing.Size(250, 21);
             this.stockNameComboBox.TabIndex = 1;
             this.stockNameComboBox.SelectedIndexChanged += new System.EventHandler(this.StockNameComboBox_SelectedIndexChanged);
             // 

@@ -245,6 +245,8 @@
     <Compile Include="StockAgent\StockPortfolioAgentBase.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
+    <Compile Include="StockClasses\StockDataProviders\Bnp\BnpIntradayDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\Bnp\BnpModel.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\CNN\CnnDataProvider.cs" />

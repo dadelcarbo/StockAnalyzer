@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.Bnp;
+using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.CNN;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
@@ -170,6 +171,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case StockDataProvider.VontobelIntraday:
                         dataProvider = new VontobelIntradayDataProvider();
                         break;
+                    case StockDataProvider.BnpIntraday:
+                        dataProvider = new BnpIntradayDataProvider();
+                        break;
                     case StockDataProvider.Saxo:
                         dataProvider = new SaxoDataProvider();
                         break;
@@ -289,13 +293,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (configDialogs == null)
             {
-                configDialogs = new List<IConfigDialog>();
-                configDialogs.Add(new ABCDataProvider());
-                configDialogs.Add(new SaxoIntradayDataProvider());
-                configDialogs.Add(new YahooDataProvider());
-                configDialogs.Add(new YahooIntradayDataProvider());
-                configDialogs.Add(new SocGenIntradayDataProvider());
-                configDialogs.Add(new VontobelIntradayDataProvider());
+                configDialogs = new List<IConfigDialog>
+                {
+                    new ABCDataProvider(),
+                    new SaxoIntradayDataProvider(),
+                    new YahooDataProvider(),
+                    new YahooIntradayDataProvider(),
+                    new SocGenIntradayDataProvider(),
+                    new VontobelIntradayDataProvider()
+                };
             }
             return configDialogs;
         }

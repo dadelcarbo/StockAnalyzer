@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override Object[] ParameterDefaultValues => new Object[] { 19, 39 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames => new string[] { "OSC UNCH", $"EMA({parameters[1]})", $"EMA({parameters[0]})", "SUM/10" };
+        public override string[] SerieNames => new string[] { "OSC UNCH", $"EMA({parameters[0]})", $"EMA({parameters[1]})", "SUM/10" };
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.DarkRed) };
 
         public override Area[] Areas => areas ??= new StockDrawing.Area[]
@@ -32,8 +32,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             this.Series[0] = unchSerie;
             this.Series[0].Name = this.SerieNames[0];
-            this.Series[1] = slowEma;
-            this.Series[2] = fastEma;
+            this.Series[1] = fastEma;
+            this.Series[2] = slowEma;
             this.Series[3] = lowSerie;
             this.Series[3].Name = this.SerieNames[3];
 

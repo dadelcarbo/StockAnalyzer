@@ -1514,9 +1514,10 @@ namespace StockAnalyzer.StockMath
 
         public FloatSerie CalculateHLTrail(int period)
         {
-            FloatSerie trailSerie = new FloatSerie(this.Count, "TRAILHL");
-
-            trailSerie[0] = this[0];
+            FloatSerie trailSerie = new FloatSerie(this.Count, "TRAILHL")
+            {
+                [0] = this[0]
+            };
 
             // Initialise until period is reached
             bool upTrend = this[period - 1] > this[0];
