@@ -12,14 +12,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
         public override Object[] ParameterDefaultValues => new Object[] { 20, 50 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1) };
-                return seriePens;
-            }
-        }
+
         public override string[] SerieNames => new string[] { "Bull", "Bear" };
         public override void ApplyTo(StockSerie stockSerie)
         {

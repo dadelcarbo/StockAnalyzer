@@ -161,9 +161,19 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected override void PaintTmpGraph(Graphics aGraphic)
         {
             using MethodLogger ml = new MethodLogger(this);
+
+            #region Display Portfolio region
+
             // Draw order management area
             var orderArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, GraphRectangle.Height);
             aGraphic.FillRectangle(orderAreaBrush, orderArea);
+
+            if (StockPortfolio.Portfolios.Any(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == serie.StockName)))
+            {
+                var portfolioArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, 10);
+                aGraphic.FillRectangle(PortfolioAreaBrush, portfolioArea);
+            }
+            #endregion
 
             #region Draw Grid
 
@@ -343,7 +353,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
                 #endregion
-                #region DISPLAY Auto Drawing curves
+                #region DISPLAY AUTO DRAWING CURVES
                 if (this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.Series.Count() > 0 && this.CurveList.AutoDrawing.Series[0].Count > 0)
                 {
                     FloatSerie longStopSerie = this.CurveList.AutoDrawing.Series[0];
@@ -815,6 +825,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
 
             #endregion
+
         }
 
         private void DrawSeriePoints(Graphics aGraphic, FloatSerie pointSerie, Pen pen)
@@ -1641,6 +1652,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
 
             PointF mousePoint = new PointF(e.X, e.Y);
+            if (mousePoint.Y - this.GraphRectangle.Y < 10)
+            {
+                var ptfs = StockPortfolio.Portfolios.Where(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == serie.StockName)).ToList();
+                if (ptfs.Count == 0)
+                    return;
+                var text = ptfs.Select(p => p.Name).Aggregate((i, j) => i + Environment.NewLine + j);
+
+                Size size = TextRenderer.MeasureText(text, axisFont);
+                this.DrawString(this.foregroundGraphic, text, axisFont, Brushes.Black, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+
+                this.PaintForeground();
+                return;
+            }
+
             if (this.ShowPositions && (Control.ModifierKeys & Keys.Control) != 0 && this.Portfolio != null && mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right)
             {
                 var position = Portfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName);
@@ -2467,7 +2492,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
             };
             openTradeViewModel.OrdersChanged += OpenTradeViewModel_OrdersChanged;
-            openTradeViewModel.CalculatePositionSize();
+            openTradeViewModel.Refresh();
 
             this.IsBuying = true;
             this.OnMouseValueChanged += openTradeViewModel.OnOrderValueChanged;

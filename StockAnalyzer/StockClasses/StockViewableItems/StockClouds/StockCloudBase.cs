@@ -41,7 +41,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
         public override string[] SerieNames => new string[] { "Bull", "Bear" };
 
-        abstract public Pen[] SeriePens { get; }
+        public Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.FromArgb(20, Color.Green), 1), new Pen(Color.FromArgb(20, Color.DarkRed), 1), new Pen(Color.DarkBlue, 2) };
+
         public bool[] SerieVisibility { get; }
 
         public void Initialise(string[] parameters)
