@@ -20,15 +20,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 new ParamRangeFloat(-20.0f, 5.0f),
                 new ParamRangeMA()
                 };
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Green, 1), new Pen(Color.DarkRed, 1), new Pen(Color.DarkBlue, 2) };
-                return seriePens;
-            }
-        }
         public override string[] SerieNames => new string[] { "Bull", "Bear", "MA" };
+
         public override void ApplyTo(StockSerie stockSerie)
         {
             var atrBandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(int)this.parameters[1]},{(float)this.parameters[2]},{(float)this.parameters[3]},{this.parameters[4]})");

@@ -15,17 +15,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
         public override string[] SerieNames => new string[] { "High", "Low", "EMA" };
 
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] {
-                    new Pen(Color.DarkGreen) { Width = 2},
-                    new Pen(Color.DarkRed)  { Width = 2},
-                    new Pen(Color.DarkBlue) { Width = 2}};
-                return seriePens;
-            }
-        }
         public override void ApplyTo(StockSerie stockSerie)
         {
             var indicator = stockSerie.GetIndicator(this.Name);

@@ -165,7 +165,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.Portfolio.Refresh();
             this.OnPropertyChanged("Portfolio");
             this.CalculatePositionSize();
-            this.CalculateTickSize();
         }
     }
 }
