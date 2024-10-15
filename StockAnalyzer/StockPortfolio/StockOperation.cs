@@ -16,7 +16,6 @@ namespace StockAnalyzer.StockPortfolio
             operation.IsShort = isShort;
 
             operation.Qty = qty;
-            operation.BinckName = name;
             operation.StockName = name;
             operation.IsShort = isShort;
 
@@ -34,18 +33,7 @@ namespace StockAnalyzer.StockPortfolio
         public string StockName { get; set; }
         public int Qty { get; set; }
 
-
-
-
-
-
         public bool IsShort { get; set; }
-
-        public StockNameMapping NameMapping { get; set; }
-
-        public bool IsProduct => NameMapping != null && NameMapping.Leverage != 1;
-        public string BinckName { get; set; }
-        //public StockNameMapping NameMapping { get; }
 
         public float Amount { get; set; }
         public float Balance { get; set; }

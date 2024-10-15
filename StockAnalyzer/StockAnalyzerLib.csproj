@@ -364,19 +364,9 @@
     <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\TrailAtrStrategy.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\TestStrategy.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeStrategies\TradeStrategyManager.cs" />
-    <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StockPortfolio\NameMappingDlg\NameMappingDlg.Designer.cs">
-      <DependentUpon>NameMappingDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StockPortfolio\NameMappingDlg\NameMappingUserControl.xaml.cs">
-      <DependentUpon>NameMappingUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="StockPortfolio\SaxoOperation.cs" />
     <Compile Include="StockPortfolio\SaxoPosition.cs" />
     <Compile Include="StockPortfolio\Saxo\SaxoPortfolio.cs" />
-    <Compile Include="StockPortfolio\StockNameMapping.cs" />
     <Compile Include="StockPortfolio\SaxoPositionChange.cs" />
     <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
     <Compile Include="StockPortfolio\StockOrderBase.cs" />
@@ -714,9 +704,6 @@
     <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.resx">
       <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockPortfolio\NameMappingDlg\NameMappingDlg.resx">
-      <DependentUpon>NameMappingDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DataProviderString.fr-FR.Designer.cs</LastGenOutput>
@@ -778,10 +765,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="StockPortfolio\NameMappingDlg\NameMappingUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

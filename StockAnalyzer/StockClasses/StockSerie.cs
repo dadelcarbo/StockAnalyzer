@@ -576,10 +576,10 @@ namespace StockAnalyzer.StockClasses
             this.DataSource = new StockDataSource { Duration = duration };
             ResetAllCache();
         }
-        public StockSerie(string stockName, string shortName, string isin, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
+        public StockSerie(string stockName, string symbol, string isin, Groups stockGroup, StockDataProvider dataProvider, BarDuration duration)
         {
             this.StockName = stockName;
-            this.Symbol = shortName;
+            this.Symbol = symbol;
             this.ISIN = isin;
             this.StockGroup = stockGroup;
             this.StockAnalysis = new StockAnalysis();

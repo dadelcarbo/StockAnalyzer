@@ -179,8 +179,6 @@ namespace StockAnalyzer.StockPortfolio
             using var ml = new MethodLogger(typeof(StockPortfolio));
             try
             {
-                LoadMappings();
-
                 // Load saved portfolio
                 StockPortfolio.Portfolios = new List<StockPortfolio>();
                 foreach (var portfolio in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s).Select(s => StockPortfolio.Deserialize(s)))
@@ -413,66 +411,6 @@ namespace StockAnalyzer.StockPortfolio
             }
             this.PositionValue = positionValue;
         }
-
-
-        #region SAXO Name Mapping
-        private static List<StockNameMapping> mappings;
-        public static List<StockNameMapping> Mappings => LoadMappings();
-
-        public static void ResetMappings()
-        {
-            mappings = null;
-        }
-        public static List<StockNameMapping> LoadMappings()
-        {
-            if (mappings != null)
-                return mappings;
-            var fileName = Path.Combine(Folders.Portfolio, "NameMappings.xml");
-            if (File.Exists(fileName))
-            {
-                using FileStream fs = new FileStream(fileName, FileMode.Open);
-                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                settings.IgnoreWhitespace = true;
-                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                var serializer = new XmlSerializer(typeof(List<StockNameMapping>));
-                mappings = (List<StockNameMapping>)serializer.Deserialize(xmlReader);
-            }
-            else
-            {
-                mappings = new List<StockNameMapping>();
-            }
-            return mappings;
-        }
-        public static void SaveMappings(List<StockNameMapping> newMappings)
-        {
-            var fileName = Path.Combine(Folders.Portfolio, "NameMappings.xml");
-            using (FileStream fs = new FileStream(fileName, FileMode.Create))
-            {
-                var settings = new System.Xml.XmlWriterSettings
-                {
-                    Indent = true,
-                    NewLineOnAttributes = true
-                };
-                var xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-                var serializer = new XmlSerializer(typeof(List<StockNameMapping>));
-                serializer.Serialize(xmlWriter, newMappings);
-            }
-            ResetMappings();
-        }
-
-        public static StockNameMapping GetMapping(string saxoName, string isin)
-        {
-            if (!string.IsNullOrEmpty(isin))
-            {
-                var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == isin);
-                if (stockSerie != null)
-                    return new StockNameMapping { SaxoName = saxoName, StockName = stockSerie.StockName };
-            }
-            if (saxoName == null)
-                return null;
-            return Mappings.FirstOrDefault(m => saxoName.Contains(m.SaxoName.ToUpper()));
-        }
-        #endregion
 
         public override string ToString()
         {

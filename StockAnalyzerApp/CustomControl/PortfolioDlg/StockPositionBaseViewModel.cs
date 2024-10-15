@@ -32,30 +32,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             {
                 this.LastValue = value;
             }
-
-            if (!StockDictionary.Instance.ContainsKey(position.StockName))
-            {
-                var mapping = StockPortfolio.GetMapping(position.StockName, position.ISIN);
-                if (mapping != null)
-                {
-                    position.StockName = mapping.StockName;
-                }
-            }
-        }
-        public bool IsValidName
-        {
-            get
-            {
-                var mapping = StockPortfolio.GetMapping(StockName, position.ISIN);
-                if (mapping == null)
-                {
-                    return StockDictionary.Instance.ContainsKey(position.StockName);
-                }
-                return StockDictionary.Instance.ContainsKey(mapping.StockName);
-            }
         }
 
         public long Id => position.Id;
+        public long Uic => position.Uic;
         public string StockName => position.StockName;
         public string ISIN => position.ISIN;
         #region TRADE ENTRY

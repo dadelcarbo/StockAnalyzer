@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
+using StockAnalyzerApp.CustomControl.DrawingDlg;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -49,6 +50,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         {
             try
             {
+                var viewModel = (ViewModel)this.DataContext;
+
                 var row = ((UIElement)e.OriginalSource).ParentOfType<GridViewRow>();
                 if (row?.Item == null)
                     return;
@@ -58,29 +61,37 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                     case "StockTradeOperation":
                         {
                             var item = row.Item as StockTradeOperation;
-                            if (string.IsNullOrEmpty(item.StockName)) return;
-                            SelectionChanged(item.StockName, item.ISIN);
+
+                            var stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            if (stockSerie == null) return;
+                            SelectionChanged(stockSerie.StockName, stockSerie.ISIN);
                         }
                         break;
                     case "StockPositionBaseViewModel":
                         {
                             var item = row.Item as StockPositionBaseViewModel;
-                            if (string.IsNullOrEmpty(item.StockName)) return;
-                            SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
+
+                            var stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            if (stockSerie == null) return;
+                            SelectionChanged(stockSerie.StockName, stockSerie.ISIN, item.BarDuration, item.Theme);
                         }
                         break;
                     case "StockOpenedOrder":
                         {
                             var item = row.Item as StockOpenedOrder;
-                            if (string.IsNullOrEmpty(item.StockName)) return;
-                            SelectionChanged(item.StockName, item.ISIN, item.BarDuration, item.Theme);
+
+                            var stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            if (stockSerie == null) return;
+                            SelectionChanged(stockSerie.StockName, stockSerie.ISIN, item.BarDuration, item.Theme);
                         }
                         break;
                     case "OrderViewModel":
                         {
                             var item = row.Item as OrderViewModel;
-                            if (string.IsNullOrEmpty(item.StockName)) return;
-                            SelectionChanged(item.StockName, null);
+
+                            var stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            if (stockSerie == null) return;
+                            SelectionChanged(stockSerie.StockName, null);
                         }
                         break;
                     default:

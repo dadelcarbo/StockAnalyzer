@@ -111,9 +111,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
                     if (jsonData == null)
                         return false;
                     var vontobelData = JsonConvert.DeserializeObject<VontobelJSon>(jsonData, Converter.Settings);
-                    if (!vontobelData.isSuccess)
+                    if (!vontobelData.isSuccess || vontobelData.payload == null)
                     {
-                        MessageBox.Show(vontobelData.errorCode, "Failed loading date from Vontobel");
+                        MessageBox.Show(vontobelData.errorCode, $"Failed loading data from Vontobel for {stockSerie.StockName}");
                         return false;
                     }
                     stockSerie.IsInitialised = false;
@@ -210,13 +210,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
                     var row = line.Split(',');
                     if (!stockDictionary.ContainsKey(row[1]))
                     {
-                        var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.VontobelIntraday, BarDuration.H_1);
-                        stockSerie.ISIN = row[0];
+                        var stockSerie = new StockSerie(row[1], row[2], row[0], StockSerie.Groups.TURBO, StockDataProvider.VontobelIntraday, BarDuration.H_1);
                         stockDictionary.Add(row[1], stockSerie);
-                        if (row.Length == 3)
-                        {
-                            stockSerie.Uic = long.Parse(row[2]);
-                        }
 
                         if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
                         {

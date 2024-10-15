@@ -96,7 +96,6 @@ namespace StockAnalyzerApp
             this.portfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoTradeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nameMappingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageWatchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -704,7 +703,6 @@ namespace StockAnalyzerApp
             this.autoTradeMenuItem,
             this.toolStripSeparator21,
             this.currentPortfolioMenuItem,
-            this.nameMappingMenuItem,
             this.portfolioReportMenuItem});
             this.portfolioMenuItem.Name = "portfolioMenuItem";
             this.portfolioMenuItem.Size = new System.Drawing.Size(77, 20);
@@ -725,14 +723,6 @@ namespace StockAnalyzerApp
             this.currentPortfolioMenuItem.Size = new System.Drawing.Size(202, 22);
             this.currentPortfolioMenuItem.Text = "Show Current Portfolio";
             this.currentPortfolioMenuItem.Click += new System.EventHandler(this.currentPortfolioMenuItem_Click);
-            // 
-            // nameMappingMenuItem
-            // 
-            this.nameMappingMenuItem.Name = "nameMappingMenuItem";
-            this.nameMappingMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F2)));
-            this.nameMappingMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.nameMappingMenuItem.Text = "Name Mappings";
-            this.nameMappingMenuItem.Click += new System.EventHandler(this.nameMappingMenuItem_Click);
             // 
             // portfolioReportMenuItem
             // 
@@ -1603,7 +1593,6 @@ namespace StockAnalyzerApp
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel statusLabel;
         private ToolStripProgressBar progressBar;
-        private ToolStripMenuItem nameMappingMenuItem;
         private ToolStripMenuItem portfolioReportMenuItem;
         private ToolStripMenuItem showOrdersMenuItem;
         private ToolStripMenuItem showPositionsMenuItem;

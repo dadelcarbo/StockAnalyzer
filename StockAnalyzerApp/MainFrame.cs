@@ -2846,12 +2846,6 @@ namespace StockAnalyzerApp
                 portfolioDlg.Activate();
             }
         }
-
-        private void nameMappingMenuItem_Click(object sender, EventArgs e)
-        {
-            var dlg = new StockAnalyzer.StockPortfolio.NameMappingDlg.NameMappingDlg() { StartPosition = FormStartPosition.CenterScreen };
-            dlg.Show();
-        }
         private void portfolioReportMenuItem_Click(object sender, EventArgs e)
         {
             foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
@@ -3000,21 +2994,16 @@ namespace StockAnalyzerApp
             string reportBody = html;
             foreach (var position in positions)
             {
-                var stockName = position.StockName;
-                var mapping = StockPortfolio.GetMapping(stockName, position.ISIN);
-                if (mapping != null)
-                    stockName = mapping.StockName;
-                if (StockDictionary.Instance.ContainsKey(stockName))
+                StockSerie stockSerie = portfolio.GetStockSerieFromUic(position.Uic);
+                if (stockSerie != null)
                 {
-                    var stockSerie = StockDictionary.Instance[stockName];
-
                     barDurationChangeFromUI = true;
                     this.ViewModel.BarDuration = position.BarDuration;
                     barDurationChangeFromUI = false;
 
                     var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme);
 
-                    var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockName) + "\r\n";
+                    var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockSerie.StockName) + "\r\n";
                     var lastValue = stockSerie.ValueArray.Last();
                     var risk = (position.Stop - position.EntryValue) / position.EntryValue;
                     var portfolioRisk = (position.Stop - position.EntryValue) * position.EntryQty / portfolio.TotalValue;
@@ -3031,16 +3020,21 @@ namespace StockAnalyzerApp
                         Replace("%COL6%", positionReturn.ToString("P2")).
                         Replace("%COL7%", portfolioReturn.ToString("P2")).
                         Replace("%COL8%", riskReward.ToString("0.##"));
-                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", stockName).Replace("%DURATION%", position.BarDuration.ToString()).Replace("%IMG%", bitmapString) + "\r\n";
+                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", stockSerie.StockName).Replace("%DURATION%", position.BarDuration.ToString()).Replace("%IMG%", bitmapString) + "\r\n";
                 }
                 else
                 {
+                    var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", position.StockName) + "\r\n";
+                    var risk = (position.Stop - position.EntryValue) / position.EntryValue;
+                    var portfolioRisk = (position.Stop - position.EntryValue) * position.EntryQty / portfolio.TotalValue;
+
                     reportBody += rowTemplate.
-                        Replace("%COL1%", stockName).
+                        Replace("%COL1%", stockNameHtml).
                         Replace("%COL2%", position.BarDuration.ToString()).
-                        Replace("%COL3%", " - ").
-                        Replace("%COL4%", " - ").
-                        Replace("%COL5%", " - ").
+                        Replace("%COL3.1%", position.Stop.ToString("#.##")).
+                        Replace("%COL3.2%", position.TrailStop.ToString("#.##")).
+                        Replace("%COL4%", risk.ToString("P2")).
+                        Replace("%COL5%", portfolioRisk.ToString("P2")).
                         Replace("%COL6%", " - ").
                         Replace("%COL7%", " - ").
                         Replace("%COL8%", " - ");

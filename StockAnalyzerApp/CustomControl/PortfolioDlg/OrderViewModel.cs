@@ -12,6 +12,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             this.order = order;
         }
 
+        public long Uic => order.Uic;
         public string BuySell => order.BuySell;
         public string StockName => order.StockName;
 
