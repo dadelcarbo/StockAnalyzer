@@ -1,4 +1,5 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
+using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -3050,7 +3051,86 @@ namespace StockAnalyzerApp
 </tbody>
 </table>
 
-" + picturehtml;
+";
+
+            string orderHtml = $@"<br/>
+    <table  class=""reportTable"" id=""PAGE_TOP"">
+        <thead>
+        <tr>
+            <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}    </th>   
+            <th style=""font-size:20px;"" colspan=""4"" scope =""colgroup"">Open orders</th>
+        </tr>
+        <tr>
+            <th>Stock Name</th>
+            <th>Duration</th>
+            <th>Stop</th>
+            <th>Risk %</th>
+            <th>Portfolio Risk %</th>
+        </tr>
+        </thead>
+        <tbody>
+            %ORDER_BODY%
+        </tbody>
+    </table>
+";
+            const string orderRowTemplate = @"
+         <tr>
+             <td>%COL1%</td>
+             <td>%COL2%</td>
+             <td>%COL3%</td>
+             <td>%COL4%</td>
+             <td>%COL5%</td>
+         </tr>";
+
+            string orderBody = string.Empty;
+            string orderPictureHtml = string.Empty;
+
+            foreach (var order in portfolio.SaxoOpenOrders.Where(o => o.BuySell == "Buy"))
+            {
+                StockSerie stockSerie = portfolio.GetStockSerieFromUic(order.Uic);
+                if (stockSerie != null)
+                {
+                    barDurationChangeFromUI = true;
+                    this.ViewModel.BarDuration = order.BarDuration;
+                    barDurationChangeFromUI = false;
+
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, order.Theme);
+
+                    var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockSerie.StockName) + "\r\n";
+                    var lastValue = stockSerie.LastValue;
+                    var risk = (order.Stop - order.Price.Value) / order.Price.Value;
+                    var portfolioRisk = (order.Stop - order.Price.Value) * order.Qty / portfolio.TotalValue;
+                    var positionReturn = (lastValue.CLOSE - order.Price.Value) / order.Price.Value;
+                    var portfolioReturn = (lastValue.CLOSE - order.Price.Value) * order.Qty / portfolio.TotalValue;
+                    var riskReward = (lastValue.CLOSE - order.Price.Value) / (order.Price.Value - order.Stop);
+                    orderBody += orderRowTemplate.
+                    Replace("%COL1%", stockNameHtml).
+                    Replace("%COL2%", order.BarDuration.ToString()).
+                    Replace("%COL3%", order.Stop.ToString("#.##")).
+                    Replace("%COL4%", risk.ToString("P2")).
+                    Replace("%COL5%", portfolioRisk.ToString("P2"));
+                    orderPictureHtml += stockPictureTemplate.Replace("%STOCKNAME%", stockSerie.StockName).Replace("%DURATION%", order.BarDuration.ToString()).Replace("%IMG%", bitmapString) + "\r\n";
+                }
+                else
+                {
+                    var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", order.StockName) + "\r\n";
+                    var risk = (order.Stop - order.Price.Value) / order.Price.Value;
+                    var portfolioRisk = (order.Stop - order.Price.Value) * order.Qty / portfolio.TotalValue;
+                    orderBody += orderRowTemplate.
+                    Replace("%COL1%", stockNameHtml).
+                    Replace("%COL2%", order.BarDuration.ToString()).
+                    Replace("%COL3%", order.Stop.ToString("#.##")).
+                    Replace("%COL4%", risk.ToString("P2")).
+                    Replace("%COL5%", portfolioRisk.ToString("P2"));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(orderBody))
+            {
+                reportBody += orderHtml.Replace("%ORDER_BODY%", orderBody);
+            }
+            reportBody += picturehtml;
+            reportBody += orderPictureHtml;
 
             StockAnalyzerForm.MainFrame.Size = previousSize;
             StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;

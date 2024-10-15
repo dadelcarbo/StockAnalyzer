@@ -370,6 +370,8 @@ namespace Saxo.OpenAPI.TradingServices
         [JsonIgnore]
         public bool IsExecuted => (this.Status == "FinalFill") && this.SubStatus != "Rejected";
 
+        public float Stop { get; set; }
+
         public SaxoOrder()
         {
 
