@@ -1654,7 +1654,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             PointF mousePoint = new PointF(e.X, e.Y);
             if (mousePoint.Y - this.GraphRectangle.Y < 10)
             {
-                var ptfs = StockPortfolio.Portfolios.Where(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == serie.StockName)).ToList();
+                var ptfs = StockPortfolio.Portfolios.Where(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == serie.StockName) || p.SaxoOpenOrders.Any(o => o.StockName == serie.StockName)).ToList();
                 if (ptfs.Count == 0)
                     return;
                 var text = ptfs.Select(p => p.Name).Aggregate((i, j) => i + Environment.NewLine + j);
