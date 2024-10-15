@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockLogging;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -68,12 +69,16 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 return;
             }
             var order = this.TradeViewModel.Portfolio.SaxoOrders.FirstOrDefault(o => o.OrderId == orderId);
+            if (order == null)
+                order = this.TradeViewModel.Portfolio.SaxoOpenOrders.FirstOrDefault(o => o.OrderId == orderId);
             if (order != null)
             {
                 order.BarDuration = this.TradeViewModel.BarDuration;
                 order.Theme = this.TradeViewModel.Theme;
                 order.EntryComment = this.TradeViewModel.EntryComment;
+                order.Stop = this.TradeViewModel.StopValue;
             }
+
             this.TradeViewModel.Portfolio.Serialize();
 
             this.ParentDlg.Ok();
