@@ -39,7 +39,7 @@ namespace StockAnalyzer.StockDrawing
             {
                 for (int i = 0; i < stockIndicator.SeriesCount; i++)
                 {
-                    if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0)
+                    if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i] != null && stockIndicator.Series[i].Count > 0)
                     {
                         stockIndicator.Series[i].GetMinMax(startIndex, endIndex, ref tmpMin, ref tmpMax);
                         minValue = Math.Min(minValue, tmpMin);

@@ -1072,6 +1072,7 @@ namespace StockAnalyzer.StockMath
         {
             float minValue = float.MaxValue;
             endIndex = Math.Min(endIndex, this.LastIndex);
+            startIndex = Math.Max(startIndex, 0);
             for (int i = startIndex; i <= endIndex; i++)
             {
                 if (float.IsNaN(Values[i]))
@@ -1101,6 +1102,7 @@ namespace StockAnalyzer.StockMath
         {
             float maxValue = float.MinValue;
             endIndex = Math.Min(endIndex, this.LastIndex);
+            startIndex = Math.Max(startIndex, 0);
             for (int i = startIndex; i <= endIndex; i++)
             {
                 if (float.IsNaN(Values[i]))

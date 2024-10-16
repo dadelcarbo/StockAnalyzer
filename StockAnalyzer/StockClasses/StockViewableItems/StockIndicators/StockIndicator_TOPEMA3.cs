@@ -1,24 +1,25 @@
 ﻿using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
-    public class StockIndicator_TOPEMA2 : StockIndicatorBase
+    public class StockIndicator_TOPEMA3 : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
 
         public override IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.SimpleCurve;
 
-        public override string[] ParameterNames => new string[] { "UpPeriod", "DownPeriod" };
+        public override string[] ParameterNames => new string[] { "UpPeriod", "DownPeriod", "Smoothing" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 175, 35 };
+        public override Object[] ParameterDefaultValues => new Object[] { 75, 35, 6 };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames => new string[] { "TOPEMA2.Sup", "TOPEMA2.Res" };
+        public override string[] SerieNames => new string[] { "TOPEMA3.Sup", "TOPEMA3.Res", "WMA" };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2), new Pen(Color.Blue, 2) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -27,16 +28,20 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie supportSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
             FloatSerie resistanceSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
 
-            this.Series[0] = supportSerie;
-            this.Series[0].Name = this.SerieNames[0];
-            this.Series[1] = resistanceSerie;
-            this.Series[1].Name = this.SerieNames[1];
-
-
             int periodUp = (int)this.parameters[0];
             int periodDown = (int)this.parameters[1];
             float alphaUp = 2.0f / (float)(periodUp + 1);
             float alphaDown = 2.0f / (float)(periodDown + 1);
+            int smoothingPeriod = (int)this.parameters[2];
+
+            FloatSerie emaSerie = stockSerie.GetIndicator($"WMA({smoothingPeriod})").Series[0];
+
+            this.Series[0] = supportSerie;
+            this.Series[0].Name = this.SerieNames[0];
+            this.Series[1] = resistanceSerie;
+            this.Series[1].Name = this.SerieNames[1];
+            this.Series[2] = emaSerie;
+            this.Series[2].Name = this.SerieNames[2];
 
             if (periodUp >= stockSerie.Count || periodDown >= stockSerie.Count)
                 return;
@@ -54,7 +59,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             float previousHigh = resistanceEMA;
 
             // Detecting events
-
             for (int i = 1; i < stockSerie.Count; i++)
             {
                 // Resistance Management
@@ -75,10 +79,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
                 else
                 {
-                    if (highSerie[i - 1] > highSerie[i] && highSerie[i - 2] > highSerie[i])
+                    if (emaSerie[i - 1] > emaSerie[i] && emaSerie[i - 2] > emaSerie[i])
                     // Resistance Detected (new top ==> latest high is lowset than two previous highs tp avoid continous line on break)
                     {
-                        resistanceEMA = Math.Max(highSerie[i - 2], highSerie[i - 1]);
+                        resistanceEMA = highSerie.GetMax(i - smoothingPeriod, i);
                         resistanceSerie[i - 1] = resistanceEMA;
                         resistanceEMA = resistanceEMA + alphaDown * (highSerie[i] - resistanceEMA);
                         this.Events[1][i] = true; // ResistanceDetected
@@ -109,9 +113,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
                 else
                 {
-                    if (lowSerie[i - 1] < lowSerie[i] && lowSerie[i - 2] < lowSerie[i]) // Support Detected (new low)
+                    if (emaSerie[i - 1] < emaSerie[i] && emaSerie[i - 2] < emaSerie[i]) // Support Detected (new low)
                     {
-                        supportEMA = Math.Min(lowSerie[i - 2], lowSerie[i - 1]);
+                        supportEMA = lowSerie.GetMin(i - smoothingPeriod, i); ;
                         supportSerie[i - 1] = supportEMA;
                         supportEMA = supportEMA + alphaUp * (lowSerie[i] - supportEMA);
                         this.Events[0][i] = true; // SupportDetected
@@ -129,7 +133,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.Events[8][i] = isBullish; // Bullish
                 this.Events[9][i] = isBearish; // Bearish
             }
-
         }
 
         private static readonly string[] eventNames = new string[]
