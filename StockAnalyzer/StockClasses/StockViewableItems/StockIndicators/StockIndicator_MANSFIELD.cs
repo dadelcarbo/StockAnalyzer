@@ -26,7 +26,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             // Get index close serie.
             var indexSerie = StockDictionary.Instance[this.parameters[1] as string];
             if (!indexSerie.Initialise())
+            {
+                this.series[0] = new StockMath.FloatSerie(stockSerie.Count);
+                this.Series[0].Name = this.Name;
                 return;
+            }
 
             this.eventSeries[2][this.eventSeries[2].Count - 1] = (stockSerie.BarDuration == BarDuration.Daily && indexSerie.LastValue.DATE != stockSerie.LastValue.DATE);
             var indexCloseSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(indexSerie, stockSerie.BarDuration);
