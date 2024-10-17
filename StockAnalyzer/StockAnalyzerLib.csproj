@@ -301,6 +301,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIANS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMASR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TURTLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDHS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NBBARS.cs" />
