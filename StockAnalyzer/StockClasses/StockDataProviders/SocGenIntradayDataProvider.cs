@@ -171,12 +171,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (line.StartsWith("$")) break;
 
                     var row = line.Split(',');
-                    if (!stockDictionary.ContainsKey(row[2]))
+                    if (!stockDictionary.ContainsKey(row[3]))
                     {
-                        var stockSerie = new StockSerie(row[2], row[1], StockSerie.Groups.TURBO, StockDataProvider.SocGenIntraday, BarDuration.M_5);
-                        stockSerie.Ticker = long.Parse(row[0]);
+                        var stockSerie = new StockSerie(row[3], row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.SocGenIntraday, BarDuration.M_5);
+                        stockSerie.Ticker = long.Parse(row[2]);
 
-                        stockDictionary.Add(row[2], stockSerie);
+                        stockDictionary.Add(row[3], stockSerie);
                         if (download && this.needDownload)
                         {
                             this.needDownload = this.DownloadDailyData(stockSerie);
@@ -184,7 +184,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        StockLog.Write("SocGen Intraday Entry: " + row[2] + " already in stockDictionary");
+                        StockLog.Write("SocGen Intraday Entry: " + row[3] + " already in stockDictionary");
                     }
                 }
             }
@@ -244,7 +244,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override void OpenInDataProvider(StockSerie stockSerie)
         {
-            var url = "https://bourse.societegenerale.fr/product-details/{stockSerie.Symbol}";
+            var url = $"https://bourse.societegenerale.fr/product-details/{stockSerie.Symbol.ToLower()}";
             Process.Start(url);
         }
         public override void ApplyTrim(StockSerie stockSerie, DateTime date)
