@@ -29,10 +29,10 @@ namespace StockAnalyzer.StockClasses
         public enum Groups
         {
             NONE = 0,
-            COUNTRY,
             PEA,
             PEA_EURONEXT,
             CAC40,
+            DAX40,
             SBF120,
             CAC_AT,
             CACALL,
@@ -2797,49 +2797,21 @@ namespace StockAnalyzer.StockClasses
         }
         public bool BelongsToGroupFull(Groups group)
         {
+            if (group == Groups.NONE)
+                return false;
+            if (StockGroup == group || group == Groups.ALL)
+                return true;
+
+            if (DataProvider == StockDataProvider.ABC)
+                return ABCDataProvider.BelongsToGroup(this, group);
+
             switch (group)
             {
-                case Groups.ALL:
-                    return true;
-                case Groups.ALL_STOCKS:
-                    return DataProvider == StockDataProvider.ABC;
-                case Groups.CAC40:
-                    return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToCAC40(this);
-                case Groups.SBF120:
-                    return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsToSBF120(this);
-                case Groups.CAC_AT:
-                    return DataProvider == StockDataProvider.ABC && ABCDataProvider.BelongsTo_CAC_AT(this);
-                case Groups.EURO_A:
-                    return StockGroup == Groups.EURO_A;
-                case Groups.EURO_B:
-                    return StockGroup == Groups.EURO_B;
-                case Groups.EURO_A_B:
-                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B;
-                case Groups.EURO_C:
-                    return StockGroup == Groups.EURO_C;
-                case Groups.EURO_A_B_C:
-                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C;
-                case Groups.ALTERNEXT:
-                    return StockGroup == Groups.ALTERNEXT;
-                case Groups.CACALL:
-                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT;
-                case Groups.PEA_EURONEXT:
-                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT
-                        || StockGroup == Groups.BELGIUM || StockGroup == Groups.HOLLAND || StockGroup == Groups.PORTUGAL;
-                case Groups.PEA:
-                    return StockGroup == Groups.EURO_A || StockGroup == Groups.EURO_B || StockGroup == Groups.EURO_C || StockGroup == Groups.ALTERNEXT
-                        || StockGroup == Groups.BELGIUM || StockGroup == Groups.HOLLAND || StockGroup == Groups.PORTUGAL
-                        || StockGroup == Groups.ITALIA || StockGroup == Groups.GERMANY || this.StockGroup == Groups.SPAIN;
-                //  ) || 
                 case Groups.SAXO:
                     return this.SaxoId > 0;
-                case Groups.SRD:
-                    return SRD;
-                case Groups.SRD_LO:
-                    return SRD_LO;
-                default:
-                    return StockGroup == group;
             }
+
+            return false;
         }
         public bool BelongsToGroup(string groupName)
         {

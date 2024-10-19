@@ -10,11 +10,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
+using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
@@ -425,6 +428,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 else
                     return false;
             }
+            else
+            {
+                groupSeries.Add(config.Group, null);
+
+            }
             if (config.Group == StockSerie.Groups.SRD || config.Group == StockSerie.Groups.SRD_LO)
             {
                 InitSRDFromLibelleFile(fileName, config.Group);
@@ -598,21 +606,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                             };
 
                             stockSerie.ABCName = stockSerie.Symbol + abcSuffix;
-                            //+ stockSerie.ISIN.Substring(0, 2) switch
-                            //{
-                            //    null => string.Empty,
-                            //    "FR" => "p",
-                            //    "QS" => "p",
-                            //    "BE" => "g",
-                            //    "NL" => "n",
-                            //    "DE" => "f",
-                            //    "DK" => "f",
-                            //    "IT" => "i",
-                            //    "ES" => "m",
-                            //    "PT" => "I",
-                            //    "US" => "u",
-                            //    _ => string.Empty
-                            //};
                             stockDictionary.Add(stockName, stockSerie);
                         }
                         else
@@ -1391,16 +1384,40 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override string DisplayName => "ABCBourse";
         #endregion
 
-        private static List<string> cac40List = null;
-        public static bool BelongsToCAC40(StockSerie stockSerie)
-        {
-            if (cac40List == null)
-            {
-                cac40List = new List<string>();
+        static SortedDictionary<StockSerie.Groups, List<string>> groupSeries = new SortedDictionary<StockSerie.Groups, List<string>>();
 
-                // parse CAC40 list
-                string fileName = DataFolder + @"\" +
-                                  ABC_DAILY_CFG_GROUP_FOLDER + @"\CAC40.txt";
+        public static bool BelongsToGroup(StockSerie stockSerie, Groups group)
+        {
+            if (group == stockSerie.StockGroup || group == StockSerie.Groups.ALL_STOCKS)
+                return true;
+
+            switch (group)
+            {
+                case Groups.EURO_A_B:
+                    return stockSerie.StockGroup == Groups.EURO_A || stockSerie.StockGroup == Groups.EURO_B;
+                case Groups.EURO_A_B_C:
+                    return stockSerie.StockGroup == Groups.EURO_A || stockSerie.StockGroup == Groups.EURO_B || stockSerie.StockGroup == Groups.EURO_C;
+                case Groups.CACALL:
+                    return stockSerie.StockGroup == Groups.EURO_A || stockSerie.StockGroup == Groups.EURO_B || stockSerie.StockGroup == Groups.EURO_C || stockSerie.StockGroup == Groups.ALTERNEXT;
+                case Groups.PEA_EURONEXT:
+                    return stockSerie.StockGroup == Groups.EURO_A || stockSerie.StockGroup == Groups.EURO_B || stockSerie.StockGroup == Groups.EURO_C || stockSerie.StockGroup == Groups.ALTERNEXT
+                        || stockSerie.StockGroup == Groups.BELGIUM || stockSerie.StockGroup == Groups.HOLLAND || stockSerie.StockGroup == Groups.PORTUGAL;
+                case Groups.PEA:
+                    return stockSerie.StockGroup == Groups.EURO_A || stockSerie.StockGroup == Groups.EURO_B || stockSerie.StockGroup == Groups.EURO_C || stockSerie.StockGroup == Groups.ALTERNEXT
+                        || stockSerie.StockGroup == Groups.BELGIUM || stockSerie.StockGroup == Groups.HOLLAND || stockSerie.StockGroup == Groups.PORTUGAL
+                        || stockSerie.StockGroup == Groups.ITALIA || stockSerie.StockGroup == Groups.GERMANY || stockSerie.StockGroup == Groups.SPAIN;
+            }
+
+            if (!groupSeries.ContainsKey(group))
+                return false;
+
+            var groupList = groupSeries[group];
+            if (groupList == null)
+            {
+                groupList = new List<string>();
+
+                // parse group definition
+                string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + $@"\{group}.txt";
                 if (File.Exists(fileName))
                 {
                     using StreamReader sr = new StreamReader(fileName, true);
@@ -1412,70 +1429,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
                             string[] row = line.Split(';');
-                            cac40List.Add(row[1].ToUpper());
+                            groupList.Add(row[1].ToUpper());
                         }
                     }
                 }
-            }
-
-            return cac40List.Contains(stockSerie.StockName);
-        }
-        private static List<string> sbf120List = null;
-        public static bool BelongsToSBF120(StockSerie stockSerie)
-        {
-            if (sbf120List == null)
-            {
-                sbf120List = new List<string>();
-
-                // parse SBF120 list
-                string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + @"\SBF120.txt";
-                if (File.Exists(fileName))
+                else
                 {
-                    using StreamReader sr = new StreamReader(fileName, true);
-                    string line;
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
-                    {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                        {
-                            string[] row = line.Split(';');
-                            sbf120List.Add(row[1].ToUpper());
-                        }
-                    }
+                    MessageBox.Show("ABD DataProvider Group error", $"Group definition file not found for Group: {group}");
                 }
             }
 
-            return sbf120List.Contains(stockSerie.StockName);
-        }
-
-        private static List<string> cacatList = null;
-        public static bool BelongsTo_CAC_AT(StockSerie stockSerie)
-        {
-            if (cacatList == null)
-            {
-                cacatList = new List<string>();
-
-                // parse CAC_AT list
-                string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + @"\CAC_AT.txt";
-                if (File.Exists(fileName))
-                {
-                    using StreamReader sr = new StreamReader(fileName, true);
-                    string line;
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
-                    {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                        {
-                            string[] row = line.Split(';');
-                            cacatList.Add(row[1].ToUpper());
-                        }
-                    }
-                }
-            }
-
-            return cacatList.Contains(stockSerie.StockName);
+            return groupList != null && groupList.Contains(stockSerie.StockName);
         }
 
         public static void DownloadAgenda(StockSerie stockSerie)

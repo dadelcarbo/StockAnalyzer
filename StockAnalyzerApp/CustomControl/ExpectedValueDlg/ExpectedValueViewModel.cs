@@ -154,7 +154,7 @@ namespace StockAnalyzerApp.CustomControl.ExpectedValueDlg
             this.Event2 = event2Name;
             this.Results = new ObservableCollection<TradeResult>();
             this.BarDuration = BarDuration.Daily;
-            this.Group = StockSerie.Groups.COUNTRY;
+            this.Group = StockSerie.Groups.EURO_A;
         }
         public bool Calculate()
         {
