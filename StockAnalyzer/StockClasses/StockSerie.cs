@@ -1673,10 +1673,12 @@ namespace StockAnalyzer.StockClasses
                 i++;
             }
         }
+
+
         public void CalculateBandTrailStop(FloatSerie lowerBand, FloatSerie upperBand, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
-            longStopSerie = new FloatSerie(this.Count, "TRAILBB.S");
-            shortStopSerie = new FloatSerie(this.Count, "TRAILBB.R");
+            longStopSerie = new FloatSerie(this.Count, "TRAIL.S");
+            shortStopSerie = new FloatSerie(this.Count, "TRAIL.R");
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
             StockDailyValue previousValue = this.Values.First();
             bool upTrend = previousValue.CLOSE < this.ValueArray[1].CLOSE;
@@ -1723,6 +1725,71 @@ namespace StockAnalyzer.StockClasses
                             // Down trend still in place
                             longStopSerie[i] = float.NaN;
                             shortStopSerie[i] = Math.Min(shortStopSerie[i - 1], upperBand[i]);
+                        }
+                    }
+                }
+                previousValue = currentValue;
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// Calculate a band trail based on upper band overshoting, without upper band to go up.
+        /// </summary>
+        /// <param name="lowerBand"></param>
+        /// <param name="upperBand"></param>
+        /// <param name="longStopSerie"></param>
+        /// <param name="shortStopSerie"></param>
+        public void CalculateBandTrailStop2(FloatSerie lowerBand, FloatSerie upperBand, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
+        {
+            longStopSerie = new FloatSerie(this.Count, "TRAIL.S");
+            shortStopSerie = new FloatSerie(this.Count, "TRAIL.R");
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+            StockDailyValue previousValue = this.Values.First();
+            bool upTrend = previousValue.CLOSE < this.ValueArray[1].CLOSE;
+            if (upTrend)
+            {
+                longStopSerie[0] = previousValue.LOW;
+                shortStopSerie[0] = float.NaN;
+            }
+            else
+            {
+                longStopSerie[0] = float.NaN;
+                shortStopSerie[0] = previousValue.HIGH;
+            }
+            int i = 0;
+            foreach (StockDailyValue currentValue in this.Values)
+            {
+                if (i > 0)
+                {
+                    if (upTrend)
+                    {
+                        if (currentValue.CLOSE < longStopSerie[i - 1])
+                        { // Trailing stop has been broken => reverse trend
+                            upTrend = false;
+                            longStopSerie[i] = float.NaN;
+                            shortStopSerie[i] = upperBand[i];
+                        }
+                        else
+                        {
+                            // UpTrend still in place
+                            longStopSerie[i] = lowerBand[i];
+                            shortStopSerie[i] = float.NaN;
+                        }
+                    }
+                    else
+                    {
+                        if (currentValue.CLOSE > shortStopSerie[i - 1])
+                        {  // Trailing stop has been broken => reverse trend
+                            upTrend = true;
+                            longStopSerie[i] = lowerBand[i];
+                            shortStopSerie[i] = float.NaN;
+                        }
+                        else
+                        {
+                            // Down trend still in place
+                            longStopSerie[i] = float.NaN;
+                            shortStopSerie[i] = upperBand[i];
                         }
                     }
                 }

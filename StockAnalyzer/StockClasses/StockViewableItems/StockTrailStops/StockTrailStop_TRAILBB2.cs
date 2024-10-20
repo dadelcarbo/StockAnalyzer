@@ -1,18 +1,17 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockMath;
 using System;
+using System.Collections.Generic;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILMONTREUX : StockTrailStopBase
+    public class StockTrailStop_TRAILBB2 : StockTrailStopBase
     {
-        public override string Definition => base.Definition + Environment.NewLine +
-            "Draw a trail stop fro InvestingZen Montreux strategie. Starts on BB broke Up, and trails with lower band.";
-
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 20, .75f, .0f, "MA" };
+        public override Object[] ParameterDefaultValues => new Object[] { 20, 2.0f, -2.0f, "MA" };
+        static readonly List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;
         public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
@@ -26,10 +25,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;
 
-            IStockIndicator bbIndicator = stockSerie.GetIndicator(this.Name.Replace("TRAILMONTREUX", "BB"));
-            stockSerie.CalculateBandTrailStop(bbIndicator.Series[1], bbIndicator.Series[0], out longStopSerie, out shortStopSerie);
+            IStockIndicator bbIndicator = stockSerie.GetIndicator(this.Name.Replace("TRAILBB2", "BB"));
+            stockSerie.CalculateBandTrailStop2(bbIndicator.Series[1], bbIndicator.Series[0], out longStopSerie, out shortStopSerie);
             this.Series[0] = longStopSerie;
-            this.Series[1] = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Series[1] = shortStopSerie;
 
             // Generate events
             this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);

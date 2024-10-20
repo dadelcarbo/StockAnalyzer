@@ -999,12 +999,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 return;
             foreach (var text in stockTexts.Where(t => t.AbovePrice && t.Index > this.StartIndex && t.Index <= this.EndIndex))
             {
-                var point = GetScreenPointFromValuePoint(text.Index, this.highCurveType.DataSerie[text.Index]);
+                var point = float.IsNaN(text.Price) ? GetScreenPointFromValuePoint(text.Index, this.highCurveType.DataSerie[text.Index]) : GetScreenPointFromValuePoint(text.Index, text.Price);
                 this.DrawString(g, text.Text, axisFont, textBrush, point.X, point.Y - 15, false);
             }
             foreach (var text in stockTexts.Where(t => !t.AbovePrice && t.Index > this.StartIndex && t.Index <= this.EndIndex))
             {
-                var point = GetScreenPointFromValuePoint(text.Index, this.lowCurveType.DataSerie[text.Index]);
+                var point = float.IsNaN(text.Price) ? GetScreenPointFromValuePoint(text.Index, this.lowCurveType.DataSerie[text.Index]): GetScreenPointFromValuePoint(text.Index, text.Price);
                 this.DrawString(g, text.Text, axisFont, textBrush, point.X, point.Y + 5, false);
             }
         }

@@ -1013,6 +1013,8 @@ namespace StockAnalyzerApp
                                 }
 
                                 stockSerie.BarDuration = alertDef.BarDuration;
+                                if (stockSerie.Count < 10)
+                                    continue;
                                 var values = stockSerie.GetValues(alertDef.BarDuration);
                                 int lastIndex = alertDef.BarDuration == BarDuration.Daily || alertDef.BarDuration == BarDuration.Weekly || alertDef.BarDuration == BarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
                                 lastIndex = stockSerie.LastCompleteIndex;
@@ -3487,6 +3489,7 @@ namespace StockAnalyzerApp
         }
         private void generateDailyReportToolStripBtn_Click(object sender, EventArgs e)
         {
+            GenerateReport("Monthly Report", BarDuration.Monthly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Monthly).AlertDefs);
             GenerateReport("Daily Report", BarDuration.Daily, StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily).AlertDefs);
             GenerateReport("Weekly Report", BarDuration.Weekly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Weekly).AlertDefs);
         }
