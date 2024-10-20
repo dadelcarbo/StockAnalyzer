@@ -100,12 +100,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
              "HigherLow", "LowerHigh",           // 4,5
              "Bullish", "Bearish",               // 6,7
              "LH_HL", "HL_LH",                   // 8,9
-             "Long Reentry", "Consolidation"     // 10,11
+             "Long Reentry", "Consolidation",    // 10,11
+             "FirstLongReentry"                  // 12
           };
 
         public string[] EventNames => eventNames;
 
-        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false, true, true, true, false };
+        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false, true, true, true, false, true };
         public bool[] IsEvent => isEvent;
 
         protected void GenerateEvents(StockSerie stockSerie, FloatSerie longStopSerie, FloatSerie shortStopSerie)
@@ -244,6 +245,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             int barsInReentry = 0;
             float longReentryLow = float.NaN;
             float previousHigh = float.NaN;
+            bool firstLongReentry = false;
             for (int i = ReentryPeriod; i < stockSerie.Count; i++)
             {
                 if (!float.IsNaN(longStop[i])) // Bullish
@@ -276,6 +278,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                             previousResistance = longReentry;
                             longReentry = float.NaN;
                             this.Events[10][i] = true;
+                            this.Events[12][i] = firstLongReentry;
+                            firstLongReentry = false;
 
                             reentryRangeSerie[i] = (previousHigh - longReentryLow) / previousHigh;
                             barsInReentrySerie[i] = ++barsInReentry;
@@ -297,6 +301,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 {
                     previousResistance = longReentry;
                     longReentry = float.NaN;
+                    firstLongReentry = true;
                 }
             }
         }

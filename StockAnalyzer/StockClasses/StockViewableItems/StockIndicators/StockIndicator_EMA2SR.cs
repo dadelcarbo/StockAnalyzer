@@ -34,8 +34,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             var slowEmaSerie = stockSerie.GetIndicator("EMA(" + slowPeriod + ")").Series[0];
             var fastEmaSerie = stockSerie.GetIndicator("EMA(" + fastPeriod + ")").Series[0];
 
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
 
             bool aboveEmaPrevious = fastEmaSerie[1] > slowEmaSerie[1];
 

@@ -3251,6 +3251,8 @@ namespace StockAnalyzerApp
                 //var duration = fields[1];
                 var theme = fields[2];
                 var nbBars = int.Parse(fields[3]);
+                if (!StockDictionary.ContainsKey(stockName))
+                    continue;
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, nbBars);
                 string data = $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
@@ -3490,8 +3492,8 @@ namespace StockAnalyzerApp
         private void generateDailyReportToolStripBtn_Click(object sender, EventArgs e)
         {
             GenerateReport("Monthly Report", BarDuration.Monthly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Monthly).AlertDefs);
-            GenerateReport("Daily Report", BarDuration.Daily, StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily).AlertDefs);
             GenerateReport("Weekly Report", BarDuration.Weekly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Weekly).AlertDefs);
+            GenerateReport("Daily Report", BarDuration.Daily, StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily).AlertDefs);
         }
         #endregion
         WatchListDlg watchlistDlg = null;
