@@ -242,7 +242,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (string.IsNullOrEmpty(jsonData))
                         return false;
                     var saxoData = JsonConvert.DeserializeObject<SaxoJSon>(jsonData, Converter.Settings);
-                    if (saxoData?.series?[0]?.data == null)
+                    if (saxoData?.series?[0]?.data == null || saxoData?.series?[0]?.data.Count == 0)
                         return false;
 
                     stockSerie.IsInitialised = false;

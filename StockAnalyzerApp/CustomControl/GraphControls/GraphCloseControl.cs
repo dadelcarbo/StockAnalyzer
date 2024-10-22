@@ -167,12 +167,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Draw order management area
             var orderArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, GraphRectangle.Height);
             aGraphic.FillRectangle(orderAreaBrush, orderArea);
-
-            if (StockPortfolio.Portfolios.Any(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == serie.StockName)))
-            {
-                var portfolioArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, 10);
-                aGraphic.FillRectangle(PortfolioAreaBrush, portfolioArea);
-            }
             #endregion
 
             #region Draw Grid
@@ -508,6 +502,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
                 #endregion
+
+                if (StockPortfolio.Portfolios.Any(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == serie.StockName)))
+                {
+                    var portfolioArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, 10);
+                    aGraphic.FillRectangle(PortfolioAreaBrush, portfolioArea);
+                }
             }
 
             #endregion
@@ -1660,7 +1660,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 var text = ptfs.Select(p => p.Name).Aggregate((i, j) => i + Environment.NewLine + j);
 
                 Size size = TextRenderer.MeasureText(text, axisFont);
-                this.DrawString(this.foregroundGraphic, text, axisFont, Brushes.Black, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                this.DrawString(this.foregroundGraphic, text, axisFont, Brushes.Black, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y, true);
 
                 this.PaintForeground();
                 return;
