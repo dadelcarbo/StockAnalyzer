@@ -645,8 +645,16 @@ namespace StockAnalyzerApp
                     Debug.WriteLine("Cond2");
                     return; // Prevent infinite loop
                 }
+
                 var name = searchCombo.Text.ToUpper();
-                var match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && p.Key.ToUpper().Contains(name)).Select(p => p.Key).ToArray();
+                string[] match;
+                if (name.Length == 12)
+                    match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && (p.Key.ToUpper().Contains(name) || p.Value.ISIN == name)).Select(p => p.Key).ToArray();
+                else if (name.Length <= 3)
+                    match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && (p.Key.ToUpper().Contains(name) || (p.Value.Symbol != null && p.Value.Symbol.Contains(name)))).Select(p => p.Key).ToArray();
+                else
+                    match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && p.Key.ToUpper().Contains(name)).Select(p => p.Key).ToArray();
+
                 if (match.Length == 1)
                 {
                     Debug.WriteLine("Cond3");
