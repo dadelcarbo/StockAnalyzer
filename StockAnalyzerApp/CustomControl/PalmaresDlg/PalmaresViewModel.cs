@@ -438,7 +438,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                                     continue;
                                 stopValue = trailStopSerie.Series[1][endIndex];
                             }
-                            stopValue = (lastValue - stopValue) / lastValue;
+                            if (!float.IsNaN(stopValue))
+                            {
+                                stopValue = (lastValue - stopValue) / lastValue;
+                            }
                         }
                         catch { }
                     }
