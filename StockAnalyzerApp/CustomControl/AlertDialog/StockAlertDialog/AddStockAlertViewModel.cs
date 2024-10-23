@@ -18,6 +18,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             this.InReport = true;
             this.InAlert = true;
+            this.CompleteBar = false;
             this.BrokenUp = true;
             this.alertType = AlertType.Group;
             this.allAlertDefs = StockAlertConfig.AllAlertDefs;
@@ -32,6 +33,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.AlertId = alertDef.Id;
             this.InReport = alertDef.InReport;
             this.InAlert = alertDef.InAlert;
+            this.CompleteBar = alertDef.CompleteBar;
             this.BarDuration = alertDef.BarDuration;
             this.Theme = alertDef.Theme;
             this.Stop = alertDef.Stop;
@@ -72,6 +74,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private bool inAlert;
         public bool InAlert { get => inAlert; set => SetProperty(ref inAlert, value); }
+
+        private bool completeBar;
+        public bool CompleteBar { get => completeBar; set => SetProperty(ref completeBar, value); }
 
         private string title;
         public string Title { get => title; set => SetProperty(ref title, value); }
@@ -311,6 +316,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             alertDef.MinLiquidity = this.MinLiquidity;
             alertDef.InReport = this.InReport;
             alertDef.InAlert = this.InAlert;
+            alertDef.CompleteBar = this.CompleteBar;
             alertDef.BarDuration = this.BarDuration;
             alertDef.Theme = this.Theme;
             alertDef.CreationDate = DateTime.Now;
@@ -384,6 +390,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.AlertId = -1;
             this.InReport = true;
             this.InAlert = true;
+            this.CompleteBar = false;
             this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
             if (this.Theme.Contains("*"))
                 this.Theme = this.Themes.FirstOrDefault();

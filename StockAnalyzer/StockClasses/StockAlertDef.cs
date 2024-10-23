@@ -24,6 +24,7 @@ namespace StockAnalyzer.StockClasses
         public AlertType Type { get; set; }
         public bool InReport { get; set; }
         public bool InAlert { get; set; }
+        public bool CompleteBar { get; set; }
 
         public string Theme { get; set; }
         public string Title { get; set; }
