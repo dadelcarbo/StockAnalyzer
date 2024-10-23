@@ -865,11 +865,11 @@ namespace StockAnalyzerApp
                                             continue;
                                     }
 
-                                    int lastIndex = stockSerie.LastCompleteIndex;
+                                    var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
                                     var dailyValue = stockSerie.Values.ElementAt(lastIndex);
                                     while (lastIndex > 50 && dailyValue.DATE.Date == DateTime.Today)
                                     {
-                                        if (stockSerie.MatchEvent(alertDef, lastIndex))
+                                        if (stockSerie.MatchEvent(alertDef))
                                         {
                                             float stop = float.NaN;
                                             if (!string.IsNullOrEmpty(alertDef.Stop))
@@ -1024,13 +1024,13 @@ namespace StockAnalyzerApp
                                 if (stockSerie.Count < 10)
                                     continue;
                                 var values = stockSerie.GetValues(alertDef.BarDuration);
-                                int lastIndex = alertDef.BarDuration == BarDuration.Daily || alertDef.BarDuration == BarDuration.Weekly || alertDef.BarDuration == BarDuration.Monthly ? stockSerie.LastIndex : stockSerie.LastCompleteIndex;
-                                lastIndex = stockSerie.LastCompleteIndex;
+
+                                var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
 
                                 var dailyValue = values.ElementAt(lastIndex);
                                 if (dailyValue.DATE < alertConfig.AlertLog.StartDate)
                                     continue;
-                                if (stockSerie.MatchEvent(alertDef, lastIndex))
+                                if (stockSerie.MatchEvent(alertDef))
                                 {
                                     float stop = float.NaN;
                                     if (!string.IsNullOrEmpty(alertDef.Stop))
@@ -3380,9 +3380,9 @@ namespace StockAnalyzerApp
                             continue;
 
                         var values = stockSerie.GetValues(alertDef.BarDuration);
-                        int lastIndex = stockSerie.LastCompleteIndex;
+                        var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
                         var dailyValue = values.ElementAt(lastIndex);
-                        if (stockSerie.MatchEvent(alertDef, lastIndex))
+                        if (stockSerie.MatchEvent(alertDef))
                         {
                             float stop = float.NaN;
                             if (!string.IsNullOrEmpty(alertDef.Stop))

@@ -700,7 +700,7 @@ namespace StockAnalyzer.StockClasses
             public IStockViewableSeries ViewableSerie;
             public int EventIndex;
         }
-        public bool MatchEvent(StockAlertDef stockAlert, int index)
+        private bool MatchEvent(StockAlertDef stockAlert, int index)
         {
             BarDuration currentBarDuration = this.BarDuration;
             try
@@ -792,70 +792,26 @@ namespace StockAnalyzer.StockClasses
             return false;
         }
 
-        public bool MatchEvent(StockAlertDef stockAlert)
+        public bool MatchEvent(StockAlertDef alertDef)
         {
-            BarDuration currentBarDuration = this.BarDuration;
-            try
-            {
-                this.BarDuration = stockAlert.BarDuration;
-                IStockEvent stockEvent = null;
-                IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
-                if (this.HasVolume || !indicator.RequiresVolumeData)
-                {
-                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
-                }
-                else
-                {
-                    return false;
-                }
-
-                int index = LastCompleteIndex;
-
-                int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
-                if (eventIndex == -1)
-                {
-                    StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
-                }
-                if (stockEvent.Events[eventIndex][index]) return true;
-            }
-            finally
-            {
-                this.BarDuration = currentBarDuration;
-            }
-
-            return false;
+            return alertDef.CompleteBar ? this.MatchEvent(alertDef, LastCompleteIndex) : this.MatchEvent(alertDef, LastIndex);
         }
 
         public bool MatchEventsAnd(List<StockAlertDef> indicators)
         {
             bool match = true;
-
-            BarDuration currentBarDuration = this.BarDuration;
             try
             {
                 foreach (StockAlertDef alertDef in indicators)
                 {
-                    this.BarDuration = alertDef.BarDuration;
-                    IStockEvent stockEvent = null;
-                    IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(alertDef.IndicatorFullName);
-                    if (this.HasVolume || !indicator.RequiresVolumeData)
-                    {
-                        stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
-                    int index = LastCompleteIndex;
-
-                    int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, alertDef.EventName);
-                    if (!stockEvent.Events[eventIndex][index]) return false;
+                    if (!MatchEvent(alertDef))
+                        return false;
                 }
             }
-            finally
+            catch (Exception ex)
             {
-                this.BarDuration = currentBarDuration;
+                match = false;
+                StockLog.Write(ex.Message);
             }
 
             return match;
@@ -863,33 +819,18 @@ namespace StockAnalyzer.StockClasses
         public bool MatchEventsOr(List<StockAlertDef> indicators)
         {
             bool match = false;
-
-            BarDuration currentBarDuration = this.BarDuration;
             try
             {
                 foreach (StockAlertDef alertDef in indicators)
                 {
-                    this.BarDuration = alertDef.BarDuration;
-                    IStockEvent stockEvent = null;
-                    IStockViewableSeries indicator = StockViewableItemsManager.GetViewableItem(alertDef.IndicatorFullName);
-                    if (this.HasVolume || !indicator.RequiresVolumeData)
-                    {
-                        stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
-                    int index = LastCompleteIndex;
-
-                    int eventIndex = Array.IndexOf<string>(stockEvent.EventNames, alertDef.EventName);
-                    if (stockEvent.Events[eventIndex][index]) return true;
+                    if (MatchEvent(alertDef))
+                        return true;
                 }
             }
-            finally
+            catch (Exception ex)
             {
-                this.BarDuration = currentBarDuration;
+                match = false;
+                StockLog.Write(ex.Message);
             }
 
             return match;
