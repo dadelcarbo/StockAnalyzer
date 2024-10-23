@@ -46,6 +46,8 @@
                         <ComboBox SelectedItem="{Binding Group}" ItemsSource="{Binding Groups}" Width="160"/>
                         <Label>Duration</Label>
                         <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
+                        <Label Content="Complete Bar"/>
+                        <CheckBox IsChecked="{Binding CompleteBar}" VerticalAlignment="Center"/>
                         <Label Content="Theme"/>
                         <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160"/>
                     </StackPanel>
@@ -83,6 +85,7 @@
                         <telerik:GridViewDataColumn Header="Rank" DataMemberBinding="{Binding Rank}" />
                         <telerik:GridViewDataColumn Header="Report" DataMemberBinding="{Binding InReport}" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Alert" DataMemberBinding="{Binding InAlert}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="CompleteBar" DataMemberBinding="{Binding CompleteBar}" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Title" DataMemberBinding="{Binding Title}" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding Group}" IsReadOnly="True"/>
                         <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" IsReadOnly="True"/>

@@ -603,12 +603,13 @@ namespace StockAnalyzerApp
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
                 var startTime = new TimeSpan(8, 0, 0);
-                var endTime = new TimeSpan(22, 0, 0);
+                var endTime = new TimeSpan(23, 20, 0);
 
                 // Checks for alert every x minutes according to bar duration.
                 if (Settings.Default.RaiseAlerts)
                 {
-                    StockTimer.CreateAlertTimer(startTime, endTime, GenerateIntradayAlert);
+                    StockTimer.CreateDurationTimer(BarDuration.M_5, startTime, endTime, GenerateIntradayReport);
+                    //StockTimer.CreateAlertTimer(startTime, endTime, GenerateIntradayAlert);
                 }
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
@@ -814,6 +815,10 @@ namespace StockAnalyzerApp
             }
         }
 
+        public void GenerateIntradayReport()
+        {
+            GenerateReport("Intraday Report", BarDuration.H_1, StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday).AlertDefs);
+        }
         public void GenerateIntradayAlert(List<BarDuration> barDurations)
         {
             using (new MethodLogger(this, showTimerDebug))
@@ -3197,7 +3202,7 @@ namespace StockAnalyzerApp
             string previousTheme = this.CurrentTheme;
             BarDuration previousBarDuration = previousStockSerie.BarDuration;
 
-            string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
+            string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd HH:mm:ss")}.html");
             string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
 
             #region Report Alerts
@@ -3354,11 +3359,6 @@ namespace StockAnalyzerApp
                 StockSplashScreen.ProgressMax = stockList.Count();
                 StockSplashScreen.ProgressMin = 0;
 
-                var indexSerie = this.StockDictionary["CAC40"];
-                indexSerie.BarDuration = alertDef.BarDuration;
-                DateTime lastDate = indexSerie.LastValue.DATE;
-                indexSerie.BarDuration = BarDuration.Daily;
-
                 var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
                 var rankFormat = rankIndicator.Contains("RO") ? "P2" : "#.##";
                 var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
@@ -3376,8 +3376,6 @@ namespace StockAnalyzerApp
                                 continue;
                             }
                         }
-                        if (stockSerie.LastValue.DATE != lastDate && !stockSerie.BelongsToGroup(StockSerie.Groups.INDICES))
-                            continue;
 
                         var values = stockSerie.GetValues(alertDef.BarDuration);
                         var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
@@ -3502,6 +3500,7 @@ namespace StockAnalyzerApp
             GenerateReport("Monthly Report", BarDuration.Monthly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Monthly).AlertDefs);
             GenerateReport("Weekly Report", BarDuration.Weekly, StockAlertConfig.GetConfig(StockAlertTimeFrame.Weekly).AlertDefs);
             GenerateReport("Daily Report", BarDuration.Daily, StockAlertConfig.GetConfig(StockAlertTimeFrame.Daily).AlertDefs);
+            GenerateReport("Intraday Report", BarDuration.H_1, StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday).AlertDefs);
         }
         #endregion
         WatchListDlg watchlistDlg = null;
