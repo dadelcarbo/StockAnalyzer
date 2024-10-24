@@ -1,5 +1,4 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
-using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -62,7 +61,6 @@ using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace StockAnalyzerApp
 {
@@ -87,11 +85,6 @@ namespace StockAnalyzerApp
 
         public delegate void StockWatchListsChangedEventHandler();
 
-        public void RefreshGraphCloseControl()
-        {
-            this.GraphCloseControl.ForceRefresh();
-        }
-
         public delegate void AlertDetectedHandler();
         public event AlertDetectedHandler AlertDetected;
 
@@ -103,7 +96,6 @@ namespace StockAnalyzerApp
 
         public delegate void OnStockSerieChangedHandler(StockSerie newSerie, bool ignoreLinkedTheme);
 
-        public delegate void SavePortfolio();
 
         public static StockAnalyzerForm MainFrame { get; private set; }
         public MainFrameViewModel ViewModel { get; private set; }
@@ -603,13 +595,12 @@ namespace StockAnalyzerApp
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
                 var startTime = new TimeSpan(8, 0, 0);
-                var endTime = new TimeSpan(23, 20, 0);
+                var endTime = new TimeSpan(22, 00, 0);
 
                 // Checks for alert every x minutes according to bar duration.
                 if (Settings.Default.RaiseAlerts)
                 {
-                    StockTimer.CreateDurationTimer(BarDuration.M_5, startTime, endTime, GenerateIntradayReport);
-                    //StockTimer.CreateAlertTimer(startTime, endTime, GenerateIntradayAlert);
+                    StockTimer.CreateDurationTimer(BarDuration.H_1, startTime, endTime, GenerateIntradayReport);
                 }
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
@@ -817,8 +808,14 @@ namespace StockAnalyzerApp
 
         public void GenerateIntradayReport()
         {
+            this.Invoke(new Action(GenerateIntradayReportDispatch));
+        }
+
+        public void GenerateIntradayReportDispatch()
+        {
             GenerateReport("Intraday Report", BarDuration.H_1, StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday).AlertDefs);
         }
+
         public void GenerateIntradayAlert(List<BarDuration> barDurations)
         {
             using (new MethodLogger(this, showTimerDebug))
@@ -1651,8 +1648,6 @@ namespace StockAnalyzerApp
                 StockAnalyzerException.MessageBox(exception);
             }
         }
-
-        private delegate bool DownloadDataMethod(string destination, ref bool upToDate);
 
         private void Notifiy_SplashProgressChanged(string text)
         {
@@ -2651,7 +2646,6 @@ namespace StockAnalyzerApp
 
             this.StockAnalyzerForm_StockSerieChanged(newSerie, false);
         }
-        private delegate bool ConditionMatched(int i, StockSerie serie, ref string eventName);
 
         private void logSerieMenuItem_Click(object sender, EventArgs e)
         {
@@ -3202,7 +3196,7 @@ namespace StockAnalyzerApp
             string previousTheme = this.CurrentTheme;
             BarDuration previousBarDuration = previousStockSerie.BarDuration;
 
-            string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd HH:mm:ss")}.html");
+            string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
             string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
 
             #region Report Alerts
