@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             get
             {
-                eventNames ??= new string[] { "GapUp", "GapDown", "Large", "BullHammer", "BearHammer", "BullEngulfing", "BearEngulfing" };
+                eventNames ??= new string[] { "UpBar", "DownBar", "GapUp", "GapDown", "Large", "BullHammer", "BearHammer", "BullEngulfing", "BearEngulfing" };
                 return eventNames;
             }
         }
@@ -37,7 +37,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             {
                 if (seriePens == null)
                 {
-                    seriePens = new Pen[] { new Pen(Color.Green), new Pen(Color.Red),
+                    seriePens = new Pen[] {
+                        new Pen(Color.Green), new Pen(Color.Red),
+                        new Pen(Color.Green), new Pen(Color.Red),
                         new Pen(Color.MediumPurple),
                         new Pen(Color.Green), new Pen(Color.Red),
                         new Pen(Color.Green), new Pen(Color.Red)
@@ -70,6 +72,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
                 int eventIndex = 0;
                 float high = highSerie[i];
                 float low = lowSerie[i];
+
+                this.eventSeries[eventIndex++][i] = openSerie[i] < closeSerie[i];
+                this.eventSeries[eventIndex++][i] = openSerie[i] > closeSerie[i];
+
                 // Check Gaps
                 this.eventSeries[eventIndex++][i] = highSerie[i - 1] < low;
                 this.eventSeries[eventIndex++][i] = lowSerie[i - 1] > high;

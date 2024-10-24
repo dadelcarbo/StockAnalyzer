@@ -3244,7 +3244,7 @@ namespace StockAnalyzerApp
                 foreach (StockSerie stockSerie in stockList)
                 {
                     StockSplashScreen.ProgressVal++;
-                    if (stockSerie.Initialise() && stockSerie.Count > 100)
+                    if (stockSerie.Initialise() && stockSerie.Count > 30)
                     {
                         stockSerie.BarDuration = alertDef.BarDuration;
                         if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
