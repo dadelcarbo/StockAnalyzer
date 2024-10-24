@@ -121,7 +121,7 @@ namespace StockAnalyzer.StockClasses
                         alertDefs = AllAlertDefs.Where(a => a.BarDuration == BarDuration.Monthly).ToList();
                         break;
                     case StockAlertTimeFrame.Intraday:
-                        alertDefs = AllAlertDefs.Where(a => a.BarDuration > BarDuration.Monthly).ToList();
+                        alertDefs = AllAlertDefs.Where(a => StockBarDuration.IsIntraday(a.BarDuration)).ToList();
                         break;
                     default:
                         alertDefs = new List<StockAlertDef>();

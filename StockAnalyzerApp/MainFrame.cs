@@ -56,6 +56,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
@@ -594,8 +595,8 @@ namespace StockAnalyzerApp
             // Refresh intraday every 5 minutes.
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
-                var startTime = new TimeSpan(8, 0, 0);
-                var endTime = new TimeSpan(22, 00, 0);
+                var startTime = new TimeSpan(7, 55, 0);
+                var endTime = new TimeSpan(22, 05, 0);
 
                 // Checks for alert every x minutes according to bar duration.
                 if (Settings.Default.RaiseAlerts)
@@ -604,7 +605,6 @@ namespace StockAnalyzerApp
                 }
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
-            //  ProcessStrategies(new List<StockBarDuration> { StockBarDuration.Daily, StockBarDuration.Weekly });
 
             searchCombo.Items.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
 
@@ -811,139 +811,23 @@ namespace StockAnalyzerApp
             this.Invoke(new Action(GenerateIntradayReportDispatch));
         }
 
+        bool IsReportingIntraday = false;
         public void GenerateIntradayReportDispatch()
         {
-            GenerateReport("Intraday Report", BarDuration.H_1, StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday).AlertDefs);
-        }
-
-        public void GenerateIntradayAlert(List<BarDuration> barDurations)
-        {
-            using (new MethodLogger(this, showTimerDebug))
+            try
             {
-                // Alerts
-                this.ViewModel.IsHistoryActive = false;
-                bool alertFound = false;
-                StockLog.Write($"isGeneratingAlerts={isGeneratingAlerts}");
-                if (isGeneratingAlerts)
-                    return;
+                IsReportingIntraday = true;
 
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                try
-                {
-                    isGeneratingAlerts = true;
+                var alertDefs = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday).AlertDefs;
+                var groups = alertDefs.Select(a => a.Group).Distinct();
+                var stockList = groups.SelectMany(g => this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(g))).Distinct();
 
-                    var alertConfig = StockAlertConfig.GetConfig(StockAlertTimeFrame.Intraday);
-                    var alertDefs = alertConfig.AlertDefs.Where(a => a.InAlert && barDurations.Contains(a.BarDuration)).ToList();
-                    if (alertDefs.Count() == 0)
-                        return;
+                var tasks = stockList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s))).ToArray();
+                Task.WaitAll(tasks);
 
-                    var oldAlerts = alertConfig.AlertLog.Alerts.Where(a => a.Date.Date.AddDays(1) < DateTime.Today).ToList();
-                    oldAlerts.ForEach((a) => alertConfig.AlertLog.Alerts.Remove(a));
-
-                    foreach (var alertDefGroup in alertDefs.GroupBy(a => a.Group))
-                    {
-                        var stockList = this.StockDictionary.Values.Where(s => s.BelongsToGroup(alertDefGroup.Key));
-                        stockList.AsParallel().ForAll(s => StockDataProviderBase.DownloadSerieData(s));
-
-                        StockLog.Write($"Generating alerts for : {alertDefGroup.Key}");
-                        foreach (var alertDef in alertDefGroup)
-                        {
-                            foreach (var stockSerie in stockList)
-                            {
-                                NotifyAlertStarted(alertDefGroup.Key.ToString(), alertDefs.Count);
-                                using (new StockSerieLocker(stockSerie))
-                                {
-                                    if (!stockSerie.Initialise())
-                                        continue;
-                                    BarDuration previouBarDuration = stockSerie.BarDuration;
-                                    stockSerie.BarDuration = alertDef.BarDuration;
-
-                                    if (!string.IsNullOrEmpty(alertDef.StockName) && alertDef.StockName != stockSerie.StockName)
-                                        continue;
-                                    if (alertDef.IndicatorFullName == "AUTODRAWING|DRAWING()")
-                                    {
-                                        if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(alertDef.BarDuration) || stockSerie.StockAnalysis.DrawingItems[alertDef.BarDuration].Count == 0)
-                                            continue;
-                                    }
-
-                                    var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
-                                    var dailyValue = stockSerie.Values.ElementAt(lastIndex);
-                                    while (lastIndex > 50 && dailyValue.DATE.Date == DateTime.Today)
-                                    {
-                                        if (stockSerie.MatchEvent(alertDef))
-                                        {
-                                            float stop = float.NaN;
-                                            if (!string.IsNullOrEmpty(alertDef.Stop))
-                                            {
-                                                var trailStopSerie = stockSerie.GetTrailStop(alertDef.Stop)?.Series[0];
-                                                if (trailStopSerie != null)
-                                                {
-                                                    stop = (float)Math.Round(trailStopSerie[lastIndex], 2);
-                                                }
-                                            }
-                                            var date = dailyValue.DATE;
-                                            var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
-                                            var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
-                                            var stockAlert = new StockAlert(alertDef,
-                                                date,
-                                                stockSerie.StockName,
-                                                stockSerie.StockGroup.ToString(),
-                                                dailyValue.CLOSE,
-                                                stop,
-                                                stockSerie.GetExchanged(10),
-                                                stockSerie.GetIndicator(rankIndicator).Series[0][lastIndex],
-                                                stockSerie.GetIndicator(stokIndicator).Series[0][lastIndex]);
-
-                                            if (!alertConfig.AlertLog.Alerts.Any(a => a == stockAlert))
-                                            {
-                                                if (this.InvokeRequired)
-                                                {
-                                                    this.Invoke(new Action(() => alertConfig.AlertLog.Alerts.Insert(0, stockAlert)));
-                                                }
-                                                else
-                                                {
-                                                    alertConfig.AlertLog.Alerts.Insert(0, stockAlert);
-                                                }
-                                                alertFound = true;
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-
-                                        lastIndex--;
-                                        dailyValue = stockSerie.Values.ElementAt(lastIndex);
-                                    }
-                                    stockSerie.BarDuration = previouBarDuration;
-                                }
-                            }
-                        }
-                    }
-                    alertConfig.AlertLog.Save();
-
-                    if (this.AlertDetected != null)
-                    {
-                        this.Invoke(this.AlertDetected);
-                    }
-                    if (alertFound)
-                    {
-                        this.Invoke(new Action(() => showAlertDialogMenuItem_Click(null, null)));
-                    }
-                }
-                catch (Exception exception)
-                {
-                    StockAnalyzerException.MessageBox(exception);
-                }
-                finally
-                {
-                    isGeneratingAlerts = false;
-                    sw.Stop();
-                    StockLog.Write($"GenerateIntradayAlert Duration {sw.Elapsed}");
-                    this.ViewModel.IsHistoryActive = true;
-                }
+                GenerateReport("Intraday Report", BarDuration.H_1, alertDefs);
             }
+            finally { IsReportingIntraday = false; }
         }
 
         bool isGeneratingAlerts = false;
@@ -1493,7 +1377,7 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO)) && currentStockSerie.IsMarketOpened())
+                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO)) && currentStockSerie.IsMarketOpened() && !this.IsReportingIntraday)
                 {
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();
@@ -3197,7 +3081,7 @@ namespace StockAnalyzerApp
             BarDuration previousBarDuration = previousStockSerie.BarDuration;
 
             string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
-            string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()}</h1>";
+            string htmlBody = $"<h1 style=\"text-align: center;\">{title} - {DateTime.Today.ToShortDateString()} {DateTime.Now.ToShortTimeString()}</h1>";
 
             #region Report Alerts
 
