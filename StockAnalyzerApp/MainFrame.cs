@@ -1211,7 +1211,7 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if ((currentStockSerie.BelongsToGroup(StockSerie.Groups.INTRADAY) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO)) && currentStockSerie.IsMarketOpened() && !this.IsReportingIntraday)
+                if (!this.IsReportingIntraday && (currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO_5M)))
                 {
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();
@@ -2460,7 +2460,7 @@ namespace StockAnalyzerApp
             // In order to speed the intraday display.
             switch (newGroup)
             {
-                case StockSerie.Groups.INTRADAY:
+                case StockSerie.Groups.TURBO_5M:
                 case StockSerie.Groups.TURBO:
                     if (this.logScaleBtn.CheckState == CheckState.Checked)
                     {
@@ -3081,7 +3081,7 @@ namespace StockAnalyzerApp
                 foreach (StockSerie stockSerie in stockList)
                 {
                     StockSplashScreen.ProgressVal++;
-                    if (stockSerie.Initialise() )
+                    if (stockSerie.Initialise())
                     {
                         stockSerie.BarDuration = alertDef.BarDuration;
                         if (stockSerie.Count < 30)

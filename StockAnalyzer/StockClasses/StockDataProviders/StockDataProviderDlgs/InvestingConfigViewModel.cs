@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
@@ -39,21 +40,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         }
 
         IEnumerable<StockSerie> existing;
-        bool isIntraday = false;
         internal void Initialize(string fileName, StockDictionary stockDico)
         {
             this.FileName = fileName;
-            isIntraday = fileName.ToLower().Contains("intraday");
             this.Entries = new ObservableCollection<InvestingConfigEntry>(InvestingConfigEntry.LoadFromFile(Path.Combine(Folders.PersonalFolder, FileName)));
             this.StockDico = stockDico;
-            if (isIntraday)
-            {
-                existing = stockDico.Values.Where(s => s.Ticker != 0 && s.DataProvider == StockDataProvider.InvestingIntraday);
-            }
-            else
-            {
-                existing = stockDico.Values.Where(s => s.Ticker != 0 && s.DataProvider == StockDataProvider.Investing);
-            }
+            existing = stockDico.Values.Where(s => s.Ticker != 0 && s.DataProvider == StockDataProvider.Investing);
         }
 
         private string searchText;
@@ -102,16 +94,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         public ICommand AddCommand => _addCommand ??= new CommandBase<InvestingConfigViewModel>(AddEntry, this, t => t.AddEnabled, "AddEnabled");
         public void AddEntry()
         {
-            var prefix = isIntraday ? "INT_" : string.Empty;
-            var stockName = this.SelectedItem.Exchange == "Paris" ? prefix + this.SelectedItem.Description.Replace(" SA", "").ToUpper() : this.SelectedItem.Symbol;
-            this.Entries.Insert(0, new InvestingConfigEntry(this.SelectedItem.Ticker)
-            {
-                Group = StockSerie.Groups.INTRADAY.ToString(),
-                ShortName = this.SelectedItem.Symbol,
-                StockName = stockName
-            });
-
-            this.PropertyChanged(this, new PropertyChangedEventArgs("AddEnabled"));
+            MessageBox.Show("Not Implemented");
         }
     }
 }

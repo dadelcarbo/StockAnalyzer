@@ -38,12 +38,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override bool LoadData(StockSerie stockSerie)
         {
             return DownloadDailyData(stockSerie);
-            //var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
-            //if (File.Exists(archiveFileName))
-            //{
-            //  stockSerie.ReadFromCSVFile(archiveFileName);
-            //}
-            //return stockSerie.Count > 0;
         }
 
 

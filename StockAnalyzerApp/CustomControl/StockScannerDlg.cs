@@ -180,7 +180,7 @@ namespace StockAnalyzerApp.CustomControl
 
         void groupComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (groupComboBox.SelectedItem.Equals(StockSerie.Groups.INTRADAY))
+            if (groupComboBox.SelectedItem.Equals(StockSerie.Groups.TURBO))
             {
                 this.refreshDataCheckBox.CheckState = CheckState.Checked;
             }

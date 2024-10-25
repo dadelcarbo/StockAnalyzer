@@ -360,7 +360,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             #endregion
             if (this.DownloadIntraday)
             {
-                if (this.group != StockSerie.Groups.INTRADAY && this.group != StockSerie.Groups.TURBO)
+                if (this.group != StockSerie.Groups.TURBO)
                 {
                     var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
                     dataProvider.DownloadAllGroupsIntraday();
@@ -386,7 +386,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     count++;
                     if (count % 10 == 0)
                         this.Progress = count;
-                    if (this.DownloadIntraday && (this.group == StockSerie.Groups.INTRADAY || this.group == StockSerie.Groups.TURBO))
+                    if (this.DownloadIntraday && (this.group == StockSerie.Groups.TURBO_5M || this.group == StockSerie.Groups.TURBO))
                     {
                         StockDataProviderBase.DownloadSerieData(stockSerie);
                     }
