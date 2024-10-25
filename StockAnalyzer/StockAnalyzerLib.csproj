@@ -251,8 +251,9 @@
     <Compile Include="StockClasses\StockDataProviders\CNN\CnnDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\CNN\CnnJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider - Copy.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoIntradayM5DataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\SaxoIntradayH1DataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoConfigEntry.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml.cs">
@@ -396,7 +397,6 @@
     <Compile Include="StockAgent\StockTradeSummary.cs" />
     <Compile Include="StockAgent\Agents\StupidAgent.cs" />
     <Compile Include="StockAnalyzer.cs" />
-    <Compile Include="StockClasses\StockAlertConfig.cs" />
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />

@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses
         private StockAlertDef alertDef;
         public void SetAlertDef()
         {
-            this.alertDef = StockAlertConfig.AllAlertDefs.FirstOrDefault(alertDef => alertDef.Id == this.AlertDefId);
+            this.alertDef = StockAlertDef.AlertDefs.FirstOrDefault(alertDef => alertDef.Id == this.AlertDefId);
         }
 
         public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, float alertStop, float exchanged, float speed, float stok)

@@ -1,5 +1,11 @@
-﻿using System;
+﻿using StockAnalyzerSettings;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows;
 using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses
@@ -18,6 +24,62 @@ namespace StockAnalyzer.StockClasses
             this.CreationDate = DateTime.MinValue;
             this.InReport = true;
         }
+
+        #region Persistency
+        static private List<StockAlertDef> alertDefs = null;
+        static public List<StockAlertDef> AlertDefs
+        {
+            get
+            {
+                if (alertDefs == null)
+                {
+                    string alertFileName = Path.Combine(Folders.AlertDef, "AlertDefUserDefined.json");
+                    // Parse alert lists
+                    if (File.Exists(alertFileName))
+                    {
+                        try
+                        {
+                            alertDefs = JsonSerializer.Deserialize<List<StockAlertDef>>(File.ReadAllText(alertFileName),
+                                new JsonSerializerOptions
+                                {
+                                    Converters = { new JsonStringEnumConverter() }
+                                });
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.Message + Environment.NewLine + alertFileName, "Alert File Error");
+                        }
+                    }
+                }
+                alertDefs ??= new List<StockAlertDef>();
+                return alertDefs;
+            }
+        }
+
+        static public void Save()
+        {
+            if (alertDefs != null)
+            {
+                foreach (var alertGroup in alertDefs.GroupBy(a => a.BarDuration))
+                {
+                    var rank = 10;
+                    foreach (var alertDef in alertGroup.OrderBy(a => a.Rank))
+                    {
+                        alertDef.Rank = rank;
+                        rank += 10;
+                    }
+                }
+
+                string alertFileName = Path.Combine(Folders.AlertDef, "AlertDefUserDefined.json");
+                File.WriteAllText(alertFileName, JsonSerializer.Serialize(alertDefs.OrderBy(a => a.BarDuration).ThenBy(a => a.Rank).ToList(),
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        Converters = { new JsonStringEnumConverter() }
+                    }));
+            }
+        }
+        #endregion
 
         public int Id { get; set; }
         public int Rank { get; set; }

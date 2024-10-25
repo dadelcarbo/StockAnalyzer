@@ -21,7 +21,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.CompleteBar = false;
             this.BrokenUp = true;
             this.alertType = AlertType.Group;
-            this.allAlertDefs = StockAlertConfig.AllAlertDefs;
+            this.allAlertDefs = StockAlertDef.AlertDefs;
             this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
             this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
             if (this.Theme.Contains("*"))
@@ -326,7 +326,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
             this.OnPropertyChanged("AlertDefs");
 
-            StockAlertConfig.SaveConfig();
+            StockAlertDef.Save();
             var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
             if (File.Exists(fileName))
                 File.Delete(fileName);
@@ -360,7 +360,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.OnPropertyChanged("AlertDefs");
             this.Clear();
 
-            StockAlertConfig.SaveConfig();
+            StockAlertDef.Save();
             var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
             if (File.Exists(fileName))
                 File.Delete(fileName);

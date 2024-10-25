@@ -100,8 +100,15 @@ namespace StockAnalyzer.StockHelpers
             this.startTime = startTime;
             this.endTime = endTime;
 
+            var timeSeconds = (int)DateTime.Now.TimeOfDay.TotalSeconds;
+            foreach (var tickPeriod in periodTicks)
+            {
+                var currentTick = (int)(timeSeconds / tickPeriod.Value.PeriodSeconds);
+                tickPeriod.Value.Tick = currentTick;
+            }
+
             this.AlertTimerTick += callback;
-            this.timer = new Timer(10000) { AutoReset = true, Enabled = true };
+            this.timer = new Timer(20000) { AutoReset = true, Enabled = true };
             this.timer.Elapsed += Timer_Elapsed1;
             Timers.Add(this);
         }
