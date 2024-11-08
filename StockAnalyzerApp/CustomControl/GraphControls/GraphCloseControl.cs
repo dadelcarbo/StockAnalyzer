@@ -1792,6 +1792,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 point2 = new PointF(mouseValuePoint.X, point1.Y);
             }
+            if (point2 == point1)
+                return;
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddLine:

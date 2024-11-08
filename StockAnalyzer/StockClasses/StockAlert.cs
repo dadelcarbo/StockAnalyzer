@@ -3,107 +3,59 @@ using System.Linq;
 
 namespace StockAnalyzer.StockClasses
 {
-    public class StockAlert : IEquatable<StockAlert>
+    public class StockAlert
     {
         public StockAlert()
         {
         }
+
         public DateTime Date { get; set; }
-        public string StockName { get; set; }
-        public string StockGroup { get; set; }
-        public int AlertDefId { get; set; }
-        public int AlertRank => alertDef.Rank;
-        public string Theme => this.alertDef?.Theme;
-        public BarDuration BarDuration => alertDef.BarDuration;
-        public string AlertDescription
+        public StockAlertDef AlertDef { get; set; }
+        public StockSerie StockSerie { get; set; }
+
+
+        public StockAlertValue GetAlertValue()
         {
-            get
+            var values = StockSerie.ValueArray;
+            var lastIndex = AlertDef.CompleteBar ? StockSerie.LastCompleteIndex : StockSerie.LastIndex;
+            var dailyValue = values.ElementAt(lastIndex);
+
+            float stop = float.NaN;
+            if (!string.IsNullOrEmpty(AlertDef.Stop))
             {
-                if (alertDef == null)
-                    return null;
-                switch (this.alertDef.Type)
+                var trailStopSerie = StockSerie.GetTrailStop(AlertDef.Stop)?.Series[0];
+                if (trailStopSerie != null)
                 {
-                    case AlertType.Group:
-                        {
-                            return this.alertDef?.Title;
-                        }
-                    case AlertType.Stock:
-                        {
-                            return "User Alert: " + this.alertDef.EventName;
-                        }
-                    case AlertType.Price:
-                        {
-                            return this.alertDef.TriggerBrokenUp ? $"{this.alertDef.PriceTrigger} Broken Up" : $"{this.alertDef.PriceTrigger} Broken Down";
-                        }
-                };
-                return null;
+                    stop = trailStopSerie[lastIndex];
+                }
             }
-        }
 
-        public float StopValue { get; set; }
-        public float StopPercent => float.IsNaN(StopValue) ? float.NaN : (AlertClose - StopValue) / AlertClose;
-        public float AlertClose { get; set; }
-        public float Speed { get; set; }
-        public float Stok { get; set; }
+            var speedIndicatorName = string.IsNullOrEmpty(AlertDef.Speed) ? "ROR(35)" : AlertDef.Speed;
+            var speedIndicator = StockSerie.GetIndicator(speedIndicatorName);
 
-        /// <summary>
-        /// Exchanged Money (M€)
-        /// </summary>
-        public float ExchangedMoney { get; set; }
+            var stokIndicatorName = $"STOK({(AlertDef.Stok == 0 ? 35 : AlertDef.Stok)})";
+            var stokIndicator = StockSerie.GetIndicator(stokIndicatorName);
 
-        private StockAlertDef alertDef;
-        public void SetAlertDef()
-        {
-            this.alertDef = StockAlertDef.AlertDefs.FirstOrDefault(alertDef => alertDef.Id == this.AlertDefId);
-        }
+            var highest = StockSerie.GetSerie(StockDataType.CLOSE).GetHighestIn(lastIndex, dailyValue.CLOSE);
 
-        public StockAlert(StockAlertDef alertDef, DateTime date, string stockName, string stockGroup, float alertClose, float alertStop, float exchanged, float speed, float stok)
-        {
-            this.alertDef = alertDef;
-            this.AlertDefId = alertDef.Id;
-            Date = date;
-            StockName = stockName;
-            StockGroup = stockGroup;
-            AlertClose = alertClose;
-            StopValue = alertStop;
-            ExchangedMoney = exchanged;
-            Speed = speed;
-            Stok = stok;
-        }
-        public static bool operator ==(StockAlert a, StockAlert b)
-        {
-            if (object.ReferenceEquals(a, null))
-                return object.ReferenceEquals(b, null);
-            return a.Equals(b);
-        }
-        public static bool operator !=(StockAlert a, StockAlert b)
-        {
-            if (object.ReferenceEquals(a, null))
-                return !object.ReferenceEquals(b, null);
-            return !a.Equals(b);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as StockAlert);
-        }
-
-        public bool Equals(StockAlert other)
-        {
-            if (Object.ReferenceEquals(this, other))
+            return new StockAlertValue()
             {
-                return true;
-            }
-            if (Object.ReferenceEquals(other, null))
-            {
-                return false;
-            }
-            return this.AlertDefId == other.AlertDefId && this.StockName == other.StockName && this.Date == other.Date;
-        }
+                StockSerie = StockSerie,
+                AlertDef = AlertDef,
+                Date = this.Date,
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
+                Value = dailyValue.CLOSE,
+                Variation = dailyValue.VARIATION,
+                Exchanged = dailyValue.EXCHANGED,
+
+                Speed = speedIndicator.Series[0][lastIndex],
+                SpeedFormat = speedIndicator.SerieFormats[0],
+
+                Stok = speedIndicator.Series[0][lastIndex],
+
+                TrailStop = stop,
+                Highest = highest
+            };
         }
     }
 }

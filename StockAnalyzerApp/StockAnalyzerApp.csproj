@@ -286,15 +286,6 @@
     <Compile Include="CustomControl\AgendaDlg\StockAgendaUserControl.xaml.cs">
       <DependentUpon>StockAgendaUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\AlertDialog\AlertControl.xaml.cs">
-      <DependentUpon>AlertControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\AlertDialog\AlertDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\AlertDialog\AlertDlg.Designer.cs">
-      <DependentUpon>AlertDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlert.xaml.cs">
       <DependentUpon>AddStockAlert.xaml</DependentUpon>
     </Compile>
@@ -718,9 +709,6 @@
     <EmbeddedResource Include="CustomControl\AgendaDlg\StockAgendaForm.resx">
       <DependentUpon>StockAgendaForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\AlertDialog\AlertDlg.resx">
-      <DependentUpon>AlertDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.resx">
       <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -1124,10 +1112,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="CustomControl\AgendaDlg\StockAgendaUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\AlertDialog\AlertControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1663,9 +1663,9 @@ namespace StockAnalyzer.StockClasses
             }
             return Instance.Values.FirstOrDefault(s => s.ISIN == isin);
         }
-        public List<StockSerie> MatchAlert(StockAlertDef alertDef)
+        public List<StockAlert> MatchAlert(StockAlertDef alertDef)
         {
-            var stockList = new List<StockSerie>();
+            var alerts = new List<StockAlert>();
             foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
             {
                 if (stockSerie.Initialise())
@@ -1687,11 +1687,16 @@ namespace StockAnalyzer.StockClasses
                     var dailyValue = values.ElementAt(lastIndex);
                     if (stockSerie.MatchEvent(alertDef))
                     {
-                        stockList.Add(stockSerie);
+                        alerts.Add(new StockAlert
+                        {
+                            AlertDef = alertDef,
+                            Date = dailyValue.DATE,
+                            StockSerie = stockSerie
+                        });
                     }
                 }
             }
-            return stockList;
+            return alerts;
         }
     }
 }
