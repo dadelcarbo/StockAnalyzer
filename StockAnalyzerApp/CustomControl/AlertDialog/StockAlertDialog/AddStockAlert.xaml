@@ -20,13 +20,17 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" >
-                    <Button  Height="26" Margin="1" Command="{Binding AddAlertCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Height="26" Margin="1" Command="{Binding RunAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Image Source="../../../Resources/ButtonPlay.png"/>
+                        </Button>
+                        <Button  Height="26" Margin="1" Command="{Binding AddAlertCommand}">
                         <Image Source="../../../Resources/check.png"/>
-                    </Button>
-                    <Button Height="26" Margin="1" Command="{Binding DeleteAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    </Button></StackPanel>
+                    <Button Height="26" HorizontalAlignment="Right" Margin="1" Command="{Binding DeleteAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Image Source="../../../Resources/DeleteTheme.png"/>
                     </Button>
-                    <Button Height="26" Margin="1" Command="{Binding NewAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button Height="26" HorizontalAlignment="Right" Margin="1" Command="{Binding NewAlertCommand}" Visibility="{Binding IsDeleteEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Image Source="../../../Resources/NewAnalysis.png"/>
                     </Button>
                 </StackPanel>

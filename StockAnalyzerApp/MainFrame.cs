@@ -653,7 +653,7 @@ namespace StockAnalyzerApp
                     Debug.WriteLine("Cond3");
                     searchCombo.Text = name;
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
-                    this.SetCurrentStock(match.First());
+                    this.SetCurrentStock(match.First().ToUpper());
                 }
                 else
                 {
@@ -2898,9 +2898,9 @@ namespace StockAnalyzerApp
             this.ViewModel.BarDuration = previousBarDuration;
             this.ViewModel.IsHistoryActive = true;
         }
-        private void GenerateReport(BarDuration duration)
+        public void GenerateReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
         {
-            var alertDefs = StockAlertDef.AlertDefs.Where(a => a.BarDuration == duration).ToList();
+            alertDefs ??= StockAlertDef.AlertDefs.Where(a => a.BarDuration == duration).ToList();
             if (alertDefs.Count == 0)
                 return;
             this.ViewModel.IsHistoryActive = false;
@@ -3047,6 +3047,7 @@ namespace StockAnalyzerApp
             var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group));
             return GenerateReportTable(alertDef, nbStocks, stockList);
         }
+
 
         private string GenerateReportTable(StockAlertDef alertDef, int nbStocks, IEnumerable<StockSerie> stockList)
         {
@@ -3874,21 +3875,36 @@ namespace StockAnalyzerApp
                 alertDlg.TopMost = false;
             }
         }
-        void showAlertDefDialogMenuItem_Click(object sender, EventArgs e)
-        {
-            var viewModel = new AddStockAlertViewModel()
-            {
-                StockName = this.CurrentStockSerie.StockName,
-                Group = StockAnalyzerForm.MainFrame.Group,
-                BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
-                IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
-            };
-            viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
-            viewModel.Stop = viewModel.StopNames?.FirstOrDefault();
 
-            AddStockAlertDlg addAlertDlg = null;
-            addAlertDlg = new AddStockAlertDlg(viewModel);
-            addAlertDlg.ShowDialog();
+        AddStockAlertDlg alertDefDlg = null;
+        public void showAlertDefDialogMenuItem_Click(object sender, EventArgs e)
+        {
+            if (alertDefDlg == null)
+            {
+                var viewModel = new AddStockAlertViewModel()
+                {
+                    StockName = this.CurrentStockSerie.StockName,
+                    Group = StockAnalyzerForm.MainFrame.Group,
+                    BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
+                    IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
+                };
+                viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
+                viewModel.Stop = viewModel.StopNames?.FirstOrDefault();
+
+                alertDefDlg = new AddStockAlertDlg(viewModel);
+                alertDefDlg.Disposed += delegate
+                {
+                    this.alertDefDlg = null;
+                };
+                alertDefDlg.Show();
+            }
+            else
+            {
+                alertDefDlg.WindowState = FormWindowState.Normal;
+                alertDefDlg.Activate();
+                alertDefDlg.TopMost = true;
+                alertDefDlg.TopMost = false;
+            }
         }
         #endregion
         #region DRAWING DIALOG

@@ -26,11 +26,6 @@ namespace StockAnalyzer.StockDrawing
         {
         }
 
-        public float Length()
-        {
-            return (float)Math.Sqrt((Point1.X - Point2.X) * (Point1.X - Point2.X) + (Point1.Y - Point2.Y) * (Point1.Y - Point2.Y));
-        }
-
         public override Line2DBase Transform(System.Drawing.Drawing2D.Matrix matrix, bool isLog)
         {
             PointF[] points = new PointF[] { this.Point1, this.Point2 };
@@ -164,13 +159,13 @@ namespace StockAnalyzer.StockDrawing
             {
                 // Calculate the length on the ortho segment
                 Segment2D segment = new Segment2D(point, point3);
-                return segment.Length();
+                return segment.Length;
             }
             else
             {
                 Segment2D segment1 = new Segment2D(point, this.Point1);
                 Segment2D segment2 = new Segment2D(point, this.Point2);
-                return Math.Min(segment1.Length(), segment2.Length());
+                return Math.Min(segment1.Length, segment2.Length);
             }
         }
         public override bool ContainsAbsciss(float x)

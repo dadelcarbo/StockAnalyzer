@@ -29,7 +29,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.ViewModel.AlertType = (AlertType)tabItem.Tag;
         }
 
-        private void RadGridView_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
+        private void RadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
             var gridView = sender as RadGridView;
             var alertDef = gridView.SelectedItem as StockAlertDef;

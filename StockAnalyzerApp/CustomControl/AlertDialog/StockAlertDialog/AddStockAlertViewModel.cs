@@ -385,6 +385,38 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Clear();
         }
         #endregion
+        #region Run ALERT COMMAND
+
+        private CommandBase runAlertCommand;
+
+        public ICommand RunAlertCommand
+        {
+            get
+            {
+                runAlertCommand ??= new CommandBase(RunAlert);
+
+                return runAlertCommand;
+            }
+        }
+
+        private void RunAlert()
+        {
+            var alertDef = AlertDefs.FirstOrDefault(a => a.Id == this.AlertId);
+            if (alertDef == null)
+                return;
+
+            var serie = StockDictionary.Instance.MatchAlert(alertDef);
+
+
+
+            StockAnalyzerForm.MainFrame.GenerateReport(alertDef.BarDuration, new List<StockAlertDef> { alertDef });
+        }
+        #endregion
+
+
+
+
+
         private void Clear()
         {
             this.AlertId = -1;

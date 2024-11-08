@@ -50,13 +50,13 @@ namespace StockAnalyzer.StockDrawing
             {
                 // Calculate the length on the ortho segment
                 Segment2D segment = new Segment2D(point, point3);
-                return segment.Length();
+                return segment.Length;
             }
             else
             {
                 Segment2D segment1 = new Segment2D(point, this.Point1);
                 Segment2D segment2 = new Segment2D(point, this.Point2);
-                return Math.Min(segment1.Length(), segment2.Length());
+                return Math.Min(segment1.Length, segment2.Length);
             }
         }
 
