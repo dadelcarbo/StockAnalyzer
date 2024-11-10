@@ -11,12 +11,17 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
     {
         readonly AddStockAlertViewModel ViewModel;
         readonly AddStockAlertDlg ParentDlg;
+
+        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged;
+
         public AddStockAlert(AddStockAlertDlg parent, AddStockAlertViewModel viewModel)
         {
             this.ParentDlg = parent;
             this.ViewModel = viewModel;
             InitializeComponent();
             this.DataContext = viewModel;
+
+            this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -29,12 +34,38 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.ViewModel.AlertType = (AlertType)tabItem.Tag;
         }
 
-        private void RadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+        private void AlertDefGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
             var gridView = sender as RadGridView;
             var alertDef = gridView.SelectedItem as StockAlertDef;
+            if (alertDef == null)
+                return;
 
             this.ViewModel.Init(alertDef);
+        }
+
+        private void SelectedAlertGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+        {
+            var gridView = sender as RadGridView;
+            var alertDef = gridView.SelectedItem as SelectedAlertDef;
+            if (alertDef == null)
+                return;
+
+            alertDef.IsSelected = !alertDef.IsSelected;
+        }
+
+        private void AlertGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
+        {
+            var gridView = sender as RadGridView;
+            var alertValue = gridView.SelectedItem as StockAlertValue;
+            if (alertValue == null)
+                return;
+
+            this.ParentDlg.TopMost = true;
+            StockAnalyzerForm.MainFrame.Activate();
+
+            this.SelectedStockAndDurationChanged(alertValue.StockSerie.StockName, alertValue.AlertDef.BarDuration, alertValue.AlertDef.Theme, true);
+            this.ParentDlg.TopMost = false;
         }
     }
 }

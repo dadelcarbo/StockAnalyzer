@@ -63,7 +63,6 @@
                 <telerik:GridViewCheckBoxColumn Header="SRD_LO" DataMemberBinding="{Binding SRD_LO}"/>
 
                 <telerik:GridViewDataColumn Header="SectorId" DataMemberBinding="{Binding SectorId}"/>
-                <telerik:GridViewDataColumn Header="ProductType" DataMemberBinding="{Binding ProductType}"/>
                 <telerik:GridViewDataColumn Header="Underlying" DataMemberBinding="{Binding Underlying}"/>
                 <telerik:GridViewDataColumn Header="Url" DataMemberBinding="{Binding Url}"/>
 

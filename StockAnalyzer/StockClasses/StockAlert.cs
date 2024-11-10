@@ -46,14 +46,14 @@ namespace StockAnalyzer.StockClasses
 
                 Value = dailyValue.CLOSE,
                 Variation = dailyValue.VARIATION,
-                Exchanged = dailyValue.EXCHANGED,
+                Exchanged = dailyValue.EXCHANGED / 1000000,
 
                 Speed = speedIndicator.Series[0][lastIndex],
                 SpeedFormat = speedIndicator.SerieFormats[0],
 
                 Stok = speedIndicator.Series[0][lastIndex],
 
-                TrailStop = stop,
+                Stop = stop,
                 Highest = highest
             };
         }

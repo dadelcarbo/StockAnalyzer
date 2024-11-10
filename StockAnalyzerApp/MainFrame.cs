@@ -3098,7 +3098,7 @@ namespace StockAnalyzerApp
 
                     var stockName = stockNameTemplate.Replace("%MSG%", alertValue.StockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var stokValue = alertValue.StockSerie.GetIndicator(stokIndicator).Series[0][alertValue.StockSerie.LastIndex];
-                    if (float.IsNaN(alertValue.TrailStop))
+                    if (float.IsNaN(alertValue.Stop))
                     {
                         html += rowTemplate.
                             Replace("%GROUP%", alertValue.StockSerie.StockGroup.ToString()).
@@ -3118,8 +3118,8 @@ namespace StockAnalyzerApp
                             Replace("%COL1%", stockName).
                             Replace("%COL2.1%", alertValue.Speed.ToString(alertValue.SpeedFormat)).
                             Replace("%COL2.2%", stokValue.ToString("#.##")).
-                            Replace("%COL3%", ((alertValue.Value - alertValue.TrailStop) / alertValue.Value).ToString("P2")).
-                            Replace("%COL4%", alertValue.TrailStop.ToString("#.##")).
+                            Replace("%COL3%", ((alertValue.Value - alertValue.Stop) / alertValue.Value).ToString("P2")).
+                            Replace("%COL4%", alertValue.Stop.ToString("#.##")).
                             Replace("%COL5%", alertValue.Variation.ToString("P2")).
                             Replace("%COL6%", alertValue.Value.ToString("#.##")).
                             Replace("%COL7%", alertValue.Highest.ToString());

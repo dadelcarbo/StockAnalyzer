@@ -13,10 +13,11 @@ namespace StockAnalyzer.StockClasses
 
         public float Speed { get; set; }
         public string SpeedFormat { get; set; }
+        public string FormatedSpeed => Speed.ToString(SpeedFormat);
 
         public float Stok { get; set; }
 
-        public float TrailStop { get; set; }
+        public float Stop { get; set; }
 
         public int Highest { get; set; }
     }

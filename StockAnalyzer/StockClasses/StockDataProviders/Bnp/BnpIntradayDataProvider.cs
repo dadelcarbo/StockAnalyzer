@@ -111,9 +111,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bnp
                         return false;
 
                     var priceData = JsonConvert.DeserializeObject<Datum[]>(jsonData, Converter.Settings)?.FirstOrDefault(d => d.id == "price");
-                    if (priceData == null)
+                    if (priceData?.ticks?.Count() == 0)
                     {
-                        MessageBox.Show($"{stockSerie.StockName} download error", "Failed loading data from Bnp");
+                        StockLog.Write($"Failed loading data from Bnp {stockSerie.StockName} download error");
                         return false;
                     }
                     else

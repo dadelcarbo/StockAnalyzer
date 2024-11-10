@@ -526,7 +526,7 @@ namespace StockAnalyzerApp
             // showAlertDefDialogMenuItem
             // 
             this.showAlertDefDialogMenuItem.Name = "showAlertDefDialogMenuItem";
-            this.showAlertDefDialogMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.A)));
+            this.showAlertDefDialogMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.showAlertDefDialogMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showAlertDefDialogMenuItem.Text = "Alert Definition";
             this.showAlertDefDialogMenuItem.Click += showAlertDefDialogMenuItem_Click;
