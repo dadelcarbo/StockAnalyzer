@@ -50,15 +50,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     this.eventSeries[0][i] = true;
                 }
             }
-            if (maxIn >= 1)
-            {
-                FloatSerie indexSerie = new FloatSerie(stockSerie.Count);
-                for (int i = maxIn; i < stockSerie.Count; i++)
-                {
-                    indexSerie[i] = highestSerie.GetMax(i - maxIn, i);
-                }
-                this.series[0] = indexSerie;
-            }
         }
         static readonly string[] eventNames = new string[] { "NewHigh" };
         public override string[] EventNames => eventNames;
