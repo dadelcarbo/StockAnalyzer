@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         static readonly bool[] isEvent = new bool[] { true, false };
         public override bool[] IsEvent => isEvent;
 
-        public override Pen[] SeriePens => seriePens ?? new Pen[] { new Pen(Color.Green) { Width = 1 }, new Pen(Color.DarkRed) { Width = 1 } };
+        public override Pen[] SeriePens => seriePens ?? new Pen[] { new Pen(Color.Green) { Width = 1 } };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -82,11 +82,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                             if (range > maxConsoRatio)
                             {
                                 inBox = false;
-
-                                boxLow = boxHigh * (1 - maxConsoRatio * ror);
-                                var box = new Box(new PointF(boxStartIndex, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[1], Fill = true };
-                                this.DrawingItems.Insert(0, box);
-
                                 continue;
                             } // Box range too big
                         }
