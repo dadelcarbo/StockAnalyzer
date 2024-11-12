@@ -2809,14 +2809,14 @@ namespace StockAnalyzer.StockClasses
             if (StockGroup == group || group == Groups.ALL)
                 return true;
 
-            if (DataProvider == StockDataProvider.ABC)
-                return ABCDataProvider.BelongsToGroup(this, group);
-
             switch (group)
             {
                 case Groups.SAXO:
                     return this.SaxoId > 0;
             }
+
+            if (DataProvider == StockDataProvider.ABC)
+                return ABCDataProvider.BelongsToGroup(this, group);
 
             return false;
         }

@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog"
              xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
@@ -35,9 +36,21 @@
                             <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding AlertDef.Theme}" IsReadOnly="True"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
-                    <Button Grid.Column="1" Height="26" Width="26" Margin="2" Command="{Binding RunAlertCommand}" VerticalAlignment="Top" Visibility="{Binding RunAlertVisibility}">
-                        <Image Source="../../../Resources/ButtonPlay.png"/>
-                    </Button>
+                    <StackPanel Grid.Column="1" >
+                        <Button Height="26" Width="26" Margin="2" Command="{Binding RunAlertCommand}" VerticalAlignment="Top" Visibility="{Binding RunAlertVisibility}">
+                            <Image Source="../../../Resources/ButtonPlay.png"/>
+                        </Button>
+                        <Button Height="26" Width="26" Margin="2" VerticalAlignment="Top" Visibility="{Binding RunAlertVisibility}"
+                                ToolTip="Select All"
+                                Command="{Binding SelectAllCommand}" CommandParameter="Select" >
+                            <CheckBox IsChecked="True" IsEnabled="False"/>
+                        </Button>
+                        <Button Height="26" Width="26" Margin="2" VerticalAlignment="Top" Visibility="{Binding RunAlertVisibility}"
+                                ToolTip="Unselect All"
+                                Command="{Binding SelectAllCommand}" CommandParameter="Unselect">
+                            <CheckBox IsChecked="False" IsEnabled="False"/>
+                        </Button>
+                    </StackPanel>
                 </Grid>
                 <telerik:RadGridView Grid.Row="1" FontSize="9" Margin="2" ItemsSource="{Binding Alerts}"
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" IsReadOnly="True"

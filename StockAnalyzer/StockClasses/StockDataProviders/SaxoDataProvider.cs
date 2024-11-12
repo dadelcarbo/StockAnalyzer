@@ -61,13 +61,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private void InitFromFile(StockDictionary stockDictionary, bool download, string fileName)
         {
             return;
-            string line;
             if (File.Exists(fileName))
             {
                 using var sr = new StreamReader(fileName, true);
                 while (!sr.EndOfStream)
                 {
-                    line = sr.ReadLine();
+                    var line = sr.ReadLine();
                     if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
                     if (line.StartsWith("$")) break;
 

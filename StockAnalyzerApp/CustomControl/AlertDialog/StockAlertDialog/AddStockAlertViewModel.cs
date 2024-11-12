@@ -32,7 +32,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.BrokenUp = true;
             this.alertType = AlertType.Group;
             this.allAlertDefs = StockAlertDef.AlertDefs;
-            this.SelectedAlerts = StockAlertDef.AlertDefs.Select(a => new SelectedAlertDef { AlertDef = a, IsSelected = a.InAlert }).ToList();
+            this.SelectedAlerts = StockAlertDef.AlertDefs.Select(a => new SelectedAlertDef { AlertDef = a, IsSelected = a.InReport }).ToList();
             this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
             this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
             if (this.Theme.Contains("*"))
@@ -353,7 +353,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         }
 
         #endregion
-
         #region Delete Alert Command
 
         private bool isDeleteEnabled;
@@ -419,7 +418,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             }
         }
 
-        private void RunAlert()
+        public void RunAlert()
         {
             RunAlertVisibility = Visibility.Collapsed;
             Task.Run(() =>
@@ -432,6 +431,28 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
                 RunAlertVisibility = Visibility.Visible;
             });
+        }
+        #endregion
+        #region Select All COMMAND
+
+        private ParamCommandBase<string> selectAllCommand;
+
+        public ICommand SelectAllCommand
+        {
+            get
+            {
+                selectAllCommand ??= new ParamCommandBase<string>(SelectAll);
+                return selectAllCommand;
+            }
+        }
+
+        public void SelectAll(string select)
+        {
+            bool selectBool = select == "Select";
+            foreach (var item in this.SelectedAlerts)
+            {
+                item.IsSelected = selectBool;
+            }
         }
         #endregion
 

@@ -24,6 +24,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             _action?.Invoke();
         }
     }
+    public class ParamCommandBase<T> : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public ParamCommandBase(Action<T> action)
+        {
+            _action = action;
+        }
+
+        private readonly Action<T> _action;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            _action?.Invoke((T)parameter);
+        }
+    }
     public class CommandBase<T> : ICommand where T : INotifyPropertyChanged
     {
         public event EventHandler CanExecuteChanged;
