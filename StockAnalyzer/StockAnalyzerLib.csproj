@@ -282,6 +282,8 @@
     <Compile Include="StockClasses\StockDataProviders\Yahoo\YahooJson.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
     <Compile Include="StockClasses\StockSortedDictionary.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXEMABREAKOUT.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXBREAKOUT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXNEW.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_ROB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_NEARTOP.cs" />
