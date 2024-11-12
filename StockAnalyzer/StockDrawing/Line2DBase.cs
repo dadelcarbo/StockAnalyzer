@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Windows;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockDrawing
@@ -21,6 +23,10 @@ namespace StockAnalyzer.StockDrawing
         public float VX => Point2.X - Point1.X;
         public float VY => Point2.Y - Point1.Y;
 
+        public float Length => (float)Math.Sqrt((Point1.X - Point2.X) * (Point1.X - Point2.X) + (Point1.Y - Point2.Y) * (Point1.Y - Point2.Y));
+
+        public float Slope => this.VY / Length;
+
         public float a
         {
             get
@@ -29,7 +35,6 @@ namespace StockAnalyzer.StockDrawing
                 else { return VY / VX; }
             }
         }
-
 
         public Line2DBase()
         {

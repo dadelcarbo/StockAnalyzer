@@ -18,14 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500) };
 
         public override string[] SerieNames => new string[] { };
-        public override System.Drawing.Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { };
-                return seriePens;
-            }
-        }
+        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { };
 
         static readonly Pen supportPen = new Pen(Brushes.DarkRed, 3) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot };
         static readonly Pen resistancePen = new Pen(Brushes.DarkGreen, 3) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot };
@@ -34,8 +27,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             var period = (int)this.parameters[0];
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
-            var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+            var bodyHighSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            var bodyLowSerie = stockSerie.GetSerie(StockDataType.LOW);
 
             var highestInSerie = stockSerie.GetIndicator($"HIGHEST({period})").Series[0];
             var lowestInSerie = stockSerie.GetIndicator($"LOWEST({period})").Series[0];

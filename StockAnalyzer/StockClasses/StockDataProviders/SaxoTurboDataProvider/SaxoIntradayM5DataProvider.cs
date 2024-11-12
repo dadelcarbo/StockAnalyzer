@@ -26,6 +26,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
+            return;
             // Create data folder if not existing
             if (!Directory.Exists(DataFolder + ARCHIVE_FOLDER))
             {

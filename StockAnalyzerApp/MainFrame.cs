@@ -653,7 +653,7 @@ namespace StockAnalyzerApp
                     Debug.WriteLine("Cond3");
                     searchCombo.Text = name;
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
-                    this.SetCurrentStock(match.First());
+                    this.SetCurrentStock(match.First().ToUpper());
                 }
                 else
                 {
@@ -2664,14 +2664,7 @@ namespace StockAnalyzerApp
 
         #region REPORTING
 
-        class ReportSerie
-        {
-            public float rank;
-            public float stok;
-            public float trailStop;
-            public StockSerie stockSerie;
-            public int highest;
-        }
+
 
         public string GeneratePortfolioReportHtml(StockPortfolio portfolio)
         {
@@ -2898,9 +2891,9 @@ namespace StockAnalyzerApp
             this.ViewModel.BarDuration = previousBarDuration;
             this.ViewModel.IsHistoryActive = true;
         }
-        private void GenerateReport(BarDuration duration)
+        public void GenerateReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
         {
-            var alertDefs = StockAlertDef.AlertDefs.Where(a => a.BarDuration == duration).ToList();
+            alertDefs ??= StockAlertDef.AlertDefs.Where(a => a.BarDuration == duration).ToList();
             if (alertDefs.Count == 0)
                 return;
             this.ViewModel.IsHistoryActive = false;
@@ -2936,18 +2929,6 @@ namespace StockAnalyzerApp
             foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group && a.Title != "Watchlist").OrderBy(a => a.Rank))
             {
                 htmlAlerts += GenerateAlertTable(alertDef, nbLeaders);
-            }
-
-            // Report Watchlist
-            var watchlistAlertDef = alertDefs.FirstOrDefault(a => a.Title == "Watchlist");
-            if (watchlistAlertDef != null)
-            {
-                var wl = this.WatchLists.FirstOrDefault(w => w.Name == "I&E France");
-                if (wl != null)
-                {
-                    var stockList = StockDictionary.Values.Where(s => wl.StockList.Contains(s.StockName));
-                    htmlAlerts += GenerateReportTable(watchlistAlertDef, 100, stockList);
-                }
             }
             htmlBody += htmlAlerts;
 
@@ -3044,11 +3025,10 @@ namespace StockAnalyzerApp
         const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h2><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
         private string GenerateAlertTable(StockAlertDef alertDef, int nbStocks)
         {
-            var stockList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group));
-            return GenerateReportTable(alertDef, nbStocks, stockList);
+            return GenerateReportTable(alertDef, nbStocks);
         }
 
-        private string GenerateReportTable(StockAlertDef alertDef, int nbStocks, IEnumerable<StockSerie> stockList)
+        private string GenerateReportTable(StockAlertDef alertDef, int nbStocks)
         {
             const string rowTemplate = @"
          <tr>
@@ -3068,58 +3048,21 @@ namespace StockAnalyzerApp
             try
             {
                 StockSplashScreen.ProgressText = alertDef.Title + " " + alertDef.BarDuration + " for " + alertDef.Group;
-                var reportSeries = new List<ReportSerie>();
-
-                StockSplashScreen.ProgressVal = 0;
-                StockSplashScreen.ProgressMax = stockList.Count();
-                StockSplashScreen.ProgressMin = 0;
 
                 var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
-                var rankFormat = rankIndicator.Contains("RO") ? "P2" : "#.##";
                 var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
 
-                foreach (StockSerie stockSerie in stockList)
+                var alerts = StockDictionary.Instance.MatchAlert(alertDef);
+
+                StockSplashScreen.ProgressVal = 0;
+                StockSplashScreen.ProgressMax = alerts.Count();
+                StockSplashScreen.ProgressMin = 0;
+
+                var alertValues = new List<StockAlertValue>();
+                foreach (var alert in alerts)
                 {
                     StockSplashScreen.ProgressVal++;
-                    if (stockSerie.Initialise())
-                    {
-                        stockSerie.BarDuration = alertDef.BarDuration;
-                        if (stockSerie.Count < 30)
-                            continue;
-
-                        if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
-                        {
-                            if (!stockSerie.HasLiquidity(alertDef.MinLiquidity, 10))
-                            {
-                                continue;
-                            }
-                        }
-
-                        var values = stockSerie.ValueArray;
-                        var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
-                        var dailyValue = values.ElementAt(lastIndex);
-                        if (stockSerie.MatchEvent(alertDef))
-                        {
-                            float stop = float.NaN;
-                            if (!string.IsNullOrEmpty(alertDef.Stop))
-                            {
-                                var trailStopSerie = stockSerie.GetTrailStop(alertDef.Stop)?.Series[0];
-                                if (trailStopSerie != null)
-                                {
-                                    stop = trailStopSerie[lastIndex];
-                                }
-                            }
-                            var rankSerie = stockSerie.GetIndicator(rankIndicator).Series[0];
-                            var highest = stockSerie.GetSerie(StockDataType.BODYHIGH).GetHighestIn(lastIndex, dailyValue.CLOSE);
-                            reportSeries.Add(new ReportSerie()
-                            {
-                                rank = rankSerie[lastIndex],
-                                trailStop = stop,
-                                stockSerie = stockSerie,
-                                highest = highest
-                            });
-                        }
-                    }
+                    alertValues.Add(alert.GetAlertValue());
                 }
 
                 var tableHeader = $"{alertDef.Title}<br/>Stop: {alertDef.Stop}";
@@ -3145,42 +3088,41 @@ namespace StockAnalyzerApp
                 <tbody>";
 
                 this.CurrentTheme = alertDef.Theme;
-                foreach (var reportSerie in reportSeries.OrderByDescending(l => l.rank).Take(nbStocks))
+                foreach (var alertValue in alertValues.OrderByDescending(l => l.Speed).Take(nbStocks))
                 {
                     // Generate Snapshot
-                    this.OnSelectedStockAndDurationChanged(reportSerie.stockSerie.StockName, (StockAnalyzer.StockClasses.BarDuration)alertDef.BarDuration, false);
+                    this.OnSelectedStockAndDurationChanged(alertValue.StockSerie.StockName, (StockAnalyzer.StockClasses.BarDuration)alertDef.BarDuration, false);
                     // StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{trailStopIndicatorName}");
 
                     var bitmapString = this.SnapshotAsHtml();
 
-                    var stockName = stockNameTemplate.Replace("%MSG%", reportSerie.stockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
-                    var lastValue = reportSerie.stockSerie.ValueArray[reportSerie.stockSerie.LastIndex];
-                    var stokValue = reportSerie.stockSerie.GetIndicator(stokIndicator).Series[0][reportSerie.stockSerie.LastIndex];
-                    if (float.IsNaN(reportSerie.trailStop))
+                    var stockName = stockNameTemplate.Replace("%MSG%", alertValue.StockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
+                    var stokValue = alertValue.StockSerie.GetIndicator(stokIndicator).Series[0][alertValue.StockSerie.LastIndex];
+                    if (float.IsNaN(alertValue.Stop))
                     {
                         html += rowTemplate.
-                            Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
+                            Replace("%GROUP%", alertValue.StockSerie.StockGroup.ToString()).
                             Replace("%COL1%", stockName).
-                            Replace("%COL2.1%", reportSerie.rank.ToString(rankFormat)).
+                            Replace("%COL2.1%", alertValue.Speed.ToString(alertValue.SpeedFormat)).
                             Replace("%COL2.2%", stokValue.ToString("#.##")).
                             Replace("%COL3%", "").
                             Replace("%COL4%", "").
-                            Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
-                            Replace("%COL6%", lastValue.CLOSE.ToString("#.##")).
-                            Replace("%COL7%", reportSerie.highest.ToString());
+                            Replace("%COL5%", alertValue.Variation.ToString("P2")).
+                            Replace("%COL6%", alertValue.Value.ToString("#.##")).
+                            Replace("%COL7%", alertValue.Highest.ToString());
                     }
                     else
                     {
                         html += rowTemplate.
-                            Replace("%GROUP%", reportSerie.stockSerie.StockGroup.ToString()).
+                            Replace("%GROUP%", alertValue.StockSerie.StockGroup.ToString()).
                             Replace("%COL1%", stockName).
-                            Replace("%COL2.1%", reportSerie.rank.ToString(rankFormat)).
+                            Replace("%COL2.1%", alertValue.Speed.ToString(alertValue.SpeedFormat)).
                             Replace("%COL2.2%", stokValue.ToString("#.##")).
-                            Replace("%COL3%", ((lastValue.CLOSE - reportSerie.trailStop) / lastValue.CLOSE).ToString("P2")).
-                            Replace("%COL4%", reportSerie.trailStop.ToString("#.##")).
-                            Replace("%COL5%", lastValue.VARIATION.ToString("P2")).
-                            Replace("%COL6%", lastValue.CLOSE.ToString("#.##")).
-                            Replace("%COL7%", reportSerie.highest.ToString());
+                            Replace("%COL3%", ((alertValue.Value - alertValue.Stop) / alertValue.Value).ToString("P2")).
+                            Replace("%COL4%", alertValue.Stop.ToString("#.##")).
+                            Replace("%COL5%", alertValue.Variation.ToString("P2")).
+                            Replace("%COL6%", alertValue.Value.ToString("#.##")).
+                            Replace("%COL7%", alertValue.Highest.ToString());
                     }
                 }
                 html += @"
@@ -3850,45 +3792,35 @@ namespace StockAnalyzerApp
         }
         #endregion
         #region ALERT DIALOG
-        AlertDlg alertDlg = null;
-        void showAlertDialogMenuItem_Click(object sender, EventArgs e)
+        AddStockAlertDlg alertDefDlg = null;
+        public void showAlertDefDialogMenuItem_Click(object sender, EventArgs e)
         {
-            if (alertDlg == null)
+            if (alertDefDlg == null)
             {
-                alertDlg = new AlertDlg();
-                alertDlg.alertControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                alertDlg.alertControl1.SelectedStockAndThemeChanged += OnSelectedStockAndDurationAndThemeChanged;
-                alertDlg.Disposed += delegate
+                var viewModel = new AddStockAlertViewModel()
                 {
-                    alertDlg.alertControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
-                    alertDlg.alertControl1.SelectedStockAndThemeChanged -= OnSelectedStockAndDurationAndThemeChanged;
-                    this.alertDlg = null;
+                    StockName = this.CurrentStockSerie.StockName,
+                    Group = StockAnalyzerForm.MainFrame.Group,
+                    BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
+                    IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
                 };
-                alertDlg.Show();
+                viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
+                viewModel.Stop = viewModel.StopNames?.FirstOrDefault();
+
+                alertDefDlg = new AddStockAlertDlg(viewModel);
+                alertDefDlg.Disposed += delegate
+                {
+                    this.alertDefDlg = null;
+                };
+                alertDefDlg.Show();
             }
             else
             {
-                alertDlg.WindowState = FormWindowState.Normal;
-                alertDlg.Activate();
-                alertDlg.TopMost = true;
-                alertDlg.TopMost = false;
+                alertDefDlg.WindowState = FormWindowState.Normal;
+                alertDefDlg.Activate();
+                alertDefDlg.TopMost = true;
+                alertDefDlg.TopMost = false;
             }
-        }
-        void showAlertDefDialogMenuItem_Click(object sender, EventArgs e)
-        {
-            var viewModel = new AddStockAlertViewModel()
-            {
-                StockName = this.CurrentStockSerie.StockName,
-                Group = StockAnalyzerForm.MainFrame.Group,
-                BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
-                IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
-            };
-            viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
-            viewModel.Stop = viewModel.StopNames?.FirstOrDefault();
-
-            AddStockAlertDlg addAlertDlg = null;
-            addAlertDlg = new AddStockAlertDlg(viewModel);
-            addAlertDlg.ShowDialog();
         }
         #endregion
         #region DRAWING DIALOG

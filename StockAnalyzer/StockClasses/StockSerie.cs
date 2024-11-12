@@ -98,7 +98,6 @@ namespace StockAnalyzer.StockClasses
         public bool SRD_LO { get; set; }
         public int SectorId { get; set; }
 
-        public string ProductType { get; set; }
         public string Underlying { get; set; }
         public string Url { get; set; }
         public Groups StockGroup { get; private set; }

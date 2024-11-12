@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
@@ -1661,6 +1662,41 @@ namespace StockAnalyzer.StockClasses
                 return Instance[stockName];
             }
             return Instance.Values.FirstOrDefault(s => s.ISIN == isin);
+        }
+        public List<StockAlert> MatchAlert(StockAlertDef alertDef)
+        {
+            var alerts = new List<StockAlert>();
+            foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
+            {
+                if (stockSerie.Initialise())
+                {
+                    stockSerie.BarDuration = alertDef.BarDuration;
+                    if (stockSerie.Count < 30)
+                        continue;
+
+                    if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
+                    {
+                        if (!stockSerie.HasLiquidity(alertDef.MinLiquidity, 10))
+                        {
+                            continue;
+                        }
+                    }
+
+                    var values = stockSerie.ValueArray;
+                    var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
+                    var dailyValue = values.ElementAt(lastIndex);
+                    if (stockSerie.MatchEvent(alertDef))
+                    {
+                        alerts.Add(new StockAlert
+                        {
+                            AlertDef = alertDef,
+                            Date = dailyValue.DATE,
+                            StockSerie = stockSerie
+                        });
+                    }
+                }
+            }
+            return alerts;
         }
     }
 }

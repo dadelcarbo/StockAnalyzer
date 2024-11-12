@@ -244,6 +244,7 @@
     <Compile Include="StockAgent\StockPortfolioAgentBase.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
+    <Compile Include="StockClasses\StockAlertValue.cs" />
     <Compile Include="StockClasses\StockDataProviders\Bnp\BnpIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Bnp\BnpModel.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoIntradayDataProvider.cs" />
@@ -402,7 +403,6 @@
     <Compile Include="StockAgent\Agents\StupidAgent.cs" />
     <Compile Include="StockAnalyzer.cs" />
     <Compile Include="StockClasses\StockAlertDef.cs" />
-    <Compile Include="StockClasses\StockAlertLog.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
     <Compile Include="StockClasses\BarDuration.cs" />
     <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />

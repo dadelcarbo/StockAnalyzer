@@ -5,13 +5,23 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 {
+    public class SelectedAlertDef : NotifyPropertyChangedBase
+    {
+        public StockAlertDef AlertDef { get; set; }
+
+        private bool isSelected;
+        public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
+    }
+
     public class AddStockAlertViewModel : NotifyPropertyChangedBase
     {
         public AddStockAlertViewModel()
@@ -22,10 +32,13 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.BrokenUp = true;
             this.alertType = AlertType.Group;
             this.allAlertDefs = StockAlertDef.AlertDefs;
+            this.SelectedAlerts = StockAlertDef.AlertDefs.Select(a => new SelectedAlertDef { AlertDef = a, IsSelected = a.InAlert }).ToList();
             this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
             this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
             if (this.Theme.Contains("*"))
                 this.Theme = this.Themes.FirstOrDefault();
+
+            RunAlertVisibility = Visibility.Visible;
         }
 
         internal void Init(StockAlertDef alertDef)
@@ -239,6 +252,10 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             }
         }
 
+        public ObservableCollection<StockAlertValue> Alerts { get; set; } = new ObservableCollection<StockAlertValue>();
+
+        public IEnumerable<SelectedAlertDef> SelectedAlerts { get; set; }
+
         private int alertId = -1;
         public int AlertId
         {
@@ -330,6 +347,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
             if (File.Exists(fileName))
                 File.Delete(fileName);
+
+            this.SelectedAlerts = StockAlertDef.AlertDefs.Select(a => new SelectedAlertDef { AlertDef = a }).ToList();
+            this.OnPropertyChanged("SelectedAlerts");
         }
 
         #endregion
@@ -385,6 +405,36 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Clear();
         }
         #endregion
+        #region Run ALERT COMMAND
+
+        private CommandBase runAlertCommand;
+
+        public ICommand RunAlertCommand
+        {
+            get
+            {
+                runAlertCommand ??= new CommandBase(RunAlert);
+
+                return runAlertCommand;
+            }
+        }
+
+        private void RunAlert()
+        {
+            RunAlertVisibility = Visibility.Collapsed;
+            Task.Run(() =>
+            {
+                this.Alerts.Clear();
+                foreach (var alert in this.SelectedAlerts.Where(s => s.IsSelected).SelectMany(s => StockDictionary.Instance.MatchAlert(s.AlertDef)))
+                {
+                    this.Alerts.Add(alert.GetAlertValue());
+                }
+
+                RunAlertVisibility = Visibility.Visible;
+            });
+        }
+        #endregion
+
         private void Clear()
         {
             this.AlertId = -1;
@@ -398,5 +448,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.FilterEvent = null;
             this.FilterDuration = BarDuration.Daily;
         }
+
+        private Visibility runAlertVisibility;
+
+        public Visibility RunAlertVisibility { get => runAlertVisibility; set => SetProperty(ref runAlertVisibility, value); }
     }
 }

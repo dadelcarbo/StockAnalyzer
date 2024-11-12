@@ -70,7 +70,6 @@ namespace StockAnalyzerApp
             this.showHorseRaceViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.marketReplayViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.multipleTimeFrameViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showAlertDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showAlertDefDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawingDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
@@ -524,18 +523,10 @@ namespace StockAnalyzerApp
             this.multipleTimeFrameViewMenuItem.Text = "Multiple Time Frame View";
             this.multipleTimeFrameViewMenuItem.Click += multipleTimeFrameViewMenuItem_Click;
             // 
-            // showAlertDialogMenuItem
-            // 
-            this.showAlertDialogMenuItem.Name = "showAlertDialogMenuItem";
-            this.showAlertDialogMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.showAlertDialogMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.showAlertDialogMenuItem.Text = "Alert View";
-            this.showAlertDialogMenuItem.Click += showAlertDialogMenuItem_Click;
-            // 
             // showAlertDefDialogMenuItem
             // 
             this.showAlertDefDialogMenuItem.Name = "showAlertDefDialogMenuItem";
-            this.showAlertDefDialogMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.A)));
+            this.showAlertDefDialogMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.showAlertDefDialogMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showAlertDefDialogMenuItem.Text = "Alert Definition";
             this.showAlertDefDialogMenuItem.Click += showAlertDefDialogMenuItem_Click;
@@ -578,7 +569,6 @@ namespace StockAnalyzerApp
                 this.agentTunningMenuItem,
                 this.portfolioSimulationMenuItem,
                 this.toolStripSeparator8,
-                this.showAlertDialogMenuItem,
                 this.showAlertDefDialogMenuItem,
                 this.tweetMenuItem,
                 this.sectorMenuItem,
@@ -1623,7 +1613,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showHorseRaceViewMenuItem;
         private ToolStripMenuItem marketReplayViewMenuItem;
         private ToolStripMenuItem multipleTimeFrameViewMenuItem;
-        private ToolStripMenuItem showAlertDialogMenuItem;
         private ToolStripMenuItem showAlertDefDialogMenuItem;
         private ToolStripMenuItem drawingDialogMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;

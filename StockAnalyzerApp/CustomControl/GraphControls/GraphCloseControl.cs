@@ -1004,7 +1004,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             foreach (var text in stockTexts.Where(t => !t.AbovePrice && t.Index > this.StartIndex && t.Index <= this.EndIndex))
             {
-                var point = float.IsNaN(text.Price) ? GetScreenPointFromValuePoint(text.Index, this.lowCurveType.DataSerie[text.Index]): GetScreenPointFromValuePoint(text.Index, text.Price);
+                var point = float.IsNaN(text.Price) ? GetScreenPointFromValuePoint(text.Index, this.lowCurveType.DataSerie[text.Index]) : GetScreenPointFromValuePoint(text.Index, text.Price);
                 this.DrawString(g, text.Text, axisFont, textBrush, point.X, point.Y + 5, false);
             }
         }
@@ -1792,6 +1792,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 point2 = new PointF(mouseValuePoint.X, point1.Y);
             }
+            if (point2 == point1)
+                return;
             switch (this.DrawingMode)
             {
                 case GraphDrawMode.AddLine:
@@ -2358,7 +2360,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             FloatSerie lowSerie = lowCurveType.DataSerie;
             segment1 = new Segment2D(mouseValuePoint.X, mouseValuePoint.Y, selectedIndex, highSerie[selectedIndex]);
             segment2 = new Segment2D(mouseValuePoint.X, mouseValuePoint.Y, selectedIndex, lowSerie[selectedIndex]);
-            if (segment1.Length() < segment2.Length())
+            if (segment1.Length < segment2.Length)
             {
                 returnPoint = new PointF(selectedIndex, highSerie[selectedIndex]);
             }
@@ -2427,22 +2429,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             return index;
         }
         #endregion
-
         #region Order Management
         void addAlertMenu_Click(object sender, System.EventArgs e)
         {
-            var viewModel = new AddStockAlertViewModel()
-            {
-                StockName = this.serie.StockName,
-                Group = StockAnalyzerForm.MainFrame.Group,
-                BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
-                IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
-            };
-            viewModel.TriggerName = viewModel.IndicatorNames?.FirstOrDefault();
-            viewModel.Stop = viewModel.StopNames?.FirstOrDefault();
-
-            var addAlertDlg = new AddStockAlertDlg(viewModel) { StartPosition = FormStartPosition.CenterScreen };
-            addAlertDlg.ShowDialog();
+            StockAnalyzerForm.MainFrame.showAlertDefDialogMenuItem_Click(this, null);
         }
         float FindStopValueFromTheme()
         {

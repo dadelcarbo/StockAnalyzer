@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockDrawing
             if (point != point3)
             {
                 Segment2D segment = new Segment2D(point, point3);
-                return segment.Length();
+                return segment.Length;
             }
             else
             {

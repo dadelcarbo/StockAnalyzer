@@ -18,16 +18,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public override ParamRange[] ParameterRanges => new ParamRange[] { };
 
         static string[] eventNames = null;
-        public override string[] EventNames
-        {
-            get
-            {
-                eventNames ??= new string[] { "ResistanceBroken", "SupportBroken" };
-                return eventNames;
-            }
-        }
+        public override string[] EventNames => eventNames ??= new string[] { "ResistanceBroken", "SupportBroken", "HasDrawing" };
 
-        static readonly bool[] isEvent = new bool[] { true, true };
+        static readonly bool[] isEvent = new bool[] { true, true, false };
         public override bool[] IsEvent => isEvent;
 
         public override System.Drawing.Pen[] SeriePens => new Pen[] { };
@@ -40,7 +33,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {
-                var drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di.IsPersistent && di is Line2DBase);
+                var drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di.IsPersistent && di is Line2DBase).ToList();
+                this.Events[2][stockSerie.LastIndex] = drawingItems.Count > 0;
+                this.Events[2][stockSerie.LastCompleteIndex] = drawingItems.Count > 0;
+
                 foreach (Line2DBase item in drawingItems)
                 {
                     for (int i = (int)Math.Max(item.Point1.X, item.Point2.X); i < stockSerie.Count; i++)
