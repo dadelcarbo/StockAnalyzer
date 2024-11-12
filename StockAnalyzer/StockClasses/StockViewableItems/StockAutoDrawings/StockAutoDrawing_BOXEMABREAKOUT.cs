@@ -82,6 +82,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                             if (range > maxConsoRatio)
                             {
                                 inBox = false;
+
+                                boxLow = boxHigh * (1 - maxConsoRatio * ror);
+                                var box = new Box(new PointF(boxStartIndex, boxHigh), new PointF(i, boxLow)) { Pen = this.SeriePens[1], Fill = true };
+                                this.DrawingItems.Insert(0, box);
+
                                 continue;
                             } // Box range too big
                         }
