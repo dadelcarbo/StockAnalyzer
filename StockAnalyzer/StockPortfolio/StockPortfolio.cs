@@ -609,7 +609,7 @@ namespace StockAnalyzer.StockPortfolio
             else
             {
                 var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
-                if (this.AccountValue.Last().Date < lastCacDate)
+                if (this.AccountValue.Last().Date <= lastCacDate)
                 {
                     var newAccountValues = accountService.GetAccountValue(account, this.AccountValue.Last().Date);
                     if (newAccountValues != null && newAccountValues.Length > 0)

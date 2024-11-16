@@ -38,7 +38,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             if (this.Theme.Contains("*"))
                 this.Theme = this.Themes.FirstOrDefault();
 
-            RunAlertVisibility = Visibility.Visible;
+            RunAlertEnabled = true;
         }
 
         internal void Init(StockAlertDef alertDef)
@@ -420,16 +420,21 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         public void RunAlert()
         {
-            RunAlertVisibility = Visibility.Collapsed;
+            RunAlertEnabled = false;
             Task.Run(() =>
             {
                 this.Alerts.Clear();
-                foreach (var alert in this.SelectedAlerts.Where(s => s.IsSelected).SelectMany(s => StockDictionary.Instance.MatchAlert(s.AlertDef)))
+                foreach (var alertDef in this.SelectedAlerts.Where(s => s.IsSelected).Select(s=>s.AlertDef))
                 {
-                    this.Alerts.Add(alert.GetAlertValue());
+                    CurrentAlert = alertDef;
+                    foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
+                    {
+                        this.Alerts.Add(alert.GetAlertValue());
+                    }
                 }
 
-                RunAlertVisibility = Visibility.Visible;
+                RunAlertEnabled = true;
+                CurrentAlert = null;
             });
         }
         #endregion
@@ -471,7 +476,23 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         }
 
         private Visibility runAlertVisibility;
+        public Visibility RunAlertVisibility { get => runAlertVisibility; }
 
-        public Visibility RunAlertVisibility { get => runAlertVisibility; set => SetProperty(ref runAlertVisibility, value); }
+        private bool runAlertEnabled;
+        public bool RunAlertEnabled
+        {
+            get => runAlertEnabled;
+            set
+            {
+                if (value != runAlertEnabled)
+                {
+                    SetProperty(ref runAlertVisibility, value ? Visibility.Visible : Visibility.Collapsed, "RunAlertVisibility");
+                    SetProperty(ref runAlertEnabled, value);
+                }
+            }
+        }
+
+        private StockAlertDef currentAlert;
+        public StockAlertDef CurrentAlert { get => currentAlert; set => SetProperty(ref currentAlert, value); }
     }
 }

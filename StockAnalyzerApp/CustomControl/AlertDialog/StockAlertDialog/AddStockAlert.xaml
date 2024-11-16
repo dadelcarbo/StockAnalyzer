@@ -36,20 +36,25 @@
                             <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding AlertDef.Theme}" IsReadOnly="True"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
-                    <StackPanel Grid.Column="1" >
-                        <Button Height="26" Width="26" Margin="2" Command="{Binding RunAlertCommand}" VerticalAlignment="Top" Visibility="{Binding RunAlertVisibility}">
-                            <Image Source="../../../Resources/ButtonPlay.png"/>
-                        </Button>
-                        <Button Height="26" Width="26" Margin="2" VerticalAlignment="Top" Visibility="{Binding RunAlertVisibility}"
+                    <StackPanel Grid.Column="1" MinWidth="200" >
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+                            <Button Height="26" Width="26" Margin="2" Command="{Binding RunAlertCommand}" IsEnabled="{Binding RunAlertEnabled}">
+                                <Image Source="../../../Resources/ButtonPlay.png"/>
+                            </Button>
+                            <Button Height="26" Width="26" Margin="2" Visibility="{Binding RunAlertVisibility}"
                                 ToolTip="Select All"
                                 Command="{Binding SelectAllCommand}" CommandParameter="Select" >
-                            <CheckBox IsChecked="True" IsEnabled="False"/>
-                        </Button>
-                        <Button Height="26" Width="26" Margin="2" VerticalAlignment="Top" Visibility="{Binding RunAlertVisibility}"
+                                <CheckBox IsChecked="True" IsEnabled="False"/>
+                            </Button>
+                            <Button Height="26" Width="26" Margin="2" Visibility="{Binding RunAlertVisibility}"
                                 ToolTip="Unselect All"
                                 Command="{Binding SelectAllCommand}" CommandParameter="Unselect">
-                            <CheckBox IsChecked="False" IsEnabled="False"/>
-                        </Button>
+                                <CheckBox IsChecked="False" IsEnabled="False"/>
+                            </Button>
+                        </StackPanel>
+                        <Label Content="{Binding CurrentAlert.Title}"/>
+                        <Label Content="{Binding CurrentAlert.BarDuration}"/>
+                        <Label Content="{Binding CurrentAlert.Group}"/>
                     </StackPanel>
                 </Grid>
                 <telerik:RadGridView Grid.Row="1" FontSize="9" Margin="2" ItemsSource="{Binding Alerts}"
