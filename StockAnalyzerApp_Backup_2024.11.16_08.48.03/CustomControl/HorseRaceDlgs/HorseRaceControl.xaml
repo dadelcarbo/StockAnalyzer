@@ -1,0 +1,191 @@
+﻿<UserControl xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.HorseRaceDlgs" 
+             x:Class="StockAnalyzerApp.CustomControl.HorseRaceDlgs.HorseRaceControl" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="UpDownArrow" TargetType="Image">
+                <Setter Property="Source" Value="../../Resources/Up.png"/>
+                <Style.Triggers>
+                    <DataTrigger ></DataTrigger>
+                </Style.Triggers>
+
+            </Style>
+            <Style x:Key="CustomThumbForSlider" TargetType="{x:Type Thumb}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Ellipse Fill="#FF343E24" Stroke="#00000000" Height="10" Width="3" StrokeThickness="0"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="SliderRepeatButtonStyle" TargetType="{x:Type RepeatButton}">
+                <Setter Property="OverridesDefaultStyle" Value="true"/>
+                <Setter Property="IsTabStop" Value="false"/>
+                <Setter Property="Focusable" Value="false"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Rectangle RadiusX="3" RadiusY="3" StrokeThickness="0" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <ControlTemplate x:Key="SliderTemplate" TargetType="{x:Type Slider}">
+                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TickBar x:Name="TopTick" Visibility="Visible" Fill="{TemplateBinding Foreground}" Placement="Top" Height="4" Grid.Row="0"/>
+                        <TickBar x:Name="BottomTick" Visibility="Visible" Fill="{TemplateBinding Foreground}" Placement="Bottom" Height="4" Grid.Row="2"/>
+                        <Border x:Name="TrackBackground" BorderThickness="1" CornerRadius="1"
+                                            Margin="5,0" VerticalAlignment="Center" Height="4.0" Grid.Row="1" >
+                            <Canvas Margin="-6,-1">
+                                <Rectangle Visibility="Hidden" x:Name="PART_SelectionRange" Height="4.0"
+                                                       Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                                                       Stroke="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+                                                       StrokeThickness="1.0"/>
+                            </Canvas>
+                        </Border>
+                        <Track x:Name="PART_Track" Grid.Row="1">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Background="Green"/>
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="{x:Static Slider.IncreaseLarge}" Background="DarkRed"/>
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb x:Name="Thumb" Background="Black" Style="{StaticResource CustomThumbForSlider}"/>
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+
+            <Style x:Key="HorseRaceSlider" TargetType="{x:Type Slider}">
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Template" Value="{StaticResource SliderTemplate}"/>
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="Template" Value="{StaticResource SliderTemplate}"/>
+            </Style>
+
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="28"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" >
+            <Label Content="Start Date" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" 
+                      ItemsSource="{Binding ViewModel.Ranges, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
+                      SelectedItem="{Binding ViewModel.MinIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+            <Label Content="Group" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" 
+                      ItemsSource="{Binding ViewModel.Groups, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
+                      SelectedItem="{Binding ViewModel.Group, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+            <Label Content="Indicator1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160"
+                      Text="{Binding ViewModel.Indicator1Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+            <Label Content="Indicator2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160"
+                      Text="{Binding ViewModel.Indicator2Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+        </StackPanel>
+        <telerik:RadGridView FontSize="9" Name="positionGridView" Grid.Row="1" AutoGenerateColumns="False" CanUserInsertRows="False" 
+                             IsReadOnly="True" RowIndicatorVisibility="Collapsed" ShowGroupPanel="False"
+                             FilterOperatorsLoading="grid_FilterOperatorsLoading" 
+                             ItemsSource="{Binding ViewModel.StockPositions, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}" 
+                             SelectionMode="Single" SelectionChanged="positionGridView_SelectionChanged">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Name, Mode=OneWay}" />
+                <telerik:GridViewDataColumn Header="Close" DataMemberBinding="{Binding Close, Mode=OneWay, StringFormat=\{0:F3\}}"/>
+                <telerik:GridViewDataColumn Header="Indicator1" Width="200"  SortMemberPath="Indicator1" IsReadOnly="True">
+                    <telerik:GridViewDataColumn.CellTemplate>
+                        <DataTemplate>
+                            <Slider Minimum="{Binding MinIndicator1}" Maximum="{Binding MaxIndicator1}" IsEnabled="True" Style="{StaticResource HorseRaceSlider}" 
+                                    Value="{Binding Indicator1, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}"
+                                    TickFrequency="10" TickPlacement="TopLeft">
+                            </Slider>
+                        </DataTemplate>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn Header="Dir1"  SortMemberPath="Indicator1" IsReadOnly="True">
+                    <telerik:GridViewDataColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image >
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="/Resources/Up.png"></Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Indicator1Up}" Value="False">
+                                                <Setter Property="Source" Value="/Resources/Down.png"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </DataTemplate>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn Header="Indicator2" Width="200"  SortMemberPath="Indicator2" IsReadOnly="True">
+                    <telerik:GridViewDataColumn.CellTemplate>
+                        <DataTemplate>
+                            <Slider Minimum="{Binding MinIndicator2}" Maximum="{Binding MaxIndicator2}"  IsEnabled="True" Style="{StaticResource HorseRaceSlider}" 
+                                    Value="{Binding Indicator2, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTip="{Binding Value, RelativeSource={RelativeSource Self}, StringFormat=\{0:F2\}}"
+                                    TickFrequency="5" TickPlacement="TopLeft">
+                            </Slider>
+                        </DataTemplate>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn Header="Dir2" SortMemberPath="Indicator2" IsReadOnly="True">
+                    <telerik:GridViewDataColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image>
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Source" Value="/Resources/Up.png"></Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Indicator2Up}" Value="False">
+                                                <Setter Property="Source" Value="/Resources/Down.png"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </DataTemplate>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+        <Grid Grid.Row="2" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="{Binding ViewModel.MinIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+            <StackPanel></StackPanel>
+            <telerik:RadSlider Grid.Column="1" AutoToolTipPlacement="TopLeft" Margin="2" HandlesVisibility="Visible" SmallChange="1" LargeChange="10"
+                               Value="{Binding ViewModel.Index, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
+                               Minimum="{Binding ViewModel.MinIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
+                               Maximum="{Binding ViewModel.MaxIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"
+                               TickFrequency="10" TickPlacement="TopLeft"  />
+            <Label Grid.Column="2" Content="{Binding ViewModel.MaxIndex, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:HorseRaceControl}}}"/>
+        </Grid>
+    </Grid>
+</UserControl>
