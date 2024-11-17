@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockScreeners;
@@ -14,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
@@ -185,6 +187,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+
+        private float liquidity;
+        public float Liquidity { get { return liquidity; } set { if (liquidity != value) { liquidity = value; OnPropertyChanged("Liquidity"); } } }
+
 
         private string theme;
         public string Theme
@@ -407,7 +413,12 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
                     var endIndex = stockSerie.LastIndex;
+                    var lastBar = stockSerie.Values.ElementAt(endIndex);
 
+                    if (Liquidity == 0 || Liquidity > lastBar.EXCHANGED / 1000000f)
+                    {
+                        continue;
+                    }
 
                     #region Calculate ATH
                     var ath = stockSerie.GetIndicator($"ATH({ath1},{ath2})").Series[0][endIndex] > 0.5f;
@@ -415,15 +426,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         continue;
                     #endregion
 
-
-
-                    var lastBar = stockSerie.Values.ElementAt(endIndex);
                     float lastValue = lastBar.CLOSE;
                     var firstValue = closeSerie[endIndex - 1];
                     float barVariation = (lastValue - firstValue) / firstValue;
                     var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
-
-
 
                     float stopValue = float.NaN;
                     if (trailStopSerie != null)

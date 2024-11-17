@@ -7,8 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     {
         public override string Definition => base.Definition + Environment.NewLine + "TrailStop based on steroïd turtles as defined by InvestingZen.";
 
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
         public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "EMAPeriod" };
         public override Object[] ParameterDefaultValues => new Object[] { 36, 12, 3 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };

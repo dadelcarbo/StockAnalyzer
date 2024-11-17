@@ -7,8 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     public class StockTrailStop_TRAILATRBOX : StockTrailStopBase
     {
         public override string Definition => "Draws Trail Stop based ATR Boxes";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
 
         public override string[] ParameterNames => new string[] { "ATRPeriod", "NbStartDev", "NbTrailDev" };
 

@@ -7,9 +7,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     {
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop that Starts Up Trend when price reaches ROR trigger, then trail using a ratio from current ROR";
-
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
+        
         public override string[] ParameterNames => new string[] { "Period", "Trigger", "DrawdownRatio" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 30, 0.2f, 0.681f };

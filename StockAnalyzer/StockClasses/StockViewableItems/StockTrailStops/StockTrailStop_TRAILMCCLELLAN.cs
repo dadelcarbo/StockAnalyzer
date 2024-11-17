@@ -8,9 +8,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop that is calculated based on the lower line of the McClellan convergence indicator";
 
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
-
         public override string[] ParameterNames => new string[] { "FastPeriod", "SlowPeriod" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 19, 39 };

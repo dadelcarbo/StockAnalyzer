@@ -8,8 +8,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop from the previous extremum that is parallel to the EMA.";
 
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
         public override string[] ParameterNames => new string[] { "Period", "InputSmoothing" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 30, 1 };

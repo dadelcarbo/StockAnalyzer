@@ -31,9 +31,14 @@
                         <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox Content="Stop" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="50" IsChecked="{Binding BullOnly}"/>
+                        <CheckBox Content="Stop" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="70" IsChecked="{Binding BullOnly}"/>
                         <TextBox Text="{Binding Stop}" Width="200" Height="20" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                        <CheckBox Content="Screener" VerticalAlignment="Center"  VerticalContentAlignment="Center" Width="68" IsChecked="{Binding ScreenerOnly}"/>
+                        <Label>Liquidity</Label>
+                        <TextBox Text="{Binding Liquidity}" Width="30" Height="20" VerticalContentAlignment="Center"/>
+                        <Label>M€</Label>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="Screener" VerticalAlignment="Center"  VerticalContentAlignment="Center" Width="70" IsChecked="{Binding ScreenerOnly}"/>
                         <TextBox Text="{Binding Screener}" Width="200" Height="20" VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>

@@ -6,12 +6,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     public class StockTrailStop_TRAILATR2 : StockTrailStopBase
     {
         public override string Definition => "Draws Trail Stop based ATR Bands";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
 
         public override string[] ParameterNames => new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType", "SignalPeriod" };
-
-        public override Object[] ParameterDefaultValues => new Object[] { 30, 10, 2f, -2f, "EMA",3 };
+                public override Object[] ParameterDefaultValues => new Object[] { 30, 10, 2f, -2f, "EMA",3 };
         public override ParamRange[] ParameterRanges => new ParamRange[]
                 {
                 new ParamRangeInt(1, 500),
@@ -21,6 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 new ParamRangeMA(),
                 new ParamRangeInt(1, 500)
                 };
+
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie longStopSerie;

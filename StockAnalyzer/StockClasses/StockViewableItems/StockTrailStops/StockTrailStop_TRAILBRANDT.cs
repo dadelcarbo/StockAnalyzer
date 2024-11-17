@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILBRANDT : StockTrailStopBase
     {
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
-
         public override string Definition => "Calculate trail stop based on Peter Brtandt Setup bars";
 
         public override string[] ParameterNames => new string[] { "Period" };

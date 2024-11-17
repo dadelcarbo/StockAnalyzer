@@ -153,7 +153,6 @@ namespace StockAnalyzerApp
             this.saveAnalysisToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.snapshotToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.generateDailyReportToolStripBtn = new System.Windows.Forms.ToolStripButton();
             this.AddToWatchListToolStripDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.graphCloseControl = new CustomControl.GraphControls.GraphCloseControl();
             this.graphScrollerControl = new CustomControl.GraphControls.GraphScrollerControl();
@@ -1153,7 +1152,6 @@ namespace StockAnalyzerApp
             this.saveAnalysisToolStripButton,
             this.snapshotToolStripButton,
             this.toolStripSeparator7,
-            this.generateDailyReportToolStripBtn,
             this.AddToWatchListToolStripDropDownButton});
             this.drawToolStrip.Location = new System.Drawing.Point(3, 27);
             this.drawToolStrip.Name = "drawToolStrip";
@@ -1311,16 +1309,6 @@ namespace StockAnalyzerApp
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
-            // 
-            // generateDailyReportToolStripBtn
-            // 
-            this.generateDailyReportToolStripBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.generateDailyReportToolStripBtn.Image = global::StockAnalyzerApp.Properties.Resources.EMail;
-            this.generateDailyReportToolStripBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.generateDailyReportToolStripBtn.Name = "generateDailyReportToolStripBtn";
-            this.generateDailyReportToolStripBtn.Size = new System.Drawing.Size(23, 22);
-            this.generateDailyReportToolStripBtn.Text = "Generate Daily Report";
-            this.generateDailyReportToolStripBtn.Click += new System.EventHandler(this.generateDailyReportToolStripBtn_Click);
             // 
             // AddToWatchListToolStripDropDownButton
             // 
@@ -1620,7 +1608,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem logSerieMenuItem;
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator12;
-        private ToolStripButton generateDailyReportToolStripBtn;
         private ToolStripDropDownButton AddToWatchListToolStripDropDownButton;
         private ToolStripSeparator toolStripSeparator13;
         private ToolStripSeparator toolStripSeparator14;

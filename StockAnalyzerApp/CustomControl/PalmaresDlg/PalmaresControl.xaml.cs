@@ -376,7 +376,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Stop = this.ViewModel.Stop,
                     BullOnly = this.ViewModel.BullOnly,
                     Screener = this.ViewModel.Screener,
-                    Theme = this.ViewModel.Theme
+                    Theme = this.ViewModel.Theme,
+                    Liquidity = this.ViewModel.Liquidity
                 };
 
                 using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
@@ -424,6 +425,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.ViewModel.Stop = palmaresSettings.Stop;
                 this.ViewModel.BullOnly = palmaresSettings.BullOnly;
                 this.ViewModel.Theme = palmaresSettings.Theme;
+                this.ViewModel.Liquidity = palmaresSettings.Liquidity;
                 this.GenerateColumns();
                 LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
             }

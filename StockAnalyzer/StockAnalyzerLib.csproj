@@ -205,7 +205,6 @@
     <Compile Include="StockAgent\Agents\TRENDBODY2Agent.cs" />
     <Compile Include="StockAgent\Agents\MYFWAgent.cs" />
     <Compile Include="StockAgent\Agents\TOPEMAReentryAgent.cs" />
-    <Compile Include="StockAgent\Agents\TOPEMAAgent.cs" />
     <Compile Include="StockAgent\Agents\SARAgent.cs" />
     <Compile Include="StockAgent\Agents\BBAgent.cs" />
     <Compile Include="StockAgent\Agents\FWAgent.cs" />
@@ -318,7 +317,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DONCHIANS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_AR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA3.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TURTLE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDHS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NBBARS.cs" />
@@ -326,13 +325,11 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOK.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOWEMA.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TRIX.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VAR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RND.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RANGE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_VCP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EXCHANGED.cs" />
@@ -364,7 +361,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBARPERCENT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMA2Lines.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMAHL.cs" />
     <Compile Include="StockDrawing\Area.cs" />

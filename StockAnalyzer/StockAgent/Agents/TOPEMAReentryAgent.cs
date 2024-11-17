@@ -8,27 +8,27 @@ namespace StockAnalyzer.StockAgent.Agents
     {
         public TOPEMAReentryAgent()
         {
-            Period = 13;
+            Smoothing = 4;
         }
 
         [StockAgentParam(10, 40, 1)]
-        public int Period { get; set; }
+        public int Smoothing { get; set; }
 
         public override string Description => "Buy when TOPEMA signals reentry and sell when TOPEMA Support broken";
 
-        public override string DisplayIndicator => $"TRAILSTOP|TOPEMA({Period})";
+        public override string DisplayIndicator => $"TRAILSTOP|TOPEMA(175,35,{Smoothing})";
 
         FloatSerie supportSerie;
         FloatSerie resistanceSerie;
         IStockEvent events;
         protected override bool Init(StockSerie stockSerie)
         {
-            if (stockSerie.Count < Period)
+            if (stockSerie.Count < Smoothing)
                 return false;
 
-            events = stockSerie.GetIndicator($"TOPEMA({Period})");
-            supportSerie = stockSerie.GetIndicator($"TOPEMA({Period})").Series[0];
-            resistanceSerie = stockSerie.GetIndicator($"TOPEMA({Period})").Series[1];
+            events = stockSerie.GetIndicator(DisplayIndicator);
+            supportSerie = stockSerie.GetIndicator(DisplayIndicator).Series[0];
+            resistanceSerie = stockSerie.GetIndicator(DisplayIndicator).Series[1];
 
             return true;
         }

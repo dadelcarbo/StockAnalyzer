@@ -8,8 +8,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop that is calculated when a MA is making a new HL taking lowest a trail, and trailup at each new HL.";
 
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
         public override string[] ParameterNames => new string[] { "Period", "MA Type" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 35, "EMA" };

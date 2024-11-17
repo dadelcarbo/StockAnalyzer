@@ -18,6 +18,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public bool BullOnly { get; set; }
         public string Screener { get; set; }
         public string Theme { get; set; }
+        public float Liquidity { get; set; }
     }
     public class FilterDescriptorProxy
     {

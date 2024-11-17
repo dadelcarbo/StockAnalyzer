@@ -8,8 +8,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop that is initated when MACD histogram turns positive and trails at each next positive turn of the histogram.";
 
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
         public override string[] ParameterNames => new string[] { "LongPeriod", "ShortPeriod", "SignalPeriod" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 26, 12, 9 };

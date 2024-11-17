@@ -5,8 +5,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILHIGHESTATR : StockTrailStopBase
     {
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
 
         public override string Definition => "Start a trail when a new high is made. It's a long only trail suitable for trend following. Initial stop is set at specific ATR, then trail can have larger ATR";
 

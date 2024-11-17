@@ -7,8 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     {
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop that start when a bar is fully above a EMA, and trail stop when the close goes below the EMA";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
 
         public override string[] ParameterNames => new string[] { "Period", "NbATR", "ShowShort" };
 

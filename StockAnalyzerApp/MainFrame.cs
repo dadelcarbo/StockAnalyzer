@@ -587,12 +587,8 @@ namespace StockAnalyzerApp
                 cac40.BarDuration = BarDuration.Daily;
                 if (reportDate < cac40.LastValue.DATE)
                 {
-                    generateDailyReportToolStripBtn_Click(null, null);
-                    //this.GeneratePortfolioReports();
-                    File.WriteAllText(fileName, cac40.LastValue.DATE.ToString());
-
                     showAlertDefDialogMenuItem_Click(this, null);
-                    addStockAlertViewModel.RunAlert();
+                    addStockAlertViewModel.RunFullAlert();
                 }
             }
 
@@ -3155,13 +3151,6 @@ namespace StockAnalyzerApp
             else
             {
                 Directory.CreateDirectory(folderName);
-            }
-        }
-        private void generateDailyReportToolStripBtn_Click(object sender, EventArgs e)
-        {
-            foreach (var duration in StockBarDuration.BarDurations)
-            {
-                GenerateReport(duration);
             }
         }
         #endregion

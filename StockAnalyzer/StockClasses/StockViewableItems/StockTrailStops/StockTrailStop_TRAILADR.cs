@@ -6,11 +6,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     public class StockTrailStop_TRAILADR : StockTrailStopBase
     {
         public override string Definition => "Draws Trail Stop based ADR Bands";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
 
         public override string[] ParameterNames => new string[] { "Period", "ADRPeriod", "NbUpDev", "NbDownDev", "MAType" };
-
         public override Object[] ParameterDefaultValues => new Object[] { 30, 10, 2f, -2f, "MA" };
         public override ParamRange[] ParameterRanges => new ParamRange[]
                 {

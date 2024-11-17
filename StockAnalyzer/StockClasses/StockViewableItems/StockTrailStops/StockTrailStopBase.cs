@@ -20,10 +20,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
         }
 
-        public abstract IndicatorDisplayTarget DisplayTarget { get; }
+        public IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
+        public virtual bool RequiresVolumeData => false;
+
         public IndicatorDisplayStyle DisplayStyle => IndicatorDisplayStyle.TrailStop;
         public ViewableItemType Type => ViewableItemType.TrailStop;
-        public virtual bool RequiresVolumeData => false;
 
         public string ToThemeString()
         {

@@ -8,8 +8,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine +
             "Draw a trail stop based on first body above the or below the ATR Band.";
 
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
         public override string[] ParameterNames => new string[] { "Period", "UseBody", "AtrEntryWidth", "AtrExitWidth" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 30, true, 0.5f, -0.5f };

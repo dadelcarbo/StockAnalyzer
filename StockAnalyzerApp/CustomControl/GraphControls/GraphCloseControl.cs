@@ -8,7 +8,6 @@ using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
-using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
 using StockAnalyzerSettings.Properties;
 using System;
@@ -341,9 +340,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         FillArea(aGraphic, shortStopSerie, closeCurveType.DataSerie, shortPen, brush);
                     }
-                    if (this.CurveList.TrailStop.SerieVisibility[2] && this.CurveList.TrailStop.Series[2]?.Count > 0)
+                    for (int i = 2; i < this.CurveList.TrailStop.SerieVisibility.Length; i++)
                     {
-                        DrawSeriePoints(aGraphic, this.CurveList.TrailStop.Series[2], this.CurveList.TrailStop.SeriePens[2]);
+                        if (this.CurveList.TrailStop.SerieVisibility[i] && this.CurveList.TrailStop.Series[i]?.Count > 0)
+                        {
+                            DrawSeriePoints(aGraphic, this.CurveList.TrailStop.Series[i], this.CurveList.TrailStop.SeriePens[i]);
+                        }
                     }
                 }
                 #endregion

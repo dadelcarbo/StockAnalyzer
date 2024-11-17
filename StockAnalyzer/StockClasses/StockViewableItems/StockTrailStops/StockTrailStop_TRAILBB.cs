@@ -7,8 +7,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILBB : StockTrailStopBase
     {
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] { "Period", "NbUpDev", "NbDownDev", "MAType" };
+
 
         public override Object[] ParameterDefaultValues => new Object[] { 20, 2.0f, -2.0f, "MA" };
         static readonly List<string> emaTypes = StockIndicatorMovingAvgBase.MaTypes;

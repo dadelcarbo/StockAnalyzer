@@ -52,6 +52,10 @@
                                 <CheckBox IsChecked="False" IsEnabled="False"/>
                             </Button>
                         </StackPanel>
+                        <Button Content="Daily Report" Margin="2" Command="{Binding GenerateReport}" CommandParameter="Daily" Width="100"/>
+                        <Button Content="Weekly Report" Margin="2" Command="{Binding GenerateReport}" CommandParameter="Weekly" Width="100"/>
+                        <Button Content="Monthly Report" Margin="2" Command="{Binding GenerateReport}" CommandParameter="Monthly" Width="100"/>
+                        <Button Content="H1 Report" Margin="2" Command="{Binding GenerateReport}" CommandParameter="H_1" Width="100"/>
                         <Label Content="{Binding CurrentAlert.Title}"/>
                         <Label Content="{Binding CurrentAlert.BarDuration}"/>
                         <Label Content="{Binding CurrentAlert.Group}"/>

@@ -7,9 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILCUPEMA : StockTrailStopBase
     {
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
-
         public override string Definition => "Detect Cup and Handle patterns and initiate trailing stop based on LOW EMA";
 
         public override string[] ParameterNames => new string[] { "Period", "Right HL", "TrailPeriod" };

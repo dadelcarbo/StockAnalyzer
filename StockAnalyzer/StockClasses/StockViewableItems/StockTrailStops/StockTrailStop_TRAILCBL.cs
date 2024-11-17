@@ -7,8 +7,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     {
 
         public override string Definition => "Draws Trail Stop based on GUPPY's Countback lines method";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
 
         public override string[] ParameterNames => new string[] { "Period" };
 

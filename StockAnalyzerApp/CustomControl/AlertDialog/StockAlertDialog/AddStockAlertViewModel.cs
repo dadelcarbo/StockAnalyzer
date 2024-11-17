@@ -424,7 +424,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             Task.Run(() =>
             {
                 this.Alerts.Clear();
-                foreach (var alertDef in this.SelectedAlerts.Where(s => s.IsSelected).Select(s=>s.AlertDef))
+                foreach (var alertDef in this.SelectedAlerts.Where(s => s.IsSelected).Select(s => s.AlertDef))
                 {
                     CurrentAlert = alertDef;
                     foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
@@ -435,6 +435,28 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
                 RunAlertEnabled = true;
                 CurrentAlert = null;
+            });
+        }
+        public void RunFullAlert()
+        {
+            RunAlertEnabled = false;
+            Task.Run(() =>
+            {
+                this.Alerts.Clear();
+                foreach (var alertDef in this.AlertDefs.Where(s => s.InReport || s.InAlert))
+                {
+                    CurrentAlert = alertDef;
+                    foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
+                    {
+                        this.Alerts.Add(alert.GetAlertValue());
+                    }
+                }
+
+                RunAlertEnabled = true;
+                CurrentAlert = null;
+                var cac40 = StockDictionary.Instance["CAC40"];
+                cac40.Initialise();
+                File.WriteAllText(Path.Combine(Folders.Report, "LastGeneration.txt"), cac40.LastValue.DATE.ToString());
             });
         }
         #endregion
@@ -494,5 +516,13 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private StockAlertDef currentAlert;
         public StockAlertDef CurrentAlert { get => currentAlert; set => SetProperty(ref currentAlert, value); }
+
+        private ICommand generateReport;
+        public ICommand GenerateReport => generateReport ??= new ParamCommandBase<string>(PerformGenerateReport);
+
+        private void PerformGenerateReport(string param)
+        {
+            StockAnalyzerForm.MainFrame.GenerateReport((BarDuration)Enum.Parse(typeof(BarDuration), param));
+        }
     }
 }

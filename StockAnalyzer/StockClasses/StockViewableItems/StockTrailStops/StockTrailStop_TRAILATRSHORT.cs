@@ -6,8 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     public class StockTrailStop_TRAILATRSHORT : StockTrailStopBase
     {
         public override string Definition => "Draws Trail Stop based ATR Bands for short only trades";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
 
         public override string[] ParameterNames => new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType" };
 

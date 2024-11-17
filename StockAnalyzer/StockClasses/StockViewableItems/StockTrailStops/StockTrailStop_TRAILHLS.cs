@@ -5,8 +5,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
     public class StockTrailStop_TRAILHLS : StockTrailStopBase
     {
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
         public override string[] ParameterNames => new string[] { "Period", "Smoothing" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 2, 3 };

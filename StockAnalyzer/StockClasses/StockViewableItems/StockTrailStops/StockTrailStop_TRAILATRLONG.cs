@@ -6,9 +6,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     public class StockTrailStop_TRAILATRLONG : StockTrailStopBase
     {
         public override string Definition => "Draws Trail Stop based ATR Bands for long only trades";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
-
         public override string[] ParameterNames => new string[] { "Period", "ATRPeriod", "NbUpDev", "NbDownDev", "MAType", "ReentryPeriod" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 30, 10, 2f, -2f, "EMA", 6 };

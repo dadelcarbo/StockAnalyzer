@@ -6,8 +6,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
     public class StockTrailStop_TRAILFOLLOW : StockTrailStopBase
     {
         public override string Definition => "Draws Trail Stop following trend on up bar with an efficiency ratio, staying flat on down bars";
-        public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override bool RequiresVolumeData => false;
+
         public override string[] ParameterNames => new string[] { "Ratio" };
 
         public override Object[] ParameterDefaultValues => new Object[] { 0.5f };

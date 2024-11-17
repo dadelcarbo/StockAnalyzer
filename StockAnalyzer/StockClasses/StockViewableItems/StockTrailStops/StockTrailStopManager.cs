@@ -38,6 +38,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
             return trailStopList.Contains(fullName.Split('(')[0]);
         }
+
         static public IStockTrailStop CreateTrailStop(string fullName)
         {
             using MethodLogger ml = new MethodLogger(typeof(StockTrailStopManager));
