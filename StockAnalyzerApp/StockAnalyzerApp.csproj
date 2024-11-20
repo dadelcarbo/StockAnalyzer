@@ -291,16 +291,16 @@
     <Compile Include="CustomControl\AgendaDlg\StockAgendaUserControl.xaml.cs">
       <DependentUpon>StockAgendaUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlert.xaml.cs">
-      <DependentUpon>AddStockAlert.xaml</DependentUpon>
+    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\StockAlertManagerControl.xaml.cs">
+      <DependentUpon>StockAlertManagerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.cs">
+    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\StockAlertManagerDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.Designer.cs">
-      <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
+    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\StockAlertManagerDlg.Designer.cs">
+      <DependentUpon>StockAlertManagerDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertViewModel.cs" />
+    <Compile Include="CustomControl\AlertDialog\StockAlertDialog\StockAlertManagerViewModel.cs" />
     <Compile Include="CustomControl\AutoTradeDlg\AgentRunViewModel.cs" />
     <Compile Include="CustomControl\AutoTradeDlg\AutoTradeControl.xaml.cs">
       <DependentUpon>AutoTradeControl.xaml</DependentUpon>
@@ -714,8 +714,8 @@
     <EmbeddedResource Include="CustomControl\AgendaDlg\StockAgendaForm.resx">
       <DependentUpon>StockAgendaForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlertDlg.resx">
-      <DependentUpon>AddStockAlertDlg.cs</DependentUpon>
+    <EmbeddedResource Include="CustomControl\AlertDialog\StockAlertDialog\StockAlertManagerDlg.resx">
+      <DependentUpon>StockAlertManagerDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\AutoTradeDlg\AutoTradeDlg.resx">
       <DependentUpon>AutoTradeDlg.cs</DependentUpon>
@@ -1120,7 +1120,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControl\AlertDialog\StockAlertDialog\AddStockAlert.xaml">
+    <Page Include="CustomControl\AlertDialog\StockAlertDialog\StockAlertManagerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

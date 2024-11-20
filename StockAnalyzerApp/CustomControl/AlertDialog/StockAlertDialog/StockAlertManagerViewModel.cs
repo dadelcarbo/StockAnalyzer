@@ -22,9 +22,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
     }
 
-    public class AddStockAlertViewModel : NotifyPropertyChangedBase
+    public class StockAlertManagerViewModel : NotifyPropertyChangedBase
     {
-        public AddStockAlertViewModel()
+        public StockAlertManagerViewModel()
         {
             this.InReport = true;
             this.InAlert = true;
@@ -473,12 +473,28 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             }
         }
 
-        public void SelectAll(string select)
+        public void SelectAll(string selectParam)
         {
-            bool selectBool = select == "Select";
-            foreach (var item in this.SelectedAlerts)
+            switch (selectParam)
             {
-                item.IsSelected = selectBool;
+                case "SelectAll":
+                    foreach (var item in this.SelectedAlerts)
+                    {
+                        item.IsSelected = true;
+                    }
+                    break;
+                case "UnselectAll":
+                    foreach (var item in this.SelectedAlerts)
+                    {
+                        item.IsSelected = false;
+                    }
+                    break;
+                default:
+                    foreach (var item in this.SelectedAlerts)
+                    {
+                        item.IsSelected = item.AlertDef.BarDuration.ToString() == selectParam;
+                    }
+                    break;
             }
         }
         #endregion
@@ -518,11 +534,11 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         public StockAlertDef CurrentAlert { get => currentAlert; set => SetProperty(ref currentAlert, value); }
 
         private ICommand generateReport;
-        public ICommand GenerateReport => generateReport ??= new ParamCommandBase<string>(PerformGenerateReport);
+        public ICommand GenerateReport => generateReport ??= new CommandBase(PerformGenerateReport);
 
-        private void PerformGenerateReport(string param)
+        private void PerformGenerateReport()
         {
-            StockAnalyzerForm.MainFrame.GenerateReport((BarDuration)Enum.Parse(typeof(BarDuration), param));
+            StockAnalyzerForm.MainFrame.GenerateReport(this.BarDuration);
         }
     }
 }

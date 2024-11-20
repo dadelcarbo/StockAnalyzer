@@ -5,16 +5,16 @@ using Telerik.Windows.Controls;
 namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 {
     /// <summary>
-    /// Interaction logic for AddStockAlert.xaml
+    /// Interaction logic for StockAlertManager.xaml
     /// </summary>
-    public partial class AddStockAlert : UserControl
+    public partial class StockAlertManagerControl : UserControl
     {
-        readonly AddStockAlertViewModel ViewModel;
-        readonly AddStockAlertDlg ParentDlg;
+        readonly StockAlertManagerViewModel ViewModel;
+        readonly StockAlertManagerDlg ParentDlg;
 
         public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged;
 
-        public AddStockAlert(AddStockAlertDlg parent, AddStockAlertViewModel viewModel)
+        public StockAlertManagerControl(StockAlertManagerDlg parent, StockAlertManagerViewModel viewModel)
         {
             this.ParentDlg = parent;
             this.ViewModel = viewModel;

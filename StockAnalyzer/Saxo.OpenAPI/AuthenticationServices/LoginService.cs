@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace Saxo.OpenAPI.AuthenticationServices
@@ -29,6 +28,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 return CurrentSession.App;
             }
         }
+
         public static Token Token
         {
             get
@@ -40,6 +40,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
                 return CurrentSession.Token;
             }
         }
+
         public static void RefreshSessions()
         {
             using MethodLogger ml = new MethodLogger(typeof(LoginService), true);

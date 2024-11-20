@@ -588,7 +588,7 @@ namespace StockAnalyzerApp
                 if (reportDate < cac40.LastValue.DATE)
                 {
                     showAlertDefDialogMenuItem_Click(this, null);
-                    addStockAlertViewModel.RunFullAlert();
+                    stockAlertManagerViewModel.RunFullAlert();
                 }
             }
 
@@ -3783,23 +3783,23 @@ namespace StockAnalyzerApp
         }
         #endregion
         #region ALERT DIALOG
-        AddStockAlertDlg alertDefDlg = null;
-        AddStockAlertViewModel addStockAlertViewModel = null;
+        StockAlertManagerDlg alertDefDlg = null;
+        StockAlertManagerViewModel stockAlertManagerViewModel = null;
         public void showAlertDefDialogMenuItem_Click(object sender, EventArgs e)
         {
             if (alertDefDlg == null)
             {
-                addStockAlertViewModel = new AddStockAlertViewModel()
+                stockAlertManagerViewModel = new StockAlertManagerViewModel()
                 {
                     StockName = this.CurrentStockSerie.StockName,
                     Group = StockAnalyzerForm.MainFrame.Group,
                     BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
                     IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
                 };
-                addStockAlertViewModel.TriggerName = addStockAlertViewModel.IndicatorNames?.FirstOrDefault();
-                addStockAlertViewModel.Stop = addStockAlertViewModel.StopNames?.FirstOrDefault();
+                stockAlertManagerViewModel.TriggerName = stockAlertManagerViewModel.IndicatorNames?.FirstOrDefault();
+                stockAlertManagerViewModel.Stop = stockAlertManagerViewModel.StopNames?.FirstOrDefault();
 
-                alertDefDlg = new AddStockAlertDlg(addStockAlertViewModel);
+                alertDefDlg = new StockAlertManagerDlg(stockAlertManagerViewModel);
                 alertDefDlg.Disposed += delegate
                 {
                     this.alertDefDlg = null;
