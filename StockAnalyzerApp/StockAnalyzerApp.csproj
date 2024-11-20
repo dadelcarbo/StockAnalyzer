@@ -34,7 +34,7 @@
     <ProductName>Ultimate Chartist</ProductName>
     <PublisherName>Dad El Carbo</PublisherName>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>382</ApplicationRevision>
+    <ApplicationRevision>383</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
