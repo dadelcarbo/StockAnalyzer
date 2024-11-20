@@ -37,12 +37,7 @@
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                     <StackPanel Grid.Column="1" MinWidth="200" >
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                            <Button Height="26" Width="26" Margin="10" Command="{Binding RunAlertCommand}" IsEnabled="{Binding RunAlertEnabled}">
-                                <Image Source="../../../Resources/ButtonPlay.png"/>
-                            </Button>
-                        </StackPanel>
-                        <GroupBox Header="Selection">
+                        <GroupBox Header="Screener">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -57,6 +52,9 @@
                                 <StackPanel Grid.Column="1">
                                     <RadioButton Name="SelectAllRadioBtn" Content="Select All" Command="{Binding SelectAllCommand}" CommandParameter="SelectAll" IsChecked="True" GroupName="Group1" Margin="1"/>
                                     <RadioButton Content="Unselect All" Command="{Binding SelectAllCommand}" CommandParameter="UnselectAll" GroupName="Group1" Margin="1"/>
+                                    <Button Height="26" Width="26" Margin="10" Command="{Binding RunAlertCommand}" IsEnabled="{Binding RunAlertEnabled}">
+                                        <Image Source="../../../Resources/ButtonPlay.png"/>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
                         </GroupBox>
@@ -75,6 +73,7 @@
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" IsReadOnly="True"
                         SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="AlertGridView_SelectionChanged">
                     <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Alert Id" DataMemberBinding="{Binding AlertDef.Id}"/>
                         <telerik:GridViewDataColumn Header="Alert Title" DataMemberBinding="{Binding AlertDef.Title}"/>
                         <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding AlertDef.BarDuration}"/>
                         <telerik:GridViewDataColumn Header="Stock&#x0a;Name" DataMemberBinding="{Binding StockSerie.StockName}"/>
