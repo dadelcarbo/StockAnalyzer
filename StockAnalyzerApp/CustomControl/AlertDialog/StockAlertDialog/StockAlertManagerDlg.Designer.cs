@@ -1,7 +1,7 @@
 ﻿
 namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 {
-    partial class AddStockAlertDlg
+    partial class StockAlertManagerDlg
     {
         /// <summary>
         /// Required designer variable.
@@ -26,10 +26,10 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent(AddStockAlertViewModel viewModel)
+        private void InitializeComponent(StockAlertManagerViewModel viewModel)
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.addStockAlert1 = new CustomControl.AlertDialog.StockAlertDialog.AddStockAlert(this, viewModel);
+            this.stockAlertManagerCtrl = new CustomControl.AlertDialog.StockAlertDialog.StockAlertManagerControl(this, viewModel);
             this.SuspendLayout();
             // 
             // elementHost1
@@ -40,16 +40,16 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.elementHost1.Size = new System.Drawing.Size(1000, 550);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.addStockAlert1;
+            this.elementHost1.Child = this.stockAlertManagerCtrl;
             // 
-            // AddStockAlertDlg
+            // StockAlertManagerDlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1000, 550);
             this.Controls.Add(this.elementHost1);
-            this.Name = "AddStockAlertDlg";
-            this.Text = "Add Stock Alert";
+            this.Name = "StockAlertManagerDlg";
+            this.Text = "Alert Manager";
             this.ResumeLayout(false);
 
         }
@@ -57,6 +57,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private CustomControl.AlertDialog.StockAlertDialog.AddStockAlert addStockAlert1;
+        private CustomControl.AlertDialog.StockAlertDialog.StockAlertManagerControl stockAlertManagerCtrl;
     }
 }

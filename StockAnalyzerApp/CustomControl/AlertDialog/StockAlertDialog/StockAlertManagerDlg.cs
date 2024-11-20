@@ -2,12 +2,12 @@
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 {
-    public partial class AddStockAlertDlg : Form
+    public partial class StockAlertManagerDlg : Form
     {
-        public AddStockAlertDlg(AddStockAlertViewModel viewModel)
+        public StockAlertManagerDlg(StockAlertManagerViewModel viewModel)
         {
             InitializeComponent(viewModel);
-            this.addStockAlert1.DataContext = viewModel;
+            this.stockAlertManagerCtrl.DataContext = viewModel;
         }
         internal void Ok()
         {
