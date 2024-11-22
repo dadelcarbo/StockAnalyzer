@@ -1647,7 +1647,7 @@ namespace StockAnalyzer.StockClasses
             if (this.ContainsKey(stockName))
             {
                 var stockSerie = this[stockName];
-                if (stockSerie.Initialise())
+                if (stockSerie.Initialise() && stockSerie.Count > 0)
                 {
                     return stockSerie.LastValue.CLOSE;
                 }
