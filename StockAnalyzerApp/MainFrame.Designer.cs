@@ -95,6 +95,7 @@ namespace StockAnalyzerApp
             this.portfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoTradeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saxoPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageWatchlistsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -692,6 +693,7 @@ namespace StockAnalyzerApp
             this.autoTradeMenuItem,
             this.toolStripSeparator21,
             this.currentPortfolioMenuItem,
+            this.saxoPortfolioMenuItem,
             this.portfolioReportMenuItem});
             this.portfolioMenuItem.Name = "portfolioMenuItem";
             this.portfolioMenuItem.Size = new System.Drawing.Size(77, 20);
@@ -712,6 +714,14 @@ namespace StockAnalyzerApp
             this.currentPortfolioMenuItem.Size = new System.Drawing.Size(202, 22);
             this.currentPortfolioMenuItem.Text = "Show Current Portfolio";
             this.currentPortfolioMenuItem.Click += new System.EventHandler(this.currentPortfolioMenuItem_Click);
+            // 
+            // saxoPortfolioMenuItem
+            // 
+            this.saxoPortfolioMenuItem.Name = "saxoPortfolioMenuItem";
+            this.saxoPortfolioMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F2));
+            this.saxoPortfolioMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.saxoPortfolioMenuItem.Text = "Show Current Portfolio";
+            this.saxoPortfolioMenuItem.Click += new System.EventHandler(this.saxoPortfolioMenuItem_Click);
             // 
             // portfolioReportMenuItem
             // 
@@ -1597,6 +1607,7 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator20;
         private ToolStripSeparator toolStripSeparator21;
         private ToolStripMenuItem currentPortfolioMenuItem;
+        private ToolStripMenuItem saxoPortfolioMenuItem;
         private ToolStripMenuItem autoTradeMenuItem;
         private ToolStripMenuItem showHorseRaceViewMenuItem;
         private ToolStripMenuItem marketReplayViewMenuItem;

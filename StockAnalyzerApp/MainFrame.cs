@@ -33,6 +33,7 @@ using StockAnalyzerApp.CustomControl.InstrumentDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
 using StockAnalyzerApp.CustomControl.PalmaresControl;
 using StockAnalyzerApp.CustomControl.PortfolioDlg;
+using StockAnalyzerApp.CustomControl.PortfolioDlg.SaxoPortfolioDlg;
 using StockAnalyzerApp.CustomControl.SectorDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.SplitDlg;
@@ -2570,6 +2571,23 @@ namespace StockAnalyzerApp
             else
             {
                 portfolioDlg.Activate();
+            }
+        }
+        SaxoPortfolioDlg saxoPortfolioDlg = null;
+        private void saxoPortfolioMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Portfolio == null)
+                return;
+
+            if (saxoPortfolioDlg == null)
+            {
+                saxoPortfolioDlg = new SaxoPortfolioDlg() { StartPosition = FormStartPosition.CenterScreen };
+                saxoPortfolioDlg.FormClosing += (a, b) => { this.saxoPortfolioDlg = null; };
+                saxoPortfolioDlg.Show();
+            }
+            else
+            {
+                saxoPortfolioDlg.Activate();
             }
         }
         private void portfolioReportMenuItem_Click(object sender, EventArgs e)

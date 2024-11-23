@@ -333,6 +333,16 @@
     <Compile Include="CustomControl\PortfolioDlg\PortfolioDlg.Designer.cs">
       <DependentUpon>PortfolioDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\SaxoPortfolioCtrl.xaml.cs">
+      <DependentUpon>SaxoPortfolioCtrl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\SaxoPortfolioDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\SaxoPortfolioDlg.Designer.cs">
+      <DependentUpon>SaxoPortfolioDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\ViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockPositionBaseViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockRedGreenStyleSelector.cs" />
     <Compile Include="CustomControl\PortfolioDlg\ViewModel.cs" />
@@ -737,6 +747,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
       <DependentUpon>FullGraphUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\SaxoPortfolioDlg.resx">
+      <DependentUpon>SaxoPortfolioDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\ClosePositionDlg.resx">
       <DependentUpon>ClosePositionDlg.cs</DependentUpon>
@@ -1145,6 +1158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\SaxoPortfolioCtrl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
