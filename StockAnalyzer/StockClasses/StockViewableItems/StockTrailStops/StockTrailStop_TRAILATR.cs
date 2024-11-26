@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;
 
-            var bandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(int)this.parameters[1]},{(float)this.parameters[2]},{(float)this.parameters[3]},{this.parameters[4]})");
+            var bandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(int)this.parameters[1]},{(float)this.parameters[2]},{(float)this.parameters[3]},{this.parameters[4]},3)");
             stockSerie.CalculateBandTrailStop(bandIndicator.Series[1], bandIndicator.Series[0], out longStopSerie, out shortStopSerie);
             this.Series[0] = longStopSerie;
             this.Series[1] = shortStopSerie;

@@ -38,30 +38,34 @@
                     </telerik:RadGridView>
                     <StackPanel Grid.Column="1" MinWidth="200" >
                         <GroupBox Header="Screener">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <RadioButton Content="H__1" Command="{Binding SelectAllCommand}" CommandParameter="H_1" GroupName="Group1" Margin="1"/>
-                                    <RadioButton Content="Daily" Command="{Binding SelectAllCommand}" CommandParameter="Daily" GroupName="Group1" Margin="1"/>
-                                    <RadioButton Content="Weekly" Command="{Binding SelectAllCommand}" CommandParameter="Weekly" GroupName="Group1" Margin="1"/>
-                                    <RadioButton Content="Monthly" Command="{Binding SelectAllCommand}" CommandParameter="Monthly" GroupName="Group1" Margin="1"/>
-                                </StackPanel>
-                                <StackPanel Grid.Column="1">
-                                    <RadioButton Name="SelectAllRadioBtn" Content="Select All" Command="{Binding SelectAllCommand}" CommandParameter="SelectAll" IsChecked="True" GroupName="Group1" Margin="1"/>
-                                    <RadioButton Content="Unselect All" Command="{Binding SelectAllCommand}" CommandParameter="UnselectAll" GroupName="Group1" Margin="1"/>
-                                    <Button Height="26" Width="26" Margin="10" Command="{Binding RunAlertCommand}" IsEnabled="{Binding RunAlertEnabled}">
-                                        <Image Source="../../../Resources/ButtonPlay.png"/>
-                                    </Button>
-                                </StackPanel>
-                            </Grid>
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <RadioButton Content="H__1" Command="{Binding SelectAllCommand}" CommandParameter="H_1" GroupName="Group1" Margin="1"/>
+                                        <RadioButton Content="Daily" Command="{Binding SelectAllCommand}" CommandParameter="Daily" GroupName="Group1" Margin="1"/>
+                                        <RadioButton Content="Weekly" Command="{Binding SelectAllCommand}" CommandParameter="Weekly" GroupName="Group1" Margin="1"/>
+                                        <RadioButton Content="Monthly" Command="{Binding SelectAllCommand}" CommandParameter="Monthly" GroupName="Group1" Margin="1"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <RadioButton Name="SelectAllRadioBtn" Content="Select All" Command="{Binding SelectAllCommand}" CommandParameter="SelectAll" IsChecked="True" GroupName="Group1" Margin="1"/>
+                                        <RadioButton Content="Unselect All" Command="{Binding SelectAllCommand}" CommandParameter="UnselectAll" GroupName="Group1" Margin="1"/>
+                                        <Button Height="26" Width="26" Margin="10" Command="{Binding RunAlertCommand}" Visibility="{Binding RunAlertVisibility}">
+                                            <Image Source="../../../Resources/ButtonPlay.png"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                                <telerik:RadProgressBar Minimum="0" Maximum="{Binding ProgressMax}" Value="{Binding ProgressValue}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                                            Width="150" Height="6" Margin="5" Visibility="{Binding ProgressVisibility}"/>
+                            </StackPanel>
                         </GroupBox>
                         <GroupBox Header="Report">
                             <StackPanel Orientation="Horizontal">
                                 <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="100" Height="20"/>
-                                <Button Content="Generate" Margin="5" Command="{Binding GenerateReport}" Height="20"/>
+                                <Button Content="Generate" Margin="5" Command="{Binding GenerateReport}" Height="20" Visibility="{Binding RunAlertVisibility}"/>
                             </StackPanel>
                         </GroupBox>
                         <Label Content="{Binding CurrentAlert.Title}"/>

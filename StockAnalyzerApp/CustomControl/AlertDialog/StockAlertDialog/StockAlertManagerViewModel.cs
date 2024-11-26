@@ -39,6 +39,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                 this.Theme = this.Themes.FirstOrDefault();
 
             RunAlertEnabled = true;
+            this.ProgressVisibility = Visibility.Collapsed;
         }
 
         internal void Init(StockAlertDef alertDef)
@@ -420,21 +421,31 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         public void RunAlert()
         {
-            RunAlertEnabled = false;
             Task.Run(() =>
             {
+                RunAlertEnabled = false;
                 this.Alerts.Clear();
-                foreach (var alertDef in this.SelectedAlerts.Where(s => s.IsSelected).Select(s => s.AlertDef))
+
+                var alertDefs = this.SelectedAlerts.Where(s => s.IsSelected).Select(s => s.AlertDef).ToList();
+
+                this.ProgressVisibility = Visibility.Visible;
+                this.ProgressValue = 0;
+                this.ProgressMax = alertDefs.Count;
+
+                foreach (var alertDef in alertDefs)
                 {
                     CurrentAlert = alertDef;
                     foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
                     {
                         this.Alerts.Add(alert.GetAlertValue());
                     }
+                    this.ProgressValue++;
                 }
 
                 RunAlertEnabled = true;
                 CurrentAlert = null;
+                this.ProgressValue = 0;
+                this.ProgressVisibility = Visibility.Collapsed;
             });
         }
         public void RunFullAlert()
@@ -442,18 +453,29 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             RunAlertEnabled = false;
             Task.Run(() =>
             {
+                RunAlertEnabled = false;
                 this.Alerts.Clear();
-                foreach (var alertDef in this.AlertDefs.Where(s => s.InReport || s.InAlert))
+
+                var alertDefs = this.AlertDefs.Where(s => s.InReport || s.InAlert).ToList();
+
+                this.ProgressVisibility = Visibility.Visible;
+                this.ProgressValue = 0;
+                this.ProgressMax = alertDefs.Count;
+                foreach (var alertDef in alertDefs)
                 {
                     CurrentAlert = alertDef;
                     foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
                     {
                         this.Alerts.Add(alert.GetAlertValue());
                     }
+                    this.ProgressValue++;
                 }
 
                 RunAlertEnabled = true;
                 CurrentAlert = null;
+                this.ProgressValue = 0;
+                this.ProgressVisibility = Visibility.Collapsed;
+
                 var cac40 = StockDictionary.Instance["CAC40"];
                 cac40.Initialise();
                 File.WriteAllText(Path.Combine(Folders.Report, "LastGeneration.txt"), cac40.LastValue.DATE.ToString());
@@ -540,5 +562,14 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         {
             StockAnalyzerForm.MainFrame.GenerateReport(this.BarDuration);
         }
+
+        private int progressMax;
+        public int ProgressMax { get => progressMax; set => SetProperty(ref progressMax, value); }
+
+        private int progressValue;
+        public int ProgressValue { get => progressValue; set => SetProperty(ref progressValue, value); }
+
+        private Visibility progressVisibility;
+        public Visibility ProgressVisibility { get => progressVisibility; set => SetProperty(ref progressVisibility, value); }
     }
 }
