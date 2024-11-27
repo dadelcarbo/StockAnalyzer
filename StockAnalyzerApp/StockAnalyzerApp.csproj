@@ -345,6 +345,16 @@
     <Compile Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\ViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockPositionBaseViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockRedGreenStyleSelector.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerControlxaml.xaml.cs">
+      <DependentUpon>TradeManagerControlxaml.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerDlg.Designer.cs">
+      <DependentUpon>TradeManagerDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\ViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\PortfolioViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockDateToStringConverter.cs" />
@@ -793,6 +803,9 @@
     <EmbeddedResource Include="CustomControl\PalmaresDlg\PalmaresDlg.resx">
       <DependentUpon>PalmaresDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerDlg.resx">
+      <DependentUpon>TradeManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
       <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
     </EmbeddedResource>
@@ -1184,6 +1197,10 @@
     <Page Include="CustomControl\PalmaresDlg\PalmaresControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerControlxaml.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml">
       <Generator>MSBuild:Compile</Generator>

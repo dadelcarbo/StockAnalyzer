@@ -18,6 +18,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.contextMenu = new System.Windows.Forms.ContextMenu();
             this.addAlertMenu = new System.Windows.Forms.MenuItem();
             this.buyMenu = new System.Windows.Forms.MenuItem();
+            this.tradeMenu = new System.Windows.Forms.MenuItem();
             this.sellMenu = new System.Windows.Forms.MenuItem();
             this.cancelMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
@@ -34,6 +35,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // 
             this.contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.buyMenu,
+            this.tradeMenu,
             this.sellMenu,
             this.cancelMenu,
             this.separator1,
@@ -52,6 +54,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.buyMenu.Index = index++;
             this.buyMenu.Text = "Buy";
             this.buyMenu.Click += new System.EventHandler(this.buyMenu_Click);
+            // 
+            // tradeMenu
+            // 
+            this.tradeMenu.Index = index++;
+            this.tradeMenu.Text = "Trade";
+            this.tradeMenu.Click += new System.EventHandler(this.tradeMenu_Click);
             // 
             // sellMenu
             // 
@@ -131,6 +139,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private ContextMenu contextMenu;
         private MenuItem addAlertMenu;
         private MenuItem buyMenu;
+        private MenuItem tradeMenu;
         private MenuItem sellMenu;
         private MenuItem cancelMenu;
         private MenuItem separator1;

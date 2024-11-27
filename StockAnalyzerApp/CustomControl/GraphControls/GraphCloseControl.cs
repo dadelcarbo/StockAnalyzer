@@ -2504,6 +2504,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             };
         }
 
+        void tradeMenu_Click(object sender, System.EventArgs e)
+        {
+
+        }
+
         private void OpenTradeViewModel_OrdersChanged()
         {
             if (openTradeViewModel.StopValue != 0)
