@@ -20,9 +20,24 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
     /// </summary>
     public partial class TradeManagerControlxaml : UserControl
     {
+        private TradeManagerViewModel viewModel;
+
         public TradeManagerControlxaml()
         {
             InitializeComponent();
+        }
+
+        public TradeManagerViewModel ViewModel
+        {
+            get => viewModel;
+            set
+            {
+                if (viewModel != value)
+                {
+                    this.viewModel = value;
+                    this.DataContext = value;
+                }
+            }
         }
     }
 }

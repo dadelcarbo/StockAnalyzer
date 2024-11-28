@@ -12,11 +12,12 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 {
     public partial class TradeManagerDlg : Form
     {
-        public TradeManagerDlg()
+        public TradeManagerDlg(TradeManagerViewModel viewModel)
         {
             InitializeComponent();
+
+            this.tradeManagerControl.ViewModel = viewModel;
         }
 
-        public TradeManagerViewModel ViewModel => null;
     }
 }

@@ -9,6 +9,9 @@
              d:Background="Bisque"
              d:DataContext="{d:DesignInstance Type=local:TradeManagerViewModel, IsDesignTimeCreatable=False}">
     <Grid>
-        <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding StockSerie.StockName}" FontSize="20"/>
+        <StackPanel>
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding StockSerie.StockName}" FontSize="20"/>
+            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding Portfolio.Name}" FontSize="20"/>
+        </StackPanel>
     </Grid>
 </UserControl>
