@@ -9,6 +9,7 @@ using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
+using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
@@ -2506,7 +2507,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void tradeMenu_Click(object sender, System.EventArgs e)
         {
-
+            var viewModel = new TradeManagerViewModel
+            {
+                StockSerie = this.serie,
+                Portfolio = this.Portfolio
+            };
+            var tradeManagerDlg = new TradeManagerDlg(viewModel);
+            tradeManagerDlg.Show(this);
+            tradeManagerDlg.FormClosed += (a, b) =>
+            {
+            };
         }
 
         private void OpenTradeViewModel_OrdersChanged()
