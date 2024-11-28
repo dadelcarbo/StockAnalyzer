@@ -2507,11 +2507,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void tradeMenu_Click(object sender, System.EventArgs e)
         {
-            var viewModel = new TradeManagerViewModel
-            {
-                StockSerie = this.serie,
-                Portfolio = this.Portfolio
-            };
+            var viewModel = new TradeManagerViewModel(Portfolio, this.serie);
             var tradeManagerDlg = new TradeManagerDlg(viewModel);
             tradeManagerDlg.Show(this);
             tradeManagerDlg.FormClosed += (a, b) =>

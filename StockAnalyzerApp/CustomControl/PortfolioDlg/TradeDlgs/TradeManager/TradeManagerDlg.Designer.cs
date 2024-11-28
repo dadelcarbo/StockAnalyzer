@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.tradeManagerControl = new CustomControl.PortfolioDlg.TradeDlgs.TradeManager.TradeManagerControlxaml();
+            this.tradeManagerControl = new CustomControl.PortfolioDlg.TradeDlgs.TradeManager.TradeManagerControl();
             this.SuspendLayout();
             // 
             // elementHost1
@@ -57,6 +57,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        public CustomControl.PortfolioDlg.TradeDlgs.TradeManager.TradeManagerControlxaml tradeManagerControl;
+        public CustomControl.PortfolioDlg.TradeDlgs.TradeManager.TradeManagerControl tradeManagerControl;
     }
 }
