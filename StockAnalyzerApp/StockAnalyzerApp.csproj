@@ -346,6 +346,7 @@
     <Compile Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\ViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockPositionBaseViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockRedGreenStyleSelector.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\PortfolioViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\SaxoPriceData.cs" />
     <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerControl.xaml.cs">
       <DependentUpon>TradeManagerControl.xaml</DependentUpon>

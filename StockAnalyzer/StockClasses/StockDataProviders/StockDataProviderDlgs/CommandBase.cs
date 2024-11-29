@@ -12,15 +12,28 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
     {
         public event EventHandler CanExecuteChanged;
 
-        public AsyncCommandBase(Func<Task> execute)
+        Func<bool> _canExecute;
+        public AsyncCommandBase(Func<Task> execute, Func<bool> canExecute = null, INotifyPropertyChanged viewModel = null)
         {
             _action = execute;
+
+            _canExecute = canExecute;
+
+            if (viewModel != null)
+            {
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private readonly Func<Task> _action;
         public bool CanExecute(object parameter)
         {
-            return true;
+            return _canExecute == null ? true : _canExecute();
         }
 
         public async void Execute(object parameter)
@@ -32,20 +45,33 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
     {
         public event EventHandler CanExecuteChanged;
 
-        public CommandBase(Action action)
+        Func<bool> _canExecute;
+        public CommandBase(Action action, Func<bool> canExecute = null, INotifyPropertyChanged viewModel = null)
         {
             _action = action;
+
+            _canExecute = canExecute;
+
+            if (viewModel != null)
+            {
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
         }
 
         private readonly Action _action;
         public bool CanExecute(object parameter)
         {
-            return true;
+            return _canExecute == null ? true : _canExecute();
         }
 
         public void Execute(object parameter)
         {
             _action?.Invoke();
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
     public class ParamCommandBase<T> : ICommand

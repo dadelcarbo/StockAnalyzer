@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Tweetinvi.Models;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 {
@@ -17,6 +18,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         {
             this.Portfolio = new PortfolioViewModel(portfolio);
             this.StockSerie = serie;
+            this.PortfolioRisk = portfolio.MaxRisk / 2.5f;
+
+            Task.Run(() => this.PerformPriceRefreshCmd());
         }
 
         public StockSerie StockSerie { get; set; }
@@ -78,53 +82,51 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
         private float bid;
         public float Bid { get => bid; set => SetProperty(ref bid, value); }
+        #endregion
 
+        #region Buy/Sell Commands
         private CommandBase sellCommand;
-        public ICommand SellCommand => sellCommand ??= new CommandBase(Sell);
+        public ICommand SellCommand => sellCommand ??= new CommandBase(Sell, CanSell, this);
 
         private void Sell()
         {
         }
 
+        private bool CanSell()
+        {
+            return ask > 0 && qty > 0;
+        }
+
         private CommandBase buyCommand;
-        public ICommand BuyCommand => buyCommand ??= new CommandBase(Buy);
+        public ICommand BuyCommand => buyCommand ??= new CommandBase(Buy, CanBuy, this);
 
         private void Buy()
         {
+
+        }
+
+        private bool CanBuy()
+        {
+            return bid > 0 && qty > 0;
         }
         #endregion
-    }
-    public class PortfolioViewModel : NotifyPropertyChangedBase
-    {
-        StockPortfolio portfolio;
 
-        public PortfolioViewModel(StockPortfolio portfolio)
+        private int qty;
+        public int Qty { get => qty; set => SetProperty(ref qty, value); }
+
+        private float portfolioRisk;
+        public float PortfolioRisk
         {
-            this.portfolio = portfolio;
+            get => portfolioRisk;
+            set
+            {
+                SetProperty(ref portfolioRisk, value);
+                this.Risk = this.Portfolio.AccountValue * portfolioRisk;
+            }
         }
 
-        public bool RefreshPortfolio()
-        {
-            if (!portfolio.SaxoLogin())
-                return false;
-
-            this.portfolio.Refresh();
-
-            return true;
-        }
-
-        [Property(null, "1-General")]
-        public string Name => this.portfolio.Name;
-        [Property(null, "1-General")]
-        public float Balance => this.portfolio.Balance;
-        [Property(null, "1-General")]
-        public float AccountValue => this.portfolio.TotalValue;
-        [Property(null, "1-General")]
-        public float RiskFreeValue => this.portfolio.RiskFreeValue;
-        [Property("P2", "1-General")]
-        public float DayVar { get; private set; }
-        [Property(null, "1-General")]
-        public float DayPL { get; private set; }
+        private float risk;
+        public float Risk { get => risk; set => SetProperty(ref risk, value); }
 
     }
 }

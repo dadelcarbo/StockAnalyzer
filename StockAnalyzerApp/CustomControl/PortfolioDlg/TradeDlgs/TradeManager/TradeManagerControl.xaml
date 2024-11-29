@@ -45,26 +45,45 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding StockSerie.StockName}"  FontSize="16" VerticalAlignment="Center"  Margin="2"/>
-                    <Button Height="16" Width="16"  VerticalAlignment="Center" Margin="2" BorderThickness="0"
-                            Command="{Binding PriceRefreshCmd}">
-                        <Image Source="../../../../Resources/Reload.png"/>
-                    </Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding StockSerie.ISIN}"  FontSize="16" VerticalAlignment="Center"  Margin="2"/>
                 </StackPanel>
+                <GroupBox Header="Risk">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock Text="Portfolio Risk: " Width="90"/>
+                            <TextBlock Text="{Binding PortfolioRisk, StringFormat={}{0:P2}}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock Text="Portfolio Risk (€): " Width="90"/>
+                            <TextBlock Text="{Binding Risk, StringFormat={}{0:F2}}"/>
+                        </StackPanel>
+                        <telerik:RadSlider Width="130" HorizontalAlignment="Left"
+                                       Minimum="0" Maximum="{Binding Portfolio.MaxRisk}" Value="{Binding PortfolioRisk}"
+                                       IsSnapToTickEnabled="True" TickFrequency="0.0005"/>
+                    </StackPanel>
+                </GroupBox>
                 <StackPanel Orientation="Horizontal">
-                    <Button BorderThickness="2" BorderBrush="Red" Margin="2" Command="{Binding SellCommand}">
+                    <Label Content="Quantity: "/>
+                    <telerik:RadNumericUpDown Value="{Binding Qty}" FontSize="12" Margin="2" SmallChange="50" NumberDecimalDigits="0" Width="70" ValueFormat="Numeric" Minimum="0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <telerik:RadButton BorderThickness="3" BorderBrush="Red" CornerRadius="4" Margin="2" Command="{Binding SellCommand}">
                         <StackPanel HorizontalAlignment="Center">
                             <Label Content="{Binding Bid}" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
                             <Label Content="Sell" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
                         </StackPanel>
-                    </Button>
-                    <Button BorderThickness="2" BorderBrush="Blue" Margin="2" Command="{Binding BuyCommand}">
+                    </telerik:RadButton>
+                    <telerik:RadButton BorderThickness="3" BorderBrush="Blue" CornerRadius="4" Margin="2" Command="{Binding BuyCommand}">
                         <StackPanel HorizontalAlignment="Center">
                             <Label Content="{Binding Ask}" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
                             <Label Content="Buy" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
                         </StackPanel>
+                    </telerik:RadButton>
+                    <Button Height="24" Width="24"  VerticalAlignment="Center" Margin="2" BorderThickness="0"
+                            Command="{Binding PriceRefreshCmd}">
+                        <Image Source="../../../../Resources/Reload.png"/>
                     </Button>
                 </StackPanel>
             </StackPanel>
