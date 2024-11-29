@@ -5,6 +5,9 @@ using System.Windows.Input;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
+    /// <summary>
+    /// Can always execute
+    /// </summary>
     public class AsyncCommandBase : ICommand
     {
         public event EventHandler CanExecuteChanged;
