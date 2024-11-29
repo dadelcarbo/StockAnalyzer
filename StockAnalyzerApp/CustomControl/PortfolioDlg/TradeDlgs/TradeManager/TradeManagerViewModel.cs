@@ -1,7 +1,12 @@
-﻿using StockAnalyzer;
+﻿using Newtonsoft.Json;
+using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockPortfolio;
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
@@ -28,6 +33,64 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                 this.Portfolio = null;
             }
             this.OnPropertyChanged(nameof(Portfolio));
+        }
+        #endregion
+
+        #region REFRESH BID/ASK
+        private ICommand priceRefreshCmd;
+        public ICommand PriceRefreshCmd => priceRefreshCmd ??= new AsyncCommandBase(PerformPriceRefreshCmd);
+
+        HttpClient httpClient = new HttpClient();
+        private async Task PerformPriceRefreshCmd()
+        {
+            if (StockSerie.DataProvider != StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.SaxoIntraday)
+                return;
+
+            var url = $"https://fr-be.structured-products.saxo/page-api/instruments/v2/BE/details/isin/{this.StockSerie.ISIN}?locale=fr_BE";
+
+            try
+            {
+                var resp = await httpClient.GetAsync(url);
+                if (resp.IsSuccessStatusCode)
+                {
+                    var json = await resp.Content.ReadAsStringAsync();
+                    var saxoPrice = JsonConvert.DeserializeObject<SaxoPrice>(json);
+
+                    var instrumentPrice = saxoPrice?.sections?.FirstOrDefault(s => s.section == "instrumentPrice");
+                    if (instrumentPrice != null)
+                    {
+                        var askField = instrumentPrice.fields.FirstOrDefault(f => f.field == "ask");
+                        if (askField != null)
+                            this.Ask = askField.value.value;
+                        var bidField = instrumentPrice.fields.FirstOrDefault(f => f.field == "bid");
+                        if (bidField != null)
+                            this.Bid = bidField.value.value;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private float ask;
+        public float Ask { get => ask; set => SetProperty(ref ask, value); }
+
+        private float bid;
+        public float Bid { get => bid; set => SetProperty(ref bid, value); }
+
+        private CommandBase sellCommand;
+        public ICommand SellCommand => sellCommand ??= new CommandBase(Sell);
+
+        private void Sell()
+        {
+        }
+
+        private CommandBase buyCommand;
+        public ICommand BuyCommand => buyCommand ??= new CommandBase(Buy);
+
+        private void Buy()
+        {
         }
         #endregion
     }

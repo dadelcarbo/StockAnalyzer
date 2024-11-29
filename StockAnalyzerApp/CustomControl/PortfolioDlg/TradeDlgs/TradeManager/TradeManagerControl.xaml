@@ -44,20 +44,28 @@
         <GroupBox Header="Instrument" Grid.Column="1">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Name:"/>
-                    <TextBlock Text="{Binding Portfolio.Name}"/>
+                    <TextBlock Text="{Binding StockSerie.StockName}"  FontSize="16" VerticalAlignment="Center"  Margin="2"/>
+                    <Button Height="16" Width="16"  VerticalAlignment="Center" Margin="2" BorderThickness="0"
+                            Command="{Binding PriceRefreshCmd}">
+                        <Image Source="../../../../Resources/Reload.png"/>
+                    </Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Value:"/>
-                    <TextBlock Text="{Binding Portfolio.AccountValue}"/>
+                    <TextBlock Text="{Binding StockSerie.ISIN}"  FontSize="16" VerticalAlignment="Center"  Margin="2"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Cash:"/>
-                    <TextBlock Text="{Binding Portfolio.Balance}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Day %:"/>
-                    <TextBlock Text="{Binding Portfolio.Balance}"/>
+                    <Button BorderThickness="2" BorderBrush="Red" Margin="2" Command="{Binding SellCommand}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <Label Content="{Binding Bid}" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
+                            <Label Content="Sell" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+                    <Button BorderThickness="2" BorderBrush="Blue" Margin="2" Command="{Binding BuyCommand}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <Label Content="{Binding Ask}" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
+                            <Label Content="Buy" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

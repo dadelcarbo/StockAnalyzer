@@ -96,6 +96,7 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -345,6 +346,7 @@
     <Compile Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\ViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockPositionBaseViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockRedGreenStyleSelector.cs" />
+    <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\SaxoPriceData.cs" />
     <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerControl.xaml.cs">
       <DependentUpon>TradeManagerControl.xaml</DependentUpon>
     </Compile>

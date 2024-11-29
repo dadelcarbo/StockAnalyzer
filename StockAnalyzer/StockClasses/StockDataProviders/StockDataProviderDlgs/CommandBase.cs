@@ -1,9 +1,30 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
+    public class AsyncCommandBase : ICommand
+    {
+        public event EventHandler CanExecuteChanged;
+
+        public AsyncCommandBase(Func<Task> execute)
+        {
+            _action = execute;
+        }
+
+        private readonly Func<Task> _action;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public async void Execute(object parameter)
+        {
+            await _action();
+        }
+    }
     public class CommandBase : ICommand
     {
         public event EventHandler CanExecuteChanged;
