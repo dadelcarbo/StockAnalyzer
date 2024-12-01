@@ -34,8 +34,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // contextMenu
             // 
             this.contextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.buyMenu,
             this.tradeMenu,
+            this.buyMenu,
             this.sellMenu,
             this.cancelMenu,
             this.separator1,
@@ -49,17 +49,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInPEAPerfMenu,
             this.openSaxoIntradyConfigDlg});
             // 
-            // buyMenu
-            // 
-            this.buyMenu.Index = index++;
-            this.buyMenu.Text = "Buy";
-            this.buyMenu.Click += new System.EventHandler(this.buyMenu_Click);
-            // 
             // tradeMenu
             // 
             this.tradeMenu.Index = index++;
             this.tradeMenu.Text = "Trade";
             this.tradeMenu.Click += new System.EventHandler(this.tradeMenu_Click);
+            // 
+            // buyMenu
+            // 
+            this.buyMenu.Index = index++;
+            this.buyMenu.Text = "Buy";
+            this.buyMenu.Click += new System.EventHandler(this.buyMenu_Click);
             // 
             // sellMenu
             // 

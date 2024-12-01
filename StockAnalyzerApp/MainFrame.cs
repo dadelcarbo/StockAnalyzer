@@ -2145,10 +2145,10 @@ namespace StockAnalyzerApp
         {
             var dp = StockDataProviderBase.GetDataProvider(CurrentStockSerie.DataProvider);
             var handled = dp.RemoveEntry(CurrentStockSerie);
+            // Flag as excluded
+            CurrentStockSerie.StockAnalysis.Excluded = true;
             if (!handled)
             {
-                // Flag as excluded
-                CurrentStockSerie.StockAnalysis.Excluded = true;
                 SaveAnalysis(Settings.Default.AnalysisFile);
             }
 
