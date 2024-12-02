@@ -2505,21 +2505,32 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             };
         }
 
-        void tradeMenu_Click(object sender, System.EventArgs e)
-        {
-            var viewModel = new TradeManagerViewModel(Portfolio, this.serie);
-            var tradeManagerDlg = new TradeManagerDlg(viewModel);
-            tradeManagerDlg.Show(this);
-            tradeManagerDlg.FormClosed += (a, b) =>
-            {
-            };
-        }
-
         private void OpenTradeViewModel_OrdersChanged()
         {
             if (openTradeViewModel.StopValue != 0)
                 this.DrawOpenedOrder(this.foregroundGraphic, stopPen, this.StartIndex, openTradeViewModel.StopValue, true);
             this.DrawOpenedOrder(this.foregroundGraphic, entryOrderPen, this.EndIndex, openTradeViewModel.EntryValue, true);
+
+            this.PaintForeground();
+        }
+
+        void tradeMenu_Click(object sender, System.EventArgs e)
+        {
+            var tradeManagerViewModel = new TradeManagerViewModel(Portfolio, this.serie);
+            tradeManagerViewModel.OrdersChanged += TradeManagerViewModel_OrdersChanged;
+            var tradeManagerDlg = new TradeManagerDlg(tradeManagerViewModel);
+            tradeManagerDlg.Show(this);
+            tradeManagerDlg.FormClosed += (a, b) =>
+            {
+                tradeManagerViewModel.OrdersChanged -= TradeManagerViewModel_OrdersChanged;
+            };
+        }
+
+        private void TradeManagerViewModel_OrdersChanged(TradeManagerViewModel tradeManagerViewModel)
+        {
+            if (tradeManagerViewModel.EntryStop != 0)
+                this.DrawOpenedOrder(this.foregroundGraphic, stopPen, this.StartIndex, tradeManagerViewModel.EntryStop, true);
+            this.DrawOpenedOrder(this.foregroundGraphic, entryOrderPen, this.EndIndex, tradeManagerViewModel.Bid, true);
 
             this.PaintForeground();
         }
