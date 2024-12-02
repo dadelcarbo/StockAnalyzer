@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Tweetinvi.Models;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 {
@@ -16,6 +15,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
     {
         public TradeManagerViewModel(StockPortfolio portfolio, StockSerie serie)
         {
+            this.UseLog = true;
             this.Portfolio = new PortfolioViewModel(portfolio);
             this.StockSerie = serie;
             this.PortfolioRisk = portfolio.MaxRisk / 2.5f;
