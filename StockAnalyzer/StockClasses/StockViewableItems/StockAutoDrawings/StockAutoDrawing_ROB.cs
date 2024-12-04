@@ -33,6 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             this.CreateEventSeries(stockSerie.Count);
             var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
             var downTrendEvents = this.Events[Array.IndexOf<string>(this.EventNames, "DownTrend")];
+            var upTrendEvents = this.Events[Array.IndexOf<string>(this.EventNames, "UpTrend")];
 
             PointF P = PointF.Empty;
             HalfLine2D previousResistance = null;
@@ -61,6 +62,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             {
                 this.DrawingItems.Insert(0, previousResistance);
                 brokenUpEvents[stockSerie.LastIndex] = closeSerie[stockSerie.LastIndex] > previousResistance.ValueAtX(stockSerie.LastIndex) && closeSerie[stockSerie.LastIndex - 1] <= previousResistance.ValueAtX(stockSerie.LastIndex - 1);
+                upTrendEvents[stockSerie.LastIndex] = closeSerie[stockSerie.LastIndex] > previousResistance.ValueAtX(stockSerie.LastIndex);
             }
         }
 
@@ -69,11 +71,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             get
             {
-                eventNames ??= new string[] { "BrokenUp", "DownTrend" };
+                eventNames ??= new string[] { "BrokenUp", "DownTrend", "UpTrend" };
                 return eventNames;
             }
         }
-        static readonly bool[] isEvent = new bool[] { true, false };
+        static readonly bool[] isEvent = new bool[] { true, false, false };
         public override bool[] IsEvent => isEvent;
     }
 }
