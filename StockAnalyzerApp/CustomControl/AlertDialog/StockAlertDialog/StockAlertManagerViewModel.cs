@@ -2,12 +2,14 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -421,25 +423,33 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         public void RunAlert()
         {
+            using var ml = new MethodLogger(this, true);
             Task.Run(() =>
             {
-                RunAlertEnabled = false;
-                this.Alerts.Clear();
-
-                var alertDefs = this.SelectedAlerts.Where(s => s.IsSelected).Select(s => s.AlertDef).ToList();
-
-                this.ProgressVisibility = Visibility.Visible;
-                this.ProgressValue = 0;
-                this.ProgressMax = alertDefs.Count;
-
-                foreach (var alertDef in alertDefs)
+                try
                 {
-                    CurrentAlert = alertDef;
-                    foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
+                    RunAlertEnabled = false;
+                    this.Alerts.Clear();
+
+                    var alertDefs = this.SelectedAlerts.Where(s => s.IsSelected).Select(s => s.AlertDef).ToList();
+
+                    this.ProgressVisibility = Visibility.Visible;
+                    this.ProgressValue = 0;
+                    this.ProgressMax = alertDefs.Count;
+
+                    foreach (var alertDef in alertDefs)
                     {
-                        this.Alerts.Add(alert.GetAlertValue());
+                        CurrentAlert = alertDef;
+                        foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
+                        {
+                            this.Alerts.Add(alert.GetAlertValue());
+                        }
+                        this.ProgressValue++;
                     }
-                    this.ProgressValue++;
+                }
+                catch (Exception ex)
+                {
+                    StockLog.Write(ex);
                 }
 
                 RunAlertEnabled = true;
@@ -450,25 +460,34 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         }
         public void RunFullAlert()
         {
+            using var ml = new MethodLogger(this, true);
             RunAlertEnabled = false;
             Task.Run(() =>
             {
-                RunAlertEnabled = false;
-                this.Alerts.Clear();
-
-                var alertDefs = this.AlertDefs.Where(s => s.InReport || s.InAlert).ToList();
-
-                this.ProgressVisibility = Visibility.Visible;
-                this.ProgressValue = 0;
-                this.ProgressMax = alertDefs.Count;
-                foreach (var alertDef in alertDefs)
+                try
                 {
-                    CurrentAlert = alertDef;
-                    foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
+                    RunAlertEnabled = false;
+                    this.Alerts.Clear();
+
+                    var alertDefs = this.AlertDefs.Where(s => s.InReport || s.InAlert).ToList();
+
+                    this.ProgressVisibility = Visibility.Visible;
+                    this.ProgressValue = 0;
+                    this.ProgressMax = alertDefs.Count;
+                    foreach (var alertDef in alertDefs)
                     {
-                        this.Alerts.Add(alert.GetAlertValue());
+                        CurrentAlert = alertDef;
+                        foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
+                        {
+                            this.Alerts.Add(alert.GetAlertValue());
+                        }
+                        this.ProgressValue++;
                     }
-                    this.ProgressValue++;
+
+                }
+                catch (Exception ex)
+                {
+                    StockLog.Write(ex);
                 }
 
                 RunAlertEnabled = true;
