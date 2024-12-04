@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override string[] ParameterNames => new string[] { "LookbackPeriod", "PivotPeriod" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 200, 3 };
+        public override Object[] ParameterDefaultValues => new Object[] { 200, 6 };
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeInt(2, 500) };
 
