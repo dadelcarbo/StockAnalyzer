@@ -63,17 +63,17 @@
                         <StackPanel Grid.Column="0" Margin="2">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Portfolio Risk (%): " Width="90"/>
-                                <TextBlock Text="{Binding PortfolioRisk, StringFormat={}{0:P2}}"/>
+                                <TextBlock Text="{Binding PortfolioRiskPercent, StringFormat={}{0:P2}}"/>
                                 <telerik:RadRadioButton Margin="1" BorderThickness="0" GroupName="Lock" IsChecked="{Binding IsPortfolioRiskLocked}">
                                     <Image Source="{Binding IsChecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type telerik:RadRadioButton}}, Converter={StaticResource RadioButtonImageConverter}, ConverterParameter=../../../../Resources/}" Width="16" Height="16"/>
                                 </telerik:RadRadioButton>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Portfolio Risk (€): " Width="90"/>
-                                <TextBlock Text="{Binding EntryRisk, StringFormat={}{0:F2}}"/>
+                                <TextBlock Text="{Binding PortfolioRiskEuro, StringFormat={}{0:F2}}"/>
                             </StackPanel>
                             <telerik:RadSlider Width="130" HorizontalAlignment="Left" Visibility="{Binding IsPortfolioRiskLocked, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"
-                                       Minimum="0.0005" Maximum="{Binding Portfolio.MaxRisk}" Value="{Binding PortfolioRisk}"
+                                       Minimum="0.0005" Maximum="{Binding Portfolio.MaxRisk}" Value="{Binding PortfolioRiskPercent}"
                                        IsSnapToTickEnabled="True" TickFrequency="0.0005"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="2" Width="110">
@@ -93,13 +93,17 @@
                                        IsSnapToTickEnabled="True" TickFrequency="0.0005"/>
                         </StackPanel>
                         <StackPanel Grid.Column="2" Margin="2">
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Margin="2">
                                 <TextBlock Text="Amount (€): " Width="75"/>
                                 <TextBlock Text="{Binding EntryAmount, StringFormat={}{0:F2}}"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Margin="2">
                                 <TextBlock Text="Portfolio (%): " Width="75"/>
                                 <TextBlock Text="{Binding EntryPortfolioPercent, StringFormat={}{0:P2}}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="2">
+                                <TextBlock Text="Risk (€): " Width="75"/>
+                                <TextBlock Text="{Binding EntryRisk, StringFormat={}{0:F2}}"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
