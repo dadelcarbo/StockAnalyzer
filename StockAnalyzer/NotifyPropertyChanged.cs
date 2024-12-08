@@ -31,6 +31,7 @@ namespace StockAnalyzer
 
             return false;
         }
+
         protected bool SetProperty(ref int field, int newValue, [CallerMemberName] string propertyName = null)
         {
             if (UseLog) StockLog.Write($"==> Set ${propertyName} Old:{field} New: {newValue}");

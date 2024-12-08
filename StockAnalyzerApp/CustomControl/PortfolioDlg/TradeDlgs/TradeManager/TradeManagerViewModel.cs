@@ -7,6 +7,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -28,7 +29,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             this.UseLog = true;
             this.Portfolio = new PortfolioViewModel(portfolio);
             this.StockSerie = serie;
-            this.PortfolioRisk = portfolio.MaxRisk;
+            this.portfolioRisk = portfolio.MaxRisk;
             this.isPortfolioRiskLocked = true;
 
             Task.Run(() => this.PerformPriceRefreshCmd());
@@ -105,8 +106,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
                     if (bid > 0 && Qty == 0)
                     {
-                        var nb = (int)(this.Portfolio.AccountValue / this.Portfolio.Portfolio.MaxPositions / this.bid) / 50;
-                        this.Qty = nb * 50;
+                        var nb = (int)(this.Portfolio.AccountValue / this.Portfolio.Portfolio.MaxPositions / this.bid);
+                        this.Qty = nb;
                     }
                 }
             }
@@ -140,39 +141,53 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         }
         #endregion
 
+        public int MaxQty => this.bid == 0 ? 0 : (int)Math.Floor(this.Portfolio.AccountValue * this.Portfolio.Portfolio.MaxPositionSize / this.bid);
+
         private int qty;
         /// <summary>
-        /// Qty= (Entry-Stop)/Risk
+        /// Qty = (Entry-Stop)/Risk
         /// </summary>
         public int Qty
         {
             get => qty;
             set
             {
-                if (SetProperty(ref qty, value))
+                var newQty = Math.Min(value, MaxQty);
+                if (SetProperty(ref qty, newQty))
                 {
-                    if (this.qty > 0 && this.bid > 0)
+                    if (this.qty == 0 || this.bid == 0)
+                        return;
+
+                    if (this.IsPortfolioRiskLocked) // Update Stop
                     {
-                        if (this.IsPortfolioRiskLocked)
-                        {
-                            var minRisk = this.Portfolio.AccountValue * 0.0005f;
-                            var maxRisk = this.Portfolio.AccountValue * this.Portfolio.MaxRisk;
-                            this.EntryMinStop = this.Bid - maxRisk / this.qty;
-                            this.EntryMaxStop = this.Bid - minRisk / this.qty;
+                        var minRisk = this.Portfolio.AccountValue * 0.0005f;
+                        var maxRisk = this.Portfolio.AccountValue * this.Portfolio.MaxRisk;
 
-                            this.EntryStop = this.Bid - risk / this.qty;
-                            this.EntryStopPercent = (this.Bid - this.entryStop) / this.Bid;
-                        }
-                        else // Stop is locked
-                        {
-                            this.portfolioRisk = this.qty * (this.bid - this.EntryStop) / this.Portfolio.AccountValue;
-                            this.OnPropertyChanged(nameof(this.PortfolioRisk));
+                        this.entryMinStop = this.Bid - maxRisk / this.qty;
+                        this.entryMaxStop = this.Bid - minRisk / this.qty;
+                        //this.OnPropertyChanged(nameof(this.EntryMinStop));
+                        //this.OnPropertyChanged(nameof(this.EntryMaxStop));
 
-                            var minRisk = this.Portfolio.AccountValue * 0.0005f;
-                            var maxRisk = this.Portfolio.AccountValue * this.Portfolio.MaxRisk;
-                            this.EntryMinStop = this.Bid - maxRisk / this.qty;
-                            this.EntryMaxStop = this.Bid - minRisk / this.qty;
-                        }
+                        this.entryStop = this.Bid - (this.PortfolioRisk * this.Portfolio.AccountValue) / this.qty;
+
+                        this.OnPropertyChanged(nameof(this.EntryStop));
+                        this.OnPropertyChanged(nameof(this.EntryStopPercent));
+
+                        RaiseOrdersChanged();
+                    }
+                    else // Stop is locked => Update PortfolioRisk
+                    {
+                        this.portfolioRisk = this.qty * (this.bid - this.EntryStop) / this.Portfolio.AccountValue;
+                        this.OnPropertyChanged(nameof(this.PortfolioRisk));
+                        this.OnPropertyChanged(nameof(this.EntryRisk));
+
+                        var minRisk = this.Portfolio.AccountValue * 0.0005f;
+                        var maxRisk = this.Portfolio.AccountValue * this.Portfolio.MaxRisk;
+
+                        this.entryMinStop = this.Bid - maxRisk / this.qty;
+                        this.entryMaxStop = this.Bid - minRisk / this.qty;
+                        //this.OnPropertyChanged(nameof(this.EntryMinStop));
+                        //this.OnPropertyChanged(nameof(this.EntryMaxStop));
                     }
                     this.OnPropertyChanged(nameof(this.EntryAmount));
                     this.OnPropertyChanged(nameof(this.EntryPortfolioPercent));
@@ -184,7 +199,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         /// <summary>
         /// Risk = Qty(Entry-Stop)
         /// </summary>
-        [Property(null, "1-General")]
+        [Property("P2", "1-General")]
         public float PortfolioRisk
         {
             get => portfolioRisk;
@@ -192,29 +207,39 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             {
                 if (SetProperty(ref portfolioRisk, value))
                 {
-                    this.Risk = this.Portfolio.AccountValue * portfolioRisk;
-                    if (this.qty > 0 && this.bid > 0)
+                    if (this.qty == 0 || this.bid == 0)
+                        return;
+
+                    if (this.isStopLocked) // Update Qty
+                    {
+                        this.qty = (int)Math.Floor(this.PortfolioRisk * this.Portfolio.AccountValue / (this.bid - this.entryStop));
+                        // TODO Cap to max position size
+
+                        this.OnPropertyChanged(nameof(this.Qty));
+                        this.OnPropertyChanged(nameof(this.EntryAmount));
+                        this.OnPropertyChanged(nameof(this.EntryPortfolioPercent));
+                    }
+                    else // Qty locaked => Update Stop
                     {
                         var minRisk = this.Portfolio.AccountValue * 0.0005f;
                         var maxRisk = this.Portfolio.AccountValue * this.Portfolio.MaxRisk;
                         this.EntryMinStop = this.Bid - maxRisk / this.qty;
                         this.EntryMaxStop = this.Bid - minRisk / this.qty;
 
-                        this.entryStop = this.Bid - risk / this.qty;
-                        this.EntryStopPercent = (this.Bid - this.entryStop) / this.Bid;
+                        this.entryStop = this.Bid - (this.portfolioRisk * this.Portfolio.AccountValue) / this.qty;
                         this.OnPropertyChanged(nameof(this.EntryStop));
+                        this.OnPropertyChanged(nameof(this.EntryStopPercent));
                         RaiseOrdersChanged();
-
                     }
+                    this.OnPropertyChanged(nameof(this.EntryRisk));
                 }
             }
         }
 
-        private float risk;
-
-        public float Risk { get => risk; set => SetProperty(ref risk, value); }
+        public float EntryRisk => (this.qty == 0 || this.bid == 0) ? 0 : (this.bid - this.entryStop) * this.qty;
 
         private float entryStop;
+        /// <summary>
         /// Stop = Entry - Risk/Qty
         /// </summary>
         public float EntryStop
@@ -224,19 +249,33 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             {
                 if (SetProperty(ref entryStop, value))
                 {
-                    if (this.qty > 0 && this.bid > 0)
-                    {
-                        RaiseOrdersChanged();
-                    }
-                    this.OnPropertyChanged(nameof(this.EntryAmount));
-                    this.OnPropertyChanged(nameof(this.EntryPortfolioPercent));
+                    if (this.qty == 0 || this.bid == 0)
+                        return;
 
+                    if (this.isPortfolioRiskLocked) // Update Qty
+                    {
+                        this.qty = (int)Math.Floor(this.PortfolioRisk * this.Portfolio.AccountValue / (this.bid - this.entryStop));
+                        // TODO Cap to max position size
+
+                        this.OnPropertyChanged(nameof(this.Qty));
+                        this.OnPropertyChanged(nameof(this.EntryAmount));
+                        this.OnPropertyChanged(nameof(this.EntryPortfolioPercent));
+                    }
+                    else // Qty is stopped ==> update Portfolio Risk 
+                    {
+                        var portfolioRiskEuro = (this.bid - this.entryStop) * this.qty;
+                        this.portfolioRisk = portfolioRiskEuro / this.Portfolio.AccountValue;
+
+                        this.OnPropertyChanged(nameof(this.PortfolioRisk));
+                        this.OnPropertyChanged(nameof(this.EntryRisk));
+                    }
+                    RaiseOrdersChanged();
+                    this.OnPropertyChanged(nameof(this.EntryStopPercent));
                 }
             }
         }
 
-        private float entryStopPercent;
-        public float EntryStopPercent { get => entryStopPercent; set => SetProperty(ref entryStopPercent, value); }
+        public float EntryStopPercent => this.bid == 0 ? 0f : (this.bid - this.entryStop) / this.bid;
 
         private float entryMinStop;
         [Property(null, "1-General")]

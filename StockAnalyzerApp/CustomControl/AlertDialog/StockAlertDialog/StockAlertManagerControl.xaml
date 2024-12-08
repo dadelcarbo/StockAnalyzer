@@ -86,7 +86,7 @@
                         <telerik:GridViewDataColumn Header="Variation" DataMemberBinding="{Binding Variation, StringFormat=\{0:P2\}}"/>
                         <telerik:GridViewDataColumn Header="Exchanged" DataMemberBinding="{Binding Exchanged}"/>
                         <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}"/>
-                        <telerik:GridViewDataColumn Header="Speed" DataMemberBinding="{Binding FormatedSpeed}"/>
+                        <telerik:GridViewDataColumn Header="Speed" DataMemberBinding="{Binding Speed}"/>
                         <telerik:GridViewDataColumn Header="Stok" DataMemberBinding="{Binding Stok}"/>
                         <telerik:GridViewDataColumn Header="Highest" DataMemberBinding="{Binding Highest}"/>
                         <telerik:GridViewDataColumn Header="Creation&#x0a;Date" DataMemberBinding="{Binding Date, StringFormat=\{0:d\}}"/>

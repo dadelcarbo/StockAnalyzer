@@ -62,7 +62,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Margin="2">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Portfolio Risk: " Width="90"/>
+                                <TextBlock Text="Portfolio Risk (%): " Width="90"/>
                                 <TextBlock Text="{Binding PortfolioRisk, StringFormat={}{0:P2}}"/>
                                 <telerik:RadRadioButton Margin="1" BorderThickness="0" GroupName="Lock" IsChecked="{Binding IsPortfolioRiskLocked}">
                                     <Image Source="{Binding IsChecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type telerik:RadRadioButton}}, Converter={StaticResource RadioButtonImageConverter}, ConverterParameter=../../../../Resources/}" Width="16" Height="16"/>
@@ -70,10 +70,10 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Portfolio Risk (€): " Width="90"/>
-                                <TextBlock Text="{Binding Risk, StringFormat={}{0:F2}}"/>
+                                <TextBlock Text="{Binding EntryRisk, StringFormat={}{0:F2}}"/>
                             </StackPanel>
                             <telerik:RadSlider Width="130" HorizontalAlignment="Left" Visibility="{Binding IsPortfolioRiskLocked, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"
-                                       Minimum="0" Maximum="{Binding Portfolio.MaxRisk}" Value="{Binding PortfolioRisk}"
+                                       Minimum="0.0005" Maximum="{Binding Portfolio.MaxRisk}" Value="{Binding PortfolioRisk}"
                                        IsSnapToTickEnabled="True" TickFrequency="0.0005"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="2" Width="110">
@@ -107,7 +107,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Quantity: "/>
                     <telerik:RadNumericUpDown Value="{Binding Qty}" FontSize="12" Margin="2" Width="70" IsEnabled="{Binding IsQtyLocked, Converter={StaticResource InvertedBooleanConverter}}"
-                                              SmallChange="50" NumberDecimalDigits="0" ValueFormat="Numeric" Minimum="0" />
+                                              SmallChange="1" NumberDecimalDigits="0" ValueFormat="Numeric" Minimum="0"/>
                     <telerik:RadRadioButton Margin="1" BorderThickness="0" GroupName="Lock" IsChecked="{Binding IsQtyLocked}">
                         <Image Source="{Binding IsChecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type telerik:RadRadioButton}}, Converter={StaticResource RadioButtonImageConverter}, ConverterParameter=../../../../Resources/}" Width="16" Height="16"/>
                     </telerik:RadRadioButton>
