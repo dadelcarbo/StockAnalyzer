@@ -16,7 +16,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
 
             this.OpenedPositions = new List<StockPositionBaseViewModel>();
 
-            
+
             foreach (var pos in portfolio.Positions)
             {
                 this.OpenedPositions.Add(new StockPositionBaseViewModel(pos, this));
@@ -47,7 +47,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property("P2", "2-Risk")]
         public float MaxRisk { get => Portfolio.MaxRisk; set => Portfolio.MaxRisk = value; }
         [Property("P2", "2-Risk")]
+        public float MinRisk { get => Portfolio.MinRisk; set => Portfolio.MinRisk = value; }
+        [Property("P2", "2-Risk")]
         public float MaxPositionSize { get => Portfolio.MaxPositionSize; set => Portfolio.MaxPositionSize = value; }
+        [Property("P2", "2-Risk")]
+        public float MaxDrawDown { get => Portfolio.MaxDrawDown; set => Portfolio.MaxDrawDown = value; }
         [Property("P2", "2-Risk")]
         public float AutoTradeRisk { get => Portfolio.AutoTradeRisk; set => Portfolio.AutoTradeRisk = value; }
 
@@ -65,7 +69,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
 
 
-        public IEnumerable<OrderActivity> SaxoOrderActivity => Portfolio.SaxoOrderActivity.OrderByDescending(o=>o.ActivityTime);
+        public IEnumerable<OrderActivity> SaxoOrderActivity => Portfolio.SaxoOrderActivity.OrderByDescending(o => o.ActivityTime);
         public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.GetActiveOrders().OrderByDescending(o => o.CreationDate);
         public IEnumerable<StockTradeOperation> TradeOperations => Portfolio.TradeOperations.OrderByDescending(o => o.Date);
 

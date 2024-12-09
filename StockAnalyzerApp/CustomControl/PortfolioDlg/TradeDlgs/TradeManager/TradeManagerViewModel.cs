@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -84,6 +85,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -160,8 +162,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                     if (this.qty == 0 || this.bid == 0)
                         return;
 
-                    var minRisk = this.Portfolio.AccountValue * 0.0005f;
-                    var maxRisk = this.Portfolio.AccountValue * this.Portfolio.MaxRisk;
+                    var minRisk = this.Portfolio.AccountValue * this.Portfolio.MinRisk;
+                    var maxRisk = this.Portfolio.AccountValue * this.Portfolio.DynamicRisk;
                     var minQty = (int)Math.Floor(minRisk / (this.bid - this.entryStop));
                     this.qty = Math.Max(this.qty, minQty);
 
@@ -180,7 +182,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         }
 
         [Property("F2", "1-General")]
-        public float PortfolioRiskEuro => this.Portfolio.AccountValue * this.Portfolio.MaxRisk;
+        public float PortfolioRiskEuro => this.Portfolio.AccountValue * this.Portfolio.DynamicRisk;
 
         public float EntryRisk => (this.qty == 0 || this.bid == 0) ? 0 : (this.bid - this.entryStop) * this.qty;
 

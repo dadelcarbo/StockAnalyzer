@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Object[] ParameterDefaultValues => new Object[] { 100 };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
 
         public override string[] SerieNames => new string[] { $"ROD({this.Parameters[0]})" };
 

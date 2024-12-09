@@ -59,10 +59,10 @@
             </Button>
         </StackPanel>
         <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
-            <TabItem Header="Portfolio">
+            <TabItem Header="Portfolio">                
                 <telerik:RadPropertyGrid x:Name="propertyGrid" Item="{Binding PortfolioViewModel}" FontSize="9"
                                          AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"
-                                         DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" 
+                                         DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed"
                                          SortAndGroupButtonsVisibility="Collapsed" IsGrouped="True"></telerik:RadPropertyGrid>
             </TabItem>
             <TabItem Header="Opened Positions" IsSelected="True">

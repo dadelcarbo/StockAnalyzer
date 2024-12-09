@@ -110,7 +110,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             }
         }
         public float LongReentry { get; set; }
-        public float Risk => 1 + (this.PortfolioRisk - this.Portfolio.MaxRisk) / this.Portfolio.MaxRisk;
+        public float Risk => 1 + (this.PortfolioRisk - this.Portfolio.DynamicRisk) / this.Portfolio.DynamicRisk;
         public float TradeRisk => (EntryValue - StopValue) / EntryValue;
         public float PortfolioPercent => 1f - (this.Portfolio.TotalValue - this.EntryCost) / this.Portfolio.TotalValue;
         public float PortfolioRisk => (EntryValue - StopValue) * EntryQty / this.Portfolio.TotalValue;
@@ -129,7 +129,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         public int NbDecimals => Math.Max(0, (int)Math.Ceiling(Math.Round(-Math.Log10(this.SmallChange), 4)));
         #endregion
 
-        public bool IsTradeRisky => PortfolioRisk > this.Portfolio.MaxRisk;
+        public bool IsTradeRisky => PortfolioRisk > this.Portfolio.DynamicRisk;
         public bool IsPortfolioRisky => PortfolioPercent > this.Portfolio.MaxPositionSize;
         public bool IsExceedingCash => this.Portfolio.Balance < this.EntryCost;
 
@@ -143,7 +143,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             CalculateTickSize();
 
             // Calculate position size according to money management
-            var qty = (int)Math.Floor(this.Portfolio.MaxRisk * this.Portfolio.TotalValue / (this.EntryValue - this.StopValue));
+            var qty = (int)Math.Floor(this.Portfolio.DynamicRisk * this.Portfolio.TotalValue / (this.EntryValue - this.StopValue));
             qty = Math.Min(qty, (int)(this.Portfolio.MaxPositionSize * this.Portfolio.TotalValue / this.EntryValue));
             this.EntryQty = qty;
         }

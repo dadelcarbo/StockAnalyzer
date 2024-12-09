@@ -1040,21 +1040,34 @@ namespace StockAnalyzer.StockClasses
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
             FloatSerie highSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie serie = new FloatSerie(Values.Count());
+            FloatSerie rodSerie = new FloatSerie(Values.Count());
             float max;
 
-            for (int i = 1; i < Math.Min(period, this.Count); i++)
+            if (period == 0)
             {
-                max = highSerie.GetMax(0, i);
-                serie[i] = -(closeSerie[i] - max) / max;
+                max = closeSerie[0];
+
+                for (int i = 1; i < this.Count; i++)
+                {
+                    max = Math.Max(highSerie[i], max);
+                    rodSerie[i] = -(closeSerie[i] - max) / max;
+                }
             }
-            for (int i = period; i < this.Count; i++)
+            else
             {
-                max = highSerie.GetMax(i - period, i);
-                serie[i] = -(closeSerie[i] - max) / max;
+                for (int i = 1; i < Math.Min(period, this.Count); i++)
+                {
+                    max = highSerie.GetMax(0, i);
+                    rodSerie[i] = -(closeSerie[i] - max) / max;
+                }
+                for (int i = period; i < this.Count; i++)
+                {
+                    max = highSerie.GetMax(i - period, i);
+                    rodSerie[i] = -(closeSerie[i] - max) / max;
+                }
             }
-            serie.Name = $"ROD_{period}";
-            return serie;
+            rodSerie.Name = $"ROD_{period}";
+            return rodSerie;
         }
         public FloatSerie CalculateRateOfChange(int period)
         {

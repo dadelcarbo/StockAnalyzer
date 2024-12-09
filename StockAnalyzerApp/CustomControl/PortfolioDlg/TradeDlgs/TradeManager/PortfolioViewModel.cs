@@ -27,6 +27,14 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
         [Property("P2", "1-General")]
         public float MaxRisk => this.portfolio.MaxRisk;
+        [Property("P2", "1-General")]
+        public float MinRisk => this.portfolio.MinRisk;
+
+        [Property("P2", "1-General")]
+        public float DrawDown => this.portfolio.DrawDown;
+        [Property("P2", "1-General")]
+        public float DynamicRisk => this.portfolio.DynamicRisk;
+
         [Property(null, "1-General")]
         public float Balance => this.portfolio.Balance;
         [Property(null, "1-General")]
@@ -38,6 +46,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         [Property(null, "1-General")]
         public float DayPL { get; private set; }
 
-        public StockPortfolio Portfolio =>  this.portfolio;
+        public StockPortfolio Portfolio => this.portfolio;
     }
 }

@@ -50,6 +50,8 @@ namespace StockAnalyzer.StockPortfolio
         {
             this.TradeOperations = new List<StockTradeOperation>();
             this.MaxRisk = 0.02f;
+            this.MinRisk = 0.0025f;
+            this.MaxDrawDown = 0.2f;
             this.MaxPositionSize = 0.2f;
         }
 
@@ -88,6 +90,14 @@ namespace StockAnalyzer.StockPortfolio
         public float MaxValue { get; set; }
 
         public float MaxRisk { get; set; }
+        public float MinRisk { get; set; }
+        public float MaxDrawDown { get; set; }
+
+
+        /// <summary>
+        /// Calculate risk based on the current drawdown using linear function.
+        /// </summary>
+        public float DynamicRisk => this.DrawDown > this.MaxDrawDown ? this.MinRisk : (MinRisk - MaxRisk) / MaxDrawDown * this.DrawDown + MaxRisk;
 
         public float AutoTradeRisk { get; set; } = 0.001f;
         public float MaxPositionSize { get; set; }
@@ -612,7 +622,7 @@ namespace StockAnalyzer.StockPortfolio
                     var newAccountValues = accountService.GetAccountValue(account, this.AccountValue.Last().Date);
                     if (newAccountValues != null && newAccountValues.Length > 0)
                     {
-                        this.AccountValue = this.AccountValue.Where(av=>av.Date < this.AccountValue.Last().Date).Concat(newAccountValues).ToArray();
+                        this.AccountValue = this.AccountValue.Where(av => av.Date < this.AccountValue.Last().Date).Concat(newAccountValues).ToArray();
                     }
                 }
             }
