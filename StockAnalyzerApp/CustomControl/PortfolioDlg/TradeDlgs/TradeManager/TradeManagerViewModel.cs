@@ -99,10 +99,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             {
                 if (SetProperty(ref bid, value))
                 {
-                    this.OnPropertyChanged(nameof(EntryAmount));
-                    this.OnPropertyChanged(nameof(EntryPortfolioPercent));
-                    this.OnPropertyChanged(nameof(MaxQty));
-
                     if (bid > 0)
                     {
                         if (Qty == 0)
@@ -111,7 +107,12 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                         }
                         this.EntryMaxStop = this.bid - this.PortfolioRiskEuro / this.MaxQty;
                         this.EntryMinStop = 0;
+                        this.RaiseOrdersChanged();
                     }
+
+                    this.OnPropertyChanged(nameof(EntryAmount));
+                    this.OnPropertyChanged(nameof(EntryPortfolioPercent));
+                    this.OnPropertyChanged(nameof(MaxQty));
                 }
             }
         }
@@ -119,7 +120,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
         #region Buy/Sell Commands
         private CommandBase sellCommand;
-        public ICommand SellCommand => sellCommand ??= new CommandBase(Sell, CanSell, this);
+        public ICommand SellCommand => sellCommand ??= new CommandBase(Sell, CanSell, this, new[] { nameof(Ask) });
 
         private void Sell()
         {
@@ -131,7 +132,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         }
 
         private CommandBase buyCommand;
-        public ICommand BuyCommand => buyCommand ??= new CommandBase(Buy, CanBuy, this);
+        public ICommand BuyCommand => buyCommand ??= new CommandBase(Buy, CanBuy, this, new[] { nameof(Bid) });
 
         private void Buy()
         {

@@ -17,6 +17,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             InitializeComponent();
 
             this.tradeManagerControl.ViewModel = viewModel;
+
+            this.tradeManagerControl.ViewModel.Dispatcher = this.tradeManagerControl.Dispatcher;
+
         }
 
     }

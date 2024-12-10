@@ -1,19 +1,24 @@
 using StockAnalyzer.StockLogging;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace StockAnalyzer
 {
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
+        public Dispatcher Dispatcher { get; set; }
+
         public bool UseLog { get; protected set; }
+
         protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
         {
             if (UseLog) StockLog.Write($"==> Set ${propertyName} Old:{field} New: {newValue}");
             if (!Equals(field, newValue))
             {
                 field = newValue;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                this.OnPropertyChanged(propertyName);
                 return true;
             }
 
@@ -25,7 +30,7 @@ namespace StockAnalyzer
             if (field != newValue)
             {
                 field = newValue;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                this.OnPropertyChanged(propertyName);
                 return true;
             }
 
@@ -38,7 +43,7 @@ namespace StockAnalyzer
             if (field != newValue)
             {
                 field = newValue;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                this.OnPropertyChanged(propertyName);
                 return true;
             }
 
@@ -50,15 +55,28 @@ namespace StockAnalyzer
             if (field != newValue)
             {
                 field = newValue;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                this.OnPropertyChanged(propertyName);
                 return true;
             }
 
             return false;
         }
-        public void OnPropertyChanged(string name)
+        public void OnPropertyChanged(string propertyName)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            if (PropertyChanged != null)
+            {
+                if (Dispatcher == null)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                }
+                else
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                    });
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

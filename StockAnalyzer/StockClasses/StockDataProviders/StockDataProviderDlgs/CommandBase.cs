@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -13,11 +15,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         public event EventHandler CanExecuteChanged;
 
         Func<bool> _canExecute;
-        public AsyncCommandBase(Func<Task> execute, Func<bool> canExecute = null, INotifyPropertyChanged viewModel = null)
+        IEnumerable<string> _properties;
+        public AsyncCommandBase(Func<Task> execute, Func<bool> canExecute = null, INotifyPropertyChanged viewModel = null, IEnumerable<string> properties = null)
         {
             _action = execute;
 
             _canExecute = canExecute;
+            _properties = properties;
 
             if (viewModel != null)
             {
@@ -27,7 +31,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            if (_properties == null || _properties.Contains(e.PropertyName))
+                this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private readonly Func<Task> _action;
@@ -46,11 +51,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         public event EventHandler CanExecuteChanged;
 
         Func<bool> _canExecute;
-        public CommandBase(Action action, Func<bool> canExecute = null, INotifyPropertyChanged viewModel = null)
+        IEnumerable<string> _properties;
+        public CommandBase(Action action, Func<bool> canExecute = null, INotifyPropertyChanged viewModel = null, IEnumerable<string> properties = null)
         {
             _action = action;
 
             _canExecute = canExecute;
+            _properties = properties;
 
             if (viewModel != null)
             {
@@ -71,7 +78,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            if (_properties == null || _properties.Contains(e.PropertyName))
+                this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
     public class ParamCommandBase<T> : ICommand
