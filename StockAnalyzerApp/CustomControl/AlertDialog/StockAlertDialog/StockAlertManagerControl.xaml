@@ -81,7 +81,7 @@
                         <telerik:GridViewDataColumn Header="Alert Title" DataMemberBinding="{Binding AlertDef.Title}"/>
                         <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding AlertDef.BarDuration}"/>
                         <telerik:GridViewDataColumn Header="Stock&#x0a;Name" DataMemberBinding="{Binding StockSerie.StockName}"/>
-                        <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding AlertDef.Group}"/>
+                        <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding StockSerie.StockGroup}"/>
                         <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value}"/>
                         <telerik:GridViewDataColumn Header="Variation" DataMemberBinding="{Binding Variation, StringFormat=\{0:P2\}}"/>
                         <telerik:GridViewDataColumn Header="Exchanged" DataMemberBinding="{Binding Exchanged}"/>
