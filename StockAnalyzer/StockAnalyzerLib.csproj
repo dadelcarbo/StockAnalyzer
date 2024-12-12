@@ -704,6 +704,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderDlg.resx">
       <DependentUpon>SaxoDataProviderDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.fr-FR.resx">
       <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>

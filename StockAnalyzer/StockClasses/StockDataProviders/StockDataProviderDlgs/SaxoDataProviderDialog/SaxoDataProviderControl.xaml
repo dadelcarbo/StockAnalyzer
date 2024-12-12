@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:SaxoDataProviderViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800" d:Background="AntiqueWhite">
-    <Grid Height="450" VerticalAlignment="Bottom">
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
