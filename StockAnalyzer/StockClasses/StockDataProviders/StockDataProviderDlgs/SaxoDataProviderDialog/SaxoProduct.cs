@@ -1,6 +1,6 @@
 ﻿namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
 {
-    internal class SaxoProduct
+    public class SaxoProduct
     {
         public string ISIN { get; set; }
         public string StockName { get; set; }

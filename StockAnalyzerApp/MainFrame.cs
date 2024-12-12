@@ -4858,14 +4858,14 @@ namespace StockAnalyzerApp
                 Process.Start(url);
             }
         }
-        internal void OpenSaxoIntradyConfigDlg(long? saxoId)
+        internal void OpenSaxoIntradyConfigDlg(long saxoId)
         {
             SaxoIntradayDataProvider dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.SaxoIntraday) as SaxoIntradayDataProvider;
             if (dataProvider == null)
             {
                 return;
             }
-            if (dataProvider.ShowDialog(this.StockDictionary, saxoId) == DialogResult.OK)
+            if (dataProvider.ShowDialog(saxoId) == DialogResult.OK)
             {
                 dataProvider.InitDictionary(this.StockDictionary, true);
                 this.CreateGroupMenuItem();

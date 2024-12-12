@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         static public string SaxoUnderlyingFile => Path.Combine(Folders.PersonalFolder, SAXO_ID_FILE);
 
-        public string UserConfigFileName => CONFIG_FILE;
+        static public string UserConfigFileName => CONFIG_FILE;
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
         {
@@ -368,15 +368,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            return this.ShowDialog(stockDico, null);
+            return this.ShowDialog(0);
         }
 
-        public DialogResult ShowDialog(StockDictionary stockDico, long? saxoId)
+        public DialogResult ShowDialog(long saxoId = 0)
         {
-            var configDlg = new SaxoDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE), saxoId) { StartPosition = FormStartPosition.CenterScreen };
+            var configDlg = new SaxoDataProviderDlg() { StartPosition = FormStartPosition.CenterScreen };
+
+            configDlg.ViewModel.Initialize(saxoId);
             configDlg.ShowDialog();
 
             return DialogResult.OK;

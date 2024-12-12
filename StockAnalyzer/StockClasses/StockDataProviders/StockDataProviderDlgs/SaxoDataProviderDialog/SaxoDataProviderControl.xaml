@@ -17,7 +17,7 @@
             <Label Margin="2" Content="Underlying"/>
             <telerik:RadAutoCompleteBox SelectionMode="Single"
                                         ItemsSource="{Binding Underlyings}"
-                                        SelectedItem="{Binding Underlying, Mode=OneWayToSource}"
+                                        SelectedItem="{Binding Underlying, Mode=TwoWay}"
                                         DisplayMemberPath="label"  
                                         TextSearchPath="label"
                                         TextSearchMode="Contains"

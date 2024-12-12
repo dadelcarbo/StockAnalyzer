@@ -4,9 +4,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 {
     public partial class SaxoDataProviderDlg : Form
     {
-        public SaxoDataProviderDlg(StockDictionary stockDico, string cfgFile, long? saxoId)
+        public SaxoDataProviderDlg()
         {
-            InitializeComponent(stockDico, cfgFile, saxoId);
+            InitializeComponent();
         }
+
+        public SaxoDataProviderViewModel ViewModel => this.saxoDataProviderControl1.ViewModel;
     }
 }

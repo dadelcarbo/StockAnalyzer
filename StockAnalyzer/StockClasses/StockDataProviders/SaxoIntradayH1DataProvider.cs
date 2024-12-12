@@ -374,15 +374,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public DialogResult ShowDialog(StockDictionary stockDico)
         {
-            return this.ShowDialog(stockDico, null);
-        }
-
-        public DialogResult ShowDialog(StockDictionary stockDico, long? saxoId)
-        {
-            var configDlg = new SaxoDataProviderDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE), saxoId) { StartPosition = FormStartPosition.CenterScreen };
-            configDlg.ShowDialog();
-
-            return DialogResult.OK;
+            return DialogResult.Cancel;
         }
 
         public override string DisplayName => "Saxo Turbos";

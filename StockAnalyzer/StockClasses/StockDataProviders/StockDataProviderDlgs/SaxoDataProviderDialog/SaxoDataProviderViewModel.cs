@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,13 +15,18 @@ using System.Windows.Input;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
 {
-    class SaxoDataProviderViewModel : NotifyPropertyChangedBase
+    public class SaxoDataProviderViewModel : NotifyPropertyChangedBase
     {
-        public SaxoDataProviderViewModel(StockDictionary stockDico, string cfgFile, long? saxoId)
+        public SaxoDataProviderViewModel()
+        {
+            this.configFile = Path.Combine(Folders.PersonalFolder, SaxoIntradayDataProvider.UserConfigFileName);
+        }
+
+        public void Initialize(long saxoId)
         {
             try
             {
-                this.configFile = cfgFile;
+                var stockDico = StockDictionary.Instance;
                 var jsonData = HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
                 // "https://fr-be.structured-products.saxo/page-api/search/*?productsSize=10&underlyingsSize=700&locale=fr_BE");
 
@@ -54,9 +60,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                         MessageBox.Show("New Uderlying detected: " + Environment.NewLine + newIds.Aggregate((i, j) => i + Environment.NewLine + j));
                     }
                 }
-                this.Entries = new ObservableCollection<SaxoConfigEntry>(SaxoConfigEntry.LoadFromFile(cfgFile));
+                this.Entries = new ObservableCollection<SaxoConfigEntry>(SaxoConfigEntry.LoadFromFile(this.configFile));
 
-                if (saxoId != null)
+                if (saxoId != 0)
                 {
                     this.Underlying = this.Underlyings.FirstOrDefault(u => u.value == saxoId);
                     this.UnderlyingChanged();

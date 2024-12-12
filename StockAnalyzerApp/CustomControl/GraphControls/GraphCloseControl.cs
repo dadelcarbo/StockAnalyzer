@@ -2626,7 +2626,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         void openSaxoIntradyConfigDlg_Click(object sender, System.EventArgs e)
         {
-            StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.serie?.SaxoId);
+            StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.serie.SaxoId);
         }
         #endregion
     }
