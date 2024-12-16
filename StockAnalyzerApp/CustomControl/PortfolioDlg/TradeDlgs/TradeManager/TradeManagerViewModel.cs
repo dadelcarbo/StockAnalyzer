@@ -56,6 +56,22 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         HttpClient httpClient = new HttpClient();
         private async Task PerformPriceRefreshCmd()
         {
+            this.Bid = 0;
+            this.Ask = 0;
+            var priceInfo = await this.Portfolio.Portfolio.GetPriceAsync(this.StockSerie);
+            if (priceInfo?.Quote != null)
+            {
+                this.Ask = priceInfo.Quote.Ask;
+                this.Bid = priceInfo.Quote.Bid;
+            }
+            else
+            {
+                return;
+            }
+
+            return;
+
+
             if (StockSerie.DataProvider != StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.SaxoIntraday)
                 return;
 

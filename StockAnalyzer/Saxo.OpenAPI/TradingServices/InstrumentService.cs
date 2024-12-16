@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Principal;
+using System.Threading.Tasks;
 
 namespace Saxo.OpenAPI.TradingServices
 {
@@ -129,6 +131,32 @@ namespace Saxo.OpenAPI.TradingServices
                     InstrumentDetailsCache.Add(uic, instrumentDetail);
                 }
                 return InstrumentDetailsCache[uic];
+            }
+            catch (Exception ex)
+            {
+                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
+            }
+        }
+
+        public PriceInfo GetInstrumentPrice(Instrument instrument, Account account)
+        {
+            try
+            {
+                var method = $"trade/v1/infoprices?AccountKey={account.AccountKey}&AssetType={instrument.AssetType}&Uic={instrument.Identifier}";
+                return Get<PriceInfo>(method);
+            }
+            catch (Exception ex)
+            {
+                throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
+            }
+        }
+
+        public async Task<PriceInfo> GetInstrumentPriceAsync(Instrument instrument, Account account)
+        {
+            try
+            {
+                var method = $"trade/v1/infoprices?AccountKey={account.AccountKey}&AssetType={instrument.AssetType}&Uic={instrument.Identifier}";
+                return await GetAsync<PriceInfo>(method);
             }
             catch (Exception ex)
             {
@@ -265,6 +293,32 @@ namespace Saxo.OpenAPI.TradingServices
     {
         public float HighPrice { get; set; }
         public decimal TickSize { get; set; }
+    }
+
+    public class PriceInfo
+    {
+        public string AssetType { get; set; }
+        public DateTime LastUpdated { get; set; }
+        public string PriceSource { get; set; }
+        public Quote Quote { get; set; }
+        public int Uic { get; set; }
+    }
+
+    public class Quote
+    {
+        public int Amount { get; set; }
+        public float Ask { get; set; }
+        public int AskSize { get; set; }
+        public float Bid { get; set; }
+        public int BidSize { get; set; }
+        public int DelayedByMinutes { get; set; }
+        public string ErrorCode { get; set; }
+        public string MarketState { get; set; }
+        public float Mid { get; set; }
+        public string PriceSource { get; set; }
+        public string PriceSourceType { get; set; }
+        public string PriceTypeAsk { get; set; }
+        public string PriceTypeBid { get; set; }
     }
 
 }

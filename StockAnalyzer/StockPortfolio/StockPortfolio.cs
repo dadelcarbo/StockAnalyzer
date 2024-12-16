@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace StockAnalyzer.StockPortfolio
@@ -546,6 +547,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public TimeSeries[] AccountValue { get; set; }
 
+
         public void Refresh()
         {
             using var ml = new MethodLogger(this, true, this.Name);
@@ -603,6 +605,36 @@ namespace StockAnalyzer.StockPortfolio
             {
                 MessageBox.Show(ex.Message, "Porfolio sync error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public PriceInfo GetPrice(StockSerie stockSerie)
+        {
+            if (string.IsNullOrEmpty(stockSerie?.ISIN))
+                return null;
+
+            if (!this.SaxoSilentLogin())
+                return null;
+
+            var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN);
+            if (instrument == null)
+                return null;
+
+            return instrumentService.GetInstrumentPrice(instrument, this.account);
+        }
+
+        public async Task<PriceInfo> GetPriceAsync(StockSerie stockSerie)
+        {
+            if (string.IsNullOrEmpty(stockSerie?.ISIN))
+                return null;
+
+            if (!this.SaxoSilentLogin())
+                return null;
+
+            var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN);
+            if (instrument == null)
+                return null;
+
+            return await instrumentService.GetInstrumentPriceAsync(instrument, this.account);
         }
 
         public void GetPerformance()
