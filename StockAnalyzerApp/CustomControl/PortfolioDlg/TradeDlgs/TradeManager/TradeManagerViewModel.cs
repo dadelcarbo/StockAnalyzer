@@ -28,10 +28,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             this.UseLog = true;
             this.Portfolio = new PortfolioViewModel(portfolio);
             this.StockSerie = serie;
-
             Task.Run(() => this.PerformPriceRefreshCmd());
         }
-
         public StockSerie StockSerie { get; set; }
         public PortfolioViewModel Portfolio { get; set; }
 
@@ -63,6 +61,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             {
                 this.Ask = priceInfo.Quote.Ask;
                 this.Bid = priceInfo.Quote.Bid;
+                this.MarketState = priceInfo.Quote.MarketState;
             }
             else
             {
@@ -105,6 +104,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
             }
         }
 
+        private string marketState;
+        public string MarketState { get { return marketState; } set { if (marketState != value) { marketState = value; OnPropertyChanged("MarketState"); } } }
+
+
         private float ask;
         public float Ask { get => ask; set => SetProperty(ref ask, value); }
 
@@ -119,7 +122,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                     {
                         if (Qty == 0)
                         {
-                            this.Qty = (int)(this.Portfolio.AccountValue / this.Portfolio.Portfolio.MaxPositions / this.bid);
+                            this.qty = (int)(this.Portfolio.AccountValue / this.Portfolio.Portfolio.MaxPositions / this.bid);
+                        }
+                        else
+                        {
+                            this.qty = (int)Math.Floor(this.PortfolioRiskEuro / (this.bid - this.entryStop));
                         }
                         this.EntryMaxStop = this.bid - this.PortfolioRiskEuro / this.MaxQty;
                         this.EntryMinStop = 0;
@@ -129,6 +136,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                     this.OnPropertyChanged(nameof(EntryAmount));
                     this.OnPropertyChanged(nameof(EntryPortfolioPercent));
                     this.OnPropertyChanged(nameof(MaxQty));
+                    this.OnPropertyChanged(nameof(Qty));
                 }
             }
         }
@@ -136,7 +144,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
         #region Buy/Sell Commands
         private CommandBase sellCommand;
-        public ICommand SellCommand => sellCommand ??= new CommandBase(Sell, CanSell, this, new[] { nameof(Ask) });
+        public ICommand SellCommand => sellCommand ??= new CommandBase(Sell, CanSell, this, new[] { nameof(Ask), nameof(MarketState) });
 
         private void Sell()
         {
@@ -144,11 +152,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
         private bool CanSell()
         {
-            return ask > 0 && qty > 0;
+            return marketState == "Open" && ask > 0 && qty > 0;
         }
 
         private CommandBase buyCommand;
-        public ICommand BuyCommand => buyCommand ??= new CommandBase(Buy, CanBuy, this, new[] { nameof(Bid) });
+        public ICommand BuyCommand => buyCommand ??= new CommandBase(Buy, CanBuy, this, new[] { nameof(Bid), nameof(MarketState) });
 
         private void Buy()
         {
@@ -157,7 +165,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
         private bool CanBuy()
         {
-            return bid > 0 && qty > 0;
+            return marketState == "Open" && bid > 0 && qty > 0;
         }
         #endregion
 

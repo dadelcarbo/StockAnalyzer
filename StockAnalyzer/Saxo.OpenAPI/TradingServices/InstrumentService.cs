@@ -297,28 +297,32 @@ namespace Saxo.OpenAPI.TradingServices
 
     public class PriceInfo
     {
-        public string AssetType { get; set; }
-        public DateTime LastUpdated { get; set; }
-        public string PriceSource { get; set; }
         public Quote Quote { get; set; }
         public int Uic { get; set; }
+        public string AssetType { get; set; }
+        public object Commissions { get; set; }
+        public DateTime LastUpdated { get; set; }
+        public object DisplayAndFormat { get; set; }
+        public object PriceInfoDetails { get; set; }
+        public string PriceSource { get; set; }
     }
 
     public class Quote
     {
         public int Amount { get; set; }
-        public float Ask { get; set; }
-        public int AskSize { get; set; }
         public float Bid { get; set; }
-        public int BidSize { get; set; }
+        public string PriceTypeBid { get; set; }
+        public float Ask { get; set; }
+        public string PriceTypeAsk { get; set; }
+        public float Mid { get; set; }
         public int DelayedByMinutes { get; set; }
         public string ErrorCode { get; set; }
-        public string MarketState { get; set; }
-        public float Mid { get; set; }
         public string PriceSource { get; set; }
         public string PriceSourceType { get; set; }
-        public string PriceTypeAsk { get; set; }
-        public string PriceTypeBid { get; set; }
+        public float BidSize { get; set; }
+        public float AskSize { get; set; }
+        public string MarketState { get; set; }
     }
+
 
 }
