@@ -548,14 +548,17 @@ namespace StockAnalyzer.StockPortfolio
         public TimeSeries[] AccountValue { get; set; }
 
 
+        private DateTime lastRefreshDate = DateTime.Today;
         public void Refresh()
         {
             using var ml = new MethodLogger(this, true, this.Name);
             try
             {
-                if (!this.SaxoLogin())
+                if (lastRefreshDate.AddMinutes(1) > DateTime.Now)
                     return;
 
+                if (!this.SaxoLogin())
+                    return;
 
                 this.GetPerformance();
 
@@ -566,6 +569,16 @@ namespace StockAnalyzer.StockPortfolio
                     this.Balance = balance.CashAvailableForTrading;
                     this.PositionValue = balance.UnrealizedPositionsValue;
                     this.MaxValue = Math.Max(this.MaxValue, balance.TotalValue);
+
+                    var lastValue = this.AccountValue.Last();
+                    if (lastValue.Date == DateTime.Today)
+                    {
+                        lastValue.Value = balance.TotalValue;
+                    }
+                    else if (lastValue.Date < DateTime.Today && lastValue.Value != balance.TotalValue)
+                    {
+                        this.AccountValue = this.AccountValue.Append(new TimeSeries { Date = DateTime.Today, Value = balance.TotalValue }).ToArray();
+                    }
                 }
 
                 // Get Opened Orders
@@ -600,6 +613,7 @@ namespace StockAnalyzer.StockPortfolio
                 this.Serialize();
 
                 this.Refreshed?.Invoke(this);
+                lastRefreshDate = DateTime.Now;
             }
             catch (Exception ex)
             {
@@ -649,12 +663,13 @@ namespace StockAnalyzer.StockPortfolio
             else
             {
                 var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
-                if (this.AccountValue.Last().Date <= lastCacDate)
+                var lastDate = this.AccountValue.Last().Date;
+                if (lastDate <= lastCacDate)
                 {
-                    var newAccountValues = accountService.GetAccountValue(account, this.AccountValue.Last().Date);
+                    var newAccountValues = accountService.GetAccountValue(account, lastDate);
                     if (newAccountValues != null && newAccountValues.Length > 0)
                     {
-                        this.AccountValue = this.AccountValue.Where(av => av.Date < this.AccountValue.Last().Date).Concat(newAccountValues).ToArray();
+                        this.AccountValue = this.AccountValue.Where(av => av.Date < lastDate).Concat(newAccountValues).ToArray();
                     }
                 }
             }

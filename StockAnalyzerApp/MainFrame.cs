@@ -2880,7 +2880,6 @@ namespace StockAnalyzerApp
             {
                 return;
             }
-            portfolio.Refresh();
             this.Portfolio = portfolio;
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;
