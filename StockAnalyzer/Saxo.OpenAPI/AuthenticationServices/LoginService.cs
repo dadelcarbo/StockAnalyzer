@@ -122,7 +122,8 @@ namespace Saxo.OpenAPI.AuthenticationServices
                         Sessions.Remove(session);
                         CurrentSession = null;
 
-                        var res = MessageBox.Show("Client ID mismatch, do you want to retry ?", "Saxo Connection Error", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                        //var res = MessageBox.Show("Client ID mismatch, do you want to retry ?", "Saxo Connection Error", MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                        var res = MessageBoxResult.OK;
                         if (res == MessageBoxResult.OK)
                         {
                             Login(clientId, appFolder, isSimu);

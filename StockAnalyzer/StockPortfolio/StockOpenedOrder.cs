@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockPortfolio
             this.StopValue = 0;
             this.Value = o.Price.HasValue ? o.Price.Value : 0;
             this.Uic = o.Uic;
-            this.CreationDate = o.CreationTime;
+            this.CreationDate = o.ActivityTime;
             this.BuySell = o.BuySell;
             this.Id = o.OrderId;
             this.OrderType = o.OrderType;

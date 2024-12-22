@@ -41,6 +41,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
+                    if (line.StartsWith("$"))
+                        break;
                     if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
                         string[] row = line.Split(',');

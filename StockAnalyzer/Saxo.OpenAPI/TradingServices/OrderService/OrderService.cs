@@ -337,7 +337,6 @@ namespace Saxo.OpenAPI.TradingServices
     }
     public class SaxoOrder
     {
-        public DateTime CreationTime { get; set; }
         public DateTime ActivityTime { get; set; }
         public int Qty { get; set; }
         public string AssetType { get; set; }
@@ -378,13 +377,11 @@ namespace Saxo.OpenAPI.TradingServices
         }
         public SaxoOrder(OrderActivity orderActivity)
         {
-            this.CreationTime = orderActivity.ActivityTime;
             this.CopyFrom(orderActivity);
         }
 
         public SaxoOrder(OpenedOrder o)
         {
-            this.CreationTime = o.OrderTime;
             this.ActivityTime = o.OrderTime;
             this.Qty = (int)o.Amount;
             this.AssetType = o.AssetType;

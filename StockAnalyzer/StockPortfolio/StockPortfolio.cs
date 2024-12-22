@@ -112,7 +112,7 @@ namespace StockAnalyzer.StockPortfolio
         [JsonIgnore]
         public List<SaxoOrder> SaxoOpenOrders { get; } = new List<SaxoOrder>();
 
-        public List<SaxoOrder> SaxoOrders { get; } = new List<SaxoOrder>();
+        public List<SaxoOrder> SaxoOrders { get; private set; } = new List<SaxoOrder>();
 
         public IEnumerable<SaxoOrder> GetExecutedOrders(string stockName)
         {
@@ -127,7 +127,7 @@ namespace StockAnalyzer.StockPortfolio
             return this.SaxoOpenOrders.Select(o => new StockOpenedOrder(o));
         }
 
-        public List<OrderActivity> SaxoOrderActivity { get; } = new List<OrderActivity>();
+        public List<OrderActivity> SaxoOrderActivity { get; private set; } = new List<OrderActivity>();
 
 
         public List<StockPosition> Positions { get; } = new List<StockPosition>();
@@ -147,16 +147,13 @@ namespace StockAnalyzer.StockPortfolio
                 File.Move(filepath, newFilepath);
             }
         }
-        private static bool archivePortfolioFile = false;
+        private static bool archivePortfolioFile = true;
         public void Serialize()
         {
+            using var ml = new MethodLogger(this, true, this.Name);
             lock (this)
             {
-                using var ml = new MethodLogger(this, true, this.Name);
                 string filepath = Path.Combine(Folders.Portfolio, this.Name + PORTFOLIO_FILE_EXT);
-
-                File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
-
                 if (archivePortfolioFile)
                 {
                     // Archive PTF files
@@ -175,6 +172,16 @@ namespace StockAnalyzer.StockPortfolio
                     var archiveFilePath = Path.Combine(archiveDirectory, this.Name + "_" + fileDate.ToString("yyyy_MM_dd HH_mm_ss.ff") + PORTFOLIO_FILE_EXT);
                     File.Copy(filepath, archiveFilePath);
                 }
+
+                var activityDateLimit = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-1);
+                this.SaxoOrderActivity = this.SaxoOrderActivity.OrderByDescending(a => a.ActivityTime).Where(a => a.ActivityTime > activityDateLimit).ToList();
+
+                if (this.SaxoAccountId == "78800/719479EUR")
+                {
+                    this.SaxoOrders = this.SaxoOrders.OrderByDescending(a => a.ActivityTime).Where(a => a.ActivityTime > activityDateLimit).ToList();
+                }
+                File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
+
             }
         }
         static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ" };
@@ -573,9 +580,9 @@ namespace StockAnalyzer.StockPortfolio
                     var lastValue = this.AccountValue.Last();
                     if (lastValue.Date == DateTime.Today)
                     {
-                        lastValue.Value = balance.TotalValue;
+                        lastValue.Value = balance.TotalValue - balance.CostToClosePositions;
                     }
-                    else if (lastValue.Date < DateTime.Today && lastValue.Value != balance.TotalValue)
+                    else if (DateTime.Today.DayOfWeek != DayOfWeek.Saturday && DateTime.Today.DayOfWeek != DayOfWeek.Sunday && lastValue.Date < DateTime.Today)
                     {
                         this.AccountValue = this.AccountValue.Append(new TimeSeries { Date = DateTime.Today, Value = balance.TotalValue }).ToArray();
                     }
@@ -680,7 +687,7 @@ namespace StockAnalyzer.StockPortfolio
             if (activityOrder.LogId <= this.LastLogId)
                 return;
 
-            this.SaxoOrderActivity.Add(activityOrder);
+            this.SaxoOrderActivity.Insert(0, activityOrder);
 
             activityOrder.ActivityTime = activityOrder.ActivityTime.ToLocalTime();
 
