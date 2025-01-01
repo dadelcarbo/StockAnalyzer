@@ -40,6 +40,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         /// Date of the last downloaded date for the refSerie
         /// </summary>
         public DateTime LastDownloaded { get; set; } = DateTime.MinValue;
+        public bool SkipDownload { get; set; }
     }
 
 
@@ -405,7 +406,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             var destFolder = config.LabelOnly ? DataFolder + ABC_DAILY_CFG_GROUP_FOLDER : DataFolder + ABC_DAILY_CFG_FOLDER;
             string fileName = Path.Combine(destFolder, config.Group.ToString() + ".txt");
-            if (download && !File.Exists(fileName) || File.GetLastWriteTime(fileName) < DateTime.Now.AddDays(-7)) // File is older than 7 days
+            if (download && !config.SkipDownload && !File.Exists(fileName) || File.GetLastWriteTime(fileName) < DateTime.Now.AddDays(-7)) // File is older than 7 days
             {
                 try
                 {
