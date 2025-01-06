@@ -98,6 +98,7 @@ namespace StockAnalyzer.StockPortfolio
         /// <summary>
         /// Calculate risk based on the current drawdown using linear function.
         /// </summary>
+        [JsonIgnore]
         public float DynamicRisk => this.DrawDown > this.MaxDrawDown ? this.MinRisk : (MinRisk - MaxRisk) / MaxDrawDown * this.DrawDown + MaxRisk;
 
         public float AutoTradeRisk { get; set; } = 0.001f;
