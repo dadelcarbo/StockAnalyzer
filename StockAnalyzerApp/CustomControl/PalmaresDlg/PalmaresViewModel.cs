@@ -415,15 +415,18 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     var endIndex = stockSerie.LastIndex;
                     var lastBar = stockSerie.Values.ElementAt(endIndex);
 
-                    if (Liquidity == 0 || Liquidity > lastBar.EXCHANGED / 1000000f)
+                    if (Liquidity >= 0 && Liquidity > lastBar.EXCHANGED / 1000000f)
                     {
                         continue;
                     }
 
                     #region Calculate ATH
-                    var ath = stockSerie.GetIndicator($"ATH({ath1},{ath2})").Series[0][endIndex] > 0.5f;
-                    if (!ath && athOnly)
-                        continue;
+                    if (athOnly)
+                    {
+                        var ath = stockSerie.GetIndicator($"ATH({ath1},{ath2})").Series[0][endIndex] > 0.5f; // ATH calculates 0 or 1.
+                        if (!ath)
+                            continue;
+                    }
                     #endregion
 
                     float lastValue = lastBar.CLOSE;
