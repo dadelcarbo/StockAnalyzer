@@ -557,12 +557,12 @@ namespace StockAnalyzer.StockPortfolio
 
 
         private DateTime lastRefreshDate = DateTime.Today;
-        public void Refresh()
+        public void Refresh(bool force = false)
         {
             using var ml = new MethodLogger(this, true, this.Name);
             try
             {
-                if (lastRefreshDate.AddMinutes(1) > DateTime.Now)
+                if (!force && lastRefreshDate.AddMinutes(1) > DateTime.Now)
                     return;
 
                 if (!this.SaxoLogin())
@@ -909,7 +909,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = false)
         {
-            using var ml = new MethodLogger(this, true, this.Name);
+            using var ml = new MethodLogger(this, true, $"{this.Name} Buy {qty}-{orderType}-{stockSerie.StockName}  Stop:{stopValue}");
             try
             {
                 if (!this.SaxoLogin())
@@ -948,7 +948,9 @@ namespace StockAnalyzer.StockPortfolio
                         break;
                 }
 
-                this.Refresh();
+                StockLog.Write($"OrderResponse.OrderId:{orderResponse?.OrderId}");
+
+                this.Refresh(true);
                 if (!string.IsNullOrEmpty(orderResponse?.OrderId))
                 {
                     return long.Parse(orderResponse?.OrderId);
