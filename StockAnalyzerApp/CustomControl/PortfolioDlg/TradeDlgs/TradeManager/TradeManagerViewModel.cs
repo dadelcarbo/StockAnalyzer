@@ -160,6 +160,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
         private void Buy()
         {
+            if (!CanBuy())
+                return;
+
 
         }
 

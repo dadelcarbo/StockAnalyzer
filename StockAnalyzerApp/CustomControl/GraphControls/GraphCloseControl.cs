@@ -2471,7 +2471,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (lastMouseIndex == -1 || this.openCurveType == null || this.dateSerie == null)
                 return;
 
-            StockAnalyzerForm.MainFrame.Portfolio.EvaluateOpenedPositions();
             var portfolioValue = Portfolio.TotalValue;
             openTradeViewModel = new OpenTradeViewModel
             {

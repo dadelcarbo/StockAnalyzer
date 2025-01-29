@@ -2876,10 +2876,11 @@ namespace StockAnalyzerApp
 
         public void GeneratePortfolioReportFile(StockPortfolio portfolio)
         {
-            if (!portfolio.SaxoSilentLogin())
+            if (portfolio.SaxoSilentLogin())
             {
-                return;
+                portfolio.Refresh();
             }
+
             this.Portfolio = portfolio;
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;
@@ -2888,7 +2889,6 @@ namespace StockAnalyzerApp
             this.ViewModel.IsHistoryActive = false;
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
-            portfolio.EvaluateOpenedPositions();
             var report = GeneratePortfolioReportHtml(portfolio);
             if (!string.IsNullOrEmpty(report))
             {

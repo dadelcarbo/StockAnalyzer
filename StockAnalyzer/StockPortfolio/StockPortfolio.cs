@@ -130,6 +130,7 @@ namespace StockAnalyzer.StockPortfolio
 
         public List<OrderActivity> SaxoOrderActivity { get; private set; } = new List<OrderActivity>();
 
+        public List<StockPosition> SaxoPositions { get; } = new List<StockPosition>();
 
         public List<StockPosition> Positions { get; } = new List<StockPosition>();
         public List<StockPosition> ClosedPositions { get; } = new List<StockPosition>();
@@ -182,7 +183,6 @@ namespace StockAnalyzer.StockPortfolio
                     this.SaxoOrders = this.SaxoOrders.OrderByDescending(a => a.ActivityTime).Where(a => a.ActivityTime > activityDateLimit).ToList();
                 }
                 File.WriteAllText(filepath, JsonConvert.SerializeObject(this, Formatting.Indented, jsonSerializerSettings));
-
             }
         }
         static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings { DateFormatString = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ" };
@@ -340,74 +340,7 @@ namespace StockAnalyzer.StockPortfolio
             }
         }
 
-        /// <summary>
-        /// Converts from Trade list to portfolio operations. This function is limited to the MaxPosition variable
-        /// </summary>
-        /// <param name="tradeSummary"></param>
-        public void InitFromTradeSummary(IList<StockTrade> trades)
-        {
-            this.Clear();
-            var dates = trades.Select(t => t.EntryDate).
-                Union(trades.Where(t => t.ExitIndex >= 0).Select(t => t.ExitDate)).
-                Distinct().OrderBy(d => d).ToList();
 
-            int openedPosition = 0;
-            foreach (var date in dates)
-            {
-                // Buy begining trades
-                foreach (var trade in trades.Where(t => t.EntryDate == date))
-                {
-                    if (openedPosition >= MaxPositions)
-                        break;
-
-                    var qty = trade.Qty;
-                    var amount = qty * trade.EntryValue;
-                    this.Balance -= amount;
-
-                    var id = this.GetNextOperationId();
-                    var entry = StockOperation.FromSimu(id, trade.EntryDate, trade.Serie.StockName, StockOperation.BUY, qty, -amount, !trade.IsLong);
-                    entry.Balance = this.Balance;
-                    this.AddOperation(entry);
-                    var lastPosition = this.Positions.Last();
-                    lastPosition.Stop = trade.EntryStop;
-                    lastPosition.TrailStop = trade.EntryStop;
-                    openedPosition++;
-                }
-                // Sell completed trades
-                foreach (var trade in trades.Where(t => t.ExitDate == date))
-                {
-                    var pos = this.Positions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
-                    if (pos == null)
-                        continue;
-                    var amount = pos.EntryQty * trade.ExitValue;
-                    this.Balance += amount;
-                    var id = this.GetNextOperationId();
-                    var exit = StockOperation.FromSimu(id, trade.ExitDate, trade.Serie.StockName, StockOperation.SELL, pos.EntryQty, amount, !trade.IsLong);
-                    exit.Balance = this.Balance;
-                    this.AddOperation(exit);
-                    openedPosition--;
-                }
-            }
-
-            // Evaluate opened position
-            this.PositionValue = 0;
-            foreach (var trade in trades.Where(t => !t.IsClosed))
-            {
-                var pos = this.Positions.FirstOrDefault(p => p.StockName == trade.Serie.StockName);
-                if (pos == null)
-                    continue;
-                this.PositionValue += pos.EntryQty * trade.Serie.Values.Last().CLOSE;
-            }
-        }
-        public void Clear()
-        {
-            using var ml = new MethodLogger(this);
-            this.ClosedPositions.Clear();
-            this.Positions.Clear();
-            this.TradeOperations.Clear();
-            this.Balance = this.InitialBalance;
-            this.PositionValue = 0;
-        }
         public void EvaluateOpenedPositions()
         {
             using var ml = new MethodLogger(this);
@@ -427,6 +360,16 @@ namespace StockAnalyzer.StockPortfolio
                 }
             }
             this.PositionValue = positionValue;
+        }
+
+        public void Clear()
+        {
+            using var ml = new MethodLogger(this);
+            this.ClosedPositions.Clear();
+            this.Positions.Clear();
+            this.TradeOperations.Clear();
+            this.Balance = this.InitialBalance;
+            this.PositionValue = 0;
         }
 
         public override string ToString()
@@ -588,6 +531,9 @@ namespace StockAnalyzer.StockPortfolio
                         this.AccountValue = this.AccountValue.Append(new TimeSeries { Date = DateTime.Today, Value = balance.TotalValue }).ToArray();
                     }
                 }
+
+                // Get Positions
+                var positions = accountService.GetPositions(account);
 
                 // Get Opened Orders
                 this.SaxoOpenOrders.Clear();
