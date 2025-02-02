@@ -188,6 +188,7 @@
     <Compile Include="Saxo.OpenAPI\AuthenticationServices\RandomStringBuilder.cs" />
     <Compile Include="Saxo.OpenAPI\Models\App.cs" />
     <Compile Include="Saxo.OpenAPI\Models\Token.cs" />
+    <Compile Include="Saxo.OpenAPI\TradingServices\ReportingService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\AccountService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\BaseService.cs" />
     <Compile Include="Saxo.OpenAPI\TradingServices\ChartService.cs" />

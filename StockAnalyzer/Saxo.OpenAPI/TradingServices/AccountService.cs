@@ -281,7 +281,7 @@ namespace Saxo.OpenAPI.TradingServices
 
 
 
-    public class ClosedPositions
+    public class ClosedPositions2
     {
         public int __count { get; set; }
         public Datum[] Data { get; set; }
@@ -289,12 +289,12 @@ namespace Saxo.OpenAPI.TradingServices
 
     public class Datum
     {
-        public ClosedPosition ClosedPosition { get; set; }
+        public ClosedPosition2 ClosedPosition { get; set; }
         public string ClosedPositionUniqueId { get; set; }
         public string NetPositionId { get; set; }
     }
 
-    public class ClosedPosition
+    public class ClosedPosition2
     {
         public string AccountId { get; set; }
         public float Amount { get; set; }

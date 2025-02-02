@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using Telerik.Windows.Documents.Fixed.Model.Data;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -811,7 +812,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             if (ShowOrders && this.Portfolio != null)
             {
-                PaintOrders(aGraphic);
+                PaintExecutedOrders(aGraphic);
             }
 
             #endregion
@@ -1202,7 +1203,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.DrawString(gr, graphTitle, this.axisFont, textBrush, this.backgroundBrush, new PointF(right + 16, 1), true);
             }
         }
-        private void PaintOrders(Graphics graphic)
+        private void PaintExecutedOrders(Graphics graphic)
         {
             if (this.Portfolio == null)
             {
@@ -1227,6 +1228,53 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
                 this.DrawArrow(graphic, screenPoint2D, operation.BuySell == "Buy", false);
             }
+        }
+        private void PaintSaxoOpenedOrders(Graphics graphic)
+        {
+            if (this.Portfolio == null)
+            {
+                return;
+            }
+            PointF valuePoint2D = PointF.Empty;
+            var openedOrders = this.Portfolio.SaxoOpenOrders.Where(o => o.StockName == this.serie.StockName);
+            foreach (var operation in openedOrders)
+            {
+                valuePoint2D.Y = operation.Price.Value;
+                var screenPoint2D = this.GetScreenPointFromValuePoint(valuePoint2D);
+
+                graphic.DrawLine(stopPen, GraphRectangle.Right - ORDER_AREA_WITDH, screenPoint2D.Y, GraphRectangle.Right, screenPoint2D.Y);
+
+
+                //this.DrawStop(graphic, stopPen, this.EndIndex, operation.Price.Value, true);
+            }
+        }
+
+        private void PaintOpenedPosition(Graphics graphic, StockPositionBase position)
+        {
+            DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == StockSerie.Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+            int entryIndex = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
+            entryIndex = Math.Max(this.StartIndex, entryIndex);
+
+            this.DrawEntry(graphic, entryPen, entryIndex, position.EntryValue, true);
+
+            if (position.Stop != 0)
+            {
+                this.DrawStop(graphic, stopPen, entryIndex, position.Stop, true);
+            }
+
+            var openedOrders = this.Portfolio.SaxoOpenOrders.Where(o => o.StockName == this.serie.StockName);
+            foreach (var operation in openedOrders)
+            {
+                if (operation.Price.Value != position.Stop)
+                {
+                    this.DrawStop(graphic, trailStopPen, entryIndex, operation.Price.Value, true);
+                }
+            }
+
+            ////          this.DrawText(g, $"R={ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 35, points[0].Y + 2), true, Pens.Black);
+
+            var winRatio = new WinRatio(entryIndex, this.EndIndex, position.EntryValue, position.Stop, closeCurveType.DataSerie.Last);
+            DrawTmpItem(graphic, winRatio, true);
         }
 
         static readonly SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
@@ -1295,27 +1343,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 if (openedOrder.StopValue != 0)
                     this.DrawOpenedOrder(graphic, stopPen, this.EndIndex - 10, openedOrder.StopValue, true);
             }
-        }
-
-        private void PaintOpenedPosition(Graphics graphic, StockPositionBase position)
-        {
-            DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == StockSerie.Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
-            int entryIndex = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
-            entryIndex = Math.Max(this.StartIndex, entryIndex);
-
-            this.DrawStop(graphic, entryPen, entryIndex, position.EntryValue, true);
-            if (position.Stop != 0)
-            {
-                this.DrawStop(graphic, stopPen, entryIndex, position.Stop, true);
-            }
-            if (position.TrailStop != 0 && position.TrailStop != position.Stop)
-            {
-                this.DrawStop(graphic, trailStopPen, entryIndex, position.TrailStop, true);
-            }
-            //          this.DrawText(g, $"R={ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 35, points[0].Y + 2), true, Pens.Black);
-
-            var winRatio = new WinRatio(entryIndex, this.EndIndex, position.EntryValue, position.Stop, closeCurveType.DataSerie.Last);
-            DrawTmpItem(graphic, winRatio, true);
         }
 
         static readonly Pen buyLongPen = new Pen(Color.Green, 5) { StartCap = LineCap.Square, EndCap = LineCap.ArrowAnchor };
@@ -1397,6 +1424,19 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             marqueePoints[0] = new PointF(basePoint.X - ORDER_AREA_WITDH + 5, basePoint.Y);
             marqueePoints[1] = new PointF(basePoint.X, basePoint.Y - EVENT_MARQUEE_SIZE);
             marqueePoints[2] = new PointF(basePoint.X, basePoint.Y + EVENT_MARQUEE_SIZE);
+
+            return marqueePoints;
+        }
+        private PointF[] GetEntryMarqueePoints(float value)
+        {
+            PointF[] marqueePoints = new PointF[3];
+
+            PointF basePoint = this.GetScreenPointFromValuePoint(new PointF(0, value));
+            basePoint.X = this.GraphRectangle.Right - ORDER_AREA_WITDH + 15;
+
+            marqueePoints[0] = new PointF(basePoint.X, basePoint.Y);
+            marqueePoints[1] = new PointF(basePoint.X - 15, basePoint.Y - EVENT_MARQUEE_SIZE);
+            marqueePoints[2] = new PointF(basePoint.X - 15, basePoint.Y + EVENT_MARQUEE_SIZE);
 
             return marqueePoints;
         }
@@ -2331,6 +2371,16 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.DrawString(this.foregroundGraphic, dateString, axisFont, Brushes.Black, textBackgroundBrush, dateLocation, true);
                 this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
+        }
+        protected void DrawEntry(Graphics graph, Pen pen, float index, float stop, bool showText)
+        {
+            var p1 = this.GetScreenPointFromValuePoint(index, stop);
+            var p2 = new PointF(GraphRectangle.Right, p1.Y);
+            graph.DrawLine(pen, p1, p2);
+            var points = GetEntryMarqueePoints(stop);
+            graph.FillPolygon(new SolidBrush(pen.Color), points);
+            if (showText)
+                this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
         protected void DrawStop(Graphics graph, Pen pen, float index, float stop, bool showText)
         {

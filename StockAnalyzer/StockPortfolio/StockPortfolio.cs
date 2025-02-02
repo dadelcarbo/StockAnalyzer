@@ -85,7 +85,7 @@ namespace StockAnalyzer.StockPortfolio
         public float PositionValue { get; set; }
         [JsonIgnore]
         public float TotalValue => this.Balance + this.PositionValue;
-        public float RiskFreeValue => this.Balance + this.Positions.Select(p => p.EntryQty * p.TrailStop).Sum();
+        public float RiskFreeValue { get; set; }
 
         public float DrawDown => (MaxValue - TotalValue) / MaxValue;
         public float MaxValue { get; set; }
@@ -110,7 +110,6 @@ namespace StockAnalyzer.StockPortfolio
 
         public long LastLogId { get; set; }
 
-        [JsonIgnore]
         public List<SaxoOrder> SaxoOpenOrders { get; } = new List<SaxoOrder>();
 
         public List<SaxoOrder> SaxoOrders { get; private set; } = new List<SaxoOrder>();
@@ -439,6 +438,7 @@ namespace StockAnalyzer.StockPortfolio
         readonly AccountService accountService = new AccountService();
         readonly InstrumentService instrumentService = new InstrumentService();
         readonly OrderService orderService = new OrderService();
+        readonly ReportingService reportingService = new ReportingService();
         private string name;
 
         public bool SaxoLogin()
@@ -534,6 +534,7 @@ namespace StockAnalyzer.StockPortfolio
 
                 // Get Positions
                 var positions = accountService.GetPositions(account);
+                //var closedPositions = reportingService.GetClosedPositions(account);
 
                 // Get Opened Orders
                 this.SaxoOpenOrders.Clear();
@@ -549,6 +550,15 @@ namespace StockAnalyzer.StockPortfolio
                         this.SaxoOpenOrders.Add(saxoOrder);
                     }
                 }
+
+                // Calculate RiskFreeValue
+                float totalRiskFreeValue = 0;
+                foreach (var position in positions)
+                {
+                    var stopOrders = saxoOpenedOrders.Where(o => o.Uic == position.PositionBase.Uic && o.BuySell == "Sell" && o.OpenOrderType.Contains("Stop"));
+                    totalRiskFreeValue += stopOrders.Sum(o => o.Amount * o.Price);
+                }
+                this.RiskFreeValue = totalRiskFreeValue + this.Balance;
 
                 // Check activity Orders
                 var upToDate = DateTime.Today;
