@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] SerieFormats => serieFormats ??= new string[] { "P2" };
 
         static HLine[] lines = null;
-        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine((float)this.parameters[1], new Pen(Color.LightGray)) };
+        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine((float)this.parameters[1], new Pen(Color.Black) { Width = 2 }) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
