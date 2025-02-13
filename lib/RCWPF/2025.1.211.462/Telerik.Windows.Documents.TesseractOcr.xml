@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Windows.Documents.TesseractOcr</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Windows.Documents.TesseractOcr.TesseractOcrProvider">
+            <summary>
+            Represents an OCR provider that uses the Tesseract engine to extract text from an image.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.TesseractOcr.TesseractOcrProvider.LanguageCodes">
+            <summary>
+            The language codes to use for the Tesseract OCR engine. You can find the corresponding 
+            trained data for each language and their codes here: https://github.com/tesseract-ocr/tessdata
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.TesseractOcr.TesseractOcrProvider.DataPath">
+            <summary>
+            The path to the parent directory containing the tessdata directory. Ignored if the TESSDATA_PREFIX environment variable is set.
+            "." by default. If left unchanged, the tessdata directory should be in the same directory as the executable.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.TesseractOcr.TesseractOcrProvider.ParseLevel">
+            <summary>
+            Indicates the level of parsing that the OCR processor will perform.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.TesseractOcr.TesseractOcrProvider.#ctor(System.String)">
+            <summary>
+            Creates a new instance of the <see cref="T:Telerik.Windows.Documents.TesseractOcr.TesseractOcrProvider"/> class.
+            </summary>
+            <param name="dataPath">The path to the parent directory containing the tessdata directory. Ignored if the TESSDATA_PREFIX environment variable is set.
+            If set to "." the tessdata directory should be in the same directory as the executable.
+            </param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.TesseractOcr.TesseractOcrProvider.GetAllTextFromImage(System.Byte[])">
+            <summary>
+            Extracts all text from an image and returns it as a single string.
+            </summary>
+            <param name="imageBytes">The bytes of the image.</param>
+            <returns>The entire text as a string.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.TesseractOcr.TesseractOcrProvider.GetTextFromImage(System.Byte[])">
+            <summary>
+            Extracts the text from an image and returns the words and their bounding rectangles.
+            </summary>
+            <param name="imageBytes">The bytes of the image.</param>
+            <returns>Words with corresponding bounding rectangles</returns>
+        </member>
+    </members>
+</doc>

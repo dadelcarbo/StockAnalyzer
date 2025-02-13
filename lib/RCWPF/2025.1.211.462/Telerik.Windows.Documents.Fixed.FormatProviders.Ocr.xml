@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Windows.Documents.Fixed.FormatProviders.Ocr</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Windows.Documents.Fixed.FormatProviders.Ocr.OcrFormatProvider">
+            <summary>
+            Format provider that uses an OCR provider to create a RadFixedPage from an image.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Fixed.FormatProviders.Ocr.OcrFormatProvider.#ctor(Telerik.Windows.Documents.Ocr.IOcrProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.Fixed.FormatProviders.Ocr.OcrFormatProvider"/> class.
+            </summary>
+            <param name="ocrProvider"></param>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Fixed.FormatProviders.Ocr.OcrFormatProvider.SupportedExtensions">
+            <summary>
+            Gets the supported extensions.
+            </summary>
+            <value>
+            The supported extensions.
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Fixed.FormatProviders.Ocr.OcrFormatProvider.CanImport">
+            <summary>
+            Gets a value indicating whether format provider can import.
+            </summary>
+            <value>The value indicating whether can import.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Fixed.FormatProviders.Ocr.OcrFormatProvider.CanExport">
+            <summary>
+            Gets a value indicating whether format provider can export.
+            </summary>
+            <value>The value indicating whether can export.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Fixed.FormatProviders.Ocr.OcrFormatProvider.OcrProvider">
+            <summary>
+            The OcrProvider instance used to process the image.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Fixed.FormatProviders.Ocr.OcrFormatProvider.ImportOverride(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Imports the specified input.
+            </summary>
+            <param name="input">The input.</param>
+            <param name="cancellationToken">The cancellation token used to cancel the operation.</param>
+            <returns>The imported document.</returns>
+        </member>
+    </members>
+</doc>

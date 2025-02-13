@@ -144,34 +144,38 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.Windows.Controls, Version=2024.4.1213.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\RCWPF\2024.4.1213.462\Telerik.Windows.Controls.dll</HintPath>
+    <Reference Include="Telerik.Licensing.Runtime">
+      <HintPath>..\lib\RCWPF\2025.1.211.462\Telerik.Licensing.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.Data, Version=2024.4.1213.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+    <Reference Include="Telerik.Windows.Controls, Version=2025.1.211.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\RCWPF\2024.4.1213.462\Telerik.Windows.Controls.Data.dll</HintPath>
+      <HintPath>..\lib\RCWPF\2025.1.211.462\Telerik.Windows.Controls.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.GridView, Version=2024.4.1213.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+    <Reference Include="Telerik.Windows.Controls.Data, Version=2025.1.211.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\RCWPF\2024.4.1213.462\Telerik.Windows.Controls.GridView.dll</HintPath>
+      <HintPath>..\lib\RCWPF\2025.1.211.462\Telerik.Windows.Controls.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.Input, Version=2024.4.1213.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+    <Reference Include="Telerik.Windows.Controls.GridView, Version=2025.1.211.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\RCWPF\2024.4.1213.462\Telerik.Windows.Controls.Input.dll</HintPath>
+      <HintPath>..\lib\RCWPF\2025.1.211.462\Telerik.Windows.Controls.GridView.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2024.4.1213.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+    <Reference Include="Telerik.Windows.Controls.Input, Version=2025.1.211.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\RCWPF\2024.4.1213.462\Telerik.Windows.Controls.Navigation.dll</HintPath>
+      <HintPath>..\lib\RCWPF\2025.1.211.462\Telerik.Windows.Controls.Input.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Telerik.Windows.Data, Version=2024.4.1213.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2025.1.211.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\RCWPF\2024.4.1213.462\Telerik.Windows.Data.dll</HintPath>
+      <HintPath>..\lib\RCWPF\2025.1.211.462\Telerik.Windows.Controls.Navigation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Data, Version=2025.1.211.462, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\RCWPF\2025.1.211.462\Telerik.Windows.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="UIAutomationProvider" />
@@ -370,6 +374,7 @@
     <Compile Include="StockDrawing\Area.cs" />
     <Compile Include="StockDrawing\Box.cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
+    <Compile Include="StockHelpers\HtmlHelper.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />
     <Compile Include="StockHelpers\TaskExtension.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeAgentDef.cs" />
