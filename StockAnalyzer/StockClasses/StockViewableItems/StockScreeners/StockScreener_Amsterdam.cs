@@ -2,7 +2,6 @@
 using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockScreeners
 {

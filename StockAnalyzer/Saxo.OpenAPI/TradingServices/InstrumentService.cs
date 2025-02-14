@@ -1,13 +1,11 @@
 ﻿using Newtonsoft.Json;
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace Saxo.OpenAPI.TradingServices

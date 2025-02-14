@@ -1,13 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Management.Instrumentation;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace StockAnalyzer.StockPortfolio.AutoTrade
 {

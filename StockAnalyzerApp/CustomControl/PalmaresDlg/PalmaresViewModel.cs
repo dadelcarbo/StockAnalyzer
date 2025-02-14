@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockScreeners;
@@ -15,7 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {

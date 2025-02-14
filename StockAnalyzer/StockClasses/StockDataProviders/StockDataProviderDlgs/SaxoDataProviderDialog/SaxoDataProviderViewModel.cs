@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;

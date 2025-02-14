@@ -1,9 +1,6 @@
-﻿using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockScreeners

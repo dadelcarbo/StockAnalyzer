@@ -6,7 +6,6 @@ using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies;
 using StockAnalyzerSettings;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;

@@ -17,7 +17,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
-using Telerik.Windows.Documents.Fixed.Model.Data;
 
 namespace StockAnalyzerApp.CustomControl.GraphControls
 {
@@ -1288,6 +1287,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var name = this.serie.StockName.ToUpper();
             var positions = this.Portfolio.Positions.Where(p => p.StockName.ToUpper() == name).Cast<StockPositionBase>().Union(this.Portfolio.ClosedPositions.Where(p => p.StockName.ToUpper() == name)).ToList();
 
+
+            foreach (var openedOrder in Portfolio.GetActiveOrders(this.serie.StockName).Where(o => o.BuySell == "Buy"))
+            {
+                if (openedOrder != null)
+                {
+                    this.DrawOpenedOrder(graphic, entryOrderPen, this.EndIndex, openedOrder.Value, true);
+                    if (openedOrder.StopValue != 0)
+                        this.DrawOpenedOrder(graphic, stopPen, this.EndIndex - 10, openedOrder.StopValue, true);
+                }
+            }
+
             if (positions.Count == 0)
                 return;
 
@@ -1335,13 +1345,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     PaintOpenedPosition(graphic, position);
                 }
-            }
-            var openedOrder = this.Portfolio.GetActiveOrders(name).Where(o => o.BuySell == "Buy").FirstOrDefault();
-            if (openedOrder != null)
-            {
-                this.DrawOpenedOrder(graphic, entryOrderPen, this.EndIndex, openedOrder.Value, true);
-                if (openedOrder.StopValue != 0)
-                    this.DrawOpenedOrder(graphic, stopPen, this.EndIndex - 10, openedOrder.StopValue, true);
             }
         }
 

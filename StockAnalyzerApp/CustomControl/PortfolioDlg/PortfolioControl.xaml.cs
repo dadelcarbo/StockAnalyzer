@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
-using StockAnalyzerApp.CustomControl.DrawingDlg;
 using System;
 using System.Threading.Tasks;
 using System.Windows;

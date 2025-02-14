@@ -1,21 +1,12 @@
-﻿using Microsoft.Win32;
-using StockAnalyzer;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockClasses;
 using StockAnalyzerSettings;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Xml.Serialization;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView;
-using Telerik.Windows.Documents.Spreadsheet.Model;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {

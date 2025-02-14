@@ -1,15 +1,8 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockScreeners;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockLogging;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;

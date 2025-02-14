@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockDrawing;
-using System;
+﻿using System;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems

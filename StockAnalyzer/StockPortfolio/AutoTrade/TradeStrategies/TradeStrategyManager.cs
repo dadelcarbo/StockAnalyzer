@@ -1,10 +1,6 @@
-﻿using StockAnalyzer.StockAgent;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 {

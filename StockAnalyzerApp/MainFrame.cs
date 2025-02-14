@@ -21,7 +21,6 @@ using StockAnalyzer.StockPortfolio.AutoTrade;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
-using StockAnalyzerApp.CustomControl.AlertDialog;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 using StockAnalyzerApp.CustomControl.AutoTradeDlg;
 using StockAnalyzerApp.CustomControl.DrawingDlg;
@@ -63,7 +62,6 @@ using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
-using static StockAnalyzer.StockHelpers.StockTimer;
 
 namespace StockAnalyzerApp
 {

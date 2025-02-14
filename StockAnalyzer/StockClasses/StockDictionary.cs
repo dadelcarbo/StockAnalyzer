@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
-using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;

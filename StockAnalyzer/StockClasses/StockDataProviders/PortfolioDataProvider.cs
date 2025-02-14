@@ -1,5 +1,4 @@
-﻿using Saxo.OpenAPI.TradingServices;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;

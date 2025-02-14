@@ -1,11 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
-using StockAnalyzer.StockMath;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
+﻿using StockAnalyzer.StockMath;
 using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
