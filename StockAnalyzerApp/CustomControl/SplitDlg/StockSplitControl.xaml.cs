@@ -12,23 +12,27 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
     /// </summary>
     public partial class StockSplitControl : UserControl
     {
-        public StockSplitControl()
+        StockSplitDlg parentDlg;
+        public StockSplitControl(StockSplitDlg stockSplitDlg)
         {
+            this.parentDlg = stockSplitDlg;
             InitializeComponent();
         }
 
         public DateTime Date { get; set; } = DateTime.Today.AddDays(-7);
-        public int Before { get; set; } = 1;
-        public int After { get; set; } = 1;
+        public float Before { get; set; } = 1f;
+        public float After { get; set; } = 1f;
 
         private void ApplySplitButton_Click(object sender, RoutedEventArgs e)
         {
             var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
             if (dataProvider == null) { return; }
 
-            dataProvider.ApplySplit(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date, (float)Before / (float)After);
+            dataProvider.AddSplit(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date, Before, After);
 
             StockAnalyzerForm.MainFrame.ApplyTheme();
+
+            this.parentDlg.Close();
         }
 
         public bool AllGroupSeries { get; set; }
@@ -51,6 +55,8 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
                 dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date);
             }
             StockAnalyzerForm.MainFrame.ApplyTheme();
+
+            this.parentDlg.Close();
         }
     }
 }

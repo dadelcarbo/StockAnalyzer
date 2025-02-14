@@ -453,7 +453,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return false;
         }
 
-        public virtual void ApplySplit(StockSerie stockSerie, DateTime date, float ratio)
+        public virtual void AddSplit(StockSerie stockSerie, DateTime date, float before, float after)
         {
             return;
         }

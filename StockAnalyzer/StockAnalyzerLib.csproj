@@ -300,6 +300,7 @@
     <Compile Include="StockClasses\StockDataProviders\Yahoo\YahooJson.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
     <Compile Include="StockClasses\StockSortedDictionary.cs" />
+    <Compile Include="StockClasses\StockSplit.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXEMABREAKOUT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXBREAKOUT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXNEW.cs" />

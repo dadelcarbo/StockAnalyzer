@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.stockSplitControl1 = new CustomControl.SplitDlg.StockSplitControl();
+            this.stockSplitControl1 = new CustomControl.SplitDlg.StockSplitControl(this);
             this.SuspendLayout();
             // 
             // elementHost1

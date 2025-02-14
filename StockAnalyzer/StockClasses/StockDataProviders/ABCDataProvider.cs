@@ -10,13 +10,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Media.Animation;
 using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -740,6 +738,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 string fileName = stockSerie.ISIN + "_" + stockSerie.Symbol + "_" + stockSerie.StockGroup.ToString() + ".csv";
                 res |= ParseCSVFile(stockSerie, Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
             }
+
+            this.ApplySplit(stockSerie);
+
             return res;
         }
         private void LoadGroupData(string abcGroup, StockSerie.Groups stockGroup)
@@ -1597,23 +1598,35 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        public override void ApplySplit(StockSerie stockSerie, DateTime date, float ratio)
+        public override void AddSplit(StockSerie stockSerie, DateTime date, float before, float after)
         {
             if (!stockSerie.Initialise())
                 return;
 
+            var split = new StockSplit() { StockName = stockSerie.StockName, Date = date, Before = before, After = after };
+            StockSplit.Splits.Add(split);
+            StockSplit.Save();
+
             var barDuration = stockSerie.BarDuration;
             stockSerie.BarDuration = BarDuration.Daily;
 
-            foreach (var value in stockSerie.Values.Where(v => v.DATE < date))
-            {
-                value.ApplyRatio(ratio);
-            }
-
-            SaveToCSV(stockSerie);
-
             stockSerie.IsInitialised = false;
             stockSerie.BarDuration = barDuration;
+        }
+
+        private void ApplySplit(StockSerie stockSerie)
+        {
+            if (stockSerie.Count == 0)
+                return;
+
+            foreach (var split in StockSplit.Splits.Where(s => s.StockName == stockSerie.StockName).OrderBy(s => s.Date))
+            {
+                float ratio = split.Before / split.After;
+                foreach (var value in stockSerie.Values.Where(v => v.DATE < split.Date))
+                {
+                    value.ApplyRatio(ratio);
+                }
+            }
         }
     }
 }
