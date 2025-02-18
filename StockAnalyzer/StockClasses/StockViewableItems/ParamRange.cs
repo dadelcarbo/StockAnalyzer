@@ -139,6 +139,30 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
             return StockIndicatorMovingAvgBase.MaTypes.Contains(valueString.ToUpper());
         }
     }
+
+    public class ParamRangeViewableItem : ParamRange
+    {
+        public ParamRangeViewableItem()
+        {
+            this.MinValue = String.Empty;
+            this.MaxValue = String.Empty;
+        }
+
+        public override bool isInRange(Object value)
+        {
+            return StockViewableItemsManager.Supports(value.ToString().Replace(">", "|"));
+        }
+
+        public override bool isValidString(string valueString)
+        {
+            return StockViewableItemsManager.Supports(valueString.Replace(">", "|"));
+        }
+
+        override public Type GetParamType()
+        {
+            return typeof(string);
+        }
+    }
     public class ParamRangeIndicator : ParamRange
     {
         public ParamRangeIndicator()
@@ -225,11 +249,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
 
         public override bool isInRange(Object value)
         {
-            if (value != null)
+            if (value == null)
+                return false;
+            if (values != null)
             {
                 return values.Contains(value.ToString());
             }
-            return value != null && !string.IsNullOrWhiteSpace(value.ToString());
+            return !string.IsNullOrWhiteSpace(value.ToString());
         }
 
         public override bool isValidString(string valueString)

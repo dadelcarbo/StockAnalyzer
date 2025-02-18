@@ -1623,7 +1623,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         RefreshNode(ParamNode);
                         break;
                     case "String":
-                        ParamNode.ViewableItem.Parameters[e.Item] = e.Label.ToUpper();
+                        ParamNode.ViewableItem.Parameters[e.Item] = e.Label.ToUpper().Replace(",", "_").Replace("|", ">");
                         e.CancelEdit = false;
                         RefreshNode(ParamNode);
                         break;

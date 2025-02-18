@@ -20,8 +20,36 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         {
             return GetViewableItem(fullString, null);
         }
+
+        static public bool Supports(string fullString)
+        {
+            if (string.IsNullOrEmpty(fullString))
+                return false;
+            string[] fields = fullString.Split('|');
+            if (fields.Length < 2 || string.IsNullOrEmpty(fields[1]))
+                return false;
+
+            switch (fields[0].ToUpper())
+            {
+                case "INDICATOR":
+                    return StockIndicatorManager.Supports(fields[1]);
+                case "CLOUD":
+                    return StockCloudManager.Supports(fields[1]);
+                case "PAINTBAR":
+                    return StockPaintBarManager.Supports(fields[1]);
+                case "AUTODRAWING":
+                    return StockAutoDrawingManager.Supports(fields[1]);
+                case "TRAILSTOP":
+                    return StockTrailStopManager.Supports(fields[1]);
+                default:
+                    return false;
+            }
+        }
+
         static public IStockViewableSeries GetViewableItem(string fullString, StockSerie stockSerie)
         {
+            if (string.IsNullOrEmpty(fullString))
+                return null;
             string[] fields = fullString.Split('|');
             if (fields.Length < 2 || string.IsNullOrEmpty(fields[1]))
                 return null;
