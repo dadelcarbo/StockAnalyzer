@@ -66,6 +66,7 @@ namespace StockAnalyzer.StockClasses
             BREADTH,
             PTF,
             BOND,
+            INTRADAY,
             TURBO,
             TURBO_5M,
             Portfolio,
@@ -652,6 +653,16 @@ namespace StockAnalyzer.StockClasses
                                 this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
                             }
                         }
+
+                        if (this.DataProvider == StockDataProvider.ABC)
+                        {
+                            var dataProvider = (ABCDataProvider)StockDataProviderBase.GetDataProvider(this.DataProvider);
+
+                            dataProvider.ApplySplit(this);
+                        }
+
+
+
                         // Force indicator,data,event and other to null;
                         PreInitialise();
 

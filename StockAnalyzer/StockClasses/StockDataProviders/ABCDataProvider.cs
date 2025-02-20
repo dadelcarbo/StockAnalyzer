@@ -739,8 +739,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 res |= ParseCSVFile(stockSerie, Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
             }
 
-            this.ApplySplit(stockSerie);
-
             return res;
         }
         private void LoadGroupData(string abcGroup, StockSerie.Groups stockGroup)
@@ -1614,7 +1612,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             stockSerie.BarDuration = barDuration;
         }
 
-        private void ApplySplit(StockSerie stockSerie)
+        public void ApplySplit(StockSerie stockSerie)
         {
             if (stockSerie.Count == 0)
                 return;

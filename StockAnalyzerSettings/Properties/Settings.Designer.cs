@@ -578,7 +578,7 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://tvc4.investing.com/f9003a0318d821f2f15a6378237b5c36/1663603016/1/1/8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://tvc4.investing.com/7efc972e9935356062fc273b5cb820d2/1739976098/1/1/8")]
         public string InvestingUrlRoot {
             get {
                 return ((string)(this["InvestingUrlRoot"]));
