@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period", "Smoothing" };
         public override string[] SerieNames => new string[] { "NBUPBARS(" + this.Parameters[0].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

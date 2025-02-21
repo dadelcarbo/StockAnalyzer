@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
 
         public override string[] SerieNames => new string[] { "UpBand", "DownBand" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -80,7 +80,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             }
         }
 
-        public override System.Drawing.Pen[] EventPens
+        public override Pen[] EventPens
         {
             get
             {

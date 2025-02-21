@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "HIGH", "FiboUp", "MID", "FiboLow", "LOW" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] {
+        public override Pen[] SeriePens => seriePens ??= new Pen[] {
             new Pen(Color.DarkGreen, 2),
             new Pen(Color.DarkGreen),
             new Pen(Color.Black) { DashStyle = DashStyle.Dash },

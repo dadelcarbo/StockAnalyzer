@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { $"HIGHEMA({this.parameters[0]})" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

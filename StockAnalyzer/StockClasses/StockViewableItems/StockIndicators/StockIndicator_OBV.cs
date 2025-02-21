@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] SerieNames => new string[] { "OBV()" };
 
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

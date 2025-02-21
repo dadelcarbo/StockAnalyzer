@@ -90,8 +90,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public StockDividend Dividends { get; set; }
 
         // Secondary serie management
-        protected System.Drawing.Drawing2D.Matrix matrixSecondaryScreenToValue;
-        protected System.Drawing.Drawing2D.Matrix matrixSecondaryValueToScreen;
+        protected Matrix matrixSecondaryScreenToValue;
+        protected Matrix matrixSecondaryValueToScreen;
         public Pen SecondaryPen { get; set; }
         public bool IsBuying { get; private set; } = false;
         public bool IsSelling { get; private set; } = false;
@@ -129,11 +129,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     float coefX = (this.GraphRectangle.Width - this.XMargin) / (EndIndex - StartIndex + 1);
                     float coefY = this.GraphRectangle.Height / (maxValue - minValue);
 
-                    matrixSecondaryValueToScreen = new System.Drawing.Drawing2D.Matrix();
+                    matrixSecondaryValueToScreen = new Matrix();
                     matrixSecondaryValueToScreen.Translate(this.GraphRectangle.X - (StartIndex - 0.5f) * coefX, maxValue * coefY + this.GraphRectangle.Y);
                     matrixSecondaryValueToScreen.Scale(coefX, -coefY);
 
-                    matrixSecondaryScreenToValue = (System.Drawing.Drawing2D.Matrix)matrixValueToScreen.Clone();
+                    matrixSecondaryScreenToValue = (Matrix)matrixValueToScreen.Clone();
                     matrixSecondaryScreenToValue.Invert();
                 }
             }
@@ -403,8 +403,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         if (stockIndicator.SerieVisibility[i] && stockIndicator.Series[i].Count > 0)
                         {
-                            int indexOfPB = Array.IndexOf<string>(stockIndicator.EventNames, "Pullback");
-                            int indexOfEoT = Array.IndexOf<string>(stockIndicator.EventNames, "EndOfTrend");
+                            int indexOfPB = Array.IndexOf(stockIndicator.EventNames, "Pullback");
+                            int indexOfEoT = Array.IndexOf(stockIndicator.EventNames, "EndOfTrend");
 
                             bool isSupport = stockIndicator.SerieNames[i].EndsWith(".S");
                             bool isResistance = stockIndicator.SerieNames[i].EndsWith(".R");
@@ -2069,7 +2069,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 selectedLineIndex = -1;
                                 selectedValuePoint = PointF.Empty;
                             }
-                            catch (System.ArithmeticException)
+                            catch (ArithmeticException)
                             {
                             }
                             break;
@@ -2097,7 +2097,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 selectedLineIndex = -1;
                                 selectedValuePoint = PointF.Empty;
                             }
-                            catch (System.ArithmeticException)
+                            catch (ArithmeticException)
                             {
                             }
                             break;
@@ -2144,7 +2144,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     newWinRatio = null;
                                 }
                             }
-                            catch (System.ArithmeticException)
+                            catch (ArithmeticException)
                             {
                             }
                             break;
@@ -2172,7 +2172,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 selectedLineIndex = -1;
                                 selectedValuePoint = PointF.Empty;
                             }
-                            catch (System.ArithmeticException)
+                            catch (ArithmeticException)
                             {
                             }
                             break;
@@ -2222,7 +2222,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 selectedLineIndex = -1;
                                 selectedValuePoint = PointF.Empty;
                             }
-                            catch (System.ArithmeticException)
+                            catch (ArithmeticException)
                             {
                             }
                             break;
@@ -2486,7 +2486,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         #endregion
         #region Order Management
-        void addAlertMenu_Click(object sender, System.EventArgs e)
+        void addAlertMenu_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.showAlertDefDialogMenuItem_Click(this, null);
         }
@@ -2514,7 +2514,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             return 0;
         }
         private OpenTradeViewModel openTradeViewModel = null;
-        void buyMenu_Click(object sender, System.EventArgs e)
+        void buyMenu_Click(object sender, EventArgs e)
         {
             if (StockAnalyzerForm.MainFrame.Portfolio == null)
             {
@@ -2566,7 +2566,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.PaintForeground();
         }
 
-        void tradeMenu_Click(object sender, System.EventArgs e)
+        void tradeMenu_Click(object sender, EventArgs e)
         {
             var tradeManagerViewModel = new TradeManagerViewModel(Portfolio, this.serie);
             tradeManagerViewModel.OrdersChanged += TradeManagerViewModel_OrdersChanged;
@@ -2595,7 +2595,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
 
         CloseTradeViewModel closeTradeViewModel = null;
-        void sellMenu_Click(object sender, System.EventArgs e)
+        void sellMenu_Click(object sender, EventArgs e)
         {
             if (StockAnalyzerForm.MainFrame.Portfolio == null)
             {
@@ -2639,7 +2639,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.BackgroundDirty = true;
             PaintGraph();
         }
-        void cancelMenu_Click(object sender, System.EventArgs e)
+        void cancelMenu_Click(object sender, EventArgs e)
         {
             if (StockAnalyzerForm.MainFrame.Portfolio == null)
             {
@@ -2656,27 +2656,27 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.BackgroundDirty = true;
             PaintGraph();
         }
-        void agendaMenu_Click(object sender, System.EventArgs e)
+        void agendaMenu_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.ShowAgenda();
         }
-        void openInPEAPerf_Click(object sender, System.EventArgs e)
+        void openInPEAPerf_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInPEAPerf();
         }
-        void openInZBMenu_Click(object sender, System.EventArgs e)
+        void openInZBMenu_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInZBMenu();
         }
-        void openInDataProvider_Click(object sender, System.EventArgs e)
+        void openInDataProvider_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInDataProvider();
         }
-        void openInYahoo_Click(object sender, System.EventArgs e)
+        void openInYahoo_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInYahoo();
         }
-        void openSaxoIntradyConfigDlg_Click(object sender, System.EventArgs e)
+        void openSaxoIntradyConfigDlg_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.serie.SaxoId);
         }

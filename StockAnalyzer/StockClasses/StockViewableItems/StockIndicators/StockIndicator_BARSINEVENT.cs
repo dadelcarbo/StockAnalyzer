@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "BARS" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black, 1) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black, 1) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             string eventParam = this.Parameters[1].ToString();
             var eventItem = viewableItem as IStockEvent;
-            int index = Array.IndexOf<string>(eventItem.EventNames, eventParam);
+            int index = Array.IndexOf(eventItem.EventNames, eventParam);
             if (index == -1)
                 throw new InvalidOperationException($"Event {eventParam} not found in {indicatorParam}");
 

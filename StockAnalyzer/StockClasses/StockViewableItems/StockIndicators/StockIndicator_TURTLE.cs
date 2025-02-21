@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-        public override Area[] Areas => areas ??= new StockDrawing.Area[]
+        public override Area[] Areas => areas ??= new Area[]
             {
                 new Area {Name="Bull", Color = Color.FromArgb(128, Color.LightGreen) },
                 new Area {Name="Bear", Color = Color.FromArgb(128, Color.Red) }

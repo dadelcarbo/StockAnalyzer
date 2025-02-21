@@ -47,7 +47,7 @@ namespace StockAnalyzer.StockScripting
             };
             CSharpCodeProvider codeProvider = new CSharpCodeProvider(providerOptions);
 
-            System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters();
+            CompilerParameters parameters = new CompilerParameters();
             //Make sure we generate an EXE, not a DLL
             parameters.GenerateExecutable = false;
             parameters.GenerateInMemory = true;
@@ -72,7 +72,7 @@ namespace StockAnalyzer.StockScripting
                                 ", '" + CompErr.ErrorText + ";" +
                                 Environment.NewLine + Environment.NewLine;
                 }
-                throw new System.ArgumentException(resultText, "Compilation Error");
+                throw new ArgumentException(resultText, "Compilation Error");
             }
 
             // Get the instance of the newly compiled code

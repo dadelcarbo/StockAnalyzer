@@ -22,7 +22,7 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
             this.form = form;
         }
 
-        private void AgentRunGrid_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
+        private void AgentRunGrid_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
             // Open on the alert stock
             var agent = (((RadGridView)sender).SelectedItem as AgentRunViewModel)?.Agent?.AgentDef;
@@ -32,7 +32,7 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
             UpdateMainWindow(agent);
         }
 
-        private void AgentDefsGrid_SelectionChanged(object sender, Telerik.Windows.Controls.SelectionChangeEventArgs e)
+        private void AgentDefsGrid_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
             // Open on the alert stock
             var agent = ((RadGridView)sender).SelectedItem as TradeAgentDef;

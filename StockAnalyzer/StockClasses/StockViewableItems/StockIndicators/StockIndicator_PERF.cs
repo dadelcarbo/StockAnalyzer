@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period1", "NbDev" };
         public override string[] SerieNames => new string[] { $"PERF({this.Parameters[0]},{this.Parameters[1]})" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

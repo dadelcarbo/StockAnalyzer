@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     class ABCDownloadGroup
     {
-        public StockSerie.Groups Group { get; set; }
+        public Groups Group { get; set; }
 
         public string AbcCode { get; set; }
 
@@ -565,7 +565,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             if (File.Exists(fileName))
             {
-                StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), Path.GetFileNameWithoutExtension(fileName));
+                Groups group = (Groups)Enum.Parse(typeof(Groups), Path.GetFileNameWithoutExtension(fileName));
                 using StreamReader sr = new StreamReader(fileName, true);
                 string line;
                 sr.ReadLine(); // Skip first line
@@ -619,7 +619,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 StockLog.Write("File does not exist");
             }
         }
-        private void InitSRDFromLibelleFile(string fileName, StockSerie.Groups group)
+        private void InitSRDFromLibelleFile(string fileName, Groups group)
         {
             if (File.Exists(fileName))
             {
@@ -653,7 +653,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private bool IsinMatchGroup(StockSerie.Groups group, string line)
+        private bool IsinMatchGroup(Groups group, string line)
         {
             // Add only European instruments for PEA country.
             if (line.StartsWith("BR") || line.StartsWith("CH") || line.StartsWith("CI") || line.StartsWith("CN") || line.StartsWith("CW") || line.StartsWith("GB") || line.StartsWith("GG") || line.StartsWith("IE"))
@@ -680,7 +680,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
                         string[] row = line.Split(';');
-                        StockSerie stockSerie = new StockSerie(row[1], string.IsNullOrEmpty(row[2]) ? row[3] : row[2], row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
+                        StockSerie stockSerie = new StockSerie(row[1], string.IsNullOrEmpty(row[2]) ? row[3] : row[2], row[0], (Groups)Enum.Parse(typeof(Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
                         stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN?.Substring(0, 2) switch
                         {
                             null => string.Empty,
@@ -739,9 +739,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 res |= ParseCSVFile(stockSerie, Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
             }
 
+            this.ApplySplit(stockSerie);
+
             return res;
         }
-        private void LoadGroupData(string abcGroup, StockSerie.Groups stockGroup)
+        private void LoadGroupData(string abcGroup, Groups stockGroup)
         {
             StockLog.Write("Group: " + abcGroup);
             try
@@ -807,7 +809,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 loadingGroup = null;
             }
         }
-        private static string GetABCGroup(StockSerie.Groups stockGroup)
+        private static string GetABCGroup(Groups stockGroup)
         {
             var groupConfig = downloadGroups.FirstOrDefault(g => g.Group == stockGroup);
             //if (groupConfig == null)
@@ -882,7 +884,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             //}
             //return abcGroup;
         }
-        private bool ParseABCGroupCSVFile(string fileName, StockSerie.Groups group, bool intraday = false)
+        private bool ParseABCGroupCSVFile(string fileName, Groups group, bool intraday = false)
         {
             if (!File.Exists(fileName)) return false;
             StockSerie stockSerie = null;
@@ -1136,7 +1138,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     nextDownload = TimeSpan.FromMinutes(minutes + 5);
 
                     downloadingGroups = "True";
-                    var groups = new StockSerie.Groups[] {
+                    var groups = new Groups[] {
                         StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL,
                         StockSerie.Groups.ITALIA, StockSerie.Groups.GERMANY, StockSerie.Groups.SPAIN, StockSerie.Groups.USA,
                         StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
@@ -1285,7 +1287,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return success;
         }
 
-        private void DownloadLibelleFromABC(string destFolder, StockSerie.Groups group, bool initLibelle = true)
+        private void DownloadLibelleFromABC(string destFolder, Groups group, bool initLibelle = true)
         {
             string groupName = GetABCGroup(group);
             if (groupName == null)
@@ -1384,7 +1386,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         public override string DisplayName => "ABCBourse";
         #endregion
 
-        static SortedDictionary<StockSerie.Groups, List<string>> groupSeries = new SortedDictionary<StockSerie.Groups, List<string>>();
+        static SortedDictionary<Groups, List<string>> groupSeries = new SortedDictionary<Groups, List<string>>();
 
         public static bool BelongsToGroup(StockSerie stockSerie, Groups group)
         {
@@ -1612,7 +1614,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             stockSerie.BarDuration = barDuration;
         }
 
-        public void ApplySplit(StockSerie stockSerie)
+        private void ApplySplit(StockSerie stockSerie)
         {
             if (stockSerie.Count == 0)
                 return;

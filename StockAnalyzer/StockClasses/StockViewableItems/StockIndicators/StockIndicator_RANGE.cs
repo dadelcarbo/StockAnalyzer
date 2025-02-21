@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[] { $"RANGE1({Parameters[0]})", $"RANGE2({Parameters[1]})" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

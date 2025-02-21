@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 100), new ParamRangeFloat(0.0f, 1000f) };
         public override string[] SerieNames => new string[] { "Exchanged M€", "Exchange MA" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

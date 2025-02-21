@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "HIGHEST(" + this.Parameters[0].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
 
         public override HLine[] HorizontalLines => null;
 

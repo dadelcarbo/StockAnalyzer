@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -32,8 +32,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             float min = float.MaxValue;
             float previousHigh = float.MinValue;
             float previousLow = float.MaxValue;
-            int higherLowIndex = Array.IndexOf<string>(this.EventNames, "HigherLow");
-            int lowerHighIndex = Array.IndexOf<string>(this.EventNames, "LowerHigh");
+            int higherLowIndex = Array.IndexOf(this.EventNames, "HigherLow");
+            int lowerHighIndex = Array.IndexOf(this.EventNames, "LowerHigh");
             foreach (StockDailyValue value in stockSerie.Values)
             {
                 this.eventSeries[0][i] = true;

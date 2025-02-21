@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeStockName() };
         public override string[] SerieNames => new string[] { $"RS({this.Parameters[0]})" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
 
         static HLine[] lines = null;
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.LightGray)) };

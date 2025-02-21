@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period" };
         public override string[] SerieNames => new string[] { $"{this.ShortName}({this.Parameters[0]})" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-        public override Area[] Areas => areas ??= new StockDrawing.Area[]
+        public override Area[] Areas => areas ??= new Area[]
             {
                 new Area {Name="Bull", Color = Color.FromArgb(20, Color.Green), Visibility = false },
                 new Area {Name="Bear", Color = Color.FromArgb(20, Color.Red), Visibility = false }

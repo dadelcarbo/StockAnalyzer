@@ -31,10 +31,10 @@ namespace StockAnalyzer.StockAgent.Agents
             if (stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
                 return false;
             var cloud = stockSerie.GetCloud($"EMA2Lines({FastPeriod},{SlowPeriod},{SignalPeriod})");
-            bullEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "BrokenUp")];
-            bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "BrokenDown")];
+            bullEvents = cloud.Events[Array.IndexOf(cloud.EventNames, "BrokenUp")];
+            bearEvents = cloud.Events[Array.IndexOf(cloud.EventNames, "BrokenDown")];
             var filterCloud = stockSerie.GetCloud($"EMA2Lines({FastPeriod * 5},{SlowPeriod * 5},{SignalPeriod * 5})");
-            filterEvents = filterCloud.Events[Array.IndexOf<string>(filterCloud.EventNames, "BullishCloud")];
+            filterEvents = filterCloud.Events[Array.IndexOf(filterCloud.EventNames, "BullishCloud")];
             return bullEvents != null && bearEvents != null && filterEvents != null;
         }
 

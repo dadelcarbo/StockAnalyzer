@@ -28,7 +28,7 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             this.Close();
         }
 
-        private void OkBtn_Click(object sender, System.EventArgs e)
+        private void OkBtn_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
             this.Close();

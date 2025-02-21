@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockDrawing
         public PointF BottomLeft => new PointF(TopLeft.X, BottomRight.Y);
         public bool Fill { get; set; }
 
-        public Rectangle2D(System.Drawing.RectangleF rectF)
+        public Rectangle2D(RectangleF rectF)
         {
             TopLeft = new PointF(rectF.Left, rectF.Top);
             BottomRight = new PointF(rectF.Right, rectF.Bottom);

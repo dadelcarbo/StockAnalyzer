@@ -49,7 +49,7 @@ namespace StockAnalyzer.StockDrawing
             }
             else
             {
-                throw new System.ArithmeticException("Points are equals");
+                throw new ArithmeticException("Points are equals");
             }
         }
         public Line2DBase(PointF p1, PointF p2, Pen pen)
@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockDrawing
             }
             else
             {
-                throw new System.ArithmeticException("Points are equals");
+                throw new ArithmeticException("Points are equals");
             }
         }
         public Line2DBase(PointF p1, float vx, float vy)
@@ -70,7 +70,7 @@ namespace StockAnalyzer.StockDrawing
             this.Pen = DrawingItem.DefaultPen;
             if (vx == 0.0f && vy == 0.0f)
             {
-                throw new System.ArithmeticException("Points are equals");
+                throw new ArithmeticException("Points are equals");
             }
             else
             {
@@ -83,7 +83,7 @@ namespace StockAnalyzer.StockDrawing
             this.Pen = pen;
             if (vx == 0.0f && vy == 0.0f)
             {
-                throw new System.ArithmeticException("Points are equals");
+                throw new ArithmeticException("Points are equals");
             }
             else
             {

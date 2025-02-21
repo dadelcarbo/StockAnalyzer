@@ -80,7 +80,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private readonly List<GraphControl> graphList = new List<GraphControl>();
 
         private Point lastMouseLocation = Point.Empty;
-        void MouseMoveOverGraphControl(object sender, System.Windows.Forms.MouseEventArgs e)
+        void MouseMoveOverGraphControl(object sender, MouseEventArgs e)
         {
             if (lastMouseLocation != e.Location)
             {

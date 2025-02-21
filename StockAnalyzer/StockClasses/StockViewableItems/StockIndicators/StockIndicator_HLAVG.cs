@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] SerieNames => new string[] { "HLAVG(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" };
 
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

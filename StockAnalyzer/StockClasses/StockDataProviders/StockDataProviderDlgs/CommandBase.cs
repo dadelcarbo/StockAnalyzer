@@ -118,7 +118,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             _sourceObject.PropertyChanged += SourceObject_PropertyChanged;
         }
 
-        private void SourceObject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void SourceObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == _propertyName)
             {

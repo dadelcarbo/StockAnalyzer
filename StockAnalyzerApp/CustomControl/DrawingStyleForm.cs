@@ -51,7 +51,7 @@ namespace StockAnalyzerApp.CustomControl
             this.Pen.DashStyle = (DashStyle)Enum.Parse(typeof(DashStyle), this.lineTypeComboBox.SelectedItem.ToString());
         }
 
-        void colorPanel_Click(object sender, System.EventArgs e)
+        void colorPanel_Click(object sender, EventArgs e)
         {
             colorDlg.Color = this.Pen.Color;
             if (colorDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)

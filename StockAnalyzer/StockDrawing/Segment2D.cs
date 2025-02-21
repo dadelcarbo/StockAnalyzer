@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockDrawing
         {
         }
 
-        public override Line2DBase Transform(System.Drawing.Drawing2D.Matrix matrix, bool isLog)
+        public override Line2DBase Transform(Matrix matrix, bool isLog)
         {
             PointF[] points = new PointF[] { this.Point1, this.Point2 };
 

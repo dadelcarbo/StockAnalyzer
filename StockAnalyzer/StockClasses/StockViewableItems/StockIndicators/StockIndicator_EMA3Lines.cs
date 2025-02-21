@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
              new ParamRangeInt(0, 500), new ParamRangeInt(0, 500), new ParamRangeInt(0, 500)   };
         public override string[] SerieNames => new string[] { "EMA(" + this.Parameters[0].ToString() + ")", "EMA(" + this.Parameters[1].ToString() + ")", "EMA(" + this.Parameters[2].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

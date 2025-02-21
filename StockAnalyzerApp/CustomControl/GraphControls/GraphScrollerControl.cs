@@ -255,7 +255,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        override public void MouseMoveOverControl(System.Windows.Forms.MouseEventArgs e, Keys key, bool mouseOverThis)
+        override public void MouseMoveOverControl(MouseEventArgs e, Keys key, bool mouseOverThis)
         {
             if (!this.IsInitialized || this.curveList == null)
             {
@@ -322,7 +322,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        override public void GraphControl_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        override public void GraphControl_MouseClick(object sender, MouseEventArgs e)
         {
             if (!this.IsInitialized || this.curveList == null)
             {

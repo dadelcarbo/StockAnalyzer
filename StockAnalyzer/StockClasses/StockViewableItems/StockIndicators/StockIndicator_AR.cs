@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeMA() };
         public override string[] SerieNames => new string[] { "AR(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

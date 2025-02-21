@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500) };
 
         public override string[] SerieNames => new string[] { };
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { };
 
         static readonly Pen supportPen = new Pen(Brushes.DarkRed, 3) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot };
         static readonly Pen resistancePen = new Pen(Brushes.DarkGreen, 3) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot };
@@ -35,12 +35,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-            var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
-            var brokenDownEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenDown")];
-            var upTrendEvents = this.Events[Array.IndexOf<string>(this.EventNames, "UpTrend")];
-            var downTrendEvents = this.Events[Array.IndexOf<string>(this.EventNames, "DownTrend")];
-            var longReentryEvents = this.Events[Array.IndexOf<string>(this.EventNames, "LongReentry")];
-            var shortReentryEvents = this.Events[Array.IndexOf<string>(this.EventNames, "ShortReentry")];
+            var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenUp")];
+            var brokenDownEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenDown")];
+            var upTrendEvents = this.Events[Array.IndexOf(this.EventNames, "UpTrend")];
+            var downTrendEvents = this.Events[Array.IndexOf(this.EventNames, "DownTrend")];
+            var longReentryEvents = this.Events[Array.IndexOf(this.EventNames, "LongReentry")];
+            var shortReentryEvents = this.Events[Array.IndexOf(this.EventNames, "ShortReentry")];
 
             bool upTrend = false;
             bool upSwing = false;

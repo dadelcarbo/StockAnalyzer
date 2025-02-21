@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 new ParamRangeMA()
                 };
         public override string[] SerieNames => new string[] { "ADRBANDUp", "ADRBANDDown", this.parameters[4] + "(" + (int)this.parameters[0] + ")" };
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

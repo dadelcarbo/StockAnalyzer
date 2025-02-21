@@ -39,14 +39,14 @@ namespace StockAnalyzer.StockAgent.Agents
             var viewableSeries = stockSerie.GetViewableItem(this.EntryType.ToUpper() + "|" + this.EntryIndicator) as IStockEvent;
             if (viewableSeries != null)
             {
-                this.entryEvents = viewableSeries.Events[Array.IndexOf<string>(viewableSeries.EventNames, this.EntryEvent)];
+                this.entryEvents = viewableSeries.Events[Array.IndexOf(viewableSeries.EventNames, this.EntryEvent)];
             }
             if (ExitEvent == null)
                 return false;
             viewableSeries = stockSerie.GetViewableItem(this.ExitType.ToUpper() + "|" + this.ExitIndicator) as IStockEvent;
             if (viewableSeries != null)
             {
-                this.exitEvents = viewableSeries.Events[Array.IndexOf<string>(viewableSeries.EventNames, this.ExitEvent)];
+                this.exitEvents = viewableSeries.Events[Array.IndexOf(viewableSeries.EventNames, this.ExitEvent)];
             }
 
             if (FilterEvent != null)
@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockAgent.Agents
                 viewableSeries = stockSerie.GetViewableItem(this.FilterType.ToUpper() + "|" + this.FilterIndicator) as IStockEvent;
                 if (viewableSeries != null)
                 {
-                    this.filterEvents = viewableSeries.Events[Array.IndexOf<string>(viewableSeries.EventNames, this.FilterEvent)];
+                    this.filterEvents = viewableSeries.Events[Array.IndexOf(viewableSeries.EventNames, this.FilterEvent)];
                 }
             }
             if (PositionManagement?.Rank == null) return false;

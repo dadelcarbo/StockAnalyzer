@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(2, 500) };
 
         public override string[] SerieNames => new string[] { "CUPHANDLEINV.LS", "CUPHANDLEINV.SS" };
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -49,9 +49,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-            var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
-            var brokenDownEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenDown")];
-            var bearEvents = this.Events[Array.IndexOf<string>(this.EventNames, "Bearish")];
+            var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenUp")];
+            var brokenDownEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenDown")];
+            var bearEvents = this.Events[Array.IndexOf(this.EventNames, "Bearish")];
 
             var bodyHighSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
             var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);

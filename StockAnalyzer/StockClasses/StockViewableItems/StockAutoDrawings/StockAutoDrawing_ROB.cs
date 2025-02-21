@@ -31,9 +31,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-            var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
-            var downTrendEvents = this.Events[Array.IndexOf<string>(this.EventNames, "DownTrend")];
-            var upTrendEvents = this.Events[Array.IndexOf<string>(this.EventNames, "UpTrend")];
+            var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenUp")];
+            var downTrendEvents = this.Events[Array.IndexOf(this.EventNames, "DownTrend")];
+            var upTrendEvents = this.Events[Array.IndexOf(this.EventNames, "UpTrend")];
 
             PointF P = PointF.Empty;
             HalfLine2D previousResistance = null;

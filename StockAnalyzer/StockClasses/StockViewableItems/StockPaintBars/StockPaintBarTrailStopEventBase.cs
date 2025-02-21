@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             baseIndicator = StockTrailStopManager.CreateTrailStop(this.ShortName);
             if (baseIndicator == null)
             {
-                throw new System.ApplicationException("Unable to create " + this.ShortName + " trail stop");
+                throw new ApplicationException("Unable to create " + this.ShortName + " trail stop");
             }
             this.parameters = baseIndicator.ParameterDefaultValues;
 

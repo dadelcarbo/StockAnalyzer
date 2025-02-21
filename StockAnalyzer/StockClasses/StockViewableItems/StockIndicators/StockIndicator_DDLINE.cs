@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "MAX", "DD1", "DD2", "DD3", "DD4" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.DarkGreen), new Pen(Color.DarkGreen), new Pen(Color.Black), new Pen(Color.DarkRed), new Pen(Color.DarkRed) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.DarkGreen), new Pen(Color.DarkGreen), new Pen(Color.Black), new Pen(Color.DarkRed), new Pen(Color.DarkRed) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {

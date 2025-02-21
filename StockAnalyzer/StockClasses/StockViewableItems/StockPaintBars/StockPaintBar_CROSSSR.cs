@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             this.serieVisibility[9] = true;
         }
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

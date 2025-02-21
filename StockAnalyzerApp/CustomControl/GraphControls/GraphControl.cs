@@ -151,7 +151,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         // Last mouse index in visible points
         protected int lastMouseIndex = -1;
         protected FloatSerie mainSerie = null;
-        protected System.Drawing.Point mouseDownPos = Point.Empty;
+        protected Point mouseDownPos = Point.Empty;
         protected bool forceNoValueBoxDisplay = false;
 
         // Resources
@@ -937,7 +937,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             this.OnMouseValueChanged?.Invoke(sender, date, value, crossMode);
         }
-        virtual public void MouseMoveOverControl(System.Windows.Forms.MouseEventArgs e, Keys key, bool mouseOverThis)
+        virtual public void MouseMoveOverControl(MouseEventArgs e, Keys key, bool mouseOverThis)
         {
             using MethodLogger ml = new MethodLogger(this);
             if (this.IsInitialized)
@@ -1056,7 +1056,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 mouseDown = false;
             }
         }
-        virtual public void GraphControl_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        virtual public void GraphControl_MouseClick(object sender, MouseEventArgs e)
         {
             using MethodLogger ml = new MethodLogger(this);
             if (this.IsInitialized && !forceNoValueBoxDisplay)

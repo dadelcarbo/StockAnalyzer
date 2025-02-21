@@ -37,9 +37,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-            var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
-            var brokenDownEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenDown")];
-            var bullEvents = this.Events[Array.IndexOf<string>(this.EventNames, "Bullish")];
+            var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenUp")];
+            var brokenDownEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenDown")];
+            var bullEvents = this.Events[Array.IndexOf(this.EventNames, "Bullish")];
 
             var bodyLowSerie = stockSerie.GetSerie(StockDataType.LOW);
 

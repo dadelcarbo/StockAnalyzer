@@ -29,7 +29,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

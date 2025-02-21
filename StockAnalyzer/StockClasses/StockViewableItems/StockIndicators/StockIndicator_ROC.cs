@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { $"ROC({this.Parameters[0]})" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) }; 
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) }; 
         
         public override string[] SerieFormats => serieFormats ??= new string[] { "P2" };
 

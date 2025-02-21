@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { };
         public override string[] SerieNames => new string[] { "ACTUALCLOSE()" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

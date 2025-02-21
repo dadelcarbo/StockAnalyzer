@@ -309,7 +309,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
             suspendPreview = false;
         }
-        void StockIndicatorSelectorDlg_Load(object sender, System.EventArgs e)
+        void StockIndicatorSelectorDlg_Load(object sender, EventArgs e)
         {
             this.suspendPreview = true;
             // Initialise chart mode combo box
@@ -649,17 +649,17 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             }
         }
 
-        void removeStripMenuItem_Click(object sender, System.EventArgs e)
+        void removeStripMenuItem_Click(object sender, EventArgs e)
         {
             StockNode stockNode = (StockNode)this.treeView1.SelectedNode;
             this.treeView1.Nodes.Remove(stockNode);
         }
-        void copyStripMenuItem_Click(object sender, System.EventArgs e)
+        void copyStripMenuItem_Click(object sender, EventArgs e)
         {
             StockNode stockNode = (StockNode)this.treeView1.SelectedNode;
             Clipboard.SetText(stockNode.Text);
         }
-        void addDecoratorToolStripMenuItem_Click(object sender, System.EventArgs e)
+        void addDecoratorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddDecoratorDlg addDlg;
             StockNode treeNode = (StockNode)this.treeView1.SelectedNode;
@@ -721,7 +721,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 decoratorNode.Expand();
             }
         }
-        void addTrailToolStripMenuItem_Click(object sender, System.EventArgs e)
+        void addTrailToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddTrailDlg addDlg;
             StockNode treeNode = (StockNode)this.treeView1.SelectedNode;
@@ -777,7 +777,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 trailNode.Expand();
             }
         }
-        void addIndicatorToolStripMenuItem_Click(object sender, System.EventArgs e)
+        void addIndicatorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddIndicatorDlg addDlg;
             StockNode treeNode = (StockNode)this.treeView1.SelectedNode;
@@ -860,7 +860,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 this.treeView1.SelectedNode = indicatorNode;
             }
         }
-        void addCloudToolStripMenuItem_Click(object sender, System.EventArgs e)
+        void addCloudToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddCloudDlg addDlg;
             StockNode treeNode = (StockNode)this.treeView1.SelectedNode;
@@ -1590,7 +1590,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.paramListView.Items.AddRange(viewItems);
         }
 
-        void paramListView_Click(object sender, System.EventArgs e)
+        void paramListView_Click(object sender, EventArgs e)
         {
             if (this.paramListView.SelectedIndices.Count != 0)
             {
@@ -2281,7 +2281,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 stockNode.SecondaryPen.Width = (int)this.secondaryThicknessComboBox.SelectedItem;
             }
         }
-        void secondaryColorPanel_Click(object sender, System.EventArgs e)
+        void secondaryColorPanel_Click(object sender, EventArgs e)
         {
             colorDlg.Color = ((GraphNode)this.treeView1.SelectedNode).SecondaryPen.Color;
             if (colorDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)

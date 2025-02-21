@@ -72,7 +72,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         }
         private void grid_FilterOperatorsLoading(object sender, FilterOperatorsLoadingEventArgs e)
         {
-            var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
+            var column = e.Column as GridViewBoundColumnBase;
             if (column != null && column.DataType == typeof(string))
             {
                 e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.Contains;

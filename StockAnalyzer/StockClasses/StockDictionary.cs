@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockDictionary : SortedDictionary<string, StockSerie>, IStockPriceProvider
     {
-        public System.DateTime ArchiveEndDate { get; private set; }
+        public DateTime ArchiveEndDate { get; private set; }
 
         public delegate void OnSerieEventDetectionDone();
 
@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses
         public delegate void ReportProgressHandler(string progress);
         public event ReportProgressHandler ReportProgress;
 
-        public StockDictionary(System.DateTime archiveEndDate)
+        public StockDictionary(DateTime archiveEndDate)
         {
             Instance = this;
             this.ArchiveEndDate = archiveEndDate;
@@ -1624,7 +1624,7 @@ namespace StockAnalyzer.StockClasses
         }
         #endregion
 
-        public float GetClosingPrice(string stockName, DateTime date, StockClasses.BarDuration duration)
+        public float GetClosingPrice(string stockName, DateTime date, BarDuration duration)
         {
             if (this.ContainsKey(stockName))
             {

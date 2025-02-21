@@ -18,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool() };
 
         public override string[] SerieNames => new string[] { };
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -33,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-            var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
+            var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenUp")];
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             for (int i = period * 2; i < stockSerie.Count; i++)

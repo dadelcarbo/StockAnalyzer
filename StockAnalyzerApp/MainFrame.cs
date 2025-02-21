@@ -1300,9 +1300,9 @@ namespace StockAnalyzerApp
             if (File.Exists(watchListsFileName))
             {
                 using FileStream fs = new FileStream(watchListsFileName, FileMode.Open);
-                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                XmlReaderSettings settings = new XmlReaderSettings();
                 settings.IgnoreWhitespace = true;
-                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                 XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
                 this.WatchLists = (List<StockWatchList>)serializer.Deserialize(xmlReader);
                 this.WatchLists = this.WatchLists.OrderBy(wl => wl.Name).ToList();
@@ -1339,9 +1339,9 @@ namespace StockAnalyzerApp
                 if (File.Exists(analysisFileName))
                 {
                     using FileStream fs = new FileStream(analysisFileName, FileMode.Open);
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                    XmlReaderSettings settings = new XmlReaderSettings();
                     settings.IgnoreWhitespace = true;
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                    XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
                     StockDictionary.ReadAnalysisFromXml(xmlReader);
                 }
                 bool dirty = false;
@@ -1982,13 +1982,13 @@ namespace StockAnalyzerApp
 
                 // Save watch list file
                 string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.xml");
-                System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+                XmlWriterSettings settings = new XmlWriterSettings();
                 settings.Indent = true;
                 settings.NewLineOnAttributes = true;
 
                 using FileStream fs = new FileStream(watchListsFileName, FileMode.Create);
                 XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
-                System.Xml.XmlTextWriter xmlWriter = new System.Xml.XmlTextWriter(fs, null);
+                XmlTextWriter xmlWriter = new XmlTextWriter(fs, null);
                 xmlWriter.Formatting = System.Xml.Formatting.Indented;
                 xmlWriter.WriteStartDocument();
                 serializer.Serialize(xmlWriter, this.WatchLists);
@@ -2003,12 +2003,12 @@ namespace StockAnalyzerApp
             bool success = true;
             // Save stock analysis to XML
             XmlSerializer serializer = new XmlSerializer(typeof(StockAnalysis));
-            System.Xml.XmlTextWriter xmlWriter;
+            XmlTextWriter xmlWriter;
             try
             {
                 // Save analysis file
                 using FileStream fs = new FileStream(tmpFileName, FileMode.Create);
-                xmlWriter = new System.Xml.XmlTextWriter(fs, null);
+                xmlWriter = new XmlTextWriter(fs, null);
                 xmlWriter.Formatting = System.Xml.Formatting.Indented;
                 xmlWriter.WriteStartDocument();
                 StockDictionary.WriteAnalysisToXml(xmlWriter);
@@ -2251,7 +2251,7 @@ namespace StockAnalyzerApp
 
         private void CreateGroupMenuItem()
         {
-            if (!Enum.TryParse<StockSerie.Groups>(Settings.Default.SelectedGroup, out this.selectedGroup))
+            if (!Enum.TryParse(Settings.Default.SelectedGroup, out this.selectedGroup))
             {
                 this.selectedGroup = StockSerie.Groups.INDICES;
                 Settings.Default.SelectedGroup = StockSerie.Groups.INDICES.ToString();
@@ -2723,7 +2723,7 @@ namespace StockAnalyzerApp
                 return string.Empty;
             }
             var previousSize = StockAnalyzerForm.MainFrame.Size;
-            StockAnalyzerForm.MainFrame.Size = new System.Drawing.Size(600, 600);
+            StockAnalyzerForm.MainFrame.Size = new Size(600, 600);
             var previousTheme = StockAnalyzerForm.MainFrame.CurrentTheme;
 
             string reportBody = html;
@@ -3104,7 +3104,7 @@ namespace StockAnalyzerApp
                 foreach (var alertValue in alertValues.OrderByDescending(l => l.Speed).Take(nbStocks))
                 {
                     // Generate Snapshot
-                    this.OnSelectedStockAndDurationChanged(alertValue.StockSerie.StockName, (StockAnalyzer.StockClasses.BarDuration)alertDef.BarDuration, false);
+                    this.OnSelectedStockAndDurationChanged(alertValue.StockSerie.StockName, (BarDuration)alertDef.BarDuration, false);
                     // StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{trailStopIndicatorName}");
 
                     var bitmapString = this.SnapshotAsHtml();
@@ -3945,7 +3945,7 @@ namespace StockAnalyzerApp
             if (string.IsNullOrEmpty(currentTheme))
             {
                 // Add error management here
-                throw new System.Exception("We don't deal with empty themes in this house");
+                throw new Exception("We don't deal with empty themes in this house");
             }
             else
             {
@@ -4568,7 +4568,7 @@ namespace StockAnalyzerApp
         private void CreateAgendaMenuItem()
         {
             AgendaEntryType agendaEntryType = AgendaEntryType.No;
-            if (!Enum.TryParse<AgendaEntryType>(Settings.Default.ShowAgenda, out agendaEntryType))
+            if (!Enum.TryParse(Settings.Default.ShowAgenda, out agendaEntryType))
             {
                 Settings.Default.ShowAgenda = AgendaEntryType.No.ToString();
             }

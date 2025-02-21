@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 10f) };
         public override string[] SerieNames => new string[] { "VCP(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black, 1) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black, 1) };
 
         HLine[] lines;
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(.25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }) };

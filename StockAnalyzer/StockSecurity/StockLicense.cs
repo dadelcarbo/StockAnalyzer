@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockSecurity
            : base(message)
         {
         }
-        public InvalidLicenseException(string message, System.Exception innerException)
+        public InvalidLicenseException(string message, Exception innerException)
            : base(message, innerException)
         {
         }
@@ -62,7 +62,7 @@ namespace StockAnalyzer.StockSecurity
             }
             catch (Exception e)
             {
-                throw new System.Exception("Invalid license", e);
+                throw new Exception("Invalid license", e);
             }
         }
         public StockLicense(DateTime expiryDate, string userID, string machineID, List<string> featureList, int majorVersion, int minorVersion)

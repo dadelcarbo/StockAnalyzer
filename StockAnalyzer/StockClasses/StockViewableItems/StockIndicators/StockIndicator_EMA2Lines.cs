@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[] { "EMA(" + this.Parameters[0].ToString() + ")", "EMA(" + this.Parameters[1].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-        public override Area[] Areas => areas ??= new StockDrawing.Area[]
+        public override Area[] Areas => areas ??= new Area[]
             {
                 new Area {Name="Bull", Color = Color.FromArgb(64, Color.Green), Visibility = true },
                 new Area {Name="Bear", Color = Color.FromArgb(64, Color.Red), Visibility = true }

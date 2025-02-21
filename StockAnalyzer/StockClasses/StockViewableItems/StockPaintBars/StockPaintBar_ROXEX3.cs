@@ -4,7 +4,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
 {
     public class StockPaintBar_ROCEX3 : StockPaintBarIndicatorEventBase
     {
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

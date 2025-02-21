@@ -51,9 +51,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
-            var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenUp")];
-            var brokenDownEvents = this.Events[Array.IndexOf<string>(this.EventNames, "BrokenDown")];
-            var inBoxEvents = this.Events[Array.IndexOf<string>(this.EventNames, "InBox")];
+            var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenUp")];
+            var brokenDownEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenDown")];
+            var inBoxEvents = this.Events[Array.IndexOf(this.EventNames, "InBox")];
 
             try
             {

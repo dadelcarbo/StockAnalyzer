@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "BBOSC", this.parameters[4] + "(" + (int)this.parameters[1] + ")", this.parameters[4] + "(" + (int)this.parameters[0] + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

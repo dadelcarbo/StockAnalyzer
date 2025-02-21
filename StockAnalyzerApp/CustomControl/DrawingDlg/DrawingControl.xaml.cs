@@ -43,9 +43,9 @@ namespace StockAnalyzerApp.CustomControl.DrawingDlg
                 return;
             }
         }
-        private void FilterOperatorsLoading(object sender, Telerik.Windows.Controls.GridView.FilterOperatorsLoadingEventArgs e)
+        private void FilterOperatorsLoading(object sender, FilterOperatorsLoadingEventArgs e)
         {
-            var column = e.Column as Telerik.Windows.Controls.GridViewBoundColumnBase;
+            var column = e.Column as GridViewBoundColumnBase;
             if (column == null)
                 return;
             if (column.DataType == typeof(string))
@@ -64,7 +64,7 @@ namespace StockAnalyzerApp.CustomControl.DrawingDlg
                 e.Cancel = false;
         }
 
-        private void drawingGridView_AutoGeneratingColumn(object sender, Telerik.Windows.Controls.GridViewAutoGeneratingColumnEventArgs e)
+        private void drawingGridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
         {
 
         }

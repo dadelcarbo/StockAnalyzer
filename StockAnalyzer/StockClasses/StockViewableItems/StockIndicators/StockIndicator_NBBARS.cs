@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period", "Limit" };
         public override string[] SerieNames => new string[] { "NBBARS(" + this.Parameters[0].ToString() + ")" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

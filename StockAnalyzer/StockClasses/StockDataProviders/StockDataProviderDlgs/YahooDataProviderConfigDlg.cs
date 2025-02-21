@@ -152,7 +152,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             }
             this.contextMenuStrip.Tag = null;
         }
-        void personalListView_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        void personalListView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == System.Windows.Forms.Keys.Delete)
             {

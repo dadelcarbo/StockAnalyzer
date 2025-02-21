@@ -24,7 +24,7 @@ namespace StockAnalyzerApp.StockScripting
             CSharpCodeProvider codeProvider = new CSharpCodeProvider(providerOptions);
 
             resultTextBox.Text = "";
-            System.CodeDom.Compiler.CompilerParameters parameters = new CompilerParameters();
+            CompilerParameters parameters = new CompilerParameters();
             //Make sure we generate an EXE, not a DLL
             parameters.GenerateExecutable = false;
             parameters.GenerateInMemory = true;

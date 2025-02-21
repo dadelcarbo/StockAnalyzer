@@ -30,7 +30,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         {
             if (DecoratedItem == null)
             {
-                throw new System.NullReferenceException("Decorated Item is null, please Initialise");
+                throw new NullReferenceException("Decorated Item is null, please Initialise");
             }
             string themeString = "DECORATOR|" + this.Name + "|" + this.DecoratedItem;
             for (int i = 0; i < this.SeriesCount; i++)

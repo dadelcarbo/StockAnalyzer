@@ -29,8 +29,8 @@ namespace StockAnalyzer.StockAgent.Agents
                 return false;
             closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             cloudTrend = stockSerie.GetCloud($"TRENDBODY({Period})");
-            bullEvents = cloudTrend.Events[Array.IndexOf<string>(cloudTrend.EventNames, "BullishCloud")];
-            bearEvents = cloudTrend.Events[Array.IndexOf<string>(cloudTrend.EventNames, "BearishCloud")];
+            bullEvents = cloudTrend.Events[Array.IndexOf(cloudTrend.EventNames, "BullishCloud")];
+            bearEvents = cloudTrend.Events[Array.IndexOf(cloudTrend.EventNames, "BearishCloud")];
 
             midUpSerie = (2.0f * cloudTrend.Series[0] + cloudTrend.Series[1]) / 3.0f;
             return bullEvents != null && bearEvents != null;

@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.DarkRed) };
 
-        public override Area[] Areas => areas ??= new StockDrawing.Area[] { new StockDrawing.Area { Color = Color.FromArgb(64, Color.Blue) } };
+        public override Area[] Areas => areas ??= new Area[] { new Area { Color = Color.FromArgb(64, Color.Blue) } };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -56,10 +56,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.CreateEventSeries(stockSerie.Count);
 
 
-            var signalCrossAboveEvents = this.Events[Array.IndexOf<string>(this.EventNames, "SignalCrossAbove")];
-            var signalAboveEvents = this.Events[Array.IndexOf<string>(this.EventNames, "SignalAbove")];
-            var signalCrossBelowEvents = this.Events[Array.IndexOf<string>(this.EventNames, "SignalCrossBelow")];
-            var signalBelowEvents = this.Events[Array.IndexOf<string>(this.EventNames, "SignalBelow")];
+            var signalCrossAboveEvents = this.Events[Array.IndexOf(this.EventNames, "SignalCrossAbove")];
+            var signalAboveEvents = this.Events[Array.IndexOf(this.EventNames, "SignalAbove")];
+            var signalCrossBelowEvents = this.Events[Array.IndexOf(this.EventNames, "SignalCrossBelow")];
+            var signalBelowEvents = this.Events[Array.IndexOf(this.EventNames, "SignalBelow")];
 
             for (int i = 1; i < upperBB.Count; i++)
             {

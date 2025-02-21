@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { $"ROCEMA({this.Parameters[0]},{this.Parameters[1]},{this.Parameters[2]})" };
 
-        public override System.Drawing.Pen[] SeriePens => seriePens ??= (seriePens = new Pen[] { new Pen(Color.Black) });
+        public override Pen[] SeriePens => seriePens ??= (seriePens = new Pen[] { new Pen(Color.Black) });
 
         public override string[] SerieFormats => serieFormats ??= new string[] { "P2" };
 

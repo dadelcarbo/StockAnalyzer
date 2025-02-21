@@ -54,7 +54,7 @@ namespace StockAnalyzerApp.CustomControl
             this.fullGraphUserControl3.ApplyTheme();
         }
 
-        private void StockNameComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             StockSerie selectedSerie = null;
             if (StockDictionary.Instance.ContainsKey(stockNameComboBox.SelectedItem.ToString()))

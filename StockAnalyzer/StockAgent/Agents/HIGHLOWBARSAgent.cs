@@ -29,8 +29,8 @@ namespace StockAnalyzer.StockAgent.Agents
             if (stockSerie.Count < Math.Max(Period1, Period2))
                 return false;
             highLowBars = stockSerie.GetIndicator($"HIGHLOWBARS({Period1},{Period2})");
-            bullEvents = highLowBars.Events[Array.IndexOf<string>(highLowBars.EventNames, "BullStart")];
-            bearEvents = highLowBars.Events[Array.IndexOf<string>(highLowBars.EventNames, "BullEnd")];
+            bullEvents = highLowBars.Events[Array.IndexOf(highLowBars.EventNames, "BullStart")];
+            bearEvents = highLowBars.Events[Array.IndexOf(highLowBars.EventNames, "BullEnd")];
             return bullEvents != null && bearEvents != null;
         }
 

@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         //"ResistanceBroken", "SupportBroken",
         //"Bullish", "Bearish" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

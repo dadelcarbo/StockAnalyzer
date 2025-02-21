@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
 
         public override string[] SerieNames => new string[] { "Trail" };
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

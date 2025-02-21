@@ -26,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         static readonly bool[] isEvent = new bool[] { false, true, true };
         public override bool[] IsEvent => isEvent;
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {

@@ -33,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
         {
             if (TrailedItem == null)
             {
-                throw new System.NullReferenceException("Trailed Item is null, please Initialise");
+                throw new NullReferenceException("Trailed Item is null, please Initialise");
             }
             string themeString = "TRAIL|" + this.Name + "|" + this.TrailedItem;
             for (int i = 0; i < this.SeriesCount; i++)

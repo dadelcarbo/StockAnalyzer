@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockDrawing
 {
-    public class StockDrawingItems : System.Collections.Generic.List<StockDrawing.DrawingItem>, IXmlSerializable
+    public class StockDrawingItems : System.Collections.Generic.List<DrawingItem>, IXmlSerializable
     {
         public DateTime? RefDate { get; set; }
         public int RefDateIndex { get; set; }
@@ -32,7 +32,7 @@ namespace StockAnalyzer.StockDrawing
                     Type type = Type.GetType("StockAnalyzer.StockDrawing." + reader.Name);
                     if (type == null)
                     {
-                        throw new System.Exception("Invalid type found in analysis file: " + reader.Name);
+                        throw new Exception("Invalid type found in analysis file: " + reader.Name);
                     }
                     serializer = new XmlSerializer(Type.GetType("StockAnalyzer.StockDrawing." + reader.Name));
                     DrawingItem item = (DrawingItem)serializer.Deserialize(reader);
@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockDrawing
                 }
                 // Serialize Daily Value
                 XmlSerializer serializer;
-                foreach (StockDrawing.DrawingItem item in this.Where(d => d.IsPersistent))
+                foreach (DrawingItem item in this.Where(d => d.IsPersistent))
                 {
                     serializer = new XmlSerializer(item.GetType());
                     if (serializer == null)

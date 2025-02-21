@@ -30,8 +30,8 @@ namespace StockAnalyzer.StockAgent.Agents
                 return false;
 
             var cloud = stockSerie.GetCloud($"ATR({Period},{Period},{Width},{-Width},EMA)");
-            bullEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloudUp")];
-            bearEvents = cloud.Events[Array.IndexOf<string>(cloud.EventNames, "CloudDown")];
+            bullEvents = cloud.Events[Array.IndexOf(cloud.EventNames, "CloudUp")];
+            bearEvents = cloud.Events[Array.IndexOf(cloud.EventNames, "CloudDown")];
             return bullEvents != null && bearEvents != null;
         }
 

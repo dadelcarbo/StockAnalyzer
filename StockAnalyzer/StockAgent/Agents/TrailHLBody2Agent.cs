@@ -30,8 +30,8 @@ namespace StockAnalyzer.StockAgent.Agents
             if (stockSerie.Count < Math.Max(PeriodUp, PeriodDown))
                 return false;
             trailStop = stockSerie.GetTrailStop($"TRAILHLBODY2({PeriodUp},{PeriodDown})");
-            bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
-            bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            bullEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenUp")];
+            bearEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;
         }
 

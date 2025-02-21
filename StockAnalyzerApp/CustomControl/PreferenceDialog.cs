@@ -83,7 +83,7 @@ namespace StockAnalyzerApp.CustomControl
             needRestart = true;
         }
 
-        void cancelBtn_Click(object sender, System.EventArgs e)
+        void cancelBtn_Click(object sender, EventArgs e)
         {
             this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Close();

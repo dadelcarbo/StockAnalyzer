@@ -22,7 +22,7 @@ namespace StockAnalyzer.StockDrawing
             this.Size = size;
             this.Pen = DrawingItem.DefaultPen;
         }
-        public override void Draw(System.Drawing.Graphics g, System.Drawing.Pen pen, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
+        public override void Draw(Graphics g, Pen pen, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
         {
             using Brush brush = new SolidBrush(pen.Color);
             PointF[] points = new PointF[] { this.Center };

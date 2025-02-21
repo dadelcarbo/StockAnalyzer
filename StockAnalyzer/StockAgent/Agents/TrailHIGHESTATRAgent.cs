@@ -34,8 +34,8 @@ namespace StockAnalyzer.StockAgent.Agents
             if (stockSerie.Count < Trigger)
                 return false;
             trailStop = stockSerie.GetTrailStop($"TRAILHIGHESTATR({Trigger},{StopATR},{TrailATR})");
-            bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenUp")];
-            bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            bullEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenUp")];
+            bearEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;
         }
 

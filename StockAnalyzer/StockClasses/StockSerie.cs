@@ -66,7 +66,6 @@ namespace StockAnalyzer.StockClasses
             BREADTH,
             PTF,
             BOND,
-            INTRADAY,
             TURBO,
             TURBO_5M,
             Portfolio,
@@ -653,16 +652,6 @@ namespace StockAnalyzer.StockClasses
                                 this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
                             }
                         }
-
-                        if (this.DataProvider == StockDataProvider.ABC)
-                        {
-                            var dataProvider = (ABCDataProvider)StockDataProviderBase.GetDataProvider(this.DataProvider);
-
-                            dataProvider.ApplySplit(this);
-                        }
-
-
-
                         // Force indicator,data,event and other to null;
                         PreInitialise();
 
@@ -739,7 +728,7 @@ namespace StockAnalyzer.StockClasses
                                 {
                                     return false;
                                 }
-                                eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.FilterEventName);
+                                eventIndex = Array.IndexOf(stockEvent.EventNames, stockAlert.FilterEventName);
                                 if (eventIndex == -1)
                                 {
                                     StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
@@ -764,7 +753,7 @@ namespace StockAnalyzer.StockClasses
                                 {
                                     return false;
                                 }
-                                eventIndex = Array.IndexOf<string>(stockEvent.EventNames, stockAlert.EventName);
+                                eventIndex = Array.IndexOf(stockEvent.EventNames, stockAlert.EventName);
                                 if (eventIndex == -1)
                                 {
                                     StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
@@ -3186,7 +3175,7 @@ namespace StockAnalyzer.StockClasses
                                 }
                                 break;
                             default:
-                                throw new System.NotImplementedException("Bar duration: " + timeSpan.ToString() + " is not implemented");
+                                throw new NotImplementedException("Bar duration: " + timeSpan.ToString() + " is not implemented");
                         }
                     }
                     break;

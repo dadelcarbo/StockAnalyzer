@@ -19,12 +19,12 @@ namespace StockAnalyzerApp.CustomControl
 
         public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
 
-        void alertListView_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        void alertListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             SelectedStockChanged(this.alertListView.SelectedItems[0].Text, true);
         }
 
-        void alertListView_ColumnClick(object sender, System.Windows.Forms.ColumnClickEventArgs e)
+        void alertListView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             // Set the ListViewItemSorter property to a new ListViewItemComparer
             // object.

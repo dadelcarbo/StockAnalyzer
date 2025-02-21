@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         static readonly bool[] isEvent = new bool[] { false, false };
         public override bool[] IsEvent => isEvent;
 
-        public override System.Drawing.Pen[] SeriePens
+        public override Pen[] SeriePens
         {
             get
             {
@@ -44,8 +44,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             var drawingHLBody = stockSerie.GetAutoDrawing($"HLBODY({this.parameters[0]})");
 
-            this.Events[0] = drawingHLBody.Events[Array.IndexOf<string>(drawingHLBody.EventNames, "UpTrend")];
-            this.Events[1] = drawingHLBody.Events[Array.IndexOf<string>(drawingHLBody.EventNames, "DownTrend")];
+            this.Events[0] = drawingHLBody.Events[Array.IndexOf(drawingHLBody.EventNames, "UpTrend")];
+            this.Events[1] = drawingHLBody.Events[Array.IndexOf(drawingHLBody.EventNames, "DownTrend")];
         }
     }
 }

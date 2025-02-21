@@ -332,7 +332,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                     var events = replaySerie.GetViewableItem(indicatorName) as IStockEvent;
                     if (events == null)
                         return;
-                    var boolSerie = events.Events[Array.IndexOf<string>(events.EventNames, eventName)];
+                    var boolSerie = events.Events[Array.IndexOf(events.EventNames, eventName)];
 
                     if (boolSerie[referenceSerieIndex])
                     {

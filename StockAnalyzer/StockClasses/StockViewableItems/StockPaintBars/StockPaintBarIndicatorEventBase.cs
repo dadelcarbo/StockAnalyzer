@@ -16,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
             baseIndicator = StockIndicatorManager.CreateIndicator(this.ShortName);
             if (baseIndicator == null)
             {
-                throw new System.ApplicationException("Unable to create " + this.ShortName + " indicator");
+                throw new ApplicationException("Unable to create " + this.ShortName + " indicator");
             }
             this.parameters = baseIndicator.ParameterDefaultValues;
 

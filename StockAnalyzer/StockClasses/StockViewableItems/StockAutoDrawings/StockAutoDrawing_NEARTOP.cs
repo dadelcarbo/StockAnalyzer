@@ -63,7 +63,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                     this.DrawingItems.Insert(0, resistance);
 
                     // Detecting events
-                    var brokenUpEvents = this.Events[Array.IndexOf<string>(this.EventNames, "NearTop")];
+                    var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "NearTop")];
                     brokenUpEvents[stockSerie.LastIndex] = true;
                 }
             }

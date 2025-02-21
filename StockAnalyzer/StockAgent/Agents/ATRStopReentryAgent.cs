@@ -32,8 +32,8 @@ namespace StockAnalyzer.StockAgent.Agents
             if (stockSerie.Count < Period)
                 return false;
             trailStop = stockSerie.GetTrailStop($"TRAILATR(50,14,{Width},{-Width},EMA,{Period})");
-            bullEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "Long Reentry")];
-            bearEvents = trailStop.Events[Array.IndexOf<string>(trailStop.EventNames, "BrokenDown")];
+            bullEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "Long Reentry")];
+            bearEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;
         }
 

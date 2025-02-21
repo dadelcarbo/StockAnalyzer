@@ -25,8 +25,8 @@ namespace StockAnalyzer.StockAgent.Agents
             if (stockSerie.Count < Period)
                 return false;
             stockEvents = stockSerie.GetIndicator($"TRAILHL2SR({Period})");
-            bullEvents = stockEvents.Events[Array.IndexOf<string>(stockEvents.EventNames, "BullStart")];
-            bearEvents = stockEvents.Events[Array.IndexOf<string>(stockEvents.EventNames, "BullEnd")];
+            bullEvents = stockEvents.Events[Array.IndexOf(stockEvents.EventNames, "BullStart")];
+            bearEvents = stockEvents.Events[Array.IndexOf(stockEvents.EventNames, "BullEnd")];
             return bullEvents != null && bearEvents != null;
         }
 
