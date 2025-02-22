@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="StockAnalyzer.StockScripting.StockScriptUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StockAnalyzer.StockScripting" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:Background="White"
+             d:DataContext="{d:DesignInstance Type=local:ViewModel, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:ViewModel x:Key="ViewModel"/>
+    </UserControl.Resources>
+    <Grid DataContext="{StaticResource ViewModel}" Margin="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <ComboBox ItemsSource="{Binding Scripts}" SelectedItem="{Binding Script}" Width="150"/>
+
+            <Button Name="addButton" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Padding="0" Background="Transparent"
+                            Content="&#xe907;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="12"
+                            Visibility="{Binding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type telerik:TreeListViewRow}}}"
+                            Command="{Binding AddCommand}"/>
+
+            <Button Name="deleteButton" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Padding="0" Background="Transparent"
+                            Content="&#xe10c;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="12"
+                            Visibility="{Binding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type telerik:TreeListViewRow}}}"
+                            Command="{Binding DeleteCommand}"/>
+
+
+        </StackPanel>
+        <GroupBox Header="Script" Grid.Row="1" HorizontalAlignment="Stretch">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label Width="80">Name</Label>
+                    <TextBox Text="{Binding Script.Name}" Width="150" Margin="2" HorizontalAlignment="Left"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <Label Width="80">Description</Label>
+                    <TextBox Text="{Binding Script.Description}" Margin="2"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <Label Width="80">Code</Label>
+                    <TextBox Text="{Binding Script.Code}" Margin="2"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

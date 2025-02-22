@@ -376,6 +376,7 @@
     <Compile Include="StockDrawing\Box.cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockHelpers\HtmlHelper.cs" />
+    <Compile Include="StockHelpers\Persister.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />
     <Compile Include="StockHelpers\TaskExtension.cs" />
     <Compile Include="StockPortfolio\AutoTrade\TradeAgentDef.cs" />
@@ -695,7 +696,13 @@
     <Compile Include="StockScripting\ScriptDlg.Designer.cs">
       <DependentUpon>ScriptDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockScripting\StockFilter.cs" />
+    <Compile Include="StockScripting\StockScriptManager.cs" />
+    <Compile Include="StockScripting\StockFilterBase.cs" />
+    <Compile Include="StockScripting\StockScript.cs" />
+    <Compile Include="StockScripting\StockScriptUserControl.xaml.cs">
+      <DependentUpon>StockScriptUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StockScripting\ViewModel.cs" />
     <Compile Include="StockSecurity\StockLicense.cs" />
     <Compile Include="StockSecurity\StockToolKit.cs" />
     <Compile Include="StockSecurity\StockUser.cs" />
@@ -786,6 +793,10 @@
     <Page Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StockScripting\StockScriptUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

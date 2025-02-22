@@ -1,8 +1,10 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzerSettings;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -51,7 +53,6 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
         private void Export_Onclick(object sender, RoutedEventArgs e)
         {
-
             Cursor cursor = this.Cursor;
             this.Cursor = Cursors.Wait;
             try
@@ -75,6 +76,32 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             }
 
             this.Cursor = cursor;
+        }
+
+        private void ForceDownloadBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+
+            StockSplashScreen.FadeInOutSpeed = 0.25;
+            StockSplashScreen.ProgressVal = 0;
+            StockSplashScreen.ProgressMax = 100;
+            StockSplashScreen.ProgressMin = 0;
+            StockSplashScreen.ShowSplashScreen();
+
+            try
+            {
+                foreach (var serie in this.gridView.Items.Cast<StockSerie>())
+                {
+                    StockSplashScreen.ProgressText = "Downloading " + serie.StockGroup + " - " + serie.StockName;
+
+                    StockDataProviderBase.ForceDownloadSerieData(serie);
+                }
+            }
+            catch { }
+
+            StockSplashScreen.CloseForm(true);
+            this.Cursor = Cursors.Arrow;
+
         }
     }
 }

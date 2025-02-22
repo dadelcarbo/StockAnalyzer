@@ -1,22 +1,18 @@
 ﻿using Microsoft.CSharp;
-using StockAnalyzer.StockClasses;
-using System;
+using StockAnalyzer.StockHelpers;
+using StockAnalyzerSettings;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace StockAnalyzer.StockScripting
 {
-    public interface IStockFilter
+    public class StockScriptManager
     {
-        bool MatchFilter(StockSerie stockSerie);
-    }
-
-    public class StockFilterManager
-    {
-        public StockFilterManager()
-        {
-        }
-
         private static readonly string filterClassTemplate = @"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,18 +21,22 @@ using StockAnalyzer.StockClasses;
 
 namespace StockAnalyzer.StockScripting
 {
-    public class <FILTER_NAME>StockFilterImpl : IStockFilter
+    public class <FILTER_NAME>StockFilterImpl : StockFilterBase
     {
-        public bool MatchFilter(StockSerie stockSerie)
+        protected override bool MatchFilter(StockSerie stockSerie, StockDailyValue bar)
         {
-            return (<FILTER_CODE>);
+            <FILTER_CODE>
         }
     }
 }";
-
-        public static IStockFilter CreateStockFilterInstance(string stockFilterName, string stockFilterScript)
+        public CompilerResults CompilerResults;
+        public IStockFilter CreateStockFilterInstance(string stockFilterName, string stockFilterScript)
         {
-            List<string> stockNameList = new List<string>();
+            // Set the culture to English (United States)
+            CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+
 
             // Compile the script to execute
             string filterSource = filterClassTemplate.Replace("<FILTER_NAME>", stockFilterName).Replace("<FILTER_CODE>", stockFilterScript);
@@ -59,24 +59,25 @@ namespace StockAnalyzer.StockScripting
             parameters.ReferencedAssemblies.Add(@"System.Xml.Linq.dll");
             parameters.ReferencedAssemblies.Add(@"StockAnalyzer.dll");
 
-            CompilerResults results = codeProvider.CompileAssemblyFromSource(parameters, filterSource);
+            CompilerResults = codeProvider.CompileAssemblyFromSource(parameters, filterSource);
 
-            if (results.Errors.Count > 0)
+            if (CompilerResults.Errors.Count > 0)
             {
-                string resultText = string.Empty;
-                foreach (CompilerError CompErr in results.Errors)
-                {
-                    resultText = resultText +
-                                "Line number " + CompErr.Line +
-                                ", Error Number: " + CompErr.ErrorNumber +
-                                ", '" + CompErr.ErrorText + ";" +
-                                Environment.NewLine + Environment.NewLine;
-                }
-                throw new ArgumentException(resultText, "Compilation Error");
+                return null;
             }
 
             // Get the instance of the newly compiled code
-            return (IStockFilter)results.CompiledAssembly.CreateInstance("StockAnalyzer.StockScripting." + stockFilterName + "StockFilterImpl");
+            return (IStockFilter)CompilerResults.CompiledAssembly.CreateInstance("StockAnalyzer.StockScripting." + stockFilterName + "StockFilterImpl");
         }
+
+        static StockScriptManager instance;
+        public static StockScriptManager Instance => instance ??= new StockScriptManager();
+        private StockScriptManager()
+        {
+            Persister<StockScript>.Instance.Initialize(Path.Combine(Folders.PersonalFolder, "Scripts"), "script");
+            StockScripts = Persister<StockScript>.Instance.Items;
+        }
+
+        public ObservableCollection<StockScript> StockScripts { get; }
     }
 }

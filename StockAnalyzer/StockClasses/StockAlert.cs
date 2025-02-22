@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockClasses
                 Speed = speedIndicator.Series[0][lastIndex],
                 SpeedFormat = speedIndicator.SerieFormats[0],
 
-                Stok = speedIndicator.Series[0][lastIndex],
+                Stok = stokIndicator.Series[0][lastIndex],
 
                 Stop = stop,
                 Highest = highest

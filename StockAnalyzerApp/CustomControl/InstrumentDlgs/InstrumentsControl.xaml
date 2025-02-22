@@ -38,6 +38,9 @@
                     <Label Content="{Binding Items.Count, ElementName=gridView, Mode=OneWay}" VerticalContentAlignment="Center"/>
                     <Label Content="/" VerticalContentAlignment="Center"/>
                     <Label Content="{Binding Lines.Count}" VerticalContentAlignment="Center"/>
+
+
+                    <Button Content="Force Download" Click="ForceDownloadBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
@@ -74,6 +77,7 @@
 
                 <telerik:GridViewDataColumn Header="Close" DataMemberBinding="{Binding LastValue.CLOSE}"/>
                 <telerik:GridViewDataColumn Header="Last Date" DataMemberBinding="{Binding LastValue.DATE}"/>
+                <telerik:GridViewDataColumn Header="First Date" DataMemberBinding="{Binding FirstValue.DATE}"/>
             </telerik:RadGridView.Columns>
         </telerik:RadGridView>
     </Grid>

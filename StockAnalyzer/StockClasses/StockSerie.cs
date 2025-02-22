@@ -158,6 +158,8 @@ namespace StockAnalyzer.StockClasses
 
         public StockSerie SecondarySerie { get; set; }
         public StockDailyValue LastValue { get; private set; }
+        public StockDailyValue FirstValue => Values?.FirstOrDefault();
+
         public bool HasVolume { get; private set; }
 
         /// <summary>
