@@ -690,6 +690,7 @@
     <Compile Include="StockPortfolio\StockPortfolio.cs" />
     <Compile Include="StockPortfolio\StockPosition.cs" />
     <Compile Include="StockPortfolio\TrailStopHistory.cs" />
+    <Compile Include="StockScripting\NullToBooleanConverter.cs" />
     <Compile Include="StockScripting\ScriptDlg.cs">
       <SubType>Form</SubType>
     </Compile>

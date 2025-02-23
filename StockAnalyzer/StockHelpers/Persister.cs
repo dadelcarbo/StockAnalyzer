@@ -106,6 +106,16 @@ namespace StockAnalyzer.StockHelpers
                 this.Items.Remove(item);
             }
         }
+        public void Delete(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                foreach (var item in this.Items.Where(i => i.Name == name).ToList())
+                {
+                    this.Delete(item);
+                }
+            }
+        }
 
         public T Reload(T item)
         {

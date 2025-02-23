@@ -60,7 +60,7 @@ namespace StockAnalyzer
 
             return false;
         }
-        public void OnPropertyChanged(string propertyName)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (PropertyChanged != null)
             {

@@ -10,6 +10,8 @@
              d:DataContext="{d:DesignInstance Type=local:ViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <telerik:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <local:NotNullToBooleanConverter x:Key="NotNullToBooleanConverter"/>
         <local:ViewModel x:Key="ViewModel"/>
     </UserControl.Resources>
     <Grid DataContext="{StaticResource ViewModel}" Margin="2">
@@ -18,16 +20,15 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <ComboBox ItemsSource="{Binding Scripts}" SelectedItem="{Binding Script}" Width="150"/>
+            <ComboBox ItemsSource="{Binding Scripts}" SelectedItem="{Binding Script}" DisplayMemberPath="Name" Width="150"/>
 
             <Button Name="addButton" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Padding="0" Background="Transparent"
-                            Content="&#xe907;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="12"
-                            Visibility="{Binding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type telerik:TreeListViewRow}}}"
+                            Content="&#xe907;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="14"
                             Command="{Binding AddCommand}"/>
 
             <Button Name="deleteButton" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Padding="0" Background="Transparent"
-                            Content="&#xe10c;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="12"
-                            Visibility="{Binding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type telerik:TreeListViewRow}}}"
+                            Content="&#xe10c;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="14"
+                            Visibility="{Binding Script, Converter={StaticResource NullToVisibilityConverter}}"
                             Command="{Binding DeleteCommand}"/>
 
 
@@ -37,21 +38,38 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Label Width="80">Name</Label>
-                    <TextBox Text="{Binding Script.Name}" Width="150" Margin="2" HorizontalAlignment="Left"/>
+                <Label Grid.Row="0" Grid.Column="0">Name</Label>
+                <TextBox Grid.Row="0" Grid.Column="1" Width="150" Margin="2" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+                         Text="{Binding Name}" IsEnabled="{Binding Script, Converter={StaticResource NotNullToBooleanConverter}}"/>
+
+                <Label Grid.Row="1" Grid.Column="0">Description</Label>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="2" VerticalContentAlignment="Center"
+                         Text="{Binding Description}" IsEnabled="{Binding Script, Converter={StaticResource NotNullToBooleanConverter}}"/>
+
+                <Label Grid.Row="2" Grid.Column="0">Code</Label>
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="2" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                         Text="{Binding Code}" IsEnabled="{Binding Script, Converter={StaticResource NotNullToBooleanConverter}}"/>
+                <StackPanel Grid.Row="2" Grid.Column="3">
+                    <Button Name="compileButton" VerticalAlignment="Top" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Padding="0" Background="Transparent"
+                            Content="&#xe68d;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="14"
+                            Command="{Binding CompileCommand}"/>
+                    <Button Name="saveButton" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Padding="0" Background="Transparent"
+                            Content="&#xe109;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="14"
+                            Command="{Binding SaveCommand}"/>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <Label Width="80">Description</Label>
-                    <TextBox Text="{Binding Script.Description}" Margin="2"/>
-                </StackPanel>
-                <StackPanel Grid.Row="2" Orientation="Horizontal">
-                    <Label Width="80">Code</Label>
-                    <TextBox Text="{Binding Script.Code}" Margin="2"/>
-                </StackPanel>
+
+                <Label Grid.Row="3" Grid.Column="0">Errors</Label>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Errors}" Margin="2" IsEnabled="False"/>
+
             </Grid>
         </GroupBox>
     </Grid>

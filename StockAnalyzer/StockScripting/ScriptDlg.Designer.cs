@@ -30,59 +30,35 @@ namespace StockAnalyzerApp.StockScripting
         /// </summary>
         private void InitializeComponent()
         {
-            this.scriptTextBox = new System.Windows.Forms.TextBox();
-            this.CompileBtn = new System.Windows.Forms.Button();
-            this.resultTextBox = new System.Windows.Forms.TextBox();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.stockScriptUserControl1 = new StockAnalyzer.StockScripting.StockScriptUserControl();
             this.SuspendLayout();
             // 
-            // scriptTextBox
+            // elementHost1
             // 
-            this.scriptTextBox.Location = new System.Drawing.Point(12, 12);
-            this.scriptTextBox.Multiline = true;
-            this.scriptTextBox.Name = "scriptTextBox";
-            this.scriptTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.scriptTextBox.Size = new System.Drawing.Size(669, 293);
-            this.scriptTextBox.TabIndex = 0;
-            this.scriptTextBox.WordWrap = false;
-            this.scriptTextBox.Text = "return true";
-            // 
-            // CompileBtn
-            // 
-            this.CompileBtn.Location = new System.Drawing.Point(699, 12);
-            this.CompileBtn.Name = "CompileBtn";
-            this.CompileBtn.Size = new System.Drawing.Size(75, 23);
-            this.CompileBtn.TabIndex = 1;
-            this.CompileBtn.Text = "Compile";
-            this.CompileBtn.UseVisualStyleBackColor = true;
-            this.CompileBtn.Click += new System.EventHandler(this.CompileBtn_Click);
-            // 
-            // resultTextBox
-            // 
-            this.resultTextBox.Location = new System.Drawing.Point(12, 311);
-            this.resultTextBox.Multiline = true;
-            this.resultTextBox.Name = "resultTextBox";
-            this.resultTextBox.Size = new System.Drawing.Size(669, 246);
-            this.resultTextBox.TabIndex = 0;
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(786, 569);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.stockScriptUserControl1;
             // 
             // ScriptDlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 569);
-            this.Controls.Add(this.CompileBtn);
-            this.Controls.Add(this.resultTextBox);
-            this.Controls.Add(this.scriptTextBox);
+            this.Controls.Add(this.elementHost1);
             this.Name = "ScriptDlg";
             this.Text = "ScriptDlg";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox scriptTextBox;
-        private System.Windows.Forms.Button CompileBtn;
-        private System.Windows.Forms.TextBox resultTextBox;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private StockAnalyzer.StockScripting.StockScriptUserControl stockScriptUserControl1;
     }
 }

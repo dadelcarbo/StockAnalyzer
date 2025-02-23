@@ -1,6 +1,8 @@
 ﻿using Microsoft.CSharp;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerSettings;
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,14 +25,14 @@ namespace StockAnalyzer.StockScripting
 {
     public class <FILTER_NAME>StockFilterImpl : StockFilterBase
     {
-        protected override bool MatchFilter(StockSerie stockSerie, StockDailyValue bar)
+        protected override bool MatchFilter(StockSerie stockSerie, StockDailyValue bar, int index)
         {
             <FILTER_CODE>
         }
     }
 }";
-        public CompilerResults CompilerResults;
-        public IStockFilter CreateStockFilterInstance(string stockFilterName, string stockFilterScript)
+        public CompilerResults CompilerResults { get; private set; }
+        public IStockFilter CreateStockFilterInstance(StockScript stockScript)
         {
             // Set the culture to English (United States)
             CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
@@ -39,7 +41,7 @@ namespace StockAnalyzer.StockScripting
 
 
             // Compile the script to execute
-            string filterSource = filterClassTemplate.Replace("<FILTER_NAME>", stockFilterName).Replace("<FILTER_CODE>", stockFilterScript);
+            string filterSource = filterClassTemplate.Replace("<FILTER_NAME>", stockScript.Name).Replace("<FILTER_CODE>", stockScript.Code);
 
             Dictionary<string, string> providerOptions = new Dictionary<string, string>
             {
@@ -67,7 +69,7 @@ namespace StockAnalyzer.StockScripting
             }
 
             // Get the instance of the newly compiled code
-            return (IStockFilter)CompilerResults.CompiledAssembly.CreateInstance("StockAnalyzer.StockScripting." + stockFilterName + "StockFilterImpl");
+            return (IStockFilter)CompilerResults.CompiledAssembly.CreateInstance("StockAnalyzer.StockScripting." + stockScript.Name + "StockFilterImpl");
         }
 
         static StockScriptManager instance;
@@ -76,6 +78,16 @@ namespace StockAnalyzer.StockScripting
         {
             Persister<StockScript>.Instance.Initialize(Path.Combine(Folders.PersonalFolder, "Scripts"), "script");
             StockScripts = Persister<StockScript>.Instance.Items;
+        }
+
+        public void Delete(string name)
+        {
+            Persister<StockScript>.Instance.Delete(name);
+        }
+
+        internal void Save(StockScript script)
+        {
+            Persister<StockScript>.Instance.Save(script);
         }
 
         public ObservableCollection<StockScript> StockScripts { get; }
