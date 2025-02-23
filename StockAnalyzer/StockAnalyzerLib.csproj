@@ -344,12 +344,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EXCHANGED.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_WMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockPaintBars\StockPaintBar_HLBODY.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockScreeners\IStockScreener.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreenerManager.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_ATRBAND.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_TRAILATR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreener_Amsterdam.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockScreeners\StockScreenerBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILATR2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILBB2.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILROR.cs" />

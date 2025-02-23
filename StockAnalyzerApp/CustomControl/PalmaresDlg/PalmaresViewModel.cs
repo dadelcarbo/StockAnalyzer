@@ -3,9 +3,9 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockScreeners;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockScripting;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -172,8 +172,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
-        private string screener;
-        public string Screener
+
+        private StockScript screener;
+        public StockScript Screener
         {
             get { return screener; }
             set
@@ -185,6 +186,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+
+        public IEnumerable<StockScript> Screeners => new List<StockScript>() { null }.Union(StockScriptManager.Instance.StockScripts);
 
         private float liquidity;
         public float Liquidity { get { return liquidity; } set { if (liquidity != value) { liquidity = value; OnPropertyChanged("Liquidity"); } } }
@@ -352,12 +355,13 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
                 catch { }
             }
-            IStockScreener screenerSerie = null;
-            if (!string.IsNullOrEmpty(this.screener))
+            IStockFilter screenerSerie = null;
+            if (this.screener != null)
             {
                 try
                 {
-                    screenerSerie = StockScreenerManager.CreateScreener(this.screener);
+                    screenerSerie = StockScriptManager.Instance.CreateStockFilterInstance(screener);
+
                 }
                 catch { }
             }
@@ -455,8 +459,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     bool match = true;
                     if (screenerSerie != null)
                     {
-                        screenerSerie.ApplyTo(stockSerie);
-                        match = screenerSerie.Match[endIndex];
+                        match = screenerSerie.MatchFilter(stockSerie, this.BarDuration, endIndex);
                         if (screenerOnly && !match)
                         {
                             continue;

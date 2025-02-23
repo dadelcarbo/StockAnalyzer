@@ -39,7 +39,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Content="Screener" VerticalAlignment="Center"  VerticalContentAlignment="Center" Width="70" IsChecked="{Binding ScreenerOnly}"/>
-                        <TextBox Text="{Binding Screener}" Width="200" Height="20" VerticalContentAlignment="Center"/>
+                        <ComboBox ItemsSource="{Binding Screeners}" SelectedItem="{Binding Screener}" DisplayMemberPath="Name" Width="200" Height="20" VerticalContentAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

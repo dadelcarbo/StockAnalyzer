@@ -4844,14 +4844,14 @@ namespace StockAnalyzerApp
                 return;
 
             YahooSearchResult searchResult = YahooDataProvider.SearchFromYahoo(this.currentStockSerie.ISIN);
-            if (searchResult != null && searchResult.count > 0)
+            if (searchResult?.quotes != null && searchResult.quotes.Count > 0)
             {
                 string url = $"https://finance.yahoo.com/quote/{searchResult.quotes[0].symbol}/";
                 Process.Start(url);
             }
             else
             {
-                string url = $"https://finance.yahoo.com/";
+                string url = $"https://finance.yahoo.com/lookup/?s={this.currentStockSerie.StockName}";
                 Process.Start(url);
             }
         }

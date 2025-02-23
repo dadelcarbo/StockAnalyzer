@@ -1,11 +1,13 @@
 ﻿using Microsoft.Win32;
 using StockAnalyzer;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockScripting;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -374,7 +376,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     Stop = this.ViewModel.Stop,
                     BullOnly = this.ViewModel.BullOnly,
-                    Screener = this.ViewModel.Screener,
+                    Screener = this.ViewModel.Screener?.Name,
                     Theme = this.ViewModel.Theme,
                     Liquidity = this.ViewModel.Liquidity
                 };
@@ -420,7 +422,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.ViewModel.Ath1 = palmaresSettings.Ath1;
                 this.ViewModel.Ath2 = palmaresSettings.Ath2;
 
-                this.ViewModel.Screener = palmaresSettings.Screener;
+                this.ViewModel.Screener = StockScriptManager.Instance.StockScripts?.FirstOrDefault(s => s.Name == palmaresSettings.Screener);
                 this.ViewModel.Stop = palmaresSettings.Stop;
                 this.ViewModel.BullOnly = palmaresSettings.BullOnly;
                 this.ViewModel.Theme = palmaresSettings.Theme;
