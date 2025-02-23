@@ -53,6 +53,7 @@ namespace StockAnalyzer.StockScripting
         private bool CanDelete()
         {
             return this.script != null && this.Scripts.Contains(script);
+                
         }
 
         private CommandBase saveCommand;
@@ -80,6 +81,7 @@ namespace StockAnalyzer.StockScripting
 
         private void Compile()
         {
+            this.Code = this.Code.Replace("\t", "    ");
             this.Errors = "Build Started";
             var filter = StockScriptManager.Instance.CreateStockFilterInstance(this.Script);
             string output = string.Empty;

@@ -14,15 +14,15 @@
         <local:NotNullToBooleanConverter x:Key="NotNullToBooleanConverter"/>
         <local:ViewModel x:Key="ViewModel"/>
     </UserControl.Resources>
-    <Grid DataContext="{StaticResource ViewModel}" Margin="2">
+    <Grid DataContext="{StaticResource ViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" Margin="75,2,2,2">
             <ComboBox ItemsSource="{Binding Scripts}" SelectedItem="{Binding Script}" DisplayMemberPath="Name" Width="150"/>
 
-            <Button Name="addButton" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Padding="0" Background="Transparent"
+            <Button Name="addButton" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Margin="2" Background="Transparent"
                             Content="&#xe907;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="14"
                             Command="{Binding AddCommand}"/>
 
@@ -57,7 +57,7 @@
 
                 <Label Grid.Row="2" Grid.Column="0">Code</Label>
                 <TextBox Grid.Row="2" Grid.Column="1" Margin="2" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                         Text="{Binding Code}" IsEnabled="{Binding Script, Converter={StaticResource NotNullToBooleanConverter}}"/>
+                         Text="{Binding Code}" IsEnabled="{Binding Script, Converter={StaticResource NotNullToBooleanConverter}}" FontFamily="Cascadia Mono" FontSize="13"/>
                 <StackPanel Grid.Row="2" Grid.Column="3">
                     <Button Name="compileButton" VerticalAlignment="Top" HorizontalAlignment="Right" Width="16" Height="16" BorderThickness="0" Padding="0" Background="Transparent"
                             Content="&#xe68d;" FontFamily="{x:Static telerik:RadGlyph.TelerikFontFamily}" FontSize="14"
@@ -68,7 +68,7 @@
                 </StackPanel>
 
                 <Label Grid.Row="3" Grid.Column="0">Errors</Label>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Errors}" Margin="2" IsEnabled="False"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Errors}" Margin="2" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
 
             </Grid>
         </GroupBox>
