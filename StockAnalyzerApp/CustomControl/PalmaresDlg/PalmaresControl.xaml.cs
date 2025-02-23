@@ -376,6 +376,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     Stop = this.ViewModel.Stop,
                     BullOnly = this.ViewModel.BullOnly,
+                    ScreenerOnly = this.ViewModel.ScreenerOnly,
                     Screener = this.ViewModel.Screener?.Name,
                     Theme = this.ViewModel.Theme,
                     Liquidity = this.ViewModel.Liquidity
@@ -422,6 +423,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.ViewModel.Ath1 = palmaresSettings.Ath1;
                 this.ViewModel.Ath2 = palmaresSettings.Ath2;
 
+                this.ViewModel.ScreenerOnly = palmaresSettings.ScreenerOnly;
                 this.ViewModel.Screener = StockScriptManager.Instance.StockScripts?.FirstOrDefault(s => s.Name == palmaresSettings.Screener);
                 this.ViewModel.Stop = palmaresSettings.Stop;
                 this.ViewModel.BullOnly = palmaresSettings.BullOnly;

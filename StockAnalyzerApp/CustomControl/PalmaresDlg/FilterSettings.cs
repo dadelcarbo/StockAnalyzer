@@ -16,6 +16,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public int Ath2 { get; set; }
         public string Stop { get; set; }
         public bool BullOnly { get; set; }
+        public bool ScreenerOnly { get; set; }
         public string Screener { get; set; }
         public string Theme { get; set; }
         public float Liquidity { get; set; }
