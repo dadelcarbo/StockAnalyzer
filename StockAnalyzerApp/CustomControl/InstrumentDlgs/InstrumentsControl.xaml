@@ -69,15 +69,15 @@
                 <telerik:GridViewDataColumn Header="Underlying" DataMemberBinding="{Binding Underlying}"/>
                 <telerik:GridViewDataColumn Header="Url" DataMemberBinding="{Binding Url}"/>
 
+                <telerik:GridViewDataColumn Header="Close" DataMemberBinding="{Binding LastValue.CLOSE}"/>
+                <telerik:GridViewDataColumn Header="Last Date" DataMemberBinding="{Binding LastValue.DATE}"/>
+                <telerik:GridViewDataColumn Header="First Date" DataMemberBinding="{Binding FirstValue.DATE}"/>
+
                 <telerik:GridViewDataColumn Header="LastIndex" DataMemberBinding="{Binding LastIndex}"/>
                 <telerik:GridViewDataColumn Header="LastCompleteIndex" DataMemberBinding="{Binding LastCompleteIndex}"/>
                 <telerik:GridViewDataColumn Header="LastValue" DataMemberBinding="{Binding LastValue}"/>
                 <telerik:GridViewDataColumn Header="HasVolume" DataMemberBinding="{Binding HasVolume}"/>
                 <telerik:GridViewDataColumn Header="IsInitialised" DataMemberBinding="{Binding IsInitialised}"/>
-
-                <telerik:GridViewDataColumn Header="Close" DataMemberBinding="{Binding LastValue.CLOSE}"/>
-                <telerik:GridViewDataColumn Header="Last Date" DataMemberBinding="{Binding LastValue.DATE}"/>
-                <telerik:GridViewDataColumn Header="First Date" DataMemberBinding="{Binding FirstValue.DATE}"/>
             </telerik:RadGridView.Columns>
         </telerik:RadGridView>
     </Grid>

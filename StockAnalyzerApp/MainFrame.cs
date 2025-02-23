@@ -2152,14 +2152,17 @@ namespace StockAnalyzerApp
 
             // Remove from current combo list.
             int selectedIndex = this.stockNameComboBox.SelectedIndex;
-            this.stockNameComboBox.Items.RemoveAt(selectedIndex);
-            if (selectedIndex < this.stockNameComboBox.Items.Count - 1)
+            if (selectedIndex != -1)
             {
-                this.stockNameComboBox.SelectedIndex = selectedIndex;
-            }
-            else
-            {
-                this.stockNameComboBox.SelectedIndex = this.stockNameComboBox.Items.Count - 1;
+                this.stockNameComboBox.Items.RemoveAt(selectedIndex);
+                if (selectedIndex < this.stockNameComboBox.Items.Count - 1)
+                {
+                    this.stockNameComboBox.SelectedIndex = selectedIndex;
+                }
+                else
+                {
+                    this.stockNameComboBox.SelectedIndex = this.stockNameComboBox.Items.Count - 1;
+                }
             }
         }
 
