@@ -192,10 +192,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
 
                     var minRisk = this.Portfolio.AccountValue * this.Portfolio.MinRisk;
                     var maxRisk = this.Portfolio.AccountValue * this.Portfolio.DynamicRisk;
-                    var minQty = (int)Math.Floor(minRisk / (this.bid - this.entryStop));
-                    this.qty = Math.Max(this.qty, minQty);
 
                     this.entryStop = Math.Max(this.entryMinStop, this.Bid - this.PortfolioRiskEuro / this.qty);
+
+                    var minQty = (int)Math.Floor(minRisk / (this.bid - this.entryStop));
+                    this.qty = Math.Max(this.qty, minQty);
 
                     this.OnPropertyChanged(nameof(EntryStop));
 
