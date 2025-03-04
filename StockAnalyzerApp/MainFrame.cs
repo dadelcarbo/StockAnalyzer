@@ -2890,6 +2890,8 @@ namespace StockAnalyzerApp
             this.ViewModel.IsHistoryActive = false;
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
+            string positionHtml = portfolio.GeneratePositionHtml();
+
             var report = GeneratePortfolioReportHtml(portfolio);
             if (!string.IsNullOrEmpty(report))
             {

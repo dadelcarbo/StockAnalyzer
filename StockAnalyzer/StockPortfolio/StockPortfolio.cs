@@ -5,6 +5,7 @@ using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -1218,5 +1220,22 @@ namespace StockAnalyzer.StockPortfolio
         }
 
         #endregion
+
+        public string GeneratePositionHtml()
+        {
+            var html = string.Empty;
+            if (this.Positions != null && this.Positions.Count > 0)
+            {
+                html = HtmlHelper.GenerateHtmlTable(this.Positions, new List<Expression<Func<StockPosition, object>>>
+                {
+p => p.StockName,
+p=>p.ISIN,
+p=>p.EntryQty,
+p=>p.EntryValue
+                });
+            }
+            return html;
+        }
+
     }
 }
