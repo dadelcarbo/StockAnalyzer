@@ -1,14 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockPortfolio;
 using System;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -51,62 +48,32 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         private ICommand priceRefreshCmd;
         public ICommand PriceRefreshCmd => priceRefreshCmd ??= new AsyncCommandBase(PerformPriceRefreshCmd);
 
-        HttpClient httpClient = new HttpClient();
         private async Task PerformPriceRefreshCmd()
         {
             this.Bid = 0;
             this.Ask = 0;
-            var priceInfo = await this.Portfolio.Portfolio.GetPriceAsync(this.StockSerie);
-            if (priceInfo?.Quote != null)
+            var pi = await this.Portfolio.Portfolio.GetPriceAsync(this.StockSerie);
+
+            if (pi?.LastUpdated != null)
             {
-                this.Ask = priceInfo.Quote.Ask;
-                this.Bid = priceInfo.Quote.Bid;
-                this.MarketState = priceInfo.Quote.MarketState;
-            }
-            else
-            {
-                return;
+                pi.LastUpdated = pi.LastUpdated.ToLocalTime();
             }
 
-            return;
-
-
-            if (StockSerie.DataProvider != StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.SaxoIntraday)
-                return;
-
-            var url = $"https://fr-be.structured-products.saxo/page-api/instruments/v2/BE/details/isin/{this.StockSerie.ISIN}?locale=fr_BE";
-
-            try
+            if (pi?.Quote != null)
             {
-                this.Bid = 0;
-                this.Ask = 0;
-                var resp = await httpClient.GetAsync(url);
-                if (resp.IsSuccessStatusCode)
-                {
-                    var json = await resp.Content.ReadAsStringAsync();
-                    var saxoPrice = JsonConvert.DeserializeObject<SaxoPrice>(json);
+                this.Ask = pi.Quote.Ask;
+                this.Bid = pi.Quote.Bid;
+                this.MarketState = pi.Quote.MarketState;
+            }
 
-                    var instrumentPrice = saxoPrice?.sections?.FirstOrDefault(s => s.section == "instrumentPrice");
-                    if (instrumentPrice != null)
-                    {
-                        var askField = instrumentPrice.fields.FirstOrDefault(f => f.field == "ask");
-                        if (askField != null)
-                            this.Ask = askField.value.value;
-                        var bidField = instrumentPrice.fields.FirstOrDefault(f => f.field == "bid");
-                        if (bidField != null)
-                            this.Bid = bidField.value.value;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            this.PriceInfo = pi;
         }
 
-        private string marketState;
-        public string MarketState { get { return marketState; } set { if (marketState != value) { marketState = value; OnPropertyChanged("MarketState"); } } }
+        private PriceInfo priceInfo;
+        public PriceInfo PriceInfo { get { return priceInfo; } set => SetProperty(ref priceInfo, value); }
 
+        private string marketState;
+        public string MarketState { get { return marketState; } set => SetProperty(ref marketState, value); }
 
         private float ask;
         public float Ask { get => ask; set => SetProperty(ref ask, value); }
@@ -162,8 +129,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         {
             if (!CanBuy())
                 return;
-
-
         }
 
         private bool CanBuy()
