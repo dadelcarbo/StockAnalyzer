@@ -583,6 +583,10 @@ namespace StockAnalyzerSettings.Properties {
             get {
                 return ((string)(this["InvestingUrlRoot"]));
             }
+            set
+            {
+                this["InvestingUrlRoot"] = value;
+            }
         }
     }
 }

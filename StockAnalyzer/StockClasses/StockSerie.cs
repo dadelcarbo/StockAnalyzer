@@ -66,6 +66,7 @@ namespace StockAnalyzer.StockClasses
             BREADTH,
             PTF,
             BOND,
+            INTRADAY,
             TURBO,
             TURBO_5M,
             Portfolio,

@@ -162,7 +162,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
             return false;
         }
 
-
         static private HttpClient httpClient = null;
         private static string HttpGetFromVontobel(string url)
         {
