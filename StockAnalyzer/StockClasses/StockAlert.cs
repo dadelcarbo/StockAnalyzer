@@ -36,7 +36,15 @@ namespace StockAnalyzer.StockClasses
             var stokIndicatorName = $"STOK({(AlertDef.Stok == 0 ? 35 : AlertDef.Stok)})";
             var stokIndicator = StockSerie.GetIndicator(stokIndicatorName);
 
-            var highest = StockSerie.GetSerie(StockDataType.CLOSE).GetHighestIn(lastIndex, dailyValue.CLOSE);
+            var closeSerie = StockSerie.GetSerie(StockDataType.CLOSE);
+            var highest = closeSerie.GetHighestIn(lastIndex, dailyValue.CLOSE);
+
+            var cupHandle = highest > 5 ? closeSerie.DetectCupHandle(lastIndex, 5, false) : null;
+            int step = 0;
+            if (cupHandle != null)
+            {
+                step = (int)cupHandle.Point2.X - (int)cupHandle.Point1.X;
+            }
 
             return new StockAlertValue()
             {
@@ -54,7 +62,8 @@ namespace StockAnalyzer.StockClasses
                 Stok = stokIndicator.Series[0][lastIndex],
 
                 Stop = stop,
-                Highest = highest
+                Highest = highest,
+                Step = step
             };
         }
     }

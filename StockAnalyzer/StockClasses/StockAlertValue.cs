@@ -20,5 +20,7 @@ namespace StockAnalyzer.StockClasses
         public float Stop { get; set; }
 
         public int Highest { get; set; }
+
+        public int Step { get; set; }
     }
 }
