@@ -118,6 +118,7 @@ namespace StockAnalyzer.StockClasses
 
         public string Stop { get; set; }
         public string Speed { get; set; }
+        public string Script { get; set; }
         public int Stok { get; set; }
 
         public override string ToString()

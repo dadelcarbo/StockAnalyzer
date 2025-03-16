@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -70,6 +71,15 @@ namespace StockAnalyzer.StockScripting
 
             // Get the instance of the newly compiled code
             return (IStockFilter)CompilerResults.CompiledAssembly.CreateInstance("StockAnalyzer.StockScripting." + stockScript.Name + "StockFilterImpl");
+        }
+
+        public IStockFilter CreateStockFilterInstance(string name)
+        {
+            var stockFilter = StockScripts?.FirstOrDefault(s => s.Name == name);
+            if (stockFilter == null)
+                return null;
+
+            return CreateStockFilterInstance(stockFilter);
         }
 
         static StockScriptManager instance;
