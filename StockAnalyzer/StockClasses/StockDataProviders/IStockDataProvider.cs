@@ -20,7 +20,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         BnpIntraday,
         Saxo,
         CNN,
-        Breadth
+        Breadth,
+        yCharts
     }
 
     public delegate void DownloadingStockEventHandler(string text);

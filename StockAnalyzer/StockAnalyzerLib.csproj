@@ -298,6 +298,8 @@
     <Compile Include="StockClasses\StockDataProviders\YahooIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Yahoo\YahooJson.cs" />
+    <Compile Include="StockClasses\StockDataProviders\yCharts\ychartJson.cs" />
+    <Compile Include="StockClasses\StockDataProviders\yCharts\ychartsDataProvider.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
     <Compile Include="StockClasses\StockSortedDictionary.cs" />
     <Compile Include="StockClasses\StockSplit.cs" />

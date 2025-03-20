@@ -190,6 +190,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     case StockDataProvider.BoursoIntraday:
                         dataProvider = new BoursoIntradayDataProvider();
                         break;
+                    case StockDataProvider.yCharts:
+                        dataProvider = new ychartsDataProvider();
+                        break;
                     default:
                         break;
                 }
