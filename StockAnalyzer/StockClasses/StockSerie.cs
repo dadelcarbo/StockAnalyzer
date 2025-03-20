@@ -11,6 +11,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using StockAnalyzer.StockScripting;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -718,6 +719,15 @@ namespace StockAnalyzer.StockClasses
                     case AlertType.Group:
                     case AlertType.Stock:
                         {
+                            if (!string.IsNullOrEmpty(stockAlert.Script))
+                            {
+                                var screener = StockScriptManager.Instance.CreateStockFilterInstance(stockAlert.Script);
+                                if (screener != null)
+                                {
+                                    if (!screener.MatchFilter(this, stockAlert.BarDuration))
+                                        return false;
+                                }
+                            }
                             if (!string.IsNullOrEmpty(stockAlert.FilterFullName))
                             {
                                 if (this.BarDuration != stockAlert.FilterDuration)

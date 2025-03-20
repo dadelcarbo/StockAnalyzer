@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockScripting;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Theme = alertDef.Theme;
             this.Stop = alertDef.Stop;
             this.Speed = alertDef.Speed;
+            this.Script = alertDef.Script;
             this.Stok = alertDef.Stok;
             this.MinLiquidity = alertDef.MinLiquidity;
             switch (this.alertType)
@@ -120,6 +122,10 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private string speed;
         public string Speed { get => speed; set => SetProperty(ref speed, value); }
+
+        private string script;
+        public string Script { get => script; set => SetProperty(ref script, value); }
+        public IEnumerable<StockScript> Screeners => new List<StockScript>() { null }.Union(StockScriptManager.Instance.StockScripts);
 
         private int stok;
         public int Stok { get => stok; set => SetProperty(ref stok, value); }
@@ -341,6 +347,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             alertDef.CreationDate = DateTime.Now;
             alertDef.Stop = this.Stop;
             alertDef.Speed = this.Speed;
+            alertDef.Script = this.Script;
             alertDef.Stok = this.Stok;
 
             this.OnPropertyChanged("AlertDefs");

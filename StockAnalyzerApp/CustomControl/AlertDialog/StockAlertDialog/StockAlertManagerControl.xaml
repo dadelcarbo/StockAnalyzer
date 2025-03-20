@@ -22,12 +22,13 @@
                 </Grid.RowDefinitions>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="109*"/>
+                        <ColumnDefinition Width="585*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <telerik:RadGridView  Grid.Row="0" FontSize="9" Margin="2" ItemsSource="{Binding SelectedAlerts}"
+                    <telerik:RadGridView  Grid.Row="0" FontSize="9" Margin="2,2,2,2" ItemsSource="{Binding SelectedAlerts}"
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False"
-                        SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="SelectedAlertGridView_SelectionChanged">
+                        SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="SelectedAlertGridView_SelectionChanged" Grid.ColumnSpan="2">
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewCheckBoxColumn Header="Select" DataMemberBinding="{Binding IsSelected}" IsReadOnly="false"/>
                             <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding AlertDef.BarDuration}" IsReadOnly="True"/>
@@ -36,7 +37,7 @@
                             <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding AlertDef.Theme}" IsReadOnly="True"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
-                    <StackPanel Grid.Column="1" MinWidth="200" >
+                    <StackPanel Grid.Column="2" MinWidth="200" >
                         <GroupBox Header="Screener">
                             <StackPanel>
                                 <Grid>
@@ -136,6 +137,10 @@
                                 <CheckBox IsChecked="{Binding CompleteBar}" VerticalAlignment="Center"/>
                                 <Label Content="Theme"/>
                                 <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="1">
+                                <Label Width="50">Script</Label>
+                                <telerik:RadComboBox SelectedItem="{Binding Script}"  ItemsSource="{Binding Screeners}"  Width="250"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="1">
                                 <Label Width="50">Trigger</Label>
