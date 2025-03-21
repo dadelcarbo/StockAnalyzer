@@ -57,7 +57,7 @@ namespace StockAnalyzer.StockClasses
                 Exchanged = dailyValue.EXCHANGED / 1000000,
 
                 Speed = speedIndicator.Series[0][lastIndex],
-                SpeedFormat = speedIndicator.SerieFormats[0],
+                SpeedFormat = speedIndicator.SerieFormats?[0],
 
                 Stok = stokIndicator.Series[0][lastIndex],
 

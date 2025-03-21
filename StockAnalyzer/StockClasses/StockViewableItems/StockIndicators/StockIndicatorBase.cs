@@ -12,11 +12,17 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             this.series = new FloatSerie[this.SeriesCount];
             this.serieVisibility = new bool[this.SeriesCount];
+
             if (EventCount != 0)
             {
                 this.eventSeries = new BoolSerie[this.EventCount];
             }
-            for (int i = 0; i < this.SeriesCount; this.serieVisibility[i++] = true) ;
+
+            this.serieFormats = new string[this.SeriesCount];
+            for (int i = 0; i < this.SeriesCount; i++)
+            {
+                this.serieVisibility[i] = true;
+            }
         }
         abstract public IndicatorDisplayTarget DisplayTarget { get; }
 
