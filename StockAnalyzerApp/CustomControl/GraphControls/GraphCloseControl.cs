@@ -1141,14 +1141,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Calculate Highest in bars.
             if (this.lastMouseIndex > 0)
             {
-                var bodyHighSerie = this.serie.GetSerie(StockDataType.CLOSE);
-                int highest = bodyHighSerie.GetHighestIn(lastMouseIndex);
+                var closeSerie = this.serie.GetSerie(StockDataType.CLOSE);
+                int highest = closeSerie.GetHighestIn(lastMouseIndex);
                 if (highest > 0)
                 {
                     value += BuildTabbedString("HighestIn", highest.ToString(), 12) + "\r\n";
                 }
-                var bodyLowSerie = this.serie.GetSerie(StockDataType.CLOSE);
-                int lowest = bodyLowSerie.GetLowestIn(lastMouseIndex);
+                int lowest = closeSerie.GetLowestIn(lastMouseIndex);
                 if (lowest > 0)
                 {
                     value += BuildTabbedString("LowestIn", lowest.ToString(), 12) + "\r\n";

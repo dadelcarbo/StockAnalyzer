@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
         public override string[] ParameterNames => new string[] { "Trigger" };
 
-        public override string[] SerieNames => new string[] { "HIGHEST(" + this.Parameters[0].ToString() + ")" };
+        public override string[] SerieNames => new string[] { $"HIGHEST({this.Parameters[0]})" };
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
 
@@ -31,18 +31,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             for (int i = maxIn + 1; i < stockSerie.Count; i++)
             {
-                int count = 0;
-                for (int j = i - 1; j >= 0; j--)
-                {
-                    if (closeSerie[i] > closeSerie[j])
-                    {
-                        count++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                int count = closeSerie.GetHighestIn(i);
+
                 highestSerie[i] = count;
 
                 if (highestSerie[i] > highestSerie[i - 1])

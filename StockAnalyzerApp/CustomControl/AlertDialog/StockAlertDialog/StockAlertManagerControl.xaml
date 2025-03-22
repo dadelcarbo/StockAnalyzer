@@ -16,11 +16,16 @@
     <TabControl>
         <TabItem Header="Scanner">
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="86*"/>
+                    <ColumnDefinition Width="21*"/>
+                    <ColumnDefinition Width="787*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Grid>
+                <Grid Grid.ColumnSpan="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="109*"/>
                         <ColumnDefinition Width="585*"/>
@@ -74,9 +79,9 @@
                         <Label Content="{Binding CurrentAlert.Group}"/>
                     </StackPanel>
                 </Grid>
-                <telerik:RadGridView Grid.Row="1" FontSize="9" Margin="2" ItemsSource="{Binding Alerts}"
+                <telerik:RadGridView Grid.Row="1" FontSize="9" Margin="2,2,2,2" ItemsSource="{Binding Alerts}"
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" IsReadOnly="True"
-                        SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="AlertGridView_SelectionChanged">
+                        SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="AlertGridView_SelectionChanged" Grid.ColumnSpan="3">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Alert Id" DataMemberBinding="{Binding AlertDef.Id}"/>
                         <telerik:GridViewDataColumn Header="Alert Title" DataMemberBinding="{Binding AlertDef.Title}"/>

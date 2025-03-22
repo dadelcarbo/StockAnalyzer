@@ -434,7 +434,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     float lastValue = lastBar.CLOSE;
                     var firstValue = closeSerie[endIndex - 1];
                     float barVariation = (lastValue - firstValue) / firstValue;
-                    var bodyHigh = stockSerie.GetSerie(StockDataType.BODYHIGH);
 
                     float stopValue = float.NaN;
                     if (trailStopSerie != null)
@@ -466,20 +465,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         }
                     }
 
-                    #region Calculate Highest
-                    int highest = 0;
-                    for (int i = endIndex - 1; i > 0; i--)
-                    {
-                        if (lastValue >= bodyHigh[i])
-                        {
-                            highest++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    #endregion
+                    int highest = lastBar.VARIATION > 0 ? closeSerie.GetHighestIn(endIndex) : 0;
 
                     #region Calculate Indicators
                     float stockIndicator1 = float.NaN;
@@ -498,7 +484,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
                     }
                     #endregion
-
 
                     Lines.Add(new PalmaresLine
                     {
