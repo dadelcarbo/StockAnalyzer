@@ -28,7 +28,8 @@
                         <Label>Duration</Label>
                         <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
                         <Label Content="Theme"/>
-                        <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center"/>
+                        <ComboBox SelectedItem="{Binding Theme, ValidatesOnDataErrors=True}" 
+                                  ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Content="Stop" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="70" IsChecked="{Binding BullOnly}"/>
