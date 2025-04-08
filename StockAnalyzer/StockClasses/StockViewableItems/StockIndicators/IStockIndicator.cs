@@ -9,5 +9,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         string[] SerieFormats { get; }
         HLine[] HorizontalLines { get; }
         Area[] Areas { get; }
+        FloatSerie GetSerie(string eventName);
     }
 }

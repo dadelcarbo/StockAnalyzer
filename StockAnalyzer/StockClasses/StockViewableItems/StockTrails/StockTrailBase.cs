@@ -51,6 +51,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
             this.ParseInputParameters(parameters);
         }
 
+        public FloatSerie GetSerie(string name)
+        {
+            int index = Array.IndexOf(this.SerieNames, name);
+            return index != -1 ? this.Series[index] : null;
+        }
+
         abstract public void ApplyTo(StockSerie stockSerie);
 
 

@@ -125,7 +125,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private string script;
         public string Script { get => script; set => SetProperty(ref script, value); }
-        public IEnumerable<StockScript> Screeners => new List<StockScript>() { null }.Union(StockScriptManager.Instance.StockScripts);
+        public IEnumerable<string> Screeners => new List<string>() { null }.Union(StockScriptManager.Instance.StockScripts.Select(s => s.Name));
 
         private int stok;
         public int Stok { get => stok; set => SetProperty(ref stok, value); }

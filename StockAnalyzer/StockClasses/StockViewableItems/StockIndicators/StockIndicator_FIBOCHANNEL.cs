@@ -9,11 +9,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     {
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
 
-        public override string[] ParameterNames => new string[] { "Period", "Ratio" };
+        public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "Ratio" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 60, 0.61f };
+        public override Object[] ParameterDefaultValues => new Object[] { 75, 75, 0.61f };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 5f) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 5f) };
 
         public override string[] SerieNames => new string[] { "HIGH", "FiboUp", "MID", "FiboLow", "LOW" };
 
@@ -27,7 +27,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            int period = (int)this.parameters[0];
+            int highPeriod = (int)this.parameters[0];
+            int lowPeriod = (int)this.parameters[1];
+            int startPeriod = Math.Max(highPeriod, lowPeriod);
 
             // Calculate FIBOCHANNEL Channel
             FloatSerie upLine = new FloatSerie(stockSerie.Count);
@@ -36,22 +38,22 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie highSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
             FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
 
-            for (int i = 0; i < period; i++)
+            for (int i = 0; i < startPeriod; i++)
             {
                 upLine[i] = float.NaN;
                 downLine[i] = float.NaN;
             }
-            for (int i = period; i < stockSerie.Count; i++)
+            for (int i = startPeriod; i < stockSerie.Count; i++)
             {
-                upLine[i] = highSerie.GetMax(i - period, i);
-                downLine[i] = lowSerie.GetMin(i - period, i);
+                upLine[i] = highSerie.GetMax(i - highPeriod, i);
+                downLine[i] = lowSerie.GetMin(i - lowPeriod, i);
             }
 
             int count = 0;
             this.series[count] = upLine;
             this.Series[count].Name = this.SerieNames[count];
 
-            float fiboRatio = (float)this.parameters[1];
+            float fiboRatio = (float)this.parameters[2];
             this.series[++count] = fiboRatio * upLine + (1.0f - fiboRatio) * downLine;
             this.Series[count].Name = this.SerieNames[count];
 

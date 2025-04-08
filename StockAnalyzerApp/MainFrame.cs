@@ -3922,7 +3922,8 @@ namespace StockAnalyzerApp
         {
             if (!this.themeDictionary.ContainsKey(this.CurrentTheme))
                 // LoadTheme
-                LoadCurveTheme(currentTheme);
+                if (!LoadCurveTheme(currentTheme))
+                    return null;
             return this.themeDictionary[this.CurrentTheme];
         }
         public List<string> GetIndicatorsFromCurrentTheme()
@@ -4463,7 +4464,7 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        private void LoadCurveTheme(string themeName)
+        private bool LoadCurveTheme(string themeName)
         {
             try
             {
@@ -4473,12 +4474,14 @@ namespace StockAnalyzerApp
                 {
                     using StreamReader sr = new StreamReader(fileName);
                     LoadThemeStream(themeName, sr);
+                    return true;
                 }
             }
             catch (Exception exception)
             {
                 StockAnalyzerException.MessageBox(exception);
             }
+            return false;
         }
 
         private void LoadThemeStream(string themeName, StreamReader sr)

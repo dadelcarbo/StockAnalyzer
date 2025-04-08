@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockClasses
             var stokIndicator = StockSerie.GetIndicator(stokIndicatorName);
 
             var closeSerie = StockSerie.GetSerie(StockDataType.CLOSE);
-            var highest = closeSerie.GetHighestIn(lastIndex, dailyValue.CLOSE);
+            var highest = closeSerie.GetHighestIn(lastIndex);
 
             var cupHandle = highest > 5 ? closeSerie.DetectCupHandle(lastIndex, 5, false) : null;
             int step = 0;

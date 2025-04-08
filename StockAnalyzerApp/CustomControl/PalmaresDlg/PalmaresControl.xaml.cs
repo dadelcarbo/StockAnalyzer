@@ -153,7 +153,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             this.Form.TopMost = true;
             StockAnalyzerForm.MainFrame.Activate();
-            if (string.IsNullOrEmpty(this.ViewModel.Theme))
+            if (string.IsNullOrEmpty(this.ViewModel.Theme) || !StockAnalyzerForm.MainFrame.Themes.Contains(this.ViewModel.Theme))
             {
                 this.SelectedStockChanged(line.Name, ViewModel.BarDuration, true);
                 if (!string.IsNullOrEmpty(this.ViewModel.Stop))
@@ -427,10 +427,17 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.ViewModel.Screener = StockScriptManager.Instance.StockScripts?.FirstOrDefault(s => s.Name == palmaresSettings.Screener);
                 this.ViewModel.Stop = palmaresSettings.Stop;
                 this.ViewModel.BullOnly = palmaresSettings.BullOnly;
-                this.ViewModel.Theme = palmaresSettings.Theme;
                 this.ViewModel.Liquidity = palmaresSettings.Liquidity;
                 this.GenerateColumns();
                 LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
+
+                if (StockAnalyzerForm.MainFrame.Themes.Contains(palmaresSettings.Theme) || string.IsNullOrEmpty(palmaresSettings.Theme))
+                    this.ViewModel.Theme = palmaresSettings.Theme;
+                else
+                {
+                    this.ViewModel.Theme = null;
+                    MessageBox.Show($"Theme '{palmaresSettings.Theme}' doen't exist !", "Error");
+                }
             }
         }
 
