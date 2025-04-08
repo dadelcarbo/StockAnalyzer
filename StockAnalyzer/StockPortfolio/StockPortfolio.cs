@@ -1194,7 +1194,7 @@ namespace StockAnalyzer.StockPortfolio
             using var ml = new MethodLogger(this, true, this.Name);
             try
             {
-                if (!this.SaxoLogin())
+                if (!this.SaxoSilentLogin())
                     return null;
 
                 var instrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);

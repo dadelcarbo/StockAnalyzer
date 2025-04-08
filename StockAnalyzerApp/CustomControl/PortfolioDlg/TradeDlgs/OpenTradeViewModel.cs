@@ -160,9 +160,16 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.EntryValue = (float)instrumentDetails.RoundToTickSize(this.EntryValue);
             this.Symbol = instrumentDetails.Symbol;
         }
-        public void Refresh()
+        public void Refresh(bool forceLogin)
         {
-            this.Portfolio.Refresh();
+            if (forceLogin)
+            {
+                this.Portfolio.SaxoLogin();
+            }
+            if (this.Portfolio.SaxoSilentLogin())
+            {
+                this.Portfolio.Refresh();
+            }
             this.OnPropertyChanged("Portfolio");
             this.CalculatePositionSize();
         }

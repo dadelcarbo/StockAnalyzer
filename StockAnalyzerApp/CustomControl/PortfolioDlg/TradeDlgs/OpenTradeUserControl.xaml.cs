@@ -90,7 +90,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
-            this.TradeViewModel.Refresh();
+            this.TradeViewModel.Refresh(true);
         }
     }
 }

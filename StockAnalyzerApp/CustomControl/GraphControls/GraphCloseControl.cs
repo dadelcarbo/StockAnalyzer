@@ -2537,7 +2537,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
             };
             openTradeViewModel.OrdersChanged += OpenTradeViewModel_OrdersChanged;
-            openTradeViewModel.Refresh();
+            openTradeViewModel.Refresh(false);
 
             this.IsBuying = true;
             this.OnMouseValueChanged += openTradeViewModel.OnOrderValueChanged;
