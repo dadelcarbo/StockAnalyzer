@@ -2911,7 +2911,7 @@ namespace StockAnalyzerApp
         }
         public void GenerateReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
         {
-            alertDefs ??= StockAlertDef.AlertDefs.Where(a => a.BarDuration == duration).ToList();
+            alertDefs ??= StockAlertDef.AlertDefs.Where(a => a.BarDuration == duration && a.InReport).OrderBy(a => a.Rank).ToList();
             if (alertDefs.Count == 0)
                 return;
             this.ViewModel.IsHistoryActive = false;
@@ -2944,7 +2944,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ShowSplashScreen();
 
             string htmlAlerts = string.Empty;
-            foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group && a.Title != "Watchlist").OrderBy(a => a.Rank))
+            foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group && a.Title != "Watchlist"))
             {
                 htmlAlerts += GenerateAlertTable(alertDef, nbLeaders);
             }

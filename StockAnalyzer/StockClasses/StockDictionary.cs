@@ -1667,6 +1667,10 @@ namespace StockAnalyzer.StockClasses
             var alerts = new List<StockAlert>();
             foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
             {
+                if (alertDef.BarDuration > BarDuration.Monthly && stockSerie.BelongsToGroup(StockSerie.Groups.PEA) && !stockSerie.Intraday) // if intraday
+                {
+                    continue;
+                }
                 if (stockSerie.Initialise())
                 {
                     stockSerie.BarDuration = alertDef.BarDuration;
