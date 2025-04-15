@@ -3070,6 +3070,8 @@ namespace StockAnalyzerApp
                 var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
                 var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
 
+
+
                 var alerts = StockDictionary.Instance.MatchAlert(alertDef);
 
                 StockSplashScreen.ProgressVal = 0;
