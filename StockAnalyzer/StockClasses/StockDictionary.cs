@@ -1,9 +1,11 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -1662,43 +1664,55 @@ namespace StockAnalyzer.StockClasses
             }
             return Instance.Values.FirstOrDefault(s => s.ISIN == isin);
         }
+        Stopwatch sw;
         public List<StockAlert> MatchAlert(StockAlertDef alertDef)
         {
+            using MethodLogger ml = new MethodLogger(this, true, $"AlertDef: {alertDef.Title}");
+            sw = Stopwatch.StartNew();
             var alerts = new List<StockAlert>();
-            foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
+            try
             {
-                if (alertDef.BarDuration > BarDuration.Monthly && stockSerie.BelongsToGroup(StockSerie.Groups.PEA) && !stockSerie.Intraday) // if intraday
+                foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
                 {
-                    continue;
-                }
-                if (stockSerie.Initialise())
-                {
-                    stockSerie.BarDuration = alertDef.BarDuration;
-                    if (stockSerie.Count < 30)
+                    if (alertDef.BarDuration > BarDuration.Monthly && stockSerie.BelongsToGroup(StockSerie.Groups.PEA) && !stockSerie.Intraday) // if intraday
+                    {
                         continue;
-
-                    if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
-                    {
-                        if (!stockSerie.HasLiquidity(alertDef.MinLiquidity, 10))
-                        {
-                            continue;
-                        }
                     }
-
-                    var values = stockSerie.ValueArray;
-                    var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
-                    var dailyValue = values.ElementAt(lastIndex);
-                    if (stockSerie.MatchEvent(alertDef))
+                    if (stockSerie.Initialise())
                     {
-                        alerts.Add(new StockAlert
+                        stockSerie.BarDuration = alertDef.BarDuration;
+                        if (stockSerie.Count < 30)
+                            continue;
+
+                        if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
                         {
-                            AlertDef = alertDef,
-                            Date = dailyValue.DATE,
-                            StockSerie = stockSerie
-                        });
+                            if (!stockSerie.HasLiquidity(alertDef.MinLiquidity, 10))
+                            {
+                                continue;
+                            }
+                        }
+
+                        var values = stockSerie.ValueArray;
+                        var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
+                        var dailyValue = values.ElementAt(lastIndex);
+                        if (stockSerie.MatchEvent(alertDef))
+                        {
+                            alerts.Add(new StockAlert
+                            {
+                                AlertDef = alertDef,
+                                Date = dailyValue.DATE,
+                                StockSerie = stockSerie
+                            });
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+            sw.Stop();
+            StockLog.Write($"MatchAlert Duration: {sw.Elapsed}");
             return alerts;
         }
     }
