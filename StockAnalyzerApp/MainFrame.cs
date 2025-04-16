@@ -815,18 +815,29 @@ namespace StockAnalyzerApp
         public void GenerateIntradayReportDispatch(List<BarDuration> barDurations)
         {
             using var ml = new MethodLogger(this);
+
+            lock (ml)
+            {
+                if (IsReportingIntraday)
+                    return;
+            }
+
             try
             {
                 IsReportingIntraday = true;
 
-                var alertDefs = StockAlertDef.AlertDefs.Where(a => barDurations.Contains(a.BarDuration)).ToList();
+                var alertDefs = StockAlertDef.AlertDefs.Where(a => a.InReport && a.InAlert && barDurations.Contains(a.BarDuration)).ToList();
                 if (alertDefs.Count == 0)
                     return;
+                var sw = Stopwatch.StartNew();
                 var groups = alertDefs.Select(a => a.Group).Distinct();
+
                 var stockList = groups.SelectMany(g => this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(g))).Distinct();
 
                 var tasks = stockList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s))).ToArray();
                 Task.WaitAll(tasks);
+
+                sw.Stop();
 
                 foreach (var duration in barDurations)
                 {

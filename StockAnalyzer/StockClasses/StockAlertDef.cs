@@ -123,7 +123,7 @@ namespace StockAnalyzer.StockClasses
 
         public override string ToString()
         {
-            return this.BarDuration.ToString() + ";" + EventFullName;
+            return this.BarDuration.ToString() + ";" + Group + ";" + EventFullName;
         }
     }
 }

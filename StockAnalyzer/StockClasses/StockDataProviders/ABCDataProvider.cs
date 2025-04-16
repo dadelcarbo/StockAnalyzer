@@ -1061,7 +1061,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
-            StockLog.Write("DownloadDailyData Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+            StockLog.Write("Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
 
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
