@@ -2719,7 +2719,7 @@ namespace StockAnalyzerApp
             <table  class=""reportTable"" id=""PAGE_TOP"">
                 <thead>
                 <tr>
-                    <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}    </th>
+                    <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}<br>{DateTime.Now.ToString()}</th>
                     <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€<br>Risk Free: {portfolio.RiskFreeValue}€<br>Cash:{portfolio.Balance}€<br>DrawDown: {portfolio.DrawDown.ToString("P2")}</th>
                 </tr>
                 <tr>
