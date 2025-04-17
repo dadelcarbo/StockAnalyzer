@@ -832,10 +832,17 @@ namespace StockAnalyzerApp
                 var sw = Stopwatch.StartNew();
                 var groups = alertDefs.Select(a => a.Group).Distinct();
 
-                var stockList = groups.SelectMany(g => this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(g))).Distinct();
+                var turboList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockGroup == StockSerie.Groups.TURBO);
+                var downloadTasks = turboList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s)));
 
-                var tasks = stockList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s))).ToArray();
-                Task.WaitAll(tasks);
+                if (alertDefs.Any(a => a.Group != StockSerie.Groups.TURBO))
+                {
+                    var peaIntradayList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.Intraday == true && s.BelongsToGroup(StockSerie.Groups.PEA));
+                    var dp = StockDataProviderBase.GetDataProvider(StockDataProvider.BoursoIntraday);
+                    downloadTasks = downloadTasks.Union(peaIntradayList.Select(s => Task.Run(() => dp.DownloadDailyData(s))));
+                }
+
+                Task.WaitAll(downloadTasks.ToArray());
 
                 sw.Stop();
 

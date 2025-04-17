@@ -489,7 +489,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                         }
                         this.ProgressValue++;
                     }
-
                 }
                 catch (Exception ex)
                 {

@@ -152,6 +152,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             {
                 "FR" => $"1rP{stockSerie.Symbol}",
                 "FRT" => $"1rT{stockSerie.Symbol}",
+                "LUT" => $"1rT{stockSerie.Symbol}",
                 "DE" => $"1z{stockSerie.Symbol}",
                 "BE" => $"FF11-{stockSerie.Symbol}",
                 "NL" => $"1rA{stockSerie.Symbol}",
