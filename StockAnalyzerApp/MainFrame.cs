@@ -2743,8 +2743,13 @@ namespace StockAnalyzerApp
             {
                 return string.Empty;
             }
-            var previousSize = StockAnalyzerForm.MainFrame.Size;
-            StockAnalyzerForm.MainFrame.Size = new Size(600, 600);
+
+
+            var previousState = this.WindowState;
+            var previousSize = this.Size;
+            this.WindowState = FormWindowState.Normal;
+            this.Size = new Size(600, 600);
+
             var previousTheme = StockAnalyzerForm.MainFrame.CurrentTheme;
 
             string reportBody = html;
@@ -2799,7 +2804,7 @@ namespace StockAnalyzerApp
 
             var portfolioSerie = StockDictionary[portfolio.Name];
             this.ViewModel.BarDuration = BarDuration.Daily;
-            var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio2", 250);
+            var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio2", 350);
             picturehtml = stockPictureTemplate.Replace("%STOCKNAME%", portfolio.Name).Replace(" - %DURATION%", "").Replace("%IMG%", portfolioSerieBitmapString) + "\r\n" + picturehtml;
 
             reportBody += @" 
@@ -2849,7 +2854,7 @@ namespace StockAnalyzerApp
                     this.ViewModel.BarDuration = order.BarDuration;
                     barDurationChangeFromUI = false;
 
-                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, order.Theme);
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, order.Theme, 350);
 
                     var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockSerie.StockName) + "\r\n";
                     var lastValue = stockSerie.LastValue;
@@ -2887,6 +2892,7 @@ namespace StockAnalyzerApp
             reportBody += picturehtml;
             reportBody += orderPictureHtml;
 
+            StockAnalyzerForm.MainFrame.WindowState = previousState;
             StockAnalyzerForm.MainFrame.Size = previousSize;
             StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;
 
