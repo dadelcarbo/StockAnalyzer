@@ -73,13 +73,21 @@ namespace StockAnalyzer.StockScripting
             return (IStockFilter)CompilerResults.CompiledAssembly.CreateInstance("StockAnalyzer.StockScripting." + stockScript.Name + "StockFilterImpl");
         }
 
+        static private SortedDictionary<string, IStockFilter> compilerCache = new SortedDictionary<string, IStockFilter>();
         public IStockFilter CreateStockFilterInstance(string name)
         {
+            if (compilerCache.ContainsKey(name))
+                return compilerCache[name];
+
             var stockFilter = StockScripts?.FirstOrDefault(s => s.Name == name);
             if (stockFilter == null)
                 return null;
 
-            return CreateStockFilterInstance(stockFilter);
+            var filter = CreateStockFilterInstance(stockFilter);
+            if (filter != null)
+                compilerCache.Add(name, filter);
+
+            return filter;
         }
 
         static StockScriptManager instance;
