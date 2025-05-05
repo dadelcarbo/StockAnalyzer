@@ -54,7 +54,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Theme = alertDef.Theme;
             this.Stop = alertDef.Stop;
             this.Speed = alertDef.Speed;
-            this.Script = alertDef.Script;
+            this.Script = alertDef.Script == null ? null : StockScriptManager.Instance.StockScripts.FirstOrDefault(s => s.Name == alertDef.Script);
             this.Stok = alertDef.Stok;
             this.MinLiquidity = alertDef.MinLiquidity;
             switch (this.alertType)
@@ -123,9 +123,9 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         private string speed;
         public string Speed { get => speed; set => SetProperty(ref speed, value); }
 
-        private string script;
-        public string Script { get => script; set => SetProperty(ref script, value); }
-        public IEnumerable<string> Screeners => new List<string>() { null }.Union(StockScriptManager.Instance.StockScripts.Select(s => s.Name));
+        private StockScript script;
+        public StockScript Script { get => script; set => SetProperty(ref script, value); }
+        public IEnumerable<StockScript> Screeners => new List<StockScript>() { null }.Union(StockScriptManager.Instance.StockScripts);
 
         private int stok;
         public int Stok { get => stok; set => SetProperty(ref stok, value); }
@@ -347,7 +347,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             alertDef.CreationDate = DateTime.Now;
             alertDef.Stop = this.Stop;
             alertDef.Speed = this.Speed;
-            alertDef.Script = this.Script;
+            alertDef.Script = this.Script?.Name;
             alertDef.Stok = this.Stok;
 
             this.OnPropertyChanged("AlertDefs");

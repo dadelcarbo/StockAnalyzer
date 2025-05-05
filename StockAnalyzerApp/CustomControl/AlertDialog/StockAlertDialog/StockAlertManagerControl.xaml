@@ -134,7 +134,7 @@
                                 <TextBox Text="{Binding AlertId, Mode=TwoWay}" IsEnabled="False" Width="30" VerticalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="1">
-                                <Label Width="50" Content="Group "/>
+                                <Label Width="57" Content="Group "/>
                                 <ComboBox SelectedItem="{Binding Group}" ItemsSource="{Binding Groups}" Width="160"/>
                                 <Label>Duration</Label>
                                 <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
@@ -144,19 +144,24 @@
                                 <ComboBox SelectedItem="{Binding Theme}" ItemsSource="{Binding Themes}" Width="160"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="1">
-                                <Label Width="50">Script</Label>
-                                <telerik:RadComboBox SelectedItem="{Binding Script}"  ItemsSource="{Binding Screeners}"  Width="250"/>
+                                <Label Width="57">Screener</Label>
+                                <telerik:RadComboBox  Name="ScreenerCbx" SelectedItem="{Binding Script}"  ItemsSource="{Binding Screeners}"  Width="250" DisplayMemberPath="Name"
+                                  ToolTip="{Binding Script.Description}"/>
+                                <Button Height="24" Width="24"  VerticalAlignment="Center" Margin="1" BorderThickness="0"
+                                        ToolTip="{Binding Script.Code}" Background="Transparent">
+                                    <Image Source="/Resources/Wizard.jpg" />
+                                </Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="1">
-                                <Label Width="50">Trigger</Label>
+                                <Label Width="57">Trigger</Label>
                                 <telerik:RadComboBox SelectedItem="{Binding TriggerName}"  ItemsSource="{Binding IndicatorNames}"  Width="250"/>
-                                <Label Width="50" Content="Event"/>
+                                <Label Width="57" Content="Event"/>
                                 <telerik:RadComboBox SelectedItem="{Binding TriggerEvent, Mode=TwoWay}" ItemsSource="{Binding TriggerEvents}" Width="250"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="1">
-                                <Label Width="50">Filter</Label>
+                                <Label Width="57">Filter</Label>
                                 <telerik:RadComboBox SelectedItem="{Binding FilterName}"  ItemsSource="{Binding IndicatorNames}"  Width="250" IsEditable="True"/>
-                                <Label Width="50" Content="Event"/>
+                                <Label Width="57" Content="Event"/>
                                 <telerik:RadComboBox SelectedItem="{Binding FilterEvent, Mode=TwoWay}" ItemsSource="{Binding FilterEvents}" Width="250"/>
                                 <Label>Duration</Label>
                                 <ComboBox SelectedItem="{Binding FilterDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
@@ -164,9 +169,9 @@
                                 <TextBox Text="{Binding MinLiquidity, Mode=TwoWay}" Width="40" VerticalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="1">
-                                <Label Width="50">Stop</Label>
+                                <Label Width="57">Stop</Label>
                                 <telerik:RadComboBox SelectedItem="{Binding Stop}"  ItemsSource="{Binding StopNames}"  Width="250"/>
-                                <Label Width="50">Speed</Label>
+                                <Label Width="57">Speed</Label>
                                 <TextBox Text="{Binding Speed, Mode=TwoWay}" Width="250" VerticalAlignment="Center"/>
                                 <Label Width="60">STOK</Label>
                                 <TextBox Text="{Binding Stok, Mode=TwoWay}" Width="40" VerticalAlignment="Center"/>
@@ -185,6 +190,10 @@
                                 <telerik:GridViewDataColumn Header="Title" DataMemberBinding="{Binding Title}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding Group}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" IsReadOnly="True"/>
+                                <telerik:GridViewDataColumn Header="Screen" DataMemberBinding="{Binding Script}" IsReadOnly="True"/>
+                                <telerik:GridViewDataColumn Header="Speed" DataMemberBinding="{Binding Speed}" IsReadOnly="True"/>
+                                <telerik:GridViewDataColumn Header="Stok" DataMemberBinding="{Binding Stok}" IsReadOnly="True"/>
+                                <telerik:GridViewDataColumn Header="Creation&#x0a;Date" DataMemberBinding="{Binding CreationDate, StringFormat=\{0:d\}}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Trigger&#x0a;Type" DataMemberBinding="{Binding IndicatorType}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Trigger&#x0a;Name" DataMemberBinding="{Binding IndicatorName}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Trigger&#x0a;Event" DataMemberBinding="{Binding EventName}" IsReadOnly="True"/>
@@ -194,9 +203,6 @@
                                 <telerik:GridViewDataColumn Header="Filter&#x0a;Name" DataMemberBinding="{Binding FilterName}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Filter&#x0a;Event" DataMemberBinding="{Binding FilterEventName}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}" IsReadOnly="True"/>
-                                <telerik:GridViewDataColumn Header="Speed" DataMemberBinding="{Binding Speed}" IsReadOnly="True"/>
-                                <telerik:GridViewDataColumn Header="Stok" DataMemberBinding="{Binding Stok}" IsReadOnly="True"/>
-                                <telerik:GridViewDataColumn Header="Creation&#x0a;Date" DataMemberBinding="{Binding CreationDate, StringFormat=\{0:d\}}" IsReadOnly="True"/>
                             </telerik:RadGridView.Columns>
                         </telerik:RadGridView>
                     </Grid>

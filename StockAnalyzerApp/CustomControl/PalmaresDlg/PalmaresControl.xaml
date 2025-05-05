@@ -40,7 +40,13 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Content="Screener" VerticalAlignment="Center"  VerticalContentAlignment="Center" Width="70" IsChecked="{Binding ScreenerOnly}"/>
-                        <ComboBox ItemsSource="{Binding Screeners}" SelectedItem="{Binding Screener}" DisplayMemberPath="Name" Width="200" Height="20" VerticalContentAlignment="Center"/>
+                        <ComboBox Name="ScreenerCbx" ItemsSource="{Binding Screeners}" SelectedItem="{Binding Screener}" DisplayMemberPath="Name"
+                                  ToolTip="{Binding Screener.Description}" Background="Transparent"
+                                  Width="200" Height="20" VerticalContentAlignment="Center"/>
+
+                        <Button Height="24" Width="24"  VerticalAlignment="Center" Margin="1" BorderThickness="0" ToolTip="{Binding SelectedItem.Code, ElementName=ScreenerCbx}" Background="Transparent">
+                            <Image Source="/Resources/Wizard.jpg" />
+                        </Button>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
