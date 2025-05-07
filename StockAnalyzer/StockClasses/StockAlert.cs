@@ -5,10 +5,6 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockAlert
     {
-        public StockAlert()
-        {
-        }
-
         public DateTime Date { get; set; }
         public StockAlertDef AlertDef { get; set; }
         public StockSerie StockSerie { get; set; }

@@ -54,7 +54,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.Theme = alertDef.Theme;
             this.Stop = alertDef.Stop;
             this.Speed = alertDef.Speed;
-            this.Script = alertDef.Script == null ? null : StockScriptManager.Instance.StockScripts.FirstOrDefault(s => s.Name == alertDef.Script);
+            this.Script = string.IsNullOrEmpty(alertDef.Script) ? StockScript.Empty : StockScriptManager.Instance.StockScripts.FirstOrDefault(s => s.Name == alertDef.Script);
             this.Stok = alertDef.Stok;
             this.MinLiquidity = alertDef.MinLiquidity;
             switch (this.alertType)
@@ -125,7 +125,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private StockScript script;
         public StockScript Script { get => script; set => SetProperty(ref script, value); }
-        public IEnumerable<StockScript> Screeners => new List<StockScript>() { null }.Union(StockScriptManager.Instance.StockScripts);
+        public IEnumerable<StockScript> Screeners => new List<StockScript>() { StockScript.Empty }.Union(StockScriptManager.Instance.StockScripts);
 
         private int stok;
         public int Stok { get => stok; set => SetProperty(ref stok, value); }
@@ -286,8 +286,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private void AddAlert()
         {
-            if (this.TriggerEvent == null)
-                return;
             var alertDef = allAlertDefs.FirstOrDefault(a => a.Id == alertId);
             if (alertDef == null)
             {

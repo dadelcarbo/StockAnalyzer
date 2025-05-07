@@ -44,8 +44,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     }
                 }
                 athBoolSerie[i] = highest;
-
             }
+
             for (int i = trigger + period; i < stockSerie.Count; i++)
             {
                 athSerie[i] = athBoolSerie.Or(i - period, i) ? 1.0f : 0.0f;
