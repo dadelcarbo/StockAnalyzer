@@ -79,6 +79,7 @@
                 <StackPanel Orientation="Horizontal">
                     <CheckBox Content="ATH Only" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="75" IsChecked="{Binding AthOnly}"/>
                     <telerik:RadNumericUpDown Value="{Binding Ath1}" Minimum="1" Maximum="1000" NumberDecimalDigits="0" Height="24" Margin="1" VerticalContentAlignment="Center"/>
+                    <Label Content="Lookback" VerticalContentAlignment="Center"/>
                     <telerik:RadNumericUpDown Value="{Binding Ath2}" Minimum="0" Maximum="1000" NumberDecimalDigits="0" Height="24" Margin="1" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </GroupBox>

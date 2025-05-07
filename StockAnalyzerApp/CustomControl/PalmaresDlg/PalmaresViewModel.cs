@@ -425,8 +425,12 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     #region Calculate ATH
                     if (athOnly)
                     {
-                        var ath = stockSerie.GetIndicator($"ATH({ath1},{ath2})").Series[0][endIndex] > 0.5f; // ATH calculates 0 or 1.
-                        if (!ath)
+                        bool athFound = false;
+                        for (int i = 0; !athFound && i <= ath2; i++)
+                        {
+                            athFound = closeSerie.GetHighestIn(endIndex - i) >= ath1;
+                        }
+                        if (!athFound)
                             continue;
                     }
                     #endregion
