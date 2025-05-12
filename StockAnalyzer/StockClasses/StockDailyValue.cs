@@ -13,6 +13,9 @@ namespace StockAnalyzer.StockClasses
         BODYHIGH,
         BODYLOW,
         VARIATION,
+        ATR,
+        ADR,
+        ADBR,
         VOLUME,
         EXCHANGED
     };
@@ -37,12 +40,15 @@ namespace StockAnalyzer.StockClasses
         public float BodyHigh => Math.Max(OPEN, CLOSE);
         public float BodyLow => Math.Min(OPEN, CLOSE);
 
-        public float ADR => BodyHigh - BodyLow;
+        public float ADBR => BodyHigh - BodyLow;
+        public float NADBR => ADBR / CLOSE;
+
+        public float ADR => HIGH - LOW;
         public float NADR => ADR / CLOSE;
-        public float ATR => HIGH - LOW;
+
+        public float ATR { get; set; }
         public float NATR => ATR / CLOSE;
 
-        private static readonly CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         private static readonly CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
         public float GetStockData(StockDataType dataType)

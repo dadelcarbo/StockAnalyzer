@@ -68,7 +68,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         {
             try
             {
-                var sectorSeries = ABCDataProvider.SectorCodes.Select(sc => StockDictionary.Instance.First(s => s.Key == "_" + sc.Sector).Value).ToList();
+                var sectorSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SECTORS_STOXX));
                 var sectorValues = new List<GraphValue[]>();
                 // Calculate conversion ratio
                 float min = float.MaxValue;

@@ -363,6 +363,15 @@ namespace StockAnalyzer.StockClasses
                     case StockDataType.VARIATION:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VARIATION).ToArray(), "VARIATION");
                         break;
+                    case StockDataType.ATR:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ATR).ToArray(), "ATR");
+                        break;
+                    case StockDataType.ADR:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ADR).ToArray(), "ADR");
+                        break;
+                    case StockDataType.ADBR:
+                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ADBR).ToArray(), "ADBR");
+                        break;
                     case StockDataType.VOLUME:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VOLUME * 1.0f).ToArray(), "VOLUME");
                         break;
@@ -677,17 +686,15 @@ namespace StockAnalyzer.StockClasses
             {
                 this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
             }
-            StockDailyValue previousValue = null;
-            foreach (StockDailyValue dailyValue in this.Values)
+
+            StockDailyValue previousValue = this.Values.FirstOrDefault();
+            previousValue.ATR = previousValue.ADR;
+            previousValue.VARIATION = (previousValue.CLOSE - previousValue.OPEN) / previousValue.OPEN;
+
+            foreach (StockDailyValue dailyValue in this.Values.Skip(1))
             {
-                if (previousValue != null)
-                {
-                    dailyValue.VARIATION = (dailyValue.CLOSE - previousValue.CLOSE) / previousValue.CLOSE;
-                }
-                else
-                {
-                    dailyValue.VARIATION = (dailyValue.CLOSE - dailyValue.OPEN) / dailyValue.OPEN;
-                }
+                dailyValue.VARIATION = (dailyValue.CLOSE - previousValue.CLOSE) / previousValue.CLOSE;
+                dailyValue.ATR = Math.Max(dailyValue.HIGH, previousValue.CLOSE) - Math.Min(dailyValue.LOW, previousValue.CLOSE);
                 previousValue = dailyValue;
             }
             this.LastValue = previousValue;
@@ -1183,22 +1190,27 @@ namespace StockAnalyzer.StockClasses
             float lowestLow = float.MaxValue;
             float highestHigh = float.MinValue;
 
-            for (int i = 0; i < this.Count; i++)
+            for (int i = 0; i < period; i++)
             {
-                lowestLow = bodyLowSerie.GetMin(Math.Max(0, i - period), i);
-                highestHigh = bodyHighSerie.GetMax(Math.Max(0, i - period), i);
+                fastOscillatorSerie[i] = 50.0f;
+            }
+            for (int i = period; i < this.Count; i++)
+            {
+                lowestLow = bodyLowSerie.GetMin(period, i);
+                highestHigh = bodyHighSerie.GetMax(period, i);
                 if (highestHigh == lowestLow)
                 {
                     fastOscillatorSerie[i] = 50.0f;
                 }
                 else
                 {
-                    fastOscillatorSerie[i] = 100.0f * (closeSerie.Values[i] - lowestLow) / (highestHigh - lowestLow);
-                }
-                if (i < period)
-                {
-                    fastOscillatorSerie[i] = Math.Max(30.0f, fastOscillatorSerie[i]);
-                    fastOscillatorSerie[i] = Math.Min(70.0f, fastOscillatorSerie[i]);
+                    var close = closeSerie.Values[i];
+                    if (close == highestHigh)
+                        fastOscillatorSerie[i] = 100.0f;
+                    else if (close == lowestLow)
+                        fastOscillatorSerie[i] = 0.0f;
+                    else
+                        fastOscillatorSerie[i] = 100.0f * (close - lowestLow) / (highestHigh - lowestLow);
                 }
             }
             fastOscillatorSerie.Name = $"FastK({period})";
