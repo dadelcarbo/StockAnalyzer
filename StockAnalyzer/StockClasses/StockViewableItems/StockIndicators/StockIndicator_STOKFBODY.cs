@@ -38,14 +38,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
             //  %D = MA3(%K)
             int period = (int)this.parameters[0];
-            FloatSerie fastK = stockSerie.CalculateFastBodyOscillator(period);
+            FloatSerie fastK = stockSerie.CalculateFastOscillator((int)this.parameters[0], IndicatorType.Body);
             this.series[0] = fastK;
             this.series[0].Name = this.SerieNames[0];
 
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-            for (int i = period + 1; i < fastK.Count; i++)
+            for (int i = period + 1; i < stockSerie.Count; i++)
             {
                 this.eventSeries[0][i] = (fastK[i - 1] < 50f && fastK[i] > 50f);
                 this.eventSeries[1][i] = (fastK[i - 1] > 50f && fastK[i] < 50f);

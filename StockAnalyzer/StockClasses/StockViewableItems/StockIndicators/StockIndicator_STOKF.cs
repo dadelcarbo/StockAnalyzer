@@ -34,7 +34,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie fastK = stockSerie.CalculateFastOscillator((int)this.parameters[0]);
+            FloatSerie fastK = stockSerie.CalculateFastOscillator((int)this.parameters[0], IndicatorType.HighLow);
             FloatSerie fastD = fastK.CalculateMA((int)this.parameters[1]);
             this.series[0] = fastK;
             this.series[1] = fastD;

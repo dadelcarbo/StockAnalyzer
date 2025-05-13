@@ -1035,10 +1035,11 @@ namespace StockAnalyzer.StockClasses
         #endregion
         #region Indicators calculation
 
-        public FloatSerie CalculateRateOfRise(int period, bool bodyLow = true)
+        public FloatSerie CalculateRateOfRise(int period, IndicatorType indicatorType, int smoothingPeriod = -1)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie lowSerie = bodyLow ? this.GetSerie(StockDataType.LOW) : this.GetSerie(StockDataType.BODYLOW);
+
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, indicatorType, smoothingPeriod);
 
             FloatSerie serie = new FloatSerie(Values.Count());
             float min;
@@ -1147,57 +1148,31 @@ namespace StockAnalyzer.StockClasses
 
             return OBVEX;
         }
-        public FloatSerie CalculateFastOscillator(int period)
+
+        /// <summary>
+        /// 
+        ///  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
+        ///  %D = MA3(%K)
+        /// </summary>
+        /// <param name="period"></param>
+        /// <param name="indicatorType"></param>
+        /// <returns></returns>
+        public FloatSerie CalculateFastOscillator(int period, IndicatorType indicatorType, int smoothingPeriod = -1)
         {
-            //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
-            //  %D = MA3(%K)
             FloatSerie fastOscillatorSerie = new FloatSerie(this.Count);
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie lowSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie highSerie = this.GetSerie(StockDataType.CLOSE);
-            float lowestLow = float.MaxValue;
-            float highestHigh = float.MinValue;
+
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, indicatorType, smoothingPeriod);
+
 
             for (int i = 0; i < this.Count; i++)
-            {
-                lowestLow = lowSerie.GetMin(Math.Max(0, i - period), i);
-                highestHigh = highSerie.GetMax(Math.Max(0, i - period), i);
-                if (highestHigh == lowestLow)
-                {
-                    fastOscillatorSerie[i] = 50.0f;
-                }
-                else
-                {
-                    fastOscillatorSerie[i] = 100.0f * (closeSerie.Values[i] - lowestLow) / (highestHigh - lowestLow);
-                }
-                if (i < period)
-                {
-                    fastOscillatorSerie[i] = Math.Max(30.0f, fastOscillatorSerie[i]);
-                    fastOscillatorSerie[i] = Math.Min(70.0f, fastOscillatorSerie[i]);
-                }
-            }
-            fastOscillatorSerie.Name = $"FastK({period})";
-            return fastOscillatorSerie;
-        }
-        public FloatSerie CalculateFastBodyOscillator(int period)
-        {
-            //  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
-            //  %D = MA3(%K)
-            FloatSerie fastOscillatorSerie = new FloatSerie(this.Count);
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            var bodyHighSerie = this.GetSerie(StockDataType.BODYHIGH);
-            var bodyLowSerie = this.GetSerie(StockDataType.BODYLOW);
-            float lowestLow = float.MaxValue;
-            float highestHigh = float.MinValue;
-
-            for (int i = 0; i < period; i++)
             {
                 fastOscillatorSerie[i] = 50.0f;
             }
             for (int i = period; i < this.Count; i++)
             {
-                lowestLow = bodyLowSerie.GetMin(period, i);
-                highestHigh = bodyHighSerie.GetMax(period, i);
+                var lowestLow = lowSerie.GetMin(period, i);
+                var highestHigh = highSerie.GetMax(period, i);
                 if (highestHigh == lowestLow)
                 {
                     fastOscillatorSerie[i] = 50.0f;
@@ -1216,6 +1191,70 @@ namespace StockAnalyzer.StockClasses
             fastOscillatorSerie.Name = $"FastK({period})";
             return fastOscillatorSerie;
         }
+
+        /// <summary>
+        /// 
+        ///  %K = 100*(Close - lowest(14))/(highest(14)-lowest(14))
+        ///  %D = MA3(%K)
+        /// </summary>
+        /// <param name="period"></param>
+        /// <param name="indicatorType"></param>
+        /// <returns></returns>
+        public float CalculateLastFastOscillator(int period, IndicatorType indicatorType, int smoothingPeriod = -1)
+        {
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+            float fastOscillator = 50.0f;
+
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, indicatorType, smoothingPeriod);
+
+            var lowestLow = lowSerie.GetMin(this.Count - period, this.Count);
+            var highestHigh = highSerie.GetMax(this.Count - period, this.Count);
+            if (highestHigh == lowestLow)
+            {
+                fastOscillator = 50.0f;
+            }
+            else
+            {
+                var close = closeSerie.Last;
+                if (close == highestHigh)
+                    fastOscillator = 100.0f;
+                else if (close == lowestLow)
+                    fastOscillator = 0.0f;
+                else
+                    fastOscillator = 100.0f * (close - lowestLow) / (highestHigh - lowestLow);
+            }
+            return fastOscillator;
+        }
+
+        private void GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, IndicatorType indicatorType, int smoothingPeriod = -1)
+        {
+            switch (indicatorType)
+            {
+                case IndicatorType.HighLow:
+                    lowSerie = this.GetSerie(StockDataType.LOW);
+                    highSerie = this.GetSerie(StockDataType.HIGH);
+                    break;
+                case IndicatorType.Body:
+                    lowSerie = this.GetSerie(StockDataType.BODYLOW);
+                    highSerie = this.GetSerie(StockDataType.BODYHIGH);
+                    break;
+                case IndicatorType.Close:
+                    highSerie = lowSerie = this.GetSerie(StockDataType.CLOSE);
+                    break;
+                case IndicatorType.CloseEMA:
+                    if (smoothingPeriod > 1)
+                    {
+                        highSerie = lowSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(smoothingPeriod);
+                    }
+                    else
+                        throw new ArgumentOutOfRangeException(nameof(smoothingPeriod), "smoothingPeriod shall be greater than 1");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(indicatorType), indicatorType, "Unexpected enum value in CalculateFastOscillator");
+            }
+            ;
+        }
+
         public void CalculateEMATrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
         {
             float alpha = 2.0f / (float)(period + 1);

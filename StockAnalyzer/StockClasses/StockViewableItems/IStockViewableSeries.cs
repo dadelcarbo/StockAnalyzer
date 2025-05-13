@@ -30,6 +30,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         Cloud,
         AutoDrawing
     }
+    public enum IndicatorType
+    {
+        HighLow,
+        Body,
+        Close,
+        CloseEMA
+    }
 
     public interface IStockViewableSeries : IStockVisibility
     {

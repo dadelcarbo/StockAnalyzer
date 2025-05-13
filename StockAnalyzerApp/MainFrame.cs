@@ -3092,9 +3092,8 @@ namespace StockAnalyzerApp
                 StockSplashScreen.ProgressText = alertDef.Title + " " + alertDef.BarDuration + " for " + alertDef.Group;
 
                 var rankIndicator = string.IsNullOrEmpty(alertDef.Speed) ? "ROR(35)" : alertDef.Speed;
-                var stokIndicator = alertDef.Stok == 0 ? "STOK(35)" : $"STOK({alertDef.Stok})";
 
-
+                var stokPeriod = alertDef.Stok == 0 ? 35 : alertDef.Stok;
 
                 var alerts = StockDictionary.Instance.MatchAlert(alertDef);
 
@@ -3121,7 +3120,7 @@ namespace StockAnalyzerApp
                     <th>Stock Name</th>
                     <th>Group</th>
                     <th>{rankIndicator}</th>
-                    <th>{stokIndicator}</th>
+                    <th>STOK({stokPeriod})</th>
                     <th>Trail Stop %</th>
                     <th>Trail Stop</th>
                     <th>{alertDef.BarDuration} %</th>
@@ -3141,7 +3140,7 @@ namespace StockAnalyzerApp
                     var bitmapString = this.SnapshotAsHtml();
 
                     var stockName = stockNameTemplate.Replace("%MSG%", alertValue.StockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
-                    var stokValue = alertValue.StockSerie.GetIndicator(stokIndicator).Series[0][alertValue.StockSerie.LastIndex];
+                    var stokValue = alertValue.StockSerie.CalculateLastFastOscillator(stokPeriod, IndicatorType.Close);
                     if (float.IsNaN(alertValue.Stop))
                     {
                         html += rowTemplate.

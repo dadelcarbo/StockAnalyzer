@@ -29,11 +29,11 @@ namespace StockAnalyzer.StockClasses
             var speedIndicatorName = string.IsNullOrEmpty(AlertDef.Speed) ? "ROR(35)" : AlertDef.Speed;
             var speedIndicator = StockSerie.GetIndicator(speedIndicatorName);
 
-            var stokIndicatorName = $"STOK({(AlertDef.Stok == 0 ? 35 : AlertDef.Stok)})";
-            var stokIndicator = StockSerie.GetIndicator(stokIndicatorName);
+            var stokPeriod = AlertDef.Stok == 0 ? 35 : AlertDef.Stok;
 
             var closeSerie = StockSerie.GetSerie(StockDataType.CLOSE);
             var highest = closeSerie.GetHighestIn(lastIndex);
+            var stok = StockSerie.CalculateLastFastOscillator(stokPeriod, StockViewableItems.IndicatorType.Close);
 
             var cupHandle = highest > 5 ? closeSerie.DetectCupHandle(lastIndex, 5, false) : null;
             int step = 0;
@@ -55,10 +55,9 @@ namespace StockAnalyzer.StockClasses
                 Speed = speedIndicator.Series[0][lastIndex],
                 SpeedFormat = speedIndicator.SerieFormats?[0],
 
-                Stok = stokIndicator.Series[0][lastIndex],
-
                 Stop = stop,
                 Highest = highest,
+                Stok = stok,
                 Step = step
             };
         }
