@@ -581,7 +581,7 @@ namespace StockAnalyzerApp
                 DateTime reportDate = DateTime.MinValue;
                 if (File.Exists(fileName))
                 {
-                    reportDate = DateTime.Parse(File.ReadAllText(fileName));
+                    reportDate = DateTime.Parse(File.ReadAllText(fileName), CultureInfo.InvariantCulture);
                 }
                 cac40.BarDuration = BarDuration.Daily;
                 if (reportDate < cac40.LastValue.DATE)

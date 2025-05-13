@@ -8,6 +8,7 @@ using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -500,7 +501,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
                 var cac40 = StockDictionary.Instance["CAC40"];
                 cac40.Initialise();
-                File.WriteAllText(Path.Combine(Folders.Report, "LastGeneration.txt"), cac40.LastValue.DATE.ToString());
+                File.WriteAllText(Path.Combine(Folders.Report, "LastGeneration.txt"), cac40.LastValue.DATE.ToString(CultureInfo.InvariantCulture));
             });
         }
         #endregion

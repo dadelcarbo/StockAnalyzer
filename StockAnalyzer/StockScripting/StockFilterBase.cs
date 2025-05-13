@@ -15,20 +15,13 @@ namespace StockAnalyzer.StockScripting
             var previousBarDuration = stockSerie.BarDuration;
             stockSerie.BarDuration = barDuration;
 
+            if (index > stockSerie.ValueArray.Length - 1)
+                return false;
 
             StockDailyValue currentBar = index == -1 ? stockSerie.LastValue : stockSerie.ValueArray[index];
 
             return MatchFilter(stockSerie, currentBar, index == -1 ? stockSerie.LastIndex : index);
         }
         protected abstract bool MatchFilter(StockSerie stockSerie, StockDailyValue bar, int index);
-    }
-
-
-    public class StockFilterImpl : StockFilterBase
-    {
-        protected override bool MatchFilter(StockSerie stockSerie, StockDailyValue bar, int index)
-        {
-            return true;
-        }
     }
 }
