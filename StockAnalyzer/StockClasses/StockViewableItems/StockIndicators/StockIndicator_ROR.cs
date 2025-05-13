@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie rocSerie = (stockSerie.CalculateRateOfRise((int)this.parameters[0], IndicatorType.Body));
+            FloatSerie rocSerie = (stockSerie.CalculateRateOfRise((int)this.parameters[0], InputType.Body));
 
             this.series[0] = rocSerie;
             this.Series[0].Name = this.Name;

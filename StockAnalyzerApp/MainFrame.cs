@@ -3140,7 +3140,7 @@ namespace StockAnalyzerApp
                     var bitmapString = this.SnapshotAsHtml();
 
                     var stockName = stockNameTemplate.Replace("%MSG%", alertValue.StockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
-                    var stokValue = alertValue.StockSerie.CalculateLastFastOscillator(stokPeriod, IndicatorType.Close);
+                    var stokValue = alertValue.StockSerie.CalculateLastFastOscillator(stokPeriod, InputType.Close);
                     if (float.IsNaN(alertValue.Stop))
                     {
                         html += rowTemplate.

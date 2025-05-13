@@ -1035,11 +1035,11 @@ namespace StockAnalyzer.StockClasses
         #endregion
         #region Indicators calculation
 
-        public FloatSerie CalculateRateOfRise(int period, IndicatorType indicatorType, int smoothingPeriod = -1)
+        public FloatSerie CalculateRateOfRise(int period, InputType inputType, int smoothingPeriod = -1)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
 
-            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, indicatorType, smoothingPeriod);
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, inputType, smoothingPeriod);
 
             FloatSerie serie = new FloatSerie(Values.Count());
             float min;
@@ -1155,14 +1155,14 @@ namespace StockAnalyzer.StockClasses
         ///  %D = MA3(%K)
         /// </summary>
         /// <param name="period"></param>
-        /// <param name="indicatorType"></param>
+        /// <param name="inputType"></param>
         /// <returns></returns>
-        public FloatSerie CalculateFastOscillator(int period, IndicatorType indicatorType, int smoothingPeriod = -1)
+        public FloatSerie CalculateFastOscillator(int period, InputType inputType, int smoothingPeriod = -1)
         {
             FloatSerie fastOscillatorSerie = new FloatSerie(this.Count);
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
 
-            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, indicatorType, smoothingPeriod);
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, inputType, smoothingPeriod);
 
 
             for (int i = 0; i < this.Count; i++)
@@ -1198,14 +1198,14 @@ namespace StockAnalyzer.StockClasses
         ///  %D = MA3(%K)
         /// </summary>
         /// <param name="period"></param>
-        /// <param name="indicatorType"></param>
+        /// <param name="inputType"></param>
         /// <returns></returns>
-        public float CalculateLastFastOscillator(int period, IndicatorType indicatorType, int smoothingPeriod = -1)
+        public float CalculateLastFastOscillator(int period, InputType inputType, int smoothingPeriod = -1)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
             float fastOscillator = 50.0f;
 
-            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, indicatorType, smoothingPeriod);
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, inputType, smoothingPeriod);
 
             var lowestLow = lowSerie.GetMin(this.Count - period, this.Count);
             var highestHigh = highSerie.GetMax(this.Count - period, this.Count);
@@ -1226,22 +1226,22 @@ namespace StockAnalyzer.StockClasses
             return fastOscillator;
         }
 
-        private void GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, IndicatorType indicatorType, int smoothingPeriod = -1)
+        public void GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, InputType inputType, int smoothingPeriod = -1)
         {
-            switch (indicatorType)
+            switch (inputType)
             {
-                case IndicatorType.HighLow:
+                case InputType.HighLow:
                     lowSerie = this.GetSerie(StockDataType.LOW);
                     highSerie = this.GetSerie(StockDataType.HIGH);
                     break;
-                case IndicatorType.Body:
+                case InputType.Body:
                     lowSerie = this.GetSerie(StockDataType.BODYLOW);
                     highSerie = this.GetSerie(StockDataType.BODYHIGH);
                     break;
-                case IndicatorType.Close:
+                case InputType.Close:
                     highSerie = lowSerie = this.GetSerie(StockDataType.CLOSE);
                     break;
-                case IndicatorType.CloseEMA:
+                case InputType.CloseEMA:
                     if (smoothingPeriod > 1)
                     {
                         highSerie = lowSerie = this.GetSerie(StockDataType.CLOSE).CalculateEMA(smoothingPeriod);
@@ -1250,7 +1250,7 @@ namespace StockAnalyzer.StockClasses
                         throw new ArgumentOutOfRangeException(nameof(smoothingPeriod), "smoothingPeriod shall be greater than 1");
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(indicatorType), indicatorType, "Unexpected enum value in CalculateFastOscillator");
+                    throw new ArgumentOutOfRangeException(nameof(inputType), inputType, "Unexpected enum value in CalculateFastOscillator");
             }
             ;
         }

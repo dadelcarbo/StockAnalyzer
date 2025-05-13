@@ -30,7 +30,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         Cloud,
         AutoDrawing
     }
-    public enum IndicatorType
+    public enum InputType
     {
         HighLow,
         Body,

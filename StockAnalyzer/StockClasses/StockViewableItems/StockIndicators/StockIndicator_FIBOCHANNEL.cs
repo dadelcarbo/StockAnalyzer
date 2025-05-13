@@ -9,11 +9,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     {
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
 
-        public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "Ratio" };
+        public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "Ratio", "Input" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 75, 75, 0.61f };
+        public override Object[] ParameterDefaultValues => new Object[] { 75, 75, 0.61f, InputType.HighLow };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 5f) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 5f), new ParamRangeInput() };
 
         public override string[] SerieNames => new string[] { "HIGH", "FiboUp", "MID", "FiboLow", "LOW" };
 
@@ -29,14 +29,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             int highPeriod = (int)this.parameters[0];
             int lowPeriod = (int)this.parameters[1];
+            var inputType = (InputType)Enum.Parse(typeof(InputType), this.parameters[3].ToString());
+
             int startPeriod = Math.Max(highPeriod, lowPeriod);
 
             // Calculate FIBOCHANNEL Channel
             FloatSerie upLine = new FloatSerie(stockSerie.Count);
             FloatSerie downLine = new FloatSerie(stockSerie.Count);
 
-            FloatSerie highSerie = stockSerie.GetSerie(StockDataType.BODYHIGH);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+            stockSerie.GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, inputType);
 
             for (int i = 0; i < startPeriod; i++)
             {

@@ -139,6 +139,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
             return StockIndicatorMovingAvgBase.MaTypes.Contains(valueString.ToUpper());
         }
     }
+    public class ParamRangeInput : ParamRange
+    {
+        public ParamRangeInput()
+        {
+            this.MinValue = String.Empty;
+            this.MaxValue = String.Empty;
+        }
+
+        public override bool isInRange(Object value)
+        {
+            return true;
+        }
+
+        public override bool isValidString(string valueString)
+        {
+            return Enum.TryParse<InputType>(valueString.ToUpper(), out _);
+        }
+    }
 
     public class ParamRangeViewableItem : ParamRange
     {
