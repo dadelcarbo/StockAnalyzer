@@ -7,6 +7,11 @@ using System.Linq;
 
 namespace StockAnalyzer.StockMath
 {
+    public struct SerieItem
+    {
+        public int Index;
+        public float Value;
+    }
     public class FloatSerie : IEnumerable<float>
     {
         public string Name { get; set; }
@@ -1249,6 +1254,7 @@ namespace StockAnalyzer.StockMath
             }
             return false;
         }
+
         public bool IsBottomIsh(int index)
         {
             if (index > 0 && index < this.Count - 1)
@@ -1281,6 +1287,34 @@ namespace StockAnalyzer.StockMath
                 }
             }
             return minIndex;
+        }
+        public SerieItem FindMin(int startIndex, int endIndex)
+        {
+            int minIndex = startIndex;
+            float min = this[startIndex];
+            for (int i = startIndex + 1; i <= endIndex; i++)
+            {
+                if (this[i] < min)
+                {
+                    minIndex = i;
+                    min = this[i];
+                }
+            }
+            return new SerieItem { Index = minIndex, Value = min };
+        }
+        public SerieItem FindMax(int startIndex, int endIndex)
+        {
+            int maxIndex = startIndex;
+            float max = this[startIndex];
+            for (int i = startIndex + 1; i <= endIndex; i++)
+            {
+                if (this[i] > max)
+                {
+                    maxIndex = i;
+                    max = this[i];
+                }
+            }
+            return new SerieItem { Index = maxIndex, Value = max };
         }
         public int FindMaxIndex(int startIndex, int endIndex)
         {

@@ -682,6 +682,9 @@ namespace StockAnalyzer.StockClasses
 
         public void PreInitialise()
         {
+            if (this.Values == null || this.Values.Count() == 0)
+                return;
+
             if (!this.BarSmoothedDictionary.ContainsKey("Daily"))
             {
                 this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
@@ -1035,7 +1038,7 @@ namespace StockAnalyzer.StockClasses
         #endregion
         #region Indicators calculation
 
-        public FloatSerie CalculateRateOfRise(int period, InputType inputType, int smoothingPeriod = -1)
+        public FloatSerie CalculateRateOfRise(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
 
@@ -1057,6 +1060,28 @@ namespace StockAnalyzer.StockClasses
             serie.Name = $"ROR_{period}";
             return serie;
         }
+        public float CalculateLastROR(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
+        {
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, inputType, smoothingPeriod);
+
+            var min = lowSerie.GetMin(this.LastIndex - period, this.LastIndex);
+            return (this.LastValue.CLOSE - min) / min;
+        }
+        public float CalculateLastROC(int period)
+        {
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+
+            var @ref = closeSerie[this.LastIndex - period];
+            return (this.LastValue.CLOSE - @ref) / @ref;
+        }
+        public float CalculateLastROD(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
+        {
+            GetHighLowSeries(out FloatSerie _, out FloatSerie highSerie, inputType, smoothingPeriod);
+
+            var max = highSerie.GetMax(this.LastIndex - period, this.LastIndex);
+            return (this.LastValue.CLOSE - max) / max;
+        }
+
         public FloatSerie CalculateRateOfDecline(int period)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
@@ -1157,7 +1182,7 @@ namespace StockAnalyzer.StockClasses
         /// <param name="period"></param>
         /// <param name="inputType"></param>
         /// <returns></returns>
-        public FloatSerie CalculateFastOscillator(int period, InputType inputType, int smoothingPeriod = -1)
+        public FloatSerie CalculateFastOscillator(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
         {
             FloatSerie fastOscillatorSerie = new FloatSerie(this.Count);
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
@@ -1200,7 +1225,7 @@ namespace StockAnalyzer.StockClasses
         /// <param name="period"></param>
         /// <param name="inputType"></param>
         /// <returns></returns>
-        public float CalculateLastFastOscillator(int period, InputType inputType, int smoothingPeriod = -1)
+        public float CalculateLastFastOscillator(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
             float fastOscillator = 50.0f;
@@ -1224,6 +1249,22 @@ namespace StockAnalyzer.StockClasses
                     fastOscillator = 100.0f * (close - lowestLow) / (highestHigh - lowestLow);
             }
             return fastOscillator;
+        }
+
+        /// <summary>
+        ///  Get the price range over the period. Higuest in period - Lowest in period.
+        /// </summary>
+        /// <param name="period"></param>
+        /// <param name="inputType"></param>
+        /// <returns></returns>
+        public float CalculateLastRange(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
+        {
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, inputType, smoothingPeriod);
+
+            var lowestLow = lowSerie.GetMin(this.Count - period, this.Count);
+            var highestHigh = highSerie.GetMax(this.Count - period, this.Count);
+
+            return highestHigh - lowestLow;
         }
 
         public void GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, InputType inputType, int smoothingPeriod = -1)

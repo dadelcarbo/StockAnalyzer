@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeIndicator(), new ParamRangeInt(0, 500) };
         public override string[] ParameterNames => new string[] { "Indicator", "Lookback" };
 
-        public override string[] SerieNames => new string[] { $"MAX({this.Parameters[0]})", $"{this.Parameters[1]}" };
+        public override string[] SerieNames => new string[] { $"MAX({this.Parameters[0]})", $"{this.Parameters[0]}" };
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.DarkRed), new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot } };
 

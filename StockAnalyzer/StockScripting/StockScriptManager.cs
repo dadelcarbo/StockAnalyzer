@@ -1,5 +1,6 @@
 ﻿using Microsoft.CSharp;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
+using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerSettings;
 using System;
@@ -16,11 +17,13 @@ namespace StockAnalyzer.StockScripting
 {
     public class StockScriptManager
     {
-        private static readonly string filterClassTemplate = @"using System;
+        private static readonly string filterClassTemplate = @"
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockViewableItems;
 
 namespace StockAnalyzer.StockScripting
 {
@@ -32,6 +35,40 @@ namespace StockAnalyzer.StockScripting
         }
     }
 }";
+
+        private bool MatchFilter(StockSerie stockSerie, StockDailyValue bar, int index)
+        {
+            return stockSerie.GetTrailStop("TRAILATR(75,35,1.25,0.25,EMA)").GetEvents("Consolidation")[index];
+
+            if (bar.VARIATION < 0)
+                return false;
+
+            int period = 35;
+
+            var maxRor = stockSerie.GetIndicator("MAX(ROR(" + period + ")," + period + ")").Series[0][index];
+            if (maxRor < 0.3)
+                return false;
+
+            var stoch = stockSerie.CalculateLastFastOscillator(period * 2, InputType.Close);
+            if (stoch < 61)
+                return false;
+
+            var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
+            var highPivot = highSerie.FindMax(stockSerie.LastIndex - period, stockSerie.LastIndex);
+
+            var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            var lowPivot = lowSerie.FindMin(highPivot.Index, stockSerie.LastIndex);
+
+            var longRange = highPivot.Value - lowPivot.Value;
+            var shortRange = stockSerie.CalculateLastRange(2, InputType.Body);
+
+            if (longRange / shortRange < 10.0f)
+                return false;
+
+            return true;
+        }
+
+
         public CompilerResults CompilerResults { get; private set; }
         public IStockFilter CreateStockFilterInstance(StockScript stockScript)
         {
@@ -46,7 +83,6 @@ namespace StockAnalyzer.StockScripting
 
             Dictionary<string, string> providerOptions = new Dictionary<string, string>
             {
-                { "CompilerVersion", "v3.5" }
             };
             CSharpCodeProvider codeProvider = new CSharpCodeProvider(providerOptions);
 
@@ -54,7 +90,7 @@ namespace StockAnalyzer.StockScripting
             //Make sure we generate an EXE, not a DLL
             parameters.GenerateExecutable = false;
             parameters.GenerateInMemory = true;
-            parameters.IncludeDebugInformation = true;
+            parameters.IncludeDebugInformation = false;
             parameters.ReferencedAssemblies.Add(@"System.dll");
             parameters.ReferencedAssemblies.Add(@"System.Core.dll");
             parameters.ReferencedAssemblies.Add(@"System.Data.DataSetExtensions.dll");

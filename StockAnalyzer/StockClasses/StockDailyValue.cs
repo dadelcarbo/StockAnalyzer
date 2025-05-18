@@ -12,11 +12,26 @@ namespace StockAnalyzer.StockClasses
         LOW,
         BODYHIGH,
         BODYLOW,
+        /// <summary>
+        /// Variation in percent from previous bar
+        /// </summary>
         VARIATION,
+        /// <summary>
+        /// ATR: Average True Range, includes gap from previous bar
+        /// </summary>
         ATR,
+        /// <summary>
+        /// ADR: Average Bar Range, ignores gap from previous bar
+        /// </summary>
         ADR,
+        /// <summary>
+        /// ADBR: Average Bar Body Range
+        /// </summary>
         ADBR,
         VOLUME,
+        /// <summary>
+        /// Amount of currency exchange during the bar. 0.5f * (OPEN + CLOSE) * VOLUME; 
+        /// </summary>
         EXCHANGED
     };
 
