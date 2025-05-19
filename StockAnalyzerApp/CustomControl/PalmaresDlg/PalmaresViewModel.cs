@@ -475,17 +475,26 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     float stockIndicator1 = float.NaN;
                     if (viewableSeries1 != null)
                     {
-                        try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
+                        if (Indicator1.StartsWith("ROR"))
+                            stockIndicator1 = stockSerie.CalculateLastROR((int)viewableSeries1.Parameters[0]);
+                        else
+                            try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
                     }
                     float stockIndicator2 = float.NaN;
                     if (viewableSeries2 != null)
                     {
-                        try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
+                        if (Indicator2.StartsWith("ROR"))
+                            stockIndicator2 = stockSerie.CalculateLastROR((int)viewableSeries2.Parameters[0]);
+                        else
+                            try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
                     }
                     float stockIndicator3 = float.NaN;
                     if (viewableSeries3 != null)
                     {
-                        try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
+                        if (Indicator3.StartsWith("ROR"))
+                            stockIndicator3 = stockSerie.CalculateLastROR((int)viewableSeries3.Parameters[0]);
+                        else
+                            try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
                     }
                     #endregion
 

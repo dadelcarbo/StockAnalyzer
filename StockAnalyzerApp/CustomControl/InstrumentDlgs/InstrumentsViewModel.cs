@@ -134,6 +134,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                         await Task.Delay(1);
                     }
                     stockSerie.Initialise();
+                    stockSerie.BarDuration = BarDuration.Daily;
 
                     Lines.Add(stockSerie);
                 }
