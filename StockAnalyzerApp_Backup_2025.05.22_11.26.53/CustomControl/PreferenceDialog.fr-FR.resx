@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="okBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>278, 225</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="okBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="cancelBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>197, 225</value>
+  </data>
+  <data name="cancelBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="cancelBtn.Text" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="downloadDataCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 19</value>
+  </data>
+  <data name="downloadDataCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>143, 17</value>
+  </data>
+  <data name="downloadDataCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="downloadDataCheckBox.Text" xml:space="preserve">
+    <value>Télécharger les données</value>
+  </data>
+  <data name="intradaySupportCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>245, 96</value>
+  </data>
+  <data name="generateBreadthCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 42</value>
+  </data>
+  <data name="generateBreadthCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>184, 17</value>
+  </data>
+  <data name="generateBreadthCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="generateBreadthCheckBox.Text" xml:space="preserve">
+    <value>Générer les "Breadth" indicateurs</value>
+  </data>
+  <data name="enableLoggingCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>245, 73</value>
+  </data>
+  <data name="enableLoggingCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 17</value>
+  </data>
+  <data name="enableLoggingCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="enableLoggingCheckBox.Text" xml:space="preserve">
+    <value>Activer le logging</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 17</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 13</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Identifiant</value>
+  </data>
+  <data name="userIDTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>67, 14</value>
+  </data>
+  <data name="userIDTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 20</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>11, 54</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>210, 76</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Démarrage de l'application</value>
+  </data>
+  <data name="getLicenseButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>227, 12</value>
+  </data>
+  <data name="getLicenseButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 23</value>
+  </data>
+  <data name="getLicenseButton.Text" xml:space="preserve">
+    <value>Télécharger la licence</value>
+  </data>
+  <data name="msg1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>357, 26</value>
+  </data>
+  <data name="msg1.Text" xml:space="preserve">
+    <value>Ultimate Chartist va redemarrer pour prendre en compte vos changements.
+Voulez-vous redémarrer maintenant ?.
+</value>
+  </data>
+  <data name="barNumberUpDown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>110, 24</value>
+  </data>
+  <data name="barNumberUpDown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>82, 20</value>
+  </data>
+  <data name="barNumberLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>91, 13</value>
+  </data>
+  <data name="barNumberLabel.Text" xml:space="preserve">
+    <value>Nombre de barres</value>
+  </data>
+  <data name="chartParamGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>212, 84</value>
+  </data>
+  <data name="chartParamGroupBox.Text" xml:space="preserve">
+    <value>Paramètres des graphiques</value>
+  </data>
+  <data name="shortSellSupportCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 19</value>
+  </data>
+  <data name="shortSellSupportCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>88, 17</value>
+  </data>
+  <data name="shortSellSupportCheckBox.Text" xml:space="preserve">
+    <value>Support VAD</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>62, 13</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Date Début</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>227, 130</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>365, 260</value>
+  </data>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAA
+        AAAgICADEBAQBQsLCwcODg4JEhISCwwMDA8MDAwRCwsLEQsLCxENDQ0RDAwMDw0NDQsHBwcJCwsLBxER
+        EQUkJCQDIyMjBxEREQ0LCwsVBwcHHQYGBiMFBQUpBAQELwQEBDMEBAQzBAQELwUFBSkGBwgjBCVGKwQ5
+        bS0PGy0PJycnB////wEsLCwDIiIiBQgICAV3dnc5jo6ORTk5OQ8MDAwLDAwMCw4ODgsQIiwLAYfDSQCv
+        4ccAtubXAJPVbQpVpAf///8Br6+vH5mZmSv///8BjYyNI9LR0dGzs7NL////Af///wH///8BAYvRIQCs
+        5c0AxfD/ALzu/wCh4rMBasIZ////AcLBwVe7urqP////AXR0dBXMy8vdyMfHi2VlZQX///8BCl62BwCl
+        4JEAxPD/AMjx/wC47PcAk9qDA2C7C////wGzsrJH2NfX2cPCwq/Qz8/b1dTU+7i3uKOFhYURAX7KBQCh
+        3WEAwe7tAMfx+QC06NsAkNVnBoDNDf///wH///8BgICADcjIyI3R0NDt0dDR/czMzf+6urvxnJ2heQCP
+        1VcAsujXALzs7wCp4pUBhc8xBlm3A////wH///8B////Af///wGWlpYRtrW1O6uqq2+8vLztxcXF/5Cm
+        ue8AsOnlAKXk5wCa3GECfcsP////Af///wH///8B////Af///wH///8B////Af///wH///8BkpKSObGx
+        sdeys7X/RZnH/zqSw5lpepIP////Af///wH///8B////Af///wH///8B////Af///wH///8B////AZKS
+        kyWpqarBq6us9bK1uf+ssLbrnZ2de2hoaAv///8B////Af///wH///8B////Af///wH///8B////AYyM
+        jBeoqKivqamqr5CQkE+0tLXjwcHC/8DAwfO5ubnHrKusdZSUlA3///8B////Af///wH///8BWFhYB4GB
+        gjGkpKWnpaWmmYGBgRn///8Bo6OjVcbGxvXR0dH9zc3N49HQ0e2qqqtn////Af///wH///8BcHBwA6+u
+        r2+trK3JoKChlYeHiBn///8B////Ab6+vkHIx8f1vr29jbKxskHHxsaNv76+n////wH///8B////AbW1
+        tTfY2Njbvr6+15mZmkH///8B////Af///wG6ubkxyMfH16+vr03///8BnJycKba2tmX///8B////Af//
+        /wGmpqYT1dTUd6ysrEV1dXUH////Af///wH///8BlJSUCczLy2Gqqalp////AXV1dQNubm4J////Af//
+        /wH///8B////AYKCggf///8B////Af///wH///8B////Af///wGqqakHm5qaF////wH///8B////Af//
+        /wH///8BAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA
+        //8AAP//AAD//w==
+</value>
+  </data>
+</root>

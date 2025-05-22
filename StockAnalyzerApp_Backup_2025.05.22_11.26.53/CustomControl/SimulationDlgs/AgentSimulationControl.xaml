@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.SimulationDlgs.AgentSimulationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.SimulationDlgs" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
+             xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="900"
+             Height="450" Width="1000">
+    <UserControl.Resources>
+        <local:AgentSimulationViewModel x:Key="ViewModel"></local:AgentSimulationViewModel>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModel}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" >
+            <StackPanel Orientation="Horizontal" Margin="1">
+                <Label Margin="2">Group</Label>
+                <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
+                <Label>Duration</Label>
+                <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
+                <Label Margin="2">Selector</Label>
+                <telerik:RadComboBox Margin="1" Width="150" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
+                <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click" Width="60"/>
+            </StackPanel>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="Agent Parameters" Grid.Column="0">
+                <StackPanel Margin="2">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label>Agent</Label>
+                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
+                    </StackPanel>
+                    <telerik:RadGridView FontSize="9" ItemsSource="{Binding AgentParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Entry Stop (Risk)"  Grid.Column="1" >
+                <StackPanel Margin="2">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label>Entry Stop</Label>
+                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding EntryStops}" SelectedItem="{Binding EntryStop}" ToolTip="{Binding EntryStopDescription}"/>
+                    </StackPanel>
+                    <telerik:RadGridView FontSize="9" ItemsSource="{Binding EntryStopParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Entry Target"  Grid.Column="2" >
+                <StackPanel Margin="2">
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <Label>Entry Target</Label>
+                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding EntryTargets}" SelectedItem="{Binding EntryTarget}" ToolTip="{Binding EntryTargetDescription}"/>
+                    </StackPanel>
+                    <telerik:RadGridView FontSize="9" ItemsSource="{Binding EntryTargetParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+        <TabControl Grid.Row="2">
+            <TabItem Header="Report">
+                <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+            </TabItem>
+            <TabItem Header="Log">
+                <TextBox Margin="2" Text="{Binding Stats}" Background="White" VerticalScrollBarVisibility="Auto"/>
+            </TabItem>
+            <TabItem Header="Trades">
+                <telerik:RadGridView FontSize="9" ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
+                             SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged"  ClipboardCopyMode="All" ShowColumnFooters="True">
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}" Width="200">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:CountFunction Caption="Nb trades: " />
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="Stopped" DataMemberBinding="{Binding IsStopped}"/>
+                        <telerik:GridViewDataColumn Header="EntryDate" DataMemberBinding="{Binding EntryDate, StringFormat=d}"/>
+                        <telerik:GridViewDataColumn Header="EntryValue" DataMemberBinding="{Binding EntryValue}"/>
+                        <telerik:GridViewDataColumn Header="ExitDate" DataMemberBinding="{Binding ExitDate, StringFormat=d}"/>
+                        <telerik:GridViewDataColumn Header="ExitValue" DataMemberBinding="{Binding ExitValue}"/>
+                        <telerik:GridViewDataColumn Header="Gain" DataMemberBinding="{Binding Gain, StringFormat=P2}">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:AverageFunction Caption="Average Gain: " ResultFormatString="{}{0:P2}"/>
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="Risk Reward" DataMemberBinding="{Binding RiskRewardRatio, StringFormat=F2}">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:AverageFunction Caption="Average Gain: " ResultFormatString="{}{0:F2}"/>
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="Drawdown" DataMemberBinding="{Binding Drawdown, StringFormat=P2}">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:MinFunction Caption="Max Drawdown: " ResultFormatString="{}{0:P2}"/>
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
+                        <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Duration}">
+                            <telerik:GridViewDataColumn.AggregateFunctions>
+                                <telerik:AverageFunction Caption="Average Duration: " ResultFormatString="{}{0:F2}"/>
+                            </telerik:GridViewDataColumn.AggregateFunctions>
+                        </telerik:GridViewDataColumn>
+
+                        <!--<telerik:GridViewDataColumn Header="PartialExitDate" DataMemberBinding="{Binding PartialExitDate, StringFormat=d}"/>
+                        <telerik:GridViewDataColumn Header="PartialExitValue" DataMemberBinding="{Binding PartialExitValue}"/>-->
+
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
+        </TabControl>
+        <ProgressBar Grid.Row="3" Value="{Binding ProgressValue, Mode=OneWay}" Minimum="0" Maximum="100" Margin="2" Height="16" HorizontalAlignment="Stretch" />
+    </Grid>
+</UserControl>
