@@ -320,6 +320,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DDLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA2SR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RSN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockSRIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MAX.cs" />

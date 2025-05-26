@@ -250,6 +250,34 @@ namespace StockAnalyzer.StockMath
             return (float)Math.Sqrt(sum / (endIndex - startIndex));
         }
 
+        public FloatSerie CalculateZScore(int period)
+        {
+            FloatSerie ma = this.CalculateMA(period);
+            FloatSerie zScore = new FloatSerie(this.Count, "Z-SCORE");
+            float avg;
+            float sum;
+            float spread = 0.0f;
+            int count;
+            for (int i = period; i < this.Count; i++)
+            {
+                count = 0;
+                sum = 0.0f;
+                avg = ma[i];
+                for (int j = i - period; j <= i; j++)
+                {
+                    count++;
+                    spread = this.Values[j] - avg;
+                    sum += spread * spread;
+                }
+                if (sum != 0)
+                {
+                    var stdev = (float)Math.Sqrt(sum / count);
+                    zScore[i] = spread / stdev;
+                }
+            }
+            return zScore;
+        }
+
         public class HistogramBucket
         {
             public int Index { get; set; }
