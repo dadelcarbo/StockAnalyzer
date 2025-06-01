@@ -64,6 +64,19 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+        private float indicator1Min;
+        public float Indicator1Min
+        {
+            get { return indicator1Min; }
+            set
+            {
+                if (value != indicator1Min)
+                {
+                    indicator1Min = value;
+                    OnPropertyChanged("Indicator1Min");
+                }
+            }
+        }
         private string indicator2;
         public string Indicator2
         {
@@ -77,6 +90,19 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+        private float indicator2Min;
+        public float Indicator2Min
+        {
+            get { return indicator2Min; }
+            set
+            {
+                if (value != indicator2Min)
+                {
+                    indicator2Min = value;
+                    OnPropertyChanged("Indicator2Min");
+                }
+            }
+        }
         private string indicator3;
         public string Indicator3
         {
@@ -87,6 +113,19 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     indicator3 = value;
                     OnPropertyChanged("Indicator3");
+                }
+            }
+        }
+        private float indicator3Min;
+        public float Indicator3Min
+        {
+            get { return indicator3Min; }
+            set
+            {
+                if (value != indicator3Min)
+                {
+                    indicator3Min = value;
+                    OnPropertyChanged("Indicator3Min");
                 }
             }
         }
@@ -325,6 +364,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 try
                 {
                     viewableSeries1 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator1) as IStockIndicator;
+                    if (viewableSeries1 == null)
+                    {
+                        MessageBox.Show($"Indicator1: {this.indicator1} nout found", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
                 }
                 catch { }
             }
@@ -334,6 +378,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 try
                 {
                     viewableSeries2 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator2) as IStockIndicator;
+                    if (viewableSeries2 == null)
+                    {
+                        MessageBox.Show($"Indicator2: {this.indicator2} nout found", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
                 }
                 catch { }
             }
@@ -343,6 +392,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 try
                 {
                     viewableSeries3 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator3) as IStockIndicator;
+                    if (viewableSeries3 == null)
+                    {
+                        MessageBox.Show($"Indicator3: {this.indicator3} not found !", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
                 }
                 catch { }
             }
@@ -400,7 +454,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     }
                     if (!stockSerie.Initialise())
                         continue;
-
 
                     var previousDuration = stockSerie.BarDuration;
                     stockSerie.BarDuration = this.BarDuration;
@@ -479,6 +532,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                             stockIndicator1 = stockSerie.CalculateLastROR((int)viewableSeries1.Parameters[0]);
                         else
                             try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
+
+                        if (stockIndicator1 != float.NaN && indicator1Min > 0 && stockIndicator1 < indicator1Min)
+                            continue;
                     }
                     float stockIndicator2 = float.NaN;
                     if (viewableSeries2 != null)
@@ -487,6 +543,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                             stockIndicator2 = stockSerie.CalculateLastROR((int)viewableSeries2.Parameters[0]);
                         else
                             try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
+
+                        if (stockIndicator2 != float.NaN && indicator2Min > 0 && stockIndicator2 < indicator2Min)
+                            continue;
                     }
                     float stockIndicator3 = float.NaN;
                     if (viewableSeries3 != null)
@@ -495,6 +554,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                             stockIndicator3 = stockSerie.CalculateLastROR((int)viewableSeries3.Parameters[0]);
                         else
                             try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
+
+                        if (stockIndicator3 != float.NaN && indicator3Min > 0 && stockIndicator3 < indicator3Min)
+                            continue;
                     }
                     #endregion
 

@@ -345,6 +345,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         private void clearFilters_Click(object sender, RoutedEventArgs e)
         {
             this.gridView.FilterDescriptors.Clear();
+
+            this.ViewModel.Indicator1Min = 0;
+            this.ViewModel.Indicator2Min = 0;
+            this.ViewModel.Indicator3Min = 0;
         }
 
         private void saveFilters_Click(object sender, RoutedEventArgs e)
@@ -369,6 +373,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Indicator1 = this.ViewModel.Indicator1,
                     Indicator2 = this.ViewModel.Indicator2,
                     Indicator3 = this.ViewModel.Indicator3,
+                    Indicator1Min = this.ViewModel.Indicator1Min,
+                    Indicator2Min = this.ViewModel.Indicator2Min,
+                    Indicator3Min = this.ViewModel.Indicator3Min,
 
                     AthOnly = this.ViewModel.AthOnly,
                     Ath1 = this.ViewModel.Ath1,
@@ -418,6 +425,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
                 this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
                 this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
+                this.ViewModel.Indicator1Min = palmaresSettings.Indicator1Min;
+                this.ViewModel.Indicator2Min = palmaresSettings.Indicator2Min;
+                this.ViewModel.Indicator3Min = palmaresSettings.Indicator3Min;
 
                 this.ViewModel.AthOnly = palmaresSettings.AthOnly;
                 this.ViewModel.Ath1 = palmaresSettings.Ath1;

@@ -11,6 +11,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public string Indicator1 { get; set; }
         public string Indicator2 { get; set; }
         public string Indicator3 { get; set; }
+        public float Indicator1Min { get; set; }
+        public float Indicator2Min { get; set; }
+        public float Indicator3Min { get; set; }
         public bool AthOnly { get; set; }
         public int Ath1 { get; set; } = 1;
         public int Ath2 { get; set; }

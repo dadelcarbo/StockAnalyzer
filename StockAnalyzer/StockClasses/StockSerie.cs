@@ -1190,14 +1190,14 @@ namespace StockAnalyzer.StockClasses
             GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, inputType, smoothingPeriod);
 
 
-            for (int i = 0; i < this.Count; i++)
+            for (int i = 0; i < Math.Min(period, this.Count); i++)
             {
                 fastOscillatorSerie[i] = 50.0f;
             }
             for (int i = period; i < this.Count; i++)
             {
-                var lowestLow = lowSerie.GetMin(period, i);
-                var highestHigh = highSerie.GetMax(period, i);
+                var lowestLow = lowSerie.GetMin(i - period, i);
+                var highestHigh = highSerie.GetMax(i - period, i);
                 if (highestHigh == lowestLow)
                 {
                     fastOscillatorSerie[i] = 50.0f;

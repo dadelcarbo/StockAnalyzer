@@ -34,7 +34,7 @@
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Content="Stop" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="70" IsChecked="{Binding BullOnly}"/>
                         <TextBox Text="{Binding Stop}" Width="200" Height="20" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-                        <Label>Liquidity</Label>
+                        <Label>Liquidity (Min):</Label>
                         <TextBox Text="{Binding Liquidity}" Width="30" Height="20" VerticalContentAlignment="Center"/>
                         <Label>M€</Label>
                     </StackPanel>
@@ -70,9 +70,27 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <GroupBox Header="Speed Indicators" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
-                    <TextBox Text="{Binding Indicator1}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
-                    <TextBox Text="{Binding Indicator2}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
-                    <TextBox Text="{Binding Indicator3}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                    <StackPanel>
+                        <TextBox Text="{Binding Indicator1}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label>>=</Label>
+                            <TextBox Text="{Binding Indicator1Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBox Text="{Binding Indicator2}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label>>=</Label>
+                            <TextBox Text="{Binding Indicator2Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBox Text="{Binding Indicator3}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label>>=</Label>
+                            <TextBox Text="{Binding Indicator3Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="ATH" HorizontalAlignment="Left">
