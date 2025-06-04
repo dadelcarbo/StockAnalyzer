@@ -345,10 +345,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         private void clearFilters_Click(object sender, RoutedEventArgs e)
         {
             this.gridView.FilterDescriptors.Clear();
-
-            this.ViewModel.Indicator1Min = 0;
-            this.ViewModel.Indicator2Min = 0;
-            this.ViewModel.Indicator3Min = 0;
         }
 
         private void saveFilters_Click(object sender, RoutedEventArgs e)
