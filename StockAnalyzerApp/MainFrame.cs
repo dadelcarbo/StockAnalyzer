@@ -2699,8 +2699,6 @@ namespace StockAnalyzerApp
 
         #region REPORTING
 
-
-
         public string GeneratePortfolioReportHtml(StockPortfolio portfolio)
         {
             const string rowTemplate = @"
@@ -2756,7 +2754,7 @@ namespace StockAnalyzerApp
             foreach (var position in positions)
             {
                 StockSerie stockSerie = portfolio.GetStockSerieFromUic(position.Uic);
-                if (stockSerie != null)
+                if (stockSerie != null && stockSerie.Initialise() && stockSerie.Values.Count() > 50)
                 {
                     barDurationChangeFromUI = true;
                     this.ViewModel.BarDuration = position.BarDuration;
