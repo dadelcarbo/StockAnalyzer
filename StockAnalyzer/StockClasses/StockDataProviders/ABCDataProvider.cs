@@ -596,7 +596,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                                 StockSerie.Groups.BELGIUM => "g",
                                 StockSerie.Groups.HOLLAND => "n",
-                                StockSerie.Groups.PORTUGAL => "I",
+                                StockSerie.Groups.PORTUGAL => "l",
                                 StockSerie.Groups.ITALIA => "i",
                                 StockSerie.Groups.GERMANY => "f",
                                 StockSerie.Groups.SPAIN => "m",
