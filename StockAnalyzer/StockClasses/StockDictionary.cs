@@ -1680,29 +1680,37 @@ namespace StockAnalyzer.StockClasses
                     }
                     if (stockSerie.Initialise())
                     {
-                        stockSerie.BarDuration = alertDef.BarDuration;
-                        if (stockSerie.Count < 30)
-                            continue;
-
-                        if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
+                        var previousBarDuration = stockSerie.BarDuration;
+                        try
                         {
-                            if (!stockSerie.HasLiquidity(alertDef.MinLiquidity, 10))
-                            {
+                            stockSerie.BarDuration = alertDef.BarDuration;
+                            if (stockSerie.Count < 30)
                                 continue;
+
+                            if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
+                            {
+                                if (!stockSerie.HasLiquidity(alertDef.MinLiquidity, 10))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            var values = stockSerie.ValueArray;
+                            var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
+                            var dailyValue = values.ElementAt(lastIndex);
+                            if (stockSerie.MatchEvent(alertDef))
+                            {
+                                alerts.Add(new StockAlert
+                                {
+                                    AlertDef = alertDef,
+                                    Date = dailyValue.DATE,
+                                    StockSerie = stockSerie
+                                });
                             }
                         }
-
-                        var values = stockSerie.ValueArray;
-                        var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
-                        var dailyValue = values.ElementAt(lastIndex);
-                        if (stockSerie.MatchEvent(alertDef))
+                        finally
                         {
-                            alerts.Add(new StockAlert
-                            {
-                                AlertDef = alertDef,
-                                Date = dailyValue.DATE,
-                                StockSerie = stockSerie
-                            });
+                            stockSerie.BarDuration = previousBarDuration;
                         }
                     }
                 }

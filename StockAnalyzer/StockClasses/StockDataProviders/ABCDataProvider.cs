@@ -1631,32 +1631,38 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public virtual void ApplyClean(DateTime endDate)
         {
-            // Intialize Groups
+            // Clean Data
+            foreach (var stockSerie in stockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC))
+            {
+                // Delete non archive file
+                var fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
+                if (!stockSerie.Initialise()) 
+                    continue;
+
+                stockSerie.BarDuration = BarDuration.Daily;
+                if (stockSerie.LastValue.DATE < endDate)
+                    continue;
+
+                // Trim archive
+                fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+                using StreamWriter sw = new StreamWriter(fileName);
+                foreach (var value in stockSerie.Values.Where(v => v.DATE < endDate))
+                {
+                    sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
+                }
+
+                stockSerie.IsInitialised = false;
+            }
+
+            // Update download config file
             foreach (var config in downloadGroups.Where(c => !c.LabelOnly))
             {
-                foreach (var stockSerie in stockDictionary.Values.Where(s => s.StockGroup == config.Group))
-                {
-                    // Delete non archive file
-                    var fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
-                    if (File.Exists(fileName))
-                    {
-                        File.Delete(fileName);
-                    }
-                    if (!stockSerie.Initialise() || stockSerie.LastValue.DATE < endDate)
-                        continue;
-
-                    // Trim archive
-                    fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
-                    using StreamWriter sw = new StreamWriter(fileName);
-                    foreach (var value in stockSerie.Values.Where(v => v.DATE < endDate))
-                    {
-                        sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
-                    }
-
-                    stockSerie.IsInitialised = false;
-                }
-                config.LastDownloaded = endDate;
-                config.LastDownload = endDate;
+                config.LastDownloaded = endDate.AddDays(-1);
+                config.LastDownload = endDate.AddDays(-1);
             }
 
             var json = JsonSerializer.Serialize(downloadGroups, new JsonSerializerOptions

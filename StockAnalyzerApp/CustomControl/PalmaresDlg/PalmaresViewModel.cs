@@ -344,97 +344,97 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         private bool canceled = false;
         public async Task CalculateAsync()
         {
-            if (ProgressVisibility == Visibility.Visible)
-            {
-                canceled = true;
-                return;
-            }
-            else
-            {
-                this.RunStatus = "Cancel";
-                canceled = false;
-            }
-            ProgressVisibility = Visibility.Visible;
-            this.Progress = 0;
-
-            #region Sanity Check
-            IStockIndicator viewableSeries1 = null;
-            if (!string.IsNullOrEmpty(this.indicator1))
-            {
-                try
-                {
-                    viewableSeries1 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator1) as IStockIndicator;
-                    if (viewableSeries1 == null)
-                    {
-                        MessageBox.Show($"Indicator1: {this.indicator1} nout found", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        return;
-                    }
-                }
-                catch { }
-            }
-            IStockIndicator viewableSeries2 = null;
-            if (!string.IsNullOrEmpty(this.indicator2))
-            {
-                try
-                {
-                    viewableSeries2 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator2) as IStockIndicator;
-                    if (viewableSeries2 == null)
-                    {
-                        MessageBox.Show($"Indicator2: {this.indicator2} nout found", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        return;
-                    }
-                }
-                catch { }
-            }
-            IStockIndicator viewableSeries3 = null;
-            if (!string.IsNullOrEmpty(this.indicator3))
-            {
-                try
-                {
-                    viewableSeries3 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator3) as IStockIndicator;
-                    if (viewableSeries3 == null)
-                    {
-                        MessageBox.Show($"Indicator3: {this.indicator3} not found !", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        return;
-                    }
-                }
-                catch { }
-            }
-            IStockTrailStop trailStopSerie = null;
-            if (!string.IsNullOrEmpty(this.stop))
-            {
-                try
-                {
-                    trailStopSerie = StockViewableItemsManager.GetViewableItem("TRAILSTOP|" + this.stop) as IStockTrailStop;
-                }
-                catch { }
-            }
-            IStockFilter screenerSerie = null;
-            if (this.screener != null)
-            {
-                try
-                {
-                    screenerSerie = StockScriptManager.Instance.CreateStockFilterInstance(screener);
-
-                }
-                catch { }
-            }
-            #endregion
-            if (this.DownloadIntraday)
-            {
-                if (this.group != StockSerie.Groups.TURBO)
-                {
-                    var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
-                    dataProvider.DownloadAllGroupsIntraday();
-                }
-            }
-
-            Lines = new ObservableCollection<PalmaresLine>();
-            OnPropertyChanged("Lines");
-            await Task.Delay(10);
-
             try
             {
+                if (ProgressVisibility == Visibility.Visible)
+                {
+                    canceled = true;
+                    return;
+                }
+                else
+                {
+                    this.RunStatus = "Cancel";
+                    canceled = false;
+                }
+                ProgressVisibility = Visibility.Visible;
+                this.Progress = 0;
+
+                #region Sanity Check
+                IStockIndicator viewableSeries1 = null;
+                if (!string.IsNullOrEmpty(this.indicator1))
+                {
+                    try
+                    {
+                        viewableSeries1 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator1) as IStockIndicator;
+                        if (viewableSeries1 == null)
+                        {
+                            MessageBox.Show($"Indicator1: {this.indicator1} nout found", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+                    }
+                    catch { }
+                }
+                IStockIndicator viewableSeries2 = null;
+                if (!string.IsNullOrEmpty(this.indicator2))
+                {
+                    try
+                    {
+                        viewableSeries2 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator2) as IStockIndicator;
+                        if (viewableSeries2 == null)
+                        {
+                            MessageBox.Show($"Indicator2: {this.indicator2} nout found", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+                    }
+                    catch { }
+                }
+                IStockIndicator viewableSeries3 = null;
+                if (!string.IsNullOrEmpty(this.indicator3))
+                {
+                    try
+                    {
+                        viewableSeries3 = StockViewableItemsManager.GetViewableItem("Indicator|" + this.indicator3) as IStockIndicator;
+                        if (viewableSeries3 == null)
+                        {
+                            MessageBox.Show($"Indicator3: {this.indicator3} not found !", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+                    }
+                    catch { }
+                }
+                IStockTrailStop trailStopSerie = null;
+                if (!string.IsNullOrEmpty(this.stop))
+                {
+                    try
+                    {
+                        trailStopSerie = StockViewableItemsManager.GetViewableItem("TRAILSTOP|" + this.stop) as IStockTrailStop;
+                    }
+                    catch { }
+                }
+                IStockFilter screenerSerie = null;
+                if (this.screener != null)
+                {
+                    try
+                    {
+                        screenerSerie = StockScriptManager.Instance.CreateStockFilterInstance(screener);
+
+                    }
+                    catch { }
+                }
+                #endregion
+                if (this.DownloadIntraday)
+                {
+                    if (this.group != StockSerie.Groups.TURBO)
+                    {
+                        var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
+                        dataProvider.DownloadAllGroupsIntraday();
+                    }
+                }
+
+                Lines = new ObservableCollection<PalmaresLine>();
+                OnPropertyChanged("Lines");
+                await Task.Delay(10);
+
                 var stockList = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
                 this.Progress = 0;
                 this.NbStocks = stockList.Count;
@@ -580,19 +580,22 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     stockSerie.BarDuration = previousDuration;
                 }
+
             }
             catch (Exception exception)
             {
                 StockLog.Write(exception);
                 StockAnalyzerException.MessageBox(exception);
             }
+            finally
+            {
+                OnPropertyChanged("Lines");
+                OnPropertyChanged("ExportEnabled");
+                await Task.Delay(0);
 
-            OnPropertyChanged("Lines");
-            OnPropertyChanged("ExportEnabled");
-            await Task.Delay(0);
-
-            ProgressVisibility = Visibility.Collapsed;
-            this.RunStatus = "Run";
+                ProgressVisibility = Visibility.Collapsed;
+                this.RunStatus = "Run";
+            }
         }
     }
 }
