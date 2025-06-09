@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using System;
@@ -43,15 +44,15 @@ namespace StockAnalyzerApp.CustomControl
             InitialiseStockCombo();
         }
 
-        public void ApplyTheme()
+        public void ApplyTheme(string theme)
         {
             using MethodLogger ml = new MethodLogger(this);
             this.fullGraphUserControl1.CurrentStockSerie = currentStockSerie;
-            this.fullGraphUserControl1.ApplyTheme();
+            this.fullGraphUserControl1.ApplyTheme(theme);
             this.fullGraphUserControl2.CurrentStockSerie = currentStockSerie;
-            this.fullGraphUserControl2.ApplyTheme();
+            this.fullGraphUserControl2.ApplyTheme(theme);
             this.fullGraphUserControl3.CurrentStockSerie = currentStockSerie;
-            this.fullGraphUserControl3.ApplyTheme();
+            this.fullGraphUserControl3.ApplyTheme(theme);
         }
 
         private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -88,7 +89,6 @@ namespace StockAnalyzerApp.CustomControl
         }
 
         private StockSerie currentStockSerie;
-
         public StockSerie CurrentStockSerie
         {
             get { return currentStockSerie; }
@@ -97,9 +97,15 @@ namespace StockAnalyzerApp.CustomControl
                 if (currentStockSerie != value)
                 {
                     currentStockSerie = value;
-                    this.ApplyTheme();
+                    this.ApplyTheme(null);
                 }
             }
+        }
+
+        public void SetSerieAndTheme(StockSerie stockSerie, string theme)
+        {
+            currentStockSerie = stockSerie;
+            this.ApplyTheme(theme);
         }
     }
 }

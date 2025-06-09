@@ -19,7 +19,9 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             InitializeComponent();
         }
 
-        public DateTime Date { get; set; } = DateTime.Today.AddDays(-7);
+        public DateTime SplitDate { get; set; } = DateTime.Today.AddDays(-7);
+        public DateTime TrimBeforeDate { get; set; } = DateTime.Today.AddDays(-7);
+        public DateTime TrimAfterDate { get; set; } = new DateTime(DateTime.Today.Year, 1, 1);
         public float Before { get; set; } = 1f;
         public float After { get; set; } = 1f;
 
@@ -28,7 +30,7 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
             if (dataProvider == null) { return; }
 
-            dataProvider.AddSplit(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date, Before, After);
+            dataProvider.AddSplit(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.SplitDate, Before, After);
 
             StockAnalyzerForm.MainFrame.ApplyTheme();
 
@@ -45,18 +47,26 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
                 {
                     var dataProvider = StockDataProviderBase.GetDataProvider(stockSerie.DataProvider);
                     if (dataProvider == null) { continue; }
-                    dataProvider.ApplyTrim(stockSerie, this.Date);
+                    dataProvider.ApplyTrim(stockSerie, this.TrimBeforeDate);
                 }
             }
             else
             {
                 var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
                 if (dataProvider == null) { return; }
-                dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.Date);
+                dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.TrimBeforeDate);
             }
             StockAnalyzerForm.MainFrame.ApplyTheme();
 
             this.parentDlg.Close();
+        }
+
+        private void ApplyABCClean_Click(object sender, RoutedEventArgs e)
+        {
+            var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
+            if (dataProvider == null) { return; }
+
+            dataProvider.ApplyClean(this.TrimAfterDate);
         }
     }
 }

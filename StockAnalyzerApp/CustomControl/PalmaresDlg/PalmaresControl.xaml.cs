@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using StockAnalyzer;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockScripting;
 using StockAnalyzerSettings;
@@ -150,6 +151,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             var line = ((RadGridView)sender).SelectedItem as PalmaresLine;
 
             if (line == null) return;
+
+            if (mtg != null)
+            {
+                mtg.SetSerieAndTheme(StockDictionary.Instance[line.Name], this.ViewModel.Theme);
+            }
 
             this.Form.TopMost = true;
             StockAnalyzerForm.MainFrame.Activate();
@@ -447,5 +453,17 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        MultiTimeFrameChartDlg mtg;
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (mtg == null)
+            {
+                mtg = new MultiTimeFrameChartDlg() { StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen };
+                mtg.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+                mtg.Show();
+            }
+            else
+                mtg.Activate();
+        }
     }
 }

@@ -11,7 +11,7 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
                     <Label Content="Date"></Label>
-                    <DatePicker SelectedDate="{Binding Date}" VerticalContentAlignment="Center"></DatePicker>
+                    <DatePicker SelectedDate="{Binding SplitDate}" VerticalContentAlignment="Center"></DatePicker>
                     <Label Content="After"></Label>
                     <TextBox Text="{Binding After}" Width="30" VerticalContentAlignment="Center"></TextBox>
                     <Label Content="Before"></Label>
@@ -26,12 +26,24 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
                     <Label Content="Date"></Label>
-                    <DatePicker SelectedDate="{Binding Date}" VerticalContentAlignment="Center"></DatePicker>
+                    <DatePicker SelectedDate="{Binding TrimBeforeDate}" VerticalContentAlignment="Center"></DatePicker>
                     <Label Content="All series in group" VerticalContentAlignment="Center"></Label>
                     <CheckBox IsChecked="{Binding AllGroupSeries}" VerticalAlignment="Center"></CheckBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                     <Button Content="Apply" Click="ApplyTrimButton_Click" Margin="2"></Button>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Header="Clean ABC Data">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                    <Label Content="Clean after"></Label>
+                    <DatePicker SelectedDate="{Binding TrimAfterDate}" VerticalContentAlignment="Center"></DatePicker>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <Button Content="Apply" Click="ApplyABCClean_Click" Margin="2"></Button>
                 </StackPanel>
             </Grid>
         </GroupBox>

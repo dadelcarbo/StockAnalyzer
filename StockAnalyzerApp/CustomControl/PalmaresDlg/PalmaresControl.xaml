@@ -44,7 +44,9 @@
                                   ToolTip="{Binding Screener.Description}" Background="Transparent"
                                   Width="200" Height="20" VerticalContentAlignment="Center"/>
 
-                        <Button Height="24" Width="24"  VerticalAlignment="Center" Margin="1" BorderThickness="0" ToolTip="{Binding SelectedItem.Code, ElementName=ScreenerCbx}" Background="Transparent">
+                        <Button Height="24" Width="24"  VerticalAlignment="Center" Margin="1" BorderThickness="0"  Background="Transparent"
+                                ToolTip="{Binding SelectedItem.Code, ElementName=ScreenerCbx}"
+                                Click="Button_Click">
                             <Image Source="/Resources/Wizard.jpg" />
                         </Button>
                     </StackPanel>

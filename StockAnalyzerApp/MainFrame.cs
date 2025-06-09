@@ -3414,7 +3414,7 @@ namespace StockAnalyzerApp
             MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg() { StartPosition = FormStartPosition.CenterScreen };
             mtg.Initialize(this.selectedGroup, this.currentStockSerie);
             mtg.WindowState = FormWindowState.Maximized;
-            mtg.ShowDialog();
+            mtg.Show();
         }
         #endregion
 
@@ -3948,6 +3948,14 @@ namespace StockAnalyzerApp
                 if (!LoadCurveTheme(currentTheme))
                     return null;
             return this.themeDictionary[this.CurrentTheme];
+        }
+        public Dictionary<string, List<string>> GetTheme(string themeName)
+        {
+            if (!this.themeDictionary.ContainsKey(themeName))
+                // LoadTheme
+                if (!LoadCurveTheme(themeName))
+                    return null;
+            return this.themeDictionary[themeName];
         }
         public List<string> GetIndicatorsFromCurrentTheme()
         {

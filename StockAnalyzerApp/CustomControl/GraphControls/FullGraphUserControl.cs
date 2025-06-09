@@ -159,12 +159,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             set { currentStockSerie = value; }
         }
 
-        public void ApplyTheme()
+        public void ApplyTheme(string themeName = null)
         {
             using MethodLogger ml = new MethodLogger(this);
             try
             {
-                var currentTheme = StockAnalyzerForm.MainFrame.GetCurrentTheme();
+                var currentTheme = string.IsNullOrEmpty(themeName) ? StockAnalyzerForm.MainFrame.GetCurrentTheme() : StockAnalyzerForm.MainFrame.GetTheme(themeName);
 
                 if (currentTheme == null || currentStockSerie == null) return;
                 if (!currentStockSerie.IsInitialised)
