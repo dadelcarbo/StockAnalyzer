@@ -430,6 +430,9 @@ namespace StockAnalyzerApp
                 }
             }
 
+
+            OneDriveSync();
+
             string folderName = Folders.DividendFolder;
             if (!Directory.Exists(folderName))
             {
@@ -1301,6 +1304,7 @@ namespace StockAnalyzerApp
             Settings.Default.Save();
 
             this.IsClosing = true;
+            OneDriveSync();
         }
 
         public void OnSerieEventProcessed()
@@ -4907,6 +4911,16 @@ namespace StockAnalyzerApp
                 this.CreateGroupMenuItem();
                 this.CreateSecondarySerieMenuItem();
                 this.InitialiseStockCombo(true);
+            }
+        }
+
+        private static void OneDriveSync()
+        {
+            var oneDriveSyncExe = @"C:\ProgramData\UltimateChartist\OneDriveSync\UltimateChartistSync.exe";
+            if (File.Exists(oneDriveSyncExe))
+            {
+                var oneDriveFolder = new DirectoryInfo(Folders.PersonalFolder).Name;
+                Process.Start(oneDriveSyncExe, $"{oneDriveFolder} {Folders.PersonalFolder}");
             }
         }
     }
