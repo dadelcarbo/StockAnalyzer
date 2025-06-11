@@ -4914,8 +4914,16 @@ namespace StockAnalyzerApp
             }
         }
 
+        private static string syncFileName = ".LastSync.txt";
         private static void OneDriveSync()
         {
+            if (Environment.MachineName == "DADELCARBO")
+            {
+                var lastSyncPath = Path.Combine(Folders.PersonalFolder, syncFileName);
+                File.WriteAllText(lastSyncPath, Environment.MachineName + "=>" + DateTime.UtcNow.ToString("o"));
+                return;
+            }
+
             var oneDriveSyncExe = @"C:\ProgramData\UltimateChartist\OneDriveSync\UltimateChartistSync.exe";
             if (File.Exists(oneDriveSyncExe))
             {
