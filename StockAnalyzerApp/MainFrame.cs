@@ -4920,7 +4920,7 @@ namespace StockAnalyzerApp
             if (Environment.MachineName == "DADELCARBO")
             {
                 var lastSyncPath = Path.Combine(Folders.PersonalFolder, syncFileName);
-                File.WriteAllText(lastSyncPath, Environment.MachineName + "=>" + DateTime.UtcNow.ToString("o"));
+                File.WriteAllText(lastSyncPath, Environment.MachineName + " => " + DateTime.UtcNow.ToString("o"));
                 return;
             }
 
