@@ -28,6 +28,8 @@ namespace TradeLearning.Model
             var engine = new TradingSimulator(this.dataSerie.Data, new BasicTradingStrategy(), 1000);
 
             engine.Run();
+
+            this.Portfolio = DataSerie.FromArray(engine.PortfolioValue, "Portfolio");
         }
         #endregion
 
@@ -48,10 +50,13 @@ namespace TradeLearning.Model
 
         public ViewModel()
         {
-            this.DataSerie = DataSerie.FromArray(DataSerie.GenerateSin(200, 100, 5, 100, 0.01), "Sin");
+            this.DataSerie = DataSerie.FromArray(DataSerie.GenerateSin(500, 100, 5, 100, 0.01), "Sin");
         }
 
         private DataSerie dataSerie;
         public DataSerie DataSerie { get => dataSerie; set => SetProperty(ref dataSerie, value); }
+
+        private DataSerie portfolio;
+        public DataSerie Portfolio { get => portfolio; set => SetProperty(ref portfolio, value); }
     }
 }

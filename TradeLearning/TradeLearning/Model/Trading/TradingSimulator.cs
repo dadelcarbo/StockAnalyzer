@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TradeLearning.Model.Trading
 {
@@ -6,14 +7,14 @@ namespace TradeLearning.Model.Trading
     {
         public double Cash { get; private set; }
         public int positionSize { get; private set; }
-        public float risk { get; private set; }
-        public double PortfolioValue => Cash + positionSize * _currentPrice;
+        public double risk { get; private set; } = 0.05;
+        public double[] PortfolioValue;
 
         private double _currentPrice;
         private readonly double[] _priceSeries;
         private readonly ITradingStrategy _strategy;
 
-        public List<(int Index, TradeAction Action, double Price)> TradeLog { get; } = new();
+        public List<(int Index, TradeAction Action, double Price, int Qty)> TradeLog { get; } = new();
 
         public TradingSimulator(double[] priceSeries, ITradingStrategy strategy, double initialCash = 10000)
         {
@@ -21,6 +22,7 @@ namespace TradeLearning.Model.Trading
             _strategy = strategy;
             Cash = initialCash;
             positionSize = 0;
+            this.PortfolioValue = new double[priceSeries.Length];
         }
 
         double[] portfolioSerie;
@@ -30,26 +32,28 @@ namespace TradeLearning.Model.Trading
             _strategy.Initialize(_priceSeries);
             for (int i = 0; i < _priceSeries.Length; i++)
             {
+                this.PortfolioValue[i] = Cash + positionSize * _currentPrice;
                 _currentPrice = _priceSeries[i];
                 var action = _strategy.Decide(i, positionSize > 0);
 
                 switch (action)
                 {
                     case TradeAction.Buy:
-                        if (Cash >= _currentPrice)
+                        //Calculatio position Size
+                        positionSize = (int)Math.Floor(Cash * risk / (_currentPrice * 0.05));
+                        if (positionSize > 0)
                         {
-                            positionSize = 1;
-                            Cash -= _currentPrice;
-                            TradeLog.Add((i, action, _currentPrice));
+                            Cash -= _currentPrice * positionSize;
+                            TradeLog.Add((i, action, _currentPrice, positionSize));
                         }
                         break;
 
                     case TradeAction.Sell:
                         if (positionSize > 0)
                         {
+                            Cash += _currentPrice * positionSize;
+                            TradeLog.Add((i, action, _currentPrice, positionSize));
                             positionSize = 0;
-                            Cash += _currentPrice;
-                            TradeLog.Add((i, action, _currentPrice));
                         }
                         break;
 

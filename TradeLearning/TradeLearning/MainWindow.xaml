@@ -2,19 +2,19 @@
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-                Title="MainWindow" Height="350" Width="525"
                 xmlns:vm="clr-namespace:TradeLearning.Model"
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 mc:Ignorable="d"
-                d:DataContext="{d:DesignInstance Type=vm:ViewModel, IsDesignTimeCreatable=True}">
+                d:DataContext="{d:DesignInstance Type=vm:ViewModel, IsDesignTimeCreatable=True}"
+                Title="MainWindow" Height="600" Width="1000">
     <Window.Resources>
         <vm:ViewModel x:Key="ViewModel"/>
     </Window.Resources>
     <Grid DataContext="{StaticResource ViewModel}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
         <Button x:Name="startBtn" Content="Start" Command="{Binding StartCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI Emoji"/>
@@ -29,7 +29,17 @@
             <telerik:LineSeries ItemsSource="{Binding DataSerie.DataPoints}"
                             CategoryBinding="X"
                             ValueBinding="Y"
-                            StrokeThickness="2"/>
+                            StrokeThickness="2" Stroke="Black"/>
+            <telerik:LineSeries ItemsSource="{Binding Portfolio.DataPoints}"
+                            CategoryBinding="X"
+                            ValueBinding="Y"
+                            StrokeThickness="2">
+                <telerik:LineSeries.VerticalAxis>
+                    <telerik:LinearAxis Title="{Binding Portfolio.Name}"
+                                              ElementBrush="{Binding ElementName=chart, Path=Palette.GlobalEntries[1].Fill}" 
+                                              HorizontalLocation="Right" />
+                </telerik:LineSeries.VerticalAxis>
+            </telerik:LineSeries>
         </telerik:RadCartesianChart>
     </Grid>
 </Window>
