@@ -19,23 +19,16 @@ public class Logger : IDisposable
 
     private Logger()
     {
-        var logFolder = "Log";
+        var logFolder = Path.Combine(Directory.GetCurrentDirectory(), "Log");
 
         _logFilePath = Path.Combine(logFolder, $"{DateTime.Now:yyyy-MM-dd_HH_mm_ss}.log");
 
         // Ensure the directory exists
         var directory = Path.GetDirectoryName(logFolder);
-        if (!Directory.Exists(logFolder))
-        {
-            Directory.CreateDirectory(logFolder);
-        }
-        else
-        {
-            CleanupOldLogs();
-        }
+        CleanupOldLogs(logFolder);
 
         _writer = new StreamWriter(_logFilePath) { AutoFlush = true };
-
+        _writer.Flush();
     }
 
 
@@ -47,15 +40,14 @@ public class Logger : IDisposable
         string timestampedMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}";
         lock (_lock)
         {
-            _writer.WriteLine(_logFilePath, timestampedMessage + Environment.NewLine);
+            _writer.WriteLine(timestampedMessage);
         }
     }
 
-    public void CleanupOldLogs(int days = 7)
+    public void CleanupOldLogs(string logDirectory, int days = 7)
     {
         try
         {
-            string logDirectory = Path.GetDirectoryName(_logFilePath);
             if (Directory.Exists(logDirectory))
             {
                 var files = Directory.GetFiles(logDirectory);
@@ -67,6 +59,10 @@ public class Logger : IDisposable
                         File.Delete(file);
                     }
                 }
+            }
+            else
+            {
+                Directory.CreateDirectory(logDirectory);
             }
         }
         catch (Exception ex)

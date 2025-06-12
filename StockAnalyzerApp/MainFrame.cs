@@ -4924,11 +4924,21 @@ namespace StockAnalyzerApp
                 return;
             }
 
-            var oneDriveSyncExe = @"C:\ProgramData\UltimateChartist\OneDriveSync\UltimateChartistSync.exe";
+
+            var oneDriveSyncFolder = @"C:\ProgramData\UltimateChartist\OneDriveSync";
+            var oneDriveSyncExe = Path.Combine(oneDriveSyncFolder, "UltimateChartistSync.exe");
             if (File.Exists(oneDriveSyncExe))
             {
                 var oneDriveFolder = new DirectoryInfo(Folders.PersonalFolder).Name;
-                Process.Start(oneDriveSyncExe, $"{oneDriveFolder} {Folders.PersonalFolder}");
+
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    Arguments = $"{oneDriveFolder} {Folders.PersonalFolder}",
+                    WorkingDirectory = oneDriveSyncFolder,
+                    FileName = oneDriveSyncExe,
+                };
+
+                Process.Start(startInfo);
             }
         }
     }

@@ -8,9 +8,17 @@ class Program
 
     static async Task<int> Main(string[] args)
     {
+        using var logger = Logger.Instance;
+#if DEBUG
+        if (!Debugger.IsAttached)
+        {
+            Debugger.Launch(); // Prompts to attach a debugger
+        }
+#endif
+
         if (args.Length < 2)
         {
-            Logger.Instance.WriteLine("Usage: OneDriveSyncApp <OneDriveFolderPath> <LocalFolderPath>");
+            logger.WriteLine("Usage: OneDriveSyncApp <OneDriveFolderPath> <LocalFolderPath>");
             return 1;
         }
 
@@ -35,12 +43,12 @@ class Program
             }
             else
             {
-                Logger.Instance.WriteLine("❌ Sync failed: No network connection");
+                logger.WriteLine("❌ Sync failed: No network connection");
             }
         }
         catch (Exception ex)
         {
-            Logger.Instance.WriteLine($"❌ Sync failed: {ex.Message}");
+            logger.WriteLine($"❌ Sync failed: {ex.Message}");
             return 1;
         }
 

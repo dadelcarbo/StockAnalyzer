@@ -152,8 +152,6 @@ namespace UltimateChartistSync
                 var error = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Delete failed: {response.StatusCode} - {error}");
             }
-
-            Logger.Instance.WriteLine($"✅ Deleted OneDrive file: {path}");
         }
 
 
@@ -297,7 +295,7 @@ namespace UltimateChartistSync
                     if (localTime == oneDriveTime)
                     {
                         // Nothing to do.
-                        Logger.Instance.WriteLine($"⬆️ Same are in sync: {relativePath}");
+                        Logger.Instance.WriteLine($"🟰 Same are in sync: {relativePath}");
                     }
                     else if (localTime > oneDriveTime)
                     {
@@ -320,7 +318,7 @@ namespace UltimateChartistSync
                     }
                     else
                     {
-                        Logger.Instance.WriteLine($"⬆️ Deleting local file: {relativePath}");
+                        Logger.Instance.WriteLine($"🗑️ Deleting local file: {relativePath}");
                         File.Delete(localFile.FullName);
                     }
                 }
@@ -337,7 +335,7 @@ namespace UltimateChartistSync
                     }
                     else
                     {
-                        Logger.Instance.WriteLine($"⬇️ Deleting OneDrive file: {relativePath}");
+                        Logger.Instance.WriteLine($"🗑️ Deleting OneDrive file: {relativePath}");
                         await DeleteFileAsync(oneDriveFullPath);
                     }
                 }
