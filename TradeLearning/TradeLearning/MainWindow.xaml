@@ -1,0 +1,35 @@
+﻿<Window x:Class="TradeLearning.MainWindow"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+                Title="MainWindow" Height="350" Width="525"
+                xmlns:vm="clr-namespace:TradeLearning.Model"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                mc:Ignorable="d"
+                d:DataContext="{d:DesignInstance Type=vm:ViewModel, IsDesignTimeCreatable=True}">
+    <Window.Resources>
+        <vm:ViewModel x:Key="ViewModel"/>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource ViewModel}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="startBtn" Content="Start" Command="{Binding StartCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI Emoji"/>
+
+        <telerik:RadCartesianChart x:Name="SineChart" Grid.Column="1">
+            <telerik:RadCartesianChart.HorizontalAxis>
+                <telerik:CategoricalAxis/>
+            </telerik:RadCartesianChart.HorizontalAxis>
+            <telerik:RadCartesianChart.VerticalAxis>
+                <telerik:LinearAxis/>
+            </telerik:RadCartesianChart.VerticalAxis>
+            <telerik:LineSeries ItemsSource="{Binding DataSerie.DataPoints}"
+                            CategoryBinding="X"
+                            ValueBinding="Y"
+                            StrokeThickness="2"/>
+        </telerik:RadCartesianChart>
+    </Grid>
+</Window>
