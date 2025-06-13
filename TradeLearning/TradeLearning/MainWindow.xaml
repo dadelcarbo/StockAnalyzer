@@ -14,22 +14,61 @@
     <Grid DataContext="{StaticResource ViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2.5*"/>
         </Grid.ColumnDefinitions>
+        <StackPanel>
+            <GroupBox Header="Data Series">
+                <StackPanel>
+                    <telerik:RadPropertyGrid Item="{Binding .}" AutoGeneratePropertyDefinitions="False" DescriptionPanelVisibility="Collapsed" IsGrouped="True" AutoExpandGroups="False"
+                                         SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed" SortAndGroupButtonsVisibility="Collapsed">
+                        <telerik:RadPropertyGrid.PropertyDefinitions>
+                            <telerik:PropertyDefinition Binding="{Binding SampleSize}" GroupName="Common" DisplayName="Sample Size"/>
+                            <telerik:PropertyDefinition Binding="{Binding StartPrice}" GroupName="Common" DisplayName="Start price"/>
+                            <telerik:PropertyDefinition Binding="{Binding Sigma}" GroupName="Random" DisplayName="Sigma"/>
+                            <telerik:PropertyDefinition Binding="{Binding Drift}" GroupName="Random" DisplayName="Drift"/>
+                            <telerik:PropertyDefinition Binding="{Binding Period1}" GroupName="Periodic" DisplayName="Period1"/>
+                            <telerik:PropertyDefinition Binding="{Binding Amplitude1}" GroupName="Periodic" DisplayName="Amplitude1"/>
+                            <telerik:PropertyDefinition Binding="{Binding Period2}" GroupName="Periodic" DisplayName="Period2"/>
+                            <telerik:PropertyDefinition Binding="{Binding Amplitude2}" GroupName="Periodic" DisplayName="Amplitude2"/>
+                        </telerik:RadPropertyGrid.PropertyDefinitions>
+                    </telerik:RadPropertyGrid>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Periodic" Command="{Binding GeneratePeriodicCommand}" Margin="2" BorderThickness="2" BorderBrush="DarkGray"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI Emoji"/>
+                        <Button Content="Random" Command="{Binding GenerateRandomCommand}" Margin="2" BorderThickness="2" BorderBrush="DarkGray"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI Emoji"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
 
-        <Button x:Name="startBtn" Content="Start" Command="{Binding StartCommand}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI Emoji"/>
+            <GroupBox Header="Engine Parameters">
+                <StackPanel>
+                    <telerik:RadPropertyGrid Item="{Binding .}" AutoGeneratePropertyDefinitions="False" DescriptionPanelVisibility="Collapsed" IsGrouped="True" AutoExpandGroups="False"
+                                         SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed" SortAndGroupButtonsVisibility="Collapsed">
+                        <telerik:RadPropertyGrid.PropertyDefinitions>
+                            <telerik:PropertyDefinition Binding="{Binding PositionRisk}" GroupName="Risk" DisplayName="Position Risk"/>
+                            <telerik:PropertyDefinition Binding="{Binding TradeStop}" GroupName="Risk" DisplayName="Trade Stop"/>
+                            <telerik:PropertyDefinition Binding="{Binding Ema1}" GroupName="Risk" DisplayName="EMA1"/>
+                            <telerik:PropertyDefinition Binding="{Binding Ema2}" GroupName="Risk" DisplayName="EMA2"/>
+                        </telerik:RadPropertyGrid.PropertyDefinitions>
+                    </telerik:RadPropertyGrid>
 
-        <telerik:RadCartesianChart x:Name="SineChart" Grid.Column="1">
+                    <Button x:Name="startBtn" Content="Start" Command="{Binding StartCommand}" Margin="2" BorderThickness="2" BorderBrush="DarkGray"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI Emoji"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+        <telerik:RadCartesianChart x:Name="chart" Grid.Column="1" Palette="Windows11">
             <telerik:RadCartesianChart.HorizontalAxis>
-                <telerik:CategoricalAxis/>
+                <telerik:CategoricalAxis SmartLabelsMode="SmartStep"/>
             </telerik:RadCartesianChart.HorizontalAxis>
             <telerik:RadCartesianChart.VerticalAxis>
-                <telerik:LinearAxis/>
+                <telerik:LinearAxis ElementBrush="{Binding ElementName=chart, Path=Palette.GlobalEntries[0].Fill}" RangeExtendDirection="None"/>
             </telerik:RadCartesianChart.VerticalAxis>
             <telerik:LineSeries ItemsSource="{Binding DataSerie.DataPoints}"
                             CategoryBinding="X"
                             ValueBinding="Y"
-                            StrokeThickness="2" Stroke="Black"/>
+                            StrokeThickness="2" />
             <telerik:LineSeries ItemsSource="{Binding Portfolio.DataPoints}"
                             CategoryBinding="X"
                             ValueBinding="Y"
@@ -40,6 +79,20 @@
                                               HorizontalLocation="Right" />
                 </telerik:LineSeries.VerticalAxis>
             </telerik:LineSeries>
+            <telerik:RadCartesianChart.Indicators>
+                <telerik:ExponentialMovingAverageIndicator  ItemsSource="{Binding DataSerie.DataPoints}"
+                            CategoryBinding="X"
+                            ValueBinding="Y"
+                            StrokeThickness="1"
+                            Stroke="DarkGreen"
+                            Period="{Binding Ema1}"/>
+                <telerik:ExponentialMovingAverageIndicator  ItemsSource="{Binding DataSerie.DataPoints}"
+                            CategoryBinding="X"
+                            ValueBinding="Y"
+                            StrokeThickness="1"
+                            Stroke="DarkRed"
+                            Period="{Binding Ema2}"/>
+            </telerik:RadCartesianChart.Indicators>
         </telerik:RadCartesianChart>
     </Grid>
 </Window>

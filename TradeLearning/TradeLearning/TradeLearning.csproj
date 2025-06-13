@@ -31,6 +31,7 @@
     <SubType>Code</SubType>
   </Compile>
   <Compile Include="Model\DataSerie.cs" />
+  <Compile Include="Model\MathExtensions.cs" />
   <Compile Include="Model\Trading\TradingSimulator.cs" />
   <Compile Include="Model\Trading\TradingStrategy.cs" />
   <Compile Include="Model\ViewModel.cs" />

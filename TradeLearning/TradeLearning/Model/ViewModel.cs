@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
@@ -8,6 +9,71 @@ namespace TradeLearning.Model
 {
     public class ViewModel : INotifyPropertyChanged
     {
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
+        {
+            if (!Equals(field, newValue))
+            {
+                field = newValue;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
+
+        Random rnd = new Random(123);
+        public ViewModel()
+        {
+            this.DataSerie = DataSerie.FromArray(DataSerie.GenerateSin(sampleSize, startPrice, 5, startPrice, 0.01), "Periodic");
+        }
+
+        private DataSerie dataSerie;
+        public DataSerie DataSerie { get => dataSerie; set => SetProperty(ref dataSerie, value); }
+
+        private DataSerie portfolio;
+        public DataSerie Portfolio { get => portfolio; set => SetProperty(ref portfolio, value); }
+
+        private double positionRisk = 0.05;
+        public double PositionRisk { get => positionRisk; set => SetProperty(ref positionRisk, value); }
+
+        private double tradeStop = 0.1;
+        public double TradeStop { get => tradeStop; set => SetProperty(ref tradeStop, value); }
+
+        private double startPrice = 100;
+        public double StartPrice { get => startPrice; set => SetProperty(ref startPrice, value); }
+
+        private int sampleSize = 1000;
+        public int SampleSize { get => sampleSize; set => SetProperty(ref sampleSize, value); }
+
+        private int period1 = 200;
+        public int Period1 { get => period1; set => SetProperty(ref period1, value); }
+
+        private double amplitude1 = 10;
+        public double Amplitude1 { get => amplitude1; set => SetProperty(ref amplitude1, value); }
+
+        private int period2 = 50;
+        public int Period2 { get => period2; set => SetProperty(ref period2, value); }
+
+        private double amplitude2 = 2;
+        public double Amplitude2 { get => amplitude2; set => SetProperty(ref amplitude2, value); }
+
+        private double sigma = 0.025;
+        public double Sigma { get => sigma; set => SetProperty(ref sigma, value); }
+
+        private double drift = 0;
+        public double Drift { get => drift; set => SetProperty(ref drift, value); }
+
+        private int ema1 = 12;
+        public int Ema1 { get => ema1; set => SetProperty(ref ema1, value); }
+
+
+        private int ema2 = 36;
+        public int Ema2 { get => ema2; set => SetProperty(ref ema2, value); }
+
         #region Start Command
         private DelegateCommand startCommand;
         public ICommand StartCommand
@@ -25,38 +91,30 @@ namespace TradeLearning.Model
 
         private void start(object commandParameter)
         {
-            var engine = new TradingSimulator(this.dataSerie.Data, new BasicTradingStrategy(), 1000);
-
+            var engine = new TradingSimulator(this.dataSerie.Data, new BasicTradingStrategy(), 10000);
+            engine.MaxPortfolioRisk = this.PositionRisk;
+            engine.StopPercent = this.TradeStop;
             engine.Run();
 
             this.Portfolio = DataSerie.FromArray(engine.PortfolioValue, "Portfolio");
         }
         #endregion
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
+        private DelegateCommand generatePeriodicCommand;
+        public ICommand GeneratePeriodicCommand => generatePeriodicCommand ??= new DelegateCommand(GeneratePeriodic);
+
+        private void GeneratePeriodic(object commandParameter)
         {
-            if (!Equals(field, newValue))
-            {
-                field = newValue;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
-            }
-
-            return false;
+            this.DataSerie = DataSerie.FromArray(DataSerie.GeneratePeriodic(sampleSize, period1, amplitude1, period2, amplitude2, startPrice, drift), "Periodic");
+            this.Portfolio = null;
         }
-        #endregion
+        private DelegateCommand generateRandomCommand;
+        public ICommand GenerateRandomCommand => generateRandomCommand ??= new DelegateCommand(GenerateRandom);
 
-        public ViewModel()
+        private void GenerateRandom(object commandParameter)
         {
-            this.DataSerie = DataSerie.FromArray(DataSerie.GenerateSin(500, 100, 5, 100, 0.01), "Sin");
+            this.DataSerie = DataSerie.FromArray(rnd.GenerateBrownianPath(startPrice, sigma, sampleSize, drift), "Periodic");
+            this.Portfolio = null;
         }
-
-        private DataSerie dataSerie;
-        public DataSerie DataSerie { get => dataSerie; set => SetProperty(ref dataSerie, value); }
-
-        private DataSerie portfolio;
-        public DataSerie Portfolio { get => portfolio; set => SetProperty(ref portfolio, value); }
     }
 }

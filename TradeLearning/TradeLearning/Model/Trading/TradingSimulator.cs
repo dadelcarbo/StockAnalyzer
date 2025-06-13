@@ -7,7 +7,6 @@ namespace TradeLearning.Model.Trading
     {
         public double Cash { get; private set; }
         public int positionSize { get; private set; }
-        public double risk { get; private set; } = 0.05;
         public double[] PortfolioValue;
 
         private double _currentPrice;
@@ -25,10 +24,12 @@ namespace TradeLearning.Model.Trading
             this.PortfolioValue = new double[priceSeries.Length];
         }
 
-        double[] portfolioSerie;
+        public double MaxPortfolioRisk { get; set; }
+        public double StopPercent { get; set; }
+
         public void Run()
         {
-            portfolioSerie = new double[_priceSeries.Length];
+            this.PortfolioValue = new double[_priceSeries.Length];
             _strategy.Initialize(_priceSeries);
             for (int i = 0; i < _priceSeries.Length; i++)
             {
@@ -40,7 +41,7 @@ namespace TradeLearning.Model.Trading
                 {
                     case TradeAction.Buy:
                         //Calculatio position Size
-                        positionSize = (int)Math.Floor(Cash * risk / (_currentPrice * 0.05));
+                        positionSize = (int)Math.Floor(Cash * MaxPortfolioRisk / (_currentPrice * StopPercent));
                         if (positionSize > 0)
                         {
                             Cash -= _currentPrice * positionSize;
