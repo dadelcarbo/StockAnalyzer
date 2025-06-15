@@ -29,7 +29,7 @@ namespace TradeLearning.Model
         Random rnd = new Random(123);
         public ViewModel()
         {
-            this.DataSerie = DataSerie.FromArray(DataSerie.GenerateSin(sampleSize, startPrice, 5, startPrice, 0.01), "Periodic");
+            this.DataSerie = DataSerie.FromArray(DataSerie.GeneratePeriodic(sampleSize, period1, amplitude1, period2, amplitude2, startPrice, drift), "Periodic");
         }
 
         private DataSerie dataSerie;
@@ -94,7 +94,7 @@ namespace TradeLearning.Model
         {
             this.Portfolio = null;
 
-            var engine = new TradingSimulator(this.dataSerie.Data, new BasicTradingStrategy(), 10000);
+            var engine = new TradingSimulator(this.dataSerie.Data, new Ema2TradingStrategy() { EmaPeriod1 = this.Ema1, EmaPeriod2 = this.Ema2 }, 1000);
             engine.MaxPortfolioRisk = this.PositionRisk;
             engine.StopPercent = this.TradeStop;
             engine.Run();

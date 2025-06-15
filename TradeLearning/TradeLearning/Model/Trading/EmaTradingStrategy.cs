@@ -1,31 +1,34 @@
 ﻿namespace TradeLearning.Model.Trading
 {
-    internal class EmaTradingStrategy : ITradingStrategy
+    internal class EmaTradingStrategy : TradingStrategyBase
     {
-        public double[] Data { get; protected set; }
+        public int EmaPeriod { get; set; }
 
-        public TradeAction Decide(int index, bool inPosition)
+        public double[] ema;
+
+        public override TradeAction Decide(int index, bool inPosition)
         {
             if (index < 1)
                 return TradeAction.Nop;
 
             if (inPosition)
             {
-                if (Data[index - 1] > Data[index])
+                if (ema[index - 1] > ema[index])
                     return TradeAction.Sell;
             }
             else
             {
-                if (Data[index - 1] < Data[index])
+                if (ema[index - 1] < ema[index])
                     return TradeAction.Buy;
             }
 
             return TradeAction.Nop;
         }
 
-        public void Initialize(double[] priceSeries)
+        public override void Initialize(double[] priceSeries)
         {
             this.Data = priceSeries;
+            this.ema = priceSeries.CalculateEMA(EmaPeriod);
         }
     }
 }
