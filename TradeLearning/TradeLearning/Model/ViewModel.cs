@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
@@ -35,7 +36,7 @@ namespace TradeLearning.Model
         public DataSerie DataSerie { get => dataSerie; set => SetProperty(ref dataSerie, value); }
 
         private DataSerie portfolio;
-        public DataSerie Portfolio { get => portfolio; set => SetProperty(ref portfolio, value); }
+        public DataSerie Portfolio { get => portfolio; set { SetProperty(ref portfolio, value); CalculateMetrics(); } }
 
         private double positionRisk = 0.05;
         public double PositionRisk { get => positionRisk; set => SetProperty(ref positionRisk, value); }
@@ -91,6 +92,8 @@ namespace TradeLearning.Model
 
         private void start(object commandParameter)
         {
+            this.Portfolio = null;
+
             var engine = new TradingSimulator(this.dataSerie.Data, new BasicTradingStrategy(), 10000);
             engine.MaxPortfolioRisk = this.PositionRisk;
             engine.StopPercent = this.TradeStop;
@@ -115,6 +118,36 @@ namespace TradeLearning.Model
         {
             this.DataSerie = DataSerie.FromArray(rnd.GenerateBrownianPath(startPrice, sigma, sampleSize, drift), "Periodic");
             this.Portfolio = null;
+        }
+
+        private double totalReturn;
+        public double TotalReturn { get => totalReturn; set => SetProperty(ref totalReturn, value); }
+
+        private double barReturn;
+        public double BarReturn { get => barReturn; set => SetProperty(ref barReturn, value); }
+
+        private double sharpeRatio;
+        public double SharpeRatio { get => sharpeRatio; set => SetProperty(ref sharpeRatio, value); }
+
+        private double sortinoRatio;
+        public double SortinoRatio { get => sortinoRatio; set => SetProperty(ref sortinoRatio, value); }
+
+        private double maxDrawDown;
+        public double MaxDrawDown { get => maxDrawDown; set => SetProperty(ref maxDrawDown, value); }
+
+        private void CalculateMetrics()
+        {
+            if (this.portfolio == null)
+            {
+                TotalReturn = 0; BarReturn = 0; SharpeRatio = 0; MaxDrawDown = 0; SortinoRatio = 0; return;
+            }
+
+            var returns = portfolio.Data.CalculateReturns();
+            TotalReturn = (portfolio.Data.Last() - portfolio.Data.First()) / portfolio.Data.First();
+            BarReturn = totalReturn / portfolio.Data.Length;
+            SharpeRatio = returns.CalculateSharpeRatio();
+            MaxDrawDown = portfolio.Data.CalculateMaxDrawdown();
+            SortinoRatio = returns.CalculateSortinoRatio();
         }
     }
 }

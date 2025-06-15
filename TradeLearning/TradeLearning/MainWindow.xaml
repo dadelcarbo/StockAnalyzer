@@ -17,7 +17,7 @@
             <ColumnDefinition Width="2.5*"/>
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <GroupBox Header="Data Series">
+            <Expander Header="Data Series" IsExpanded="False">
                 <StackPanel>
                     <telerik:RadPropertyGrid Item="{Binding .}" AutoGeneratePropertyDefinitions="False" DescriptionPanelVisibility="Collapsed" IsGrouped="True" AutoExpandGroups="False"
                                          SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed" SortAndGroupButtonsVisibility="Collapsed">
@@ -39,7 +39,7 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI Emoji"/>
                     </StackPanel>
                 </StackPanel>
-            </GroupBox>
+            </Expander>
 
             <GroupBox Header="Engine Parameters">
                 <StackPanel>
@@ -57,7 +57,25 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe UI Emoji"/>
                 </StackPanel>
             </GroupBox>
+
+            <GroupBox Header="Perfomance Metrics">
+                <StackPanel>
+                    <telerik:RadPropertyGrid Item="{Binding .}" AutoGeneratePropertyDefinitions="False" DescriptionPanelVisibility="Collapsed" IsGrouped="True" AutoExpandGroups="True"
+                                         SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed" SortAndGroupButtonsVisibility="Collapsed" IsReadOnly="True">
+                        <telerik:RadPropertyGrid.PropertyDefinitions>
+                            <telerik:PropertyDefinition Binding="{Binding TotalReturn, StringFormat=P2}" DisplayName="0-Total Return"/>
+                            <telerik:PropertyDefinition Binding="{Binding BarReturn, StringFormat=P2}" DisplayName="1-Bar Return"/>
+                            <telerik:PropertyDefinition Binding="{Binding MaxDrawDown, StringFormat=P2}" DisplayName="2-Max Draw Down"/>
+                            <telerik:PropertyDefinition Binding="{Binding SharpeRatio, StringFormat=F3}" DisplayName="3-Sharpe Ratio"/>
+                            <telerik:PropertyDefinition Binding="{Binding SortinoRatio, StringFormat=F3}" DisplayName="4-Sortino Ratio"/>
+                        </telerik:RadPropertyGrid.PropertyDefinitions>
+                    </telerik:RadPropertyGrid>
+
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
+
+
         <telerik:RadCartesianChart x:Name="chart" Grid.Column="1" Palette="Windows11">
             <telerik:RadCartesianChart.HorizontalAxis>
                 <telerik:CategoricalAxis SmartLabelsMode="SmartStep"/>
