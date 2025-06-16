@@ -27,23 +27,32 @@ class Program
 
         try
         {
+            var processes = Process.GetProcessesByName("UltimateChartistSync");
+            if (Process.GetProcessesByName("UltimateChartistSync").Count() > 1)
+            {
+                logger.WriteLine("❌ Sync already running");
+                return 1;
+            }
+
             // Network connection sanity check
             var sw = Stopwatch.StartNew();
             bool hasConnection = await HasNetworkConnectionAsync();
-
+            int count = 1;
             while (!hasConnection && sw.Elapsed.TotalMinutes < 10)
             {
+                logger.WriteLine($"❌ Sync failed: No network connection attempt: {count++}");
                 await Task.Delay(30000); // 30s
                 hasConnection = await HasNetworkConnectionAsync();
             }
             if (hasConnection)
             {
+                logger.WriteLine($"🔄 Network connection Validated");
                 var helper = new OneDriveHelper(clientId);
                 await helper.SyncFolderAsync(oneDrivePath, localPath);
             }
             else
             {
-                logger.WriteLine("❌ Sync failed: No network connection");
+                logger.WriteLine("❌ Sync failed: No network connection, aborting");
             }
         }
         catch (Exception ex)
