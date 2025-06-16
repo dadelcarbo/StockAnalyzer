@@ -9,38 +9,21 @@
 
     public interface ITradingStrategy
     {
+        public string Name { get; }
         public double[] Data { get; }
         TradeAction Decide(int currentIndex, bool inPosition);
 
         public void Initialize(double[] priceSeries);
     }
 
-    internal class BasicTradingStrategy : ITradingStrategy
+    public abstract class TradingStrategyBase : ITradingStrategy
     {
-        public double[] Data { get; protected set; }
+        public string Name => this.GetType().Name.Replace("TradingStrategy", string.Empty);
 
-        public TradeAction Decide(int index, bool inPosition)
-        {
-            if (index < 1)
-                return TradeAction.Nop;
+        public double[] Data { get; set; }
 
-            if (inPosition)
-            {
-                if (Data[index - 1] > Data[index])
-                    return TradeAction.Sell;
-            }
-            else
-            {
-                if (Data[index - 1] < Data[index])
-                    return TradeAction.Buy;
-            }
+        public abstract TradeAction Decide(int currentIndex, bool inPosition);
 
-            return TradeAction.Nop;
-        }
-
-        public void Initialize(double[] priceSeries)
-        {
-            this.Data = priceSeries;
-        }
+        public abstract void Initialize(double[] priceSeries);
     }
 }
