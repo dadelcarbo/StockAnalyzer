@@ -27,10 +27,14 @@ namespace FrozenLake.Agents
                 for (int j = 0; j < world.Size; j++)
                 {
                     var probabilities = new double[4];
-                    double sum = probabilities[0] = rnd.NextDouble();
-                    sum += probabilities[1] = rnd.NextDouble();
-                    sum += probabilities[2] = rnd.NextDouble();
-                    sum += probabilities[3] = rnd.NextDouble();
+                    //double sum = probabilities[0] = rnd.NextDouble();
+                    //sum += probabilities[1] = rnd.NextDouble();
+                    //sum += probabilities[2] = rnd.NextDouble();
+                    //sum += probabilities[3] = rnd.NextDouble();
+                    double sum = probabilities[0] = 1;
+                    sum += probabilities[1] = 1;
+                    sum += probabilities[2] = 1;
+                    sum += probabilities[3] = 1;
 
                     probabilities[0] /= sum;
                     probabilities[1] /= sum;
@@ -42,18 +46,15 @@ namespace FrozenLake.Agents
                 }
             }
 
-        }
-
-        List<PathItem> path = [];
-        private void TrainPPO()
-        {
             // Update policy to prevent invalid moves
             for (int i = 0; i < world.Size; i++)
             {
                 for (int j = 0; j < world.Size; j++)
                 {
+                    if (world.Tiles[i, j] == Tile.Wall)
+                        continue;
+
                     double sum = 0;
-                    int invalidMoves = 0;
                     foreach (var move in new[] { MoveAction.Left, MoveAction.Right, MoveAction.Up, MoveAction.Down })
                     {
                         switch (move)
@@ -62,28 +63,24 @@ namespace FrozenLake.Agents
                                 if (!world.CanMove(i - 1, j))
                                 {
                                     Policy[i, j][(int)move] = 0;
-                                    invalidMoves++;
                                 }
                                 break;
                             case MoveAction.Right:
                                 if (!world.CanMove(i + 1, j))
                                 {
                                     Policy[i, j][(int)move] = 0;
-                                    invalidMoves++;
                                 }
                                 break;
                             case MoveAction.Up:
                                 if (!world.CanMove(i, j - 1))
                                 {
                                     Policy[i, j][(int)move] = 0;
-                                    invalidMoves++;
                                 }
                                 break;
                             case MoveAction.Down:
-                                if (!world.CanMove(i - 1, j + 1))
+                                if (!world.CanMove(i, j + 1))
                                 {
                                     Policy[i, j][(int)move] = 0;
-                                    invalidMoves++;
                                 }
                                 break;
                         }
@@ -91,14 +88,15 @@ namespace FrozenLake.Agents
                         sum += Policy[i, j][(int)move];
                     }
                     // Normalize policy
-
-                    for (int k = 0; k < 4; k++)
-                    {
-                        Policy[i, j][k] /= sum;
-                    }
+                    Policy[i, j].NormalizeNonZero();
                 }
             }
 
+        }
+
+        List<PathItem> path = [];
+        private void TrainPPO()
+        {
             SetRandomLocation();
 
             int iteration = 0;
@@ -169,12 +167,13 @@ namespace FrozenLake.Agents
             // Squared error
             double totalError = 0;
             double error = 0;
-            double decay = 0.1;
-            int count = 0;
+            double decaySpeed = 0.9;
+            double decay = 1;
             double learningRate = 0.1;
             foreach (var pos in path)
             {
-                var discountedValue = (actualValue * (1 - decay * count));
+                var discountedValue = (actualValue * decay);
+                decay *= decaySpeed;
                 // Update value
                 error = discountedValue - Value[pos.X, pos.Y];
                 totalError += error * error;
@@ -187,7 +186,6 @@ namespace FrozenLake.Agents
                     Policy[pos.X, pos.Y][(int)pos.OutgoingMove] += error * learningRate;
                     Policy[pos.X, pos.Y].NormalizeNonZero();
                 }
-                count++;
             }
 
             totalError /= path.Count;

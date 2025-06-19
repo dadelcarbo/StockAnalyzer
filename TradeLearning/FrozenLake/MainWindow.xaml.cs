@@ -104,8 +104,14 @@ namespace FrozenLake
                     grid.Children.Add(rect);
                     if (agent is LearningAgent)
                     {
+                        var margin = new Thickness(3);
                         var learningAgent = agent as LearningAgent;
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Value[i, j].ToString("F3"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Value[i, j].ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
+
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Up].ToString(".##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Down].ToString(".##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Right].ToString(".##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Left].ToString(".##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
                     }
 
                     ColorGrid.Children.Add(grid);
@@ -121,8 +127,8 @@ namespace FrozenLake
                 Tile.Empty => Brushes.White,
                 Tile.Reward => Brushes.Gold,
                 Tile.Punish => Brushes.Red,
-                Tile.Wall => Brushes.DarkSlateGray,
-                Tile.Agent => Brushes.Indigo,
+                Tile.Wall => Brushes.LightSlateGray,
+                Tile.Agent => Brushes.Pink,
                 Tile.Visited => Brushes.LightGray,
                 _ => throw new NotSupportedException($"Enum value for Tile {value} not supported")
             };
@@ -155,9 +161,7 @@ namespace FrozenLake
                 startButton.Content = "Stop";
                 world.Reset();
 
-                this.agent = agentComboBox.SelectedItem as IAgent;
-
-                agent.Initialize(world, MathExtension.GetRandom(true));
+                //agent.Initialize(world, MathExtension.GetRandom(true));
                 agent.SetRandomLocation();
                 Debug.WriteLine($"X:{agent.X} Y:{agent.Y} move:Start");
 
@@ -177,24 +181,23 @@ namespace FrozenLake
             }
             else
             {
-                this.agent = agentComboBox.SelectedItem as IAgent;
-
                 var learningAgent = this.agent as LearningAgent;
                 if (learningAgent == null) { return; }
-
-                trainButton.Content = "Stop";
-
-                agent.Initialize(world, MathExtension.GetRandom(true));
-                iteration = 1;
+                if (iteration == 0)
+                {
+                    agent.Initialize(world, MathExtension.GetRandom(true));
+                    iteration = 1;
+                }
 
                 var error = learningAgent.TrainingIteration();
                 Debug.WriteLine($"Iteration: {iteration} Error: {error}");
 
                 PopulateGrid();
 
-                timer.Interval = TimeSpan.FromMilliseconds(5000);
-                timer.Tick += TrainTimer_Tick;
-                timer.Start();
+                //timer.Interval = TimeSpan.FromMilliseconds(5000);
+                //timer.Tick += TrainTimer_Tick;
+                //timer.Start();
+                //trainButton.Content = "Stop";
             }
         }
 
@@ -208,6 +211,12 @@ namespace FrozenLake
             Debug.WriteLine($"Iteration: {iteration} Error: {error}");
 
             PopulateGrid();
+        }
+
+        private void agentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.agent = agentComboBox.SelectedItem as IAgent;
+            this.agent.Initialize(world, MathExtension.GetRandom(true));
         }
     }
 }
