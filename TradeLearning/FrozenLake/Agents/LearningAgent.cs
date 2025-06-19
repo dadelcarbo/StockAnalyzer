@@ -120,11 +120,14 @@ namespace FrozenLake.Agents
             path.Add(new PathItem { X = this.X, Y = this.Y, OutgoingMove = MoveAction.None });
             while (!pathComplete)
             {
+                Debug.Write($"X:{X}, Y:{Y}");
                 var move = Move();
+                Debug.WriteLine($" {move} => X:{X}, Y:{Y}");
                 if (move == MoveAction.None) // Stuck
                 {
                     pathComplete = true;
                     actualValue = -1;
+                    Debug.WriteLine($"Stuck");
                 }
                 else
                 {
@@ -169,7 +172,7 @@ namespace FrozenLake.Agents
             double error = 0;
             double decaySpeed = 0.9;
             double decay = 1;
-            double learningRate = 0.1;
+            double learningRate = 0.01;
             foreach (var pos in path)
             {
                 var discountedValue = (actualValue * decay);

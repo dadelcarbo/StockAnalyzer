@@ -18,7 +18,6 @@
         }
         public abstract MoveAction Move();
 
-
         public void SetRandomLocation()
         {
             // Set agent to random valid location

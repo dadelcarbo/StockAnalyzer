@@ -172,6 +172,7 @@ namespace FrozenLake
             }
         }
 
+        private (int X, int Y) trainLocation;
         private void trainButton_Click(object sender, RoutedEventArgs e)
         {
             if (timer.IsEnabled)
@@ -185,8 +186,18 @@ namespace FrozenLake
                 if (learningAgent == null) { return; }
                 if (iteration == 0)
                 {
-                    agent.Initialize(world, MathExtension.GetRandom(true));
+                    agent.Initialize(world, MathExtension.GetRandom(false));
                     iteration = 1;
+
+                    agent.SetRandomLocation();
+                    trainLocation.X = agent.X;
+                    trainLocation.Y = agent.Y;
+                }
+                else
+                {
+                    agent.SetRandomLocation();
+                    //agent.X = trainLocation.X;
+                    //agent.Y = trainLocation.Y;
                 }
 
                 var error = learningAgent.TrainingIteration();
@@ -216,7 +227,8 @@ namespace FrozenLake
         private void agentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.agent = agentComboBox.SelectedItem as IAgent;
-            this.agent.Initialize(world, MathExtension.GetRandom(true));
+            this.agent.Initialize(world, MathExtension.GetRandom(false));
+            this.PopulateGrid();
         }
     }
 }
