@@ -14,8 +14,11 @@
 
         <UniformGrid Grid.Column="1" x:Name="ColorGrid" Rows="10" Columns="10"/>
 
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" >
+            <ComboBox Width="120" Height="25" Name="agentComboBox" DisplayMemberPath="Name" Margin="2"/>
+            <Button Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Center" Click="startButton_Click"/>
 
-        <Canvas></Canvas>
-        
+            <Button Name="trainButton" Content="Train" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Center" Click="trainButton_Click"/>
+        </StackPanel>
     </Grid>
 </Window>

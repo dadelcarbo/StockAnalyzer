@@ -1,7 +1,7 @@
 ﻿
 namespace FrozenLake
 {
-    internal class World
+    public class World
     {
         private int[,] intTiles = new int[10, 10]
         {
@@ -23,16 +23,21 @@ namespace FrozenLake
 
         public World()
         {
+            Reset();
+        }
+
+        public void Reset()
+        {
             for (int i = 0; i < Size; i++)
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    Tiles[i, j] = (Tile)intTiles[i, j];
+                    Tiles[j, i] = (Tile)intTiles[i, j];
                 }
             }
         }
 
-        internal bool CanMove(int x, int y, bool allowVisited = true)
+        public bool CanMove(int x, int y, bool allowVisited = true)
         {
             if (x < 0 || y < 0 || x >= Size || y >= Size) return false;
             var tile = Tiles[x, y];

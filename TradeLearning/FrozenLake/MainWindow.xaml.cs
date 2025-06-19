@@ -1,12 +1,14 @@
 ﻿using FrozenLake.Agents;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace FrozenLake
 {
-    enum Tile
+    public enum Tile
     {
         Empty = 0,
         Wall = 1,
@@ -23,53 +25,90 @@ namespace FrozenLake
         DispatcherTimer timer = new DispatcherTimer();
         private World world = new World();
         private IAgent agent;
+
+        List<IAgent> agents = new List<IAgent> { new Agent(), new GreedyAgent(), new LearningAgent() };
+
         public MainWindow()
         {
             InitializeComponent();
 
-            agent = new LearningAgent();
-            agent.Initialize(world);
-            agent.X = 0;
-            agent.Y = 3;
+            agentComboBox.ItemsSource = agents;
+            agentComboBox.SelectedItem = agents[2];
 
             PopulateGrid();
-
-            timer.Interval = TimeSpan.FromMilliseconds(1000);
-            timer.Tick += Timer_Tick;
-            timer.Start();
         }
 
-        private void Timer_Tick(object? sender, EventArgs e)
+        private void RunTimer_Tick(object sender, EventArgs e)
         {
+            if (!isRunning)
+                return;
+
             var move = agent.Move();
+            Debug.WriteLine($"X:{agent.X} Y:{agent.Y} move:{move}");
             PopulateGrid();
 
-            if (move == MoveAction.Completed)
+            if (move == MoveAction.None)
             {
-                timer.Stop();
-                MessageBox.Show("Done");
+                StopSimulation("Agent Stuck");
+            }
+            else
+            {
+                switch (world.Tiles[agent.X, agent.Y])
+                {
+                    case Tile.Wall:
+                        StopSimulation("Agent stepped into a wall");
+                        break;
+                    case Tile.Reward:
+                        StopSimulation("Agent won Congratualtions");
+                        break;
+                    case Tile.Punish:
+                        StopSimulation("Agent Dead");
+                        break;
+                    case Tile.Agent:
+                        StopSimulation("Agent on itself, that's a bug");
+                        break;
+                    case Tile.Empty:
+                        world.Tiles[agent.X, agent.Y] = Tile.Visited;
+                        break;
+                    case Tile.Visited:
+                        break;
+                    default:
+                        StopSimulation($"Agent on unsupported tile Type ${world.Tiles[agent.X, agent.Y]}");
+                        break;
+                }
             }
         }
 
         private void PopulateGrid()
         {
             ColorGrid.Children.Clear();
-            for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
             {
-                for (int j = 0; j < 10; j++)
+                for (int i = 0; i < 10; i++)
                 {
                     var tile = world.Tiles[i, j];
-                    if (agent.X == i && agent.Y == j)
+                    if (agent != null && agent.X == i && agent.Y == j)
                     {
                         tile = Tile.Agent;
                     }
+
+                    var grid = new Grid
+                    {
+                    };
                     var rect = new Rectangle
                     {
                         Fill = GetBrushFromValue(tile),
                         Stroke = Brushes.Black,
                         StrokeThickness = 1
                     };
-                    ColorGrid.Children.Add(rect);
+                    grid.Children.Add(rect);
+                    if (agent is LearningAgent)
+                    {
+                        var learningAgent = agent as LearningAgent;
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Value[i, j].ToString("F3"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center });
+                    }
+
+                    ColorGrid.Children.Add(grid);
                 }
             }
         }
@@ -87,6 +126,88 @@ namespace FrozenLake
                 Tile.Visited => Brushes.LightGray,
                 _ => throw new NotSupportedException($"Enum value for Tile {value} not supported")
             };
+        }
+
+        void StopSimulation(string message = null)
+        {
+            isRunning = false;
+            if (timer.IsEnabled)
+            {
+                timer.Stop();
+                startButton.Content = "Start";
+            }
+            if (message != null)
+            {
+                MessageBox.Show(message);
+            }
+        }
+
+        bool isRunning = false;
+        private void startButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (timer.IsEnabled)
+            {
+                timer.Stop();
+                startButton.Content = "Start";
+            }
+            else
+            {
+                startButton.Content = "Stop";
+                world.Reset();
+
+                this.agent = agentComboBox.SelectedItem as IAgent;
+
+                agent.Initialize(world, MathExtension.GetRandom(true));
+                agent.SetRandomLocation();
+                Debug.WriteLine($"X:{agent.X} Y:{agent.Y} move:Start");
+
+                isRunning = true;
+                timer.Interval = TimeSpan.FromMilliseconds(500);
+                timer.Tick += RunTimer_Tick;
+                timer.Start();
+            }
+        }
+
+        private void trainButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (timer.IsEnabled)
+            {
+                timer.Stop();
+                trainButton.Content = "Train";
+            }
+            else
+            {
+                this.agent = agentComboBox.SelectedItem as IAgent;
+
+                var learningAgent = this.agent as LearningAgent;
+                if (learningAgent == null) { return; }
+
+                trainButton.Content = "Stop";
+
+                agent.Initialize(world, MathExtension.GetRandom(true));
+                iteration = 1;
+
+                var error = learningAgent.TrainingIteration();
+                Debug.WriteLine($"Iteration: {iteration} Error: {error}");
+
+                PopulateGrid();
+
+                timer.Interval = TimeSpan.FromMilliseconds(5000);
+                timer.Tick += TrainTimer_Tick;
+                timer.Start();
+            }
+        }
+
+        int iteration = 0;
+        private void TrainTimer_Tick(object sender, EventArgs e)
+        {
+            var learningAgent = this.agent as LearningAgent;
+            if (learningAgent == null) { return; }
+
+            var error = learningAgent.TrainingIteration();
+            Debug.WriteLine($"Iteration: {iteration} Error: {error}");
+
+            PopulateGrid();
         }
     }
 }
