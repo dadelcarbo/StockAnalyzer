@@ -276,6 +276,8 @@ namespace FrozenLake
                     }
                 }
             }
+
+            MessageBox.Show("100% Successful !");
             PopulateGrid();
         }
     }
