@@ -46,6 +46,11 @@ public static class MathExtension
                 values[i] /= sum;
             }
         }
+
+        var check = Math.Abs(values.Sum() - 1);
+        if (check > 0.001)
+            throw new InvalidProgramException("Normalization failed");
+
     }
     public static void Normalize(this double[] values)
     {
@@ -63,6 +68,7 @@ public static class MathExtension
             values[i] /= sum;
         }
     }
+
     public static void Softmax(this double[] values)
     {
         if (values == null || values.Length == 0)
@@ -84,4 +90,15 @@ public static class MathExtension
             values[i] /= sumExp;
         }
     }
+
+    private static Random rand = GetRandom(true);
+    public static void Shuffle<T>(this T[] array)
+    {
+        for (int i = array.Length - 1; i > 0; i--)
+        {
+            int j = rand.Next(i + 1);
+            (array[i], array[j]) = (array[j], array[i]);
+        }
+    }
+
 }

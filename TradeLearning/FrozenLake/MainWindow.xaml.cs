@@ -140,7 +140,7 @@ namespace FrozenLake
             if (timer.IsEnabled)
             {
                 timer.Stop();
-                startButton.Content = "Start";
+                runButton.Content = "Run";
             }
             if (message != null)
             {
@@ -149,29 +149,29 @@ namespace FrozenLake
         }
 
         bool isRunning = false;
-        private void startButton_Click(object sender, RoutedEventArgs e)
+        private void runButton_Click(object sender, RoutedEventArgs e)
         {
             if (timer.IsEnabled)
             {
                 timer.Stop();
-                startButton.Content = "Start";
+                runButton.Content = "Run";
             }
             else
             {
-                startButton.Content = "Stop";
+                runButton.Content = "Stop";
                 world.Reset();
 
-                //agent.Initialize(world, MathExtension.GetRandom(true));
                 agent.SetRandomLocation();
                 Debug.WriteLine($"X:{agent.X} Y:{agent.Y} move:Start");
 
                 isRunning = true;
-                timer.Interval = TimeSpan.FromMilliseconds(500);
+                timer.Interval = TimeSpan.FromMilliseconds(250);
                 timer.Tick += RunTimer_Tick;
                 timer.Start();
             }
         }
 
+        int iteration = 0;
         private (int X, int Y) trainLocation;
         private void trainButton_Click(object sender, RoutedEventArgs e)
         {
@@ -186,10 +186,10 @@ namespace FrozenLake
                 if (learningAgent == null) { return; }
                 if (iteration == 0)
                 {
-                    agent.Initialize(world, MathExtension.GetRandom(false));
                     iteration = 1;
 
                     agent.SetRandomLocation();
+                    agent.X = 0; agent.Y = 1;
                     trainLocation.X = agent.X;
                     trainLocation.Y = agent.Y;
                 }
@@ -200,35 +200,83 @@ namespace FrozenLake
                     //agent.Y = trainLocation.Y;
                 }
 
-                var error = learningAgent.TrainingIteration();
-                Debug.WriteLine($"Iteration: {iteration} Error: {error}");
+                var nbIteration = int.Parse(iterationTxtBox.Text);
+                var learningRate = double.Parse(learningRateTxtBox.Text);
+                var epsilon = double.Parse(epsilonTxtBox.Text);
+                var discountFactor = double.Parse(discountTxtBox.Text);
+
+                //var error = learningAgent.TrainingIteration(epsilon, discountFactor);
+                //Debug.WriteLine($"Iteration: {iteration} Error: {error}");
+
+                var sw = Stopwatch.StartNew();
+                learningAgent.TrainPPO(nbIteration, learningRate, epsilon, discountFactor, allowVisitedCheckBox.IsChecked.Value);
+                sw.Stop();
+                MessageBox.Show($"Training completed in {sw.Elapsed.TotalSeconds}");
 
                 PopulateGrid();
-
-                //timer.Interval = TimeSpan.FromMilliseconds(5000);
-                //timer.Tick += TrainTimer_Tick;
-                //timer.Start();
-                //trainButton.Content = "Stop";
             }
         }
 
-        int iteration = 0;
-        private void TrainTimer_Tick(object sender, EventArgs e)
-        {
-            var learningAgent = this.agent as LearningAgent;
-            if (learningAgent == null) { return; }
-
-            var error = learningAgent.TrainingIteration();
-            Debug.WriteLine($"Iteration: {iteration} Error: {error}");
-
-            PopulateGrid();
-        }
 
         private void agentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.agent = agentComboBox.SelectedItem as IAgent;
-            this.agent.Initialize(world, MathExtension.GetRandom(false));
+            this.agent.Initialize(world, MathExtension.GetRandom(true));
             this.PopulateGrid();
+        }
+
+        private void testButton_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < world.Size; i++)
+            {
+                for (int j = 0; j < world.Size; j++)
+                {
+                    if (world.Tiles[i, j] != Tile.Empty)
+                        continue;
+
+                    Debug.WriteLine($"Testing from {i},{j}");
+
+                    world.Reset();
+                    agent.X = i; agent.Y = j;
+
+                    bool pathComplete = false;
+                    while (!pathComplete)
+                    {
+                        var move = agent.Move();
+                        if (move == MoveAction.None) // Stuck
+                        {
+                            pathComplete = true;
+                            MessageBox.Show("Agent Stuck");
+                            return;
+                        }
+                        else
+                        {
+                            switch (world.Tiles[agent.X, agent.Y])
+                            {
+                                case Tile.Wall:
+                                    MessageBox.Show("Agent stepped into a wall");
+                                    return;
+                                case Tile.Reward:
+                                    Debug.WriteLine($"Reward");
+                                    pathComplete = true;
+                                    break;
+                                case Tile.Punish:
+                                    MessageBox.Show("Agent stepped into a hole");
+                                    return;
+                                case Tile.Empty:
+                                    world.Tiles[agent.X, agent.Y] = Tile.Visited;
+                                    break;
+                                case Tile.Visited:
+                                    break;
+                                default:
+                                    MessageBox.Show($"Agent on unsupported tile Type ${world.Tiles[agent.X, agent.Y]}");
+                                    return;
+                            }
+                        }
+                    }
+                }
+            }
+            PopulateGrid();
         }
     }
 }

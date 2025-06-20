@@ -27,22 +27,19 @@ namespace FrozenLake.Agents
                 for (int j = 0; j < world.Size; j++)
                 {
                     var probabilities = new double[4];
-                    //double sum = probabilities[0] = rnd.NextDouble();
-                    //sum += probabilities[1] = rnd.NextDouble();
-                    //sum += probabilities[2] = rnd.NextDouble();
-                    //sum += probabilities[3] = rnd.NextDouble();
-                    double sum = probabilities[0] = 1;
-                    sum += probabilities[1] = 1;
-                    sum += probabilities[2] = 1;
-                    sum += probabilities[3] = 1;
-
-                    probabilities[0] /= sum;
-                    probabilities[1] /= sum;
-                    probabilities[2] /= sum;
-                    probabilities[3] /= sum;
+                    //probabilities[0] = rnd.NextDouble();
+                    //probabilities[1] = rnd.NextDouble();
+                    //probabilities[2] = rnd.NextDouble();
+                    //probabilities[3] = rnd.NextDouble();
+                    probabilities[0] = 1;
+                    probabilities[1] = 1;
+                    probabilities[2] = 1;
+                    probabilities[3] = 1;
+                    probabilities.Normalize();
 
                     this.Policy[i, j] = probabilities;
-                    //this.Value[i, j] = rnd.NextDouble();
+
+                    //this.Value[i, j] = 1 - rnd.NextDouble() * 2;
                 }
             }
 
@@ -95,21 +92,41 @@ namespace FrozenLake.Agents
         }
 
         List<PathItem> path = [];
-        private void TrainPPO()
+        bool allowVisited = false;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="epsilon">
+        /// 0 Full exploration (random)
+        /// 1 Full exploitation (100% policy)
+        /// </param>
+        public void TrainPPO(int nbIteration, double learningRate, double epsilon, double discountFactor, bool allowVisited)
         {
-            SetRandomLocation();
+            this.allowVisited = allowVisited;
 
             int iteration = 0;
             double error;
             do
             {
-                error = TrainingIteration();
+                error = 0;
+                for (int i = 0; i < world.Size; i++)
+                {
+                    for (int j = 0; j < world.Size; j++)
+                    {
+                        if (world.Tiles[i, j] != Tile.Empty)
+                            continue;
+
+                        this.X = i; this.Y = j;
+
+                        error += TrainingIteration(learningRate, epsilon, discountFactor);
+                    }
+                }
                 Debug.WriteLine($"Iteration: {iteration} Error: {error}");
             }
-            while (++iteration < 1000 && error > 0.001);
+            while (++iteration < nbIteration && error > 0.001);
         }
 
-        public double TrainingIteration()
+        public double TrainingIteration(double learningRate, double epsilon, double discountFactor)
         {
             path.Clear();
             world.Reset();
@@ -120,13 +137,13 @@ namespace FrozenLake.Agents
             path.Add(new PathItem { X = this.X, Y = this.Y, OutgoingMove = MoveAction.None });
             while (!pathComplete)
             {
-                Debug.Write($"X:{X}, Y:{Y}");
-                var move = Move();
-                Debug.WriteLine($" {move} => X:{X}, Y:{Y}");
+                //Debug.Write($"X:{X}, Y:{Y}");
+                var move = EpsilonMove(epsilon);
+                //Debug.WriteLine($" {move} => X:{X}, Y:{Y}");
                 if (move == MoveAction.None) // Stuck
                 {
                     pathComplete = true;
-                    actualValue = -1;
+                    actualValue = -2;
                     Debug.WriteLine($"Stuck");
                 }
                 else
@@ -156,7 +173,7 @@ namespace FrozenLake.Agents
                             world.Tiles[X, Y] = Tile.Visited;
                             break;
                         case Tile.Visited:
-                            Debug.WriteLine($"Visited");
+                            // Debug.WriteLine($"Visited");
                             AddMove(X, Y, move);
                             break;
                         default:
@@ -170,13 +187,11 @@ namespace FrozenLake.Agents
             // Squared error
             double totalError = 0;
             double error = 0;
-            double decaySpeed = 0.9;
             double decay = 1;
-            double learningRate = 0.01;
             foreach (var pos in path)
             {
                 var discountedValue = (actualValue * decay);
-                decay *= decaySpeed;
+                decay *= discountFactor;
                 // Update value
                 error = discountedValue - Value[pos.X, pos.Y];
                 totalError += error * error;
@@ -186,7 +201,8 @@ namespace FrozenLake.Agents
                 // Update Policy
                 if (pos.OutgoingMove != MoveAction.None)
                 {
-                    Policy[pos.X, pos.Y][(int)pos.OutgoingMove] += error * learningRate;
+                    var newPoliciyVal = Math.Max(0, Policy[pos.X, pos.Y][(int)pos.OutgoingMove] + error * learningRate);
+                    Policy[pos.X, pos.Y][(int)pos.OutgoingMove] = newPoliciyVal;
                     Policy[pos.X, pos.Y].NormalizeNonZero();
                 }
             }
@@ -206,21 +222,46 @@ namespace FrozenLake.Agents
             path.Insert(0, new PathItem { X = x, Y = y, OutgoingMove = MoveAction.None });
         }
 
+
         public override MoveAction Move()
+        {
+            return EpsilonMove(1);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="epsilon"></param>
+        /// 0 Full exploration (random)
+        /// 1 Full exploitation (100% policy)
+        /// <returns></returns>
+        public MoveAction EpsilonMove(double epsilon)
         {
             MoveAction move = MoveAction.None;
             int i = 0;
-            bool allowVisited = false;
+            bool useRadomMove = rnd.NextDouble() > epsilon;
+            MoveAction[] randomMoves = null;
+            if (useRadomMove)
+            {
+                randomMoves = [MoveAction.Left, MoveAction.Right, MoveAction.Up, MoveAction.Down];
+                randomMoves.Shuffle();
+            }
+
             while (move == MoveAction.None && i < 4)
             {
-                var bestMove = Policy[X, Y]
-                    .Select((value, index) => new { value, index })
-                    .OrderByDescending(x => x.value).ElementAt(i);
-                if (bestMove.value == 0)
-                    break;
+                // Select next move
+                if (useRadomMove) // exploration
+                {
+                    move = randomMoves[i];
+                }
+                else // exploitation
+                {
+                    var bestMove = Policy[X, Y].Select((value, index) => new { value, index }).OrderByDescending(x => x.value).ElementAt(i);
+                    if (bestMove.value == 0)
+                        break;
 
+                    move = (MoveAction)bestMove.index;
+                }
                 i++;
-                move = (MoveAction)bestMove.index;
                 switch (move)
                 {
                     case MoveAction.Left:

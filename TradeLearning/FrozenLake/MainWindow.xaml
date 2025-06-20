@@ -8,17 +8,42 @@
         Title="MainWindow" Height="600" Width="900">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <UniformGrid Grid.Column="1" x:Name="ColorGrid" Rows="10" Columns="10"/>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" >
+                <ComboBox Width="120" Height="25" Name="agentComboBox" DisplayMemberPath="Name" Margin="2" SelectionChanged="agentComboBox_SelectionChanged"/>
+                <Button Name="runButton" Content="Run" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Center" Click="runButton_Click"/>
+                <Button Name="testButton" Content="Test" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Center" Click="testButton_Click"/>
+            </StackPanel>
+            <GroupBox Header="Learning">
+                <StackPanel>
+                <Button Name="trainButton" Content="Train" HorizontalAlignment="Right" Margin="2" VerticalAlignment="Center" Click="trainButton_Click"/>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <CheckBox Name="allowVisitedCheckBox" Margin="5,0,0,0" Content="Allow Visited"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="Iterations:" Width="75"/>
+                        <TextBox Name="iterationTxtBox" Width="50" Margin="5,0,0,0" Text="100"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="learning Rate:" Width="75"/>
+                        <TextBox Name="learningRateTxtBox" Width="50" Margin="5,0,0,0" Text="0.001"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="Discount:" Width="75"/>
+                        <TextBox Name="discountTxtBox" Width="50" Margin="5,0,0,0" Text="0.99"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="Epsilon:" Width="75"/>
+                        <TextBox Name="epsilonTxtBox" Width="50" Margin="5,0,0,0" Text="0.8"/>
+                    </StackPanel>
 
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" >
-            <ComboBox Width="120" Height="25" Name="agentComboBox" DisplayMemberPath="Name" Margin="2" SelectionChanged="agentComboBox_SelectionChanged"/>
-            <Button Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Center" Click="startButton_Click"/>
-
-            <Button Name="trainButton" Content="Train" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Center" Click="trainButton_Click"/>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
     </Grid>
 </Window>
