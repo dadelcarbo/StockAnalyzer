@@ -123,13 +123,13 @@ namespace FrozenLake.Agents
             path.Insert(0, new PathItem { X = x, Y = y, OutgoingMove = MoveAction.None });
         }
 
-        private double[] EvaluatePolicy(int x, int y)
+        private float[] EvaluatePolicy(int x, int y)
         {
             Tensorflow.NumPy.NDArray input = Tensorflow.NumPy.np.array(new float[,] { { 0.5f, -0.2f } });
 
             var output = policyNetwork.predict(input).Single.numpy();
 
-            return output.ElementAt(0).ToArray<float>().Select(v => (double)v).ToArray();
+            return output.ElementAt(0).ToArray<float>();
         }
 
 
