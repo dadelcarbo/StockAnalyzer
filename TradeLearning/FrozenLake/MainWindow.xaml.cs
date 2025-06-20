@@ -26,14 +26,14 @@ namespace FrozenLake
         private World world = new World();
         private IAgent agent;
 
-        List<IAgent> agents = new List<IAgent> { new Agent(), new GreedyAgent(), new LearningAgent() };
+        List<IAgent> agents = new List<IAgent> { new Agent(), new GreedyAgent(), new LearningAgent(), new LearningNNAgent() };
 
         public MainWindow()
         {
             InitializeComponent();
 
             agentComboBox.ItemsSource = agents;
-            agentComboBox.SelectedItem = agents[2];
+            agentComboBox.SelectedItem = agents[3];
 
             PopulateGrid();
         }
@@ -209,7 +209,7 @@ namespace FrozenLake
                 //Debug.WriteLine($"Iteration: {iteration} Error: {error}");
 
                 var sw = Stopwatch.StartNew();
-                learningAgent.TrainPPO(nbIteration, learningRate, epsilon, discountFactor, allowVisitedCheckBox.IsChecked.Value);
+                learningAgent.Train(nbIteration, learningRate, epsilon, discountFactor, allowVisitedCheckBox.IsChecked.Value);
                 sw.Stop();
                 MessageBox.Show($"Training completed in {sw.Elapsed.TotalSeconds}");
 

@@ -12,4 +12,10 @@
         MoveAction Move();
         void SetRandomLocation();
     }
+
+    public interface ILearningAgent : IAgent
+    {
+        public void Train(int nbIteration, double learningRate, double epsilon, double discountFactor, bool allowVisited);
+
+    }
 }

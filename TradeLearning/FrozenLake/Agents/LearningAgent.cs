@@ -9,7 +9,7 @@ namespace FrozenLake.Agents
         public int Y;
         public MoveAction OutgoingMove;
     }
-    public class LearningAgent : AgentBase
+    public class LearningAgent : AgentBase, ILearningAgent
     {
         public double[,][] Policy { get; private set; }
         public double[,] Value { get; private set; }
@@ -100,7 +100,7 @@ namespace FrozenLake.Agents
         /// 0 Full exploration (random)
         /// 1 Full exploitation (100% policy)
         /// </param>
-        public void TrainPPO(int nbIteration, double learningRate, double epsilon, double discountFactor, bool allowVisited)
+        public void Train(int nbIteration, double learningRate, double epsilon, double discountFactor, bool allowVisited)
         {
             this.allowVisited = allowVisited;
 
