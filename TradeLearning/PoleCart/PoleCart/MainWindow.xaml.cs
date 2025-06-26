@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -67,25 +66,6 @@ namespace PoleCart
             }
         }
 
-        private void Timer_Tick(object? sender, EventArgs e)
-        {
-            var force = 0.0;
-            if (Keyboard.IsKeyDown(Key.Left))
-            {
-                force = -50;
-            }
-            else if (Keyboard.IsKeyDown(Key.Right))
-            {
-                force = 50;
-            }
-
-            cart.Step(force, dt);
-
-            // Update layout
-
-            cartTransform.X = canvasCenter + cart.X;
-        }
-
         private DateTime lastUpdate;
         private void CompositionTarget_Rendering(object? sender, EventArgs e)
         {
@@ -95,22 +75,17 @@ namespace PoleCart
             double dt = (now - lastUpdate).TotalSeconds;
 
             double force = 0;
-            if (Keyboard.IsKeyDown(Key.Left)) force = -1000;
-            if (Keyboard.IsKeyDown(Key.Right)) force = 1000;
+            if (Keyboard.IsKeyDown(Key.Left)) force = -100;
+            if (Keyboard.IsKeyDown(Key.Right)) force = 100;
 
             cart.Step(force, dt);
 
             cartTransform.X = canvasCenter + cart.X;
-            PoleRotate.Angle = cart.Theta * 180 / Math.PI;
+            PoleRotate.Angle = cart.θ * 180 / Math.PI;
 
-            Debug.WriteLine($"Angle:{(int)PoleRotate.Angle} Theta:{cart.Theta.ToString("F3")}");
+            //Debug.WriteLine($"X:{cart.X.ToString("F3")} dX:{cart.dx.ToString("F3")} Theta:{cart.θ.ToString("F3")} Angle:{(int)PoleRotate.Angle} Theta:{cart.θ.ToString("F3")}");
 
             lastUpdate = now;
-        }
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            cart.Theta = e.NewValue * Math.PI / 180;
         }
     }
 }

@@ -15,7 +15,6 @@
         <GroupBox Header="Simulation">
             <StackPanel Orientation="Vertical">
                 <Button Name="startButton" Content="Start" Click="startButton_Click" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <Slider Minimum="-360" Maximum="360" Value="0" ValueChanged="Slider_ValueChanged"/>
             </StackPanel>
         </GroupBox>
 
@@ -27,7 +26,7 @@
                 <!-- Cart -->
                 <Rectangle Name="cartShape" Width="40" Height="20" Fill="Gray" Canvas.Left="0" Canvas.Top="0"/>
                 <!-- Pole -->
-                <Line Name="poleShape" X1="20" Y1="10" X2="20" Y2="-80" Stroke="Red" StrokeThickness="6">
+                <Line Name="poleShape" X1="20" Y1="10" X2="20" Y2="-50" Stroke="Red" StrokeThickness="6">
                     <Line.RenderTransform>
                         <RotateTransform x:Name="PoleRotate" CenterX="20" CenterY="10" Angle="0"/>
                     </Line.RenderTransform>
