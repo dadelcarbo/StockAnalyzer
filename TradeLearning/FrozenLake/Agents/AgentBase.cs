@@ -16,7 +16,7 @@
             this.World = world;
             this.rnd = random;
         }
-        public abstract MoveAction Move();
+        public abstract MoveAction Move(bool allowVisited);
 
         public void SetRandomLocation()
         {

@@ -92,7 +92,6 @@ namespace FrozenLake.Agents
         }
 
         List<PathItem> path = [];
-        bool allowVisited = false;
         /// <summary>
         /// 
         /// </summary>
@@ -102,8 +101,6 @@ namespace FrozenLake.Agents
         /// </param>
         public void Train(int nbIteration, double learningRate, double epsilon, double discountFactor, bool allowVisited)
         {
-            this.allowVisited = allowVisited;
-
             int iteration = 0;
             double error;
             do
@@ -118,7 +115,7 @@ namespace FrozenLake.Agents
 
                         this.X = i; this.Y = j;
 
-                        error += TrainingIteration(learningRate, epsilon, discountFactor);
+                        error += TrainingIteration(learningRate, epsilon, discountFactor, allowVisited);
                     }
                 }
                 Debug.WriteLine($"Iteration: {iteration} Error: {error}");
@@ -126,7 +123,7 @@ namespace FrozenLake.Agents
             while (++iteration < nbIteration && error > 0.001);
         }
 
-        public double TrainingIteration(double learningRate, double epsilon, double discountFactor)
+        public double TrainingIteration(double learningRate, double epsilon, double discountFactor, bool allowVisited)
         {
             path.Clear();
             world.Reset();
@@ -138,7 +135,7 @@ namespace FrozenLake.Agents
             while (!pathComplete)
             {
                 //Debug.Write($"X:{X}, Y:{Y}");
-                var move = EpsilonMove(epsilon);
+                var move = EpsilonMove(epsilon, allowVisited);
                 //Debug.WriteLine($" {move} => X:{X}, Y:{Y}");
                 if (move == MoveAction.None) // Stuck
                 {
@@ -223,9 +220,9 @@ namespace FrozenLake.Agents
         }
 
 
-        public override MoveAction Move()
+        public override MoveAction Move(bool allowVisited)
         {
-            return EpsilonMove(1);
+            return EpsilonMove(1, allowVisited);
         }
         /// <summary>
         /// 
@@ -234,7 +231,7 @@ namespace FrozenLake.Agents
         /// 0 Full exploration (random)
         /// 1 Full exploitation (100% policy)
         /// <returns></returns>
-        public MoveAction EpsilonMove(double epsilon)
+        public MoveAction EpsilonMove(double epsilon, bool allowVisited)
         {
             MoveAction move = MoveAction.None;
             int i = 0;

@@ -9,7 +9,7 @@
         World World { get; }
 
         void Initialize(World world, Random random);
-        MoveAction Move();
+        MoveAction Move(bool allowVisited);
         void SetRandomLocation();
     }
 

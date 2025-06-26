@@ -11,7 +11,7 @@
 
     public class Agent : AgentBase
     {
-        public override MoveAction Move()
+        public override MoveAction Move(bool allowVisited)
         {
             MoveAction move = MoveAction.None;
             while (move == MoveAction.None)
@@ -20,7 +20,7 @@
                 switch (move)
                 {
                     case MoveAction.Left:
-                        if (world.CanMove(X - 1, Y, true))
+                        if (world.CanMove(X - 1, Y, allowVisited))
                         {
                             X--;
                         }
@@ -28,21 +28,21 @@
                             move = MoveAction.None;
                         break;
                     case MoveAction.Right:
-                        if (world.CanMove(X + 1, Y, true))
+                        if (world.CanMove(X + 1, Y, allowVisited))
                         {
                             X++;
                         }
                         else move = MoveAction.None;
                         break;
                     case MoveAction.Up:
-                        if (world.CanMove(X, Y - 1, true))
+                        if (world.CanMove(X, Y - 1, allowVisited))
                         {
                             Y--;
                         }
                         else move = MoveAction.None;
                         break;
                     case MoveAction.Down:
-                        if (world.CanMove(X, Y + 1, true))
+                        if (world.CanMove(X, Y + 1, allowVisited))
                         {
                             Y++;
                         }

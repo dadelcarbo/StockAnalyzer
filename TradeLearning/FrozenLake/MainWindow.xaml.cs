@@ -43,7 +43,7 @@ namespace FrozenLake
             if (!isRunning)
                 return;
 
-            var move = agent.Move();
+            var move = agent.Move(allowVisitedCheckBox.IsChecked.Value);
             Debug.WriteLine($"X:{agent.X} Y:{agent.Y} move:{move}");
             PopulateGrid();
 
@@ -242,7 +242,7 @@ namespace FrozenLake
                     bool pathComplete = false;
                     while (!pathComplete)
                     {
-                        var move = agent.Move();
+                        var move = agent.Move(allowVisitedCheckBox.IsChecked.Value);
                         if (move == MoveAction.None) // Stuck
                         {
                             pathComplete = true;
