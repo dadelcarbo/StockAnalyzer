@@ -198,7 +198,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 postData = postData.Replace("$GROUP", group);
                 postData = postData.Replace("$TOKEN", verifToken);
 
-                StockLog.Write("Downloading group: " + postData);
+                // StockLog.Write("Downloading group: " + postData);
 
                 var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
 

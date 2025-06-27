@@ -17,8 +17,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 this.eventSeries = new BoolSerie[this.EventCount];
             }
-
-            this.serieFormats = new string[this.SeriesCount];
             for (int i = 0; i < this.SeriesCount; i++)
             {
                 this.serieVisibility[i] = true;
