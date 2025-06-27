@@ -430,13 +430,13 @@ namespace StockAnalyzer.StockClasses
             }
             else
             {
-                IStockCloud indicator = StockCloudManager.CreateCloud(cloudName);
-                if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
+                IStockCloud cloud = StockCloudManager.CreateCloud(cloudName);
+                if (cloud != null && (this.HasVolume || !cloud.RequiresVolumeData))
                 {
                     StockLog.Write($"{cloudName} to {this.StockName} - {this.BarDuration}");
-                    indicator.ApplyTo(this);
-                    AddCloudSerie(indicator);
-                    return indicator;
+                    cloud.ApplyTo(this);
+                    AddCloudSerie(cloud);
+                    return cloud;
                 }
                 return null;
             }
@@ -469,14 +469,14 @@ namespace StockAnalyzer.StockClasses
             }
             else
             {
-                IStockAutoDrawing paintBar = StockAutoDrawingManager.CreateAutoDrawing(autoDrawingName);
-                if (paintBar != null && (this.HasVolume || !paintBar.RequiresVolumeData))
+                IStockAutoDrawing autoDrawing = StockAutoDrawingManager.CreateAutoDrawing(autoDrawingName);
+                if (autoDrawing != null && (this.HasVolume || !autoDrawing.RequiresVolumeData))
                 {
                     StockLog.Write($"{autoDrawingName} to {this.StockName} - {this.BarDuration}");
-                    paintBar.ApplyTo(this);
+                    autoDrawing.ApplyTo(this);
 
-                    this.AutoDrawingCache = paintBar;
-                    return paintBar;
+                    this.AutoDrawingCache = autoDrawing;
+                    return autoDrawing;
                 }
                 return null;
             }

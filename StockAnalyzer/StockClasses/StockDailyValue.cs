@@ -55,12 +55,21 @@ namespace StockAnalyzer.StockClasses
         public float BodyHigh => Math.Max(OPEN, CLOSE);
         public float BodyLow => Math.Min(OPEN, CLOSE);
 
+        /// <summary>
+        /// ADBR Average Day Body Range
+        /// </summary>
         public float ADBR => BodyHigh - BodyLow;
         public float NADBR => ADBR / CLOSE;
 
+        /// <summary>
+        /// ADR Average Day Range (no gap)
+        /// </summary>
         public float ADR => HIGH - LOW;
         public float NADR => ADR / CLOSE;
 
+        /// <summary>
+        /// ATR Average True Range (with gap)
+        /// </summary>
         public float ATR { get; set; }
         public float NATR => ATR / CLOSE;
 
