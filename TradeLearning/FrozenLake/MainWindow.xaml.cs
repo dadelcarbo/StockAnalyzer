@@ -26,7 +26,7 @@ namespace FrozenLake
         private World world = new World();
         private IAgent agent;
 
-        List<IAgent> agents = new List<IAgent> { new Agent(), new GreedyAgent(), new LearningAgent(), new LearningNNAgent() };
+        List<IAgent> agents = new List<IAgent> { new Agent(), new GreedyAgent(), new LearningAgent(), new QLearningAgent(), new LearningNNAgent() };
 
         public MainWindow()
         {
@@ -92,9 +92,7 @@ namespace FrozenLake
                         tile = Tile.Agent;
                     }
 
-                    var grid = new Grid
-                    {
-                    };
+                    var grid = new Grid();
                     var rect = new Rectangle
                     {
                         Fill = GetBrushFromValue(tile),
@@ -108,10 +106,20 @@ namespace FrozenLake
                         var learningAgent = agent as LearningAgent;
                         grid.Children.Add(new TextBlock { Text = learningAgent.Value[i, j].ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
 
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Up].ToString(".##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Down].ToString(".##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Right].ToString(".##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Left].ToString(".##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                    }
+                    else if (agent is QLearningAgent)
+                    {
+                        var margin = new Thickness(3);
+                        var learningAgent = agent as QLearningAgent;
+
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[i, j][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[i, j][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[i, j][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[i, j][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
                     }
 
                     ColorGrid.Children.Add(grid);
@@ -171,51 +179,6 @@ namespace FrozenLake
             }
         }
 
-        int iteration = 0;
-        private (int X, int Y) trainLocation;
-        private void trainButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (timer.IsEnabled)
-            {
-                timer.Stop();
-                trainButton.Content = "Train";
-            }
-            else
-            {
-                var learningAgent = this.agent as LearningAgent;
-                if (learningAgent == null) { return; }
-                if (iteration == 0)
-                {
-                    iteration = 1;
-
-                    agent.SetRandomLocation();
-                    agent.X = 0; agent.Y = 1;
-                    trainLocation.X = agent.X;
-                    trainLocation.Y = agent.Y;
-                }
-                else
-                {
-                    agent.SetRandomLocation();
-                    //agent.X = trainLocation.X;
-                    //agent.Y = trainLocation.Y;
-                }
-
-                var nbIteration = int.Parse(iterationTxtBox.Text);
-                var learningRate = double.Parse(learningRateTxtBox.Text);
-                var epsilon = double.Parse(epsilonTxtBox.Text);
-                var discountFactor = double.Parse(discountTxtBox.Text);
-
-                //var error = learningAgent.TrainingIteration(epsilon, discountFactor);
-                //Debug.WriteLine($"Iteration: {iteration} Error: {error}");
-
-                var sw = Stopwatch.StartNew();
-                learningAgent.Train(nbIteration, learningRate, epsilon, discountFactor, allowVisitedCheckBox.IsChecked.Value);
-                sw.Stop();
-                MessageBox.Show($"Training completed in {sw.Elapsed.TotalSeconds}");
-
-                PopulateGrid();
-            }
-        }
 
 
         private void agentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -279,6 +242,52 @@ namespace FrozenLake
 
             MessageBox.Show("100% Successful !");
             PopulateGrid();
+        }
+
+        int iteration = 0;
+        private (int X, int Y) trainLocation;
+        private void trainButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (timer.IsEnabled)
+            {
+                timer.Stop();
+                trainButton.Content = "Train";
+            }
+            else
+            {
+                var learningAgent = this.agent as ILearningAgent;
+                if (learningAgent == null) { return; }
+                if (iteration == 0)
+                {
+                    iteration = 1;
+
+                    agent.SetRandomLocation();
+                    agent.X = 0; agent.Y = 1;
+                    trainLocation.X = agent.X;
+                    trainLocation.Y = agent.Y;
+                }
+                else
+                {
+                    agent.SetRandomLocation();
+                }
+
+                var nbEpisodes = int.Parse(iterationTxtBox.Text);
+                var learningRate = double.Parse(learningRateTxtBox.Text);
+                var epsilon = double.Parse(epsilonTxtBox.Text);
+                var discountFactor = double.Parse(discountTxtBox.Text);
+
+                var sw = Stopwatch.StartNew();
+
+                if (resetCheckBox.IsChecked.Value)
+                {
+                    this.agent.Initialize(world, MathExtension.GetRandom(true));
+                }
+                learningAgent.Train(nbEpisodes, learningRate, epsilon, discountFactor, allowVisitedCheckBox.IsChecked.Value);
+                sw.Stop();
+                MessageBox.Show($"Training completed in {sw.Elapsed.TotalSeconds}");
+
+                PopulateGrid();
+            }
         }
     }
 }

@@ -99,7 +99,7 @@ namespace FrozenLake.Agents
         /// 0 Full exploration (random)
         /// 1 Full exploitation (100% policy)
         /// </param>
-        public void Train(int nbIteration, double learningRate, double epsilon, double discountFactor, bool allowVisited)
+        public void Train(int nbEpisodes, double learningRate, double epsilon, double discountFactor, bool allowVisited)
         {
             int iteration = 0;
             double error;
@@ -120,7 +120,7 @@ namespace FrozenLake.Agents
                 }
                 Debug.WriteLine($"Iteration: {iteration} Error: {error}");
             }
-            while (++iteration < nbIteration && error > 0.001);
+            while (++iteration < nbEpisodes && error > 0.001);
         }
 
         public double TrainingIteration(double learningRate, double epsilon, double discountFactor, bool allowVisited)
@@ -239,8 +239,7 @@ namespace FrozenLake.Agents
             MoveAction[] randomMoves = null;
             if (useRadomMove)
             {
-                randomMoves = [MoveAction.Left, MoveAction.Right, MoveAction.Up, MoveAction.Down];
-                randomMoves.Shuffle();
+                randomMoves = GetRandomMoves();
             }
 
             while (move == MoveAction.None && i < 4)

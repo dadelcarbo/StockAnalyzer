@@ -13,44 +13,43 @@
     {
         public override MoveAction Move(bool allowVisited)
         {
-            MoveAction move = MoveAction.None;
-            while (move == MoveAction.None)
+            MoveAction[] randomMoves = GetRandomMoves();
+
+            foreach (var move in randomMoves)
             {
-                move = (MoveAction)rnd.Next(0, 4);
                 switch (move)
                 {
                     case MoveAction.Left:
                         if (world.CanMove(X - 1, Y, allowVisited))
                         {
                             X--;
+                            return move;
                         }
-                        else
-                            move = MoveAction.None;
                         break;
                     case MoveAction.Right:
                         if (world.CanMove(X + 1, Y, allowVisited))
                         {
                             X++;
+                            return move;
                         }
-                        else move = MoveAction.None;
                         break;
                     case MoveAction.Up:
                         if (world.CanMove(X, Y - 1, allowVisited))
                         {
                             Y--;
+                            return move;
                         }
-                        else move = MoveAction.None;
                         break;
                     case MoveAction.Down:
                         if (world.CanMove(X, Y + 1, allowVisited))
                         {
                             Y++;
+                            return move;
                         }
-                        else move = MoveAction.None;
                         break;
                 }
             }
-            return move;
+            return MoveAction.None;
         }
     }
 }

@@ -21,7 +21,10 @@
             </StackPanel>
             <GroupBox Header="Learning">
                 <StackPanel>
-                <Button Name="trainButton" Content="Train" HorizontalAlignment="Right" Margin="2" VerticalAlignment="Center" Click="trainButton_Click"/>
+                    <StackPanel Orientation="Horizontal" Margin="2" HorizontalAlignment="Right">
+                        <CheckBox Name="resetCheckBox" Content="Reset"  Margin="2" VerticalAlignment="Center"/>
+                        <Button Name="trainButton" Content="Train" Margin="2" VerticalAlignment="Center" Click="trainButton_Click"/>
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <CheckBox Name="allowVisitedCheckBox" Margin="5,0,0,0" Content="Allow Visited"/>
                     </StackPanel>

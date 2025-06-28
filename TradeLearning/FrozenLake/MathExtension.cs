@@ -2,7 +2,7 @@
 
 public static class MathExtension
 {
-    public static int IndexOfMax(this double[] array)
+    public static int ArgMax<T>(this T[] array) where T : IComparable<T>
     {
         if (array == null || array.Length == 0)
             throw new ArgumentException("Array is null or empty.");
@@ -10,13 +10,30 @@ public static class MathExtension
         int maxIndex = 0;
         for (int i = 1; i < array.Length; i++)
         {
-            if (array[i] > array[maxIndex])
+            if (array[i].CompareTo(array[maxIndex]) > 0)
             {
                 maxIndex = i;
             }
         }
         return maxIndex;
     }
+
+    public static T Max<T>(this T[] array) where T : IComparable<T>
+    {
+        if (array == null || array.Length == 0)
+            throw new ArgumentException("Array is null or empty.");
+
+        T max = array[0];
+        for (int i = 1; i < array.Length; i++)
+        {
+            if (array[i].CompareTo(max) > 0)
+            {
+                max = array[i] ;
+            }
+        }
+        return max;
+    }
+
 
     public static Random GetRandom(bool deterministic)
     {

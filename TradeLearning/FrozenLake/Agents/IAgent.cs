@@ -15,7 +15,7 @@
 
     public interface ILearningAgent : IAgent
     {
-        public void Train(int nbIteration, double learningRate, double epsilon, double discountFactor, bool allowVisited);
+        public void Train(int nbEpisodes, double learningRate, double epsilon, double discountFactor, bool allowVisited);
 
     }
 }

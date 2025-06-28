@@ -35,5 +35,12 @@
             }
         }
 
+        protected static MoveAction[] GetRandomMoves()
+        {
+            MoveAction[] randomMoves = [MoveAction.Left, MoveAction.Right, MoveAction.Up, MoveAction.Down];
+            randomMoves.Shuffle();
+            return randomMoves;
+        }
+
     }
 }
