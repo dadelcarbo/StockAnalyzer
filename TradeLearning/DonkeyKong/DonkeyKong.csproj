@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Sprites\fire.png" />
+    <None Remove="Sprites\jack.png" />
+    <None Remove="Sprites\JumpLeft.png" />
+    <None Remove="Sprites\JumpRight.png" />
+    <None Remove="Sprites\key.png" />
+    <None Remove="Sprites\ladder.png" />
+    <None Remove="Sprites\monster.png" />
+    <None Remove="Sprites\RunLeft.png" />
+    <None Remove="Sprites\RunRight.png" />
+    <None Remove="Sprites\wall.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Sprites\fire.png" />
+    <Resource Include="Sprites\jack.png" />
+    <Resource Include="Sprites\JumpLeft.png" />
+    <Resource Include="Sprites\JumpRight.png" />
+    <Resource Include="Sprites\key.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Sprites\ladder.png" />
+    <Resource Include="Sprites\monster.png" />
+    <Resource Include="Sprites\RunLeft.png" />
+    <Resource Include="Sprites\RunRight.png" />
+    <Resource Include="Sprites\wall.png" />
+  </ItemGroup>
+
+</Project>

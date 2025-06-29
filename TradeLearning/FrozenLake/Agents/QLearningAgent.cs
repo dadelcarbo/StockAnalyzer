@@ -132,7 +132,7 @@ namespace FrozenLake.Agents
         {
             MoveAction move = MoveAction.None;
             int i = 0;
-            bool useRadomMove = rnd.NextDouble() > epsilon;
+            bool useRadomMove = epsilon < 1 && rnd.NextDouble() > epsilon;
             MoveAction[] randomMoves = null;
             if (useRadomMove)
             {

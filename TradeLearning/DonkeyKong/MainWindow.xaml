@@ -1,0 +1,29 @@
+﻿<Window x:Class="DonkeyKong.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DonkeyKong"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="900"
+        KeyDown="Window_KeyDown">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <GroupBox Header="Game">
+                <StackPanel>
+                    <Button Content="Start" Name="startGameBtn" HorizontalAlignment="Left" Margin="3" Click="startGameBtn_Click"/>
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+
+        <Border Grid.Column="1" BorderThickness="2" BorderBrush="Black" Height="500" Width="500">
+            <Canvas Name="gameCanvas"/>
+        </Border>
+
+    </Grid>
+</Window>
