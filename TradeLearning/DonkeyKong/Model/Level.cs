@@ -35,9 +35,9 @@ public class Level
             },
             GoalPos = new (3, 0),
             PlayerStartPos = new(7, 8),
-            BarrelSource = new(1, 0),
+            EnnemySource = new(1, 0),
             Interval = 500,
-            MaxBarrels = 6
+            MaxEnnemys = 6
         }
     ];
 
@@ -48,9 +48,9 @@ public class Level
 
     public (int X, int Y) GoalPos { get; private set; }
     public (int X, int Y) PlayerStartPos { get; private set; }
-    public (int X, int Y) BarrelSource { get; private set; }
+    public (int X, int Y) EnnemySource { get; private set; }
     public int Interval { get; private set; } // ms
-    public int MaxBarrels { get; private set; }
+    public int MaxEnnemys { get; private set; }
 
     static public Level GetLevel(int level)
     {

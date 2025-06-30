@@ -12,6 +12,26 @@
     <Window.Resources>
         <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
         <local:ViewModel x:Key="ViewModel"/>
+        <Style TargetType="RadioButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Name="RadioButtonBorder" BorderBrush="LightGray" BorderThickness="1" Background="Transparent" Margin="1">
+                            <ContentPresenter Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="RadioButtonBorder" Property="Background" Value="Gray"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RadioButtonBorder" Property="Background" Value="LightGray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -26,38 +46,47 @@
                 </StackPanel>
             </GroupBox>
             <Expander Header="Level Editor" IsExpanded="True">
-                <StackPanel Name="editorTilesPanel"
-                    Orientation="Horizontal">
-                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Fire}" BorderThickness="1" BorderBrush="LightGray">
-                        <Image Source="/Sprites/fire.png" Height="25" Width="25"></Image>
-                    </RadioButton>
-                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.FloorRight}" BorderThickness="1" BorderBrush="LightGray">
-                        <StackPanel>
-                            <Image Source="/Sprites/wall.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
-                            <TextBlock Text="Right" FontWeight="ExtraBold" FontSize="10"  HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.FloorLeft}" BorderThickness="1" BorderBrush="LightGray">
-                        <StackPanel>
-                            <Image Source="/Sprites/wall.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
-                            <TextBlock Text="Left" FontWeight="ExtraBold" FontSize="10"  HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Ladder}" BorderThickness="1" BorderBrush="LightGray">
-                        <Image Source="/Sprites/ladder.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
-                    </RadioButton>
-                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Barrel}" BorderThickness="1" BorderBrush="LightGray">
-                        <Image Source="/Sprites/monster.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
-                    </RadioButton>
-                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Goal}" BorderThickness="1" BorderBrush="LightGray">
-                        <Image Source="/Sprites/key.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
-                    </RadioButton>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Name="newLevelButton" Content="New" Margin="2"/>
+                        <Button Name="saveLevelButton" Content="Save" Margin="2"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Empty}" Height="32" Width="32" Content=""/>
+                        <RadioButton Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Fire}" Height="32" Width="32">
+                            <Image Source="/Sprites/fire.png" Stretch="Fill"></Image>
+                        </RadioButton>
+                        <RadioButton Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.FloorRight}" Height="32" Width="32">
+                            <StackPanel>
+                                <Image Source="/Sprites/wall.png" Stretch="Fill"></Image>
+                                <TextBlock Text="Right" FontWeight="Bold" FontSize="7"  HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.FloorLeft}" Height="32" Width="32">
+                            <StackPanel>
+                                <Image Source="/Sprites/wall.png" Stretch="Fill"></Image>
+                                <TextBlock Text="Left" FontWeight="Bold" FontSize="7"  HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Ladder}" Height="32" Width="32">
+                            <Image Source="/Sprites/ladder.png" Stretch="Fill"></Image>
+                        </RadioButton>
+                        <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Ennemy}" Height="32" Width="32">
+                            <Image Source="/Sprites/monster.png" Stretch="Fill"></Image>
+                        </RadioButton>
+                        <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Goal}" Height="32" Width="32">
+                            <Image Source="/Sprites/key.png" Stretch="Fill"></Image>
+                        </RadioButton>
+                        <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Goal}" Height="32" Width="32">
+                            <Image Source="/Sprites/RunLeft.png" Stretch="Fill"></Image>
+                        </RadioButton>
+                    </StackPanel>
                 </StackPanel>
             </Expander>
         </StackPanel>
 
         <Border Grid.Column="1" BorderThickness="2" BorderBrush="Black" Height="500" Width="500">
-            <Canvas Name="gameCanvas"/>
+            <Canvas Name="gameCanvas" MouseDown="gameCanvas_MouseDown" Background="Transparent"/>
         </Border>
 
     </Grid>

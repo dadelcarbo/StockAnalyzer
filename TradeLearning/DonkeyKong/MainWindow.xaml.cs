@@ -51,21 +51,22 @@ namespace DonkeyKong
 
         double cellWidth;
         double cellHeight;
-        double barrelOffsetX;
-        double barrelOffsetY;
-        double barrelSizeX;
-        double barrelSizeY;
+        double ennemyOffsetX;
+        double ennemyOffsetY;
+        double ennemySizeX;
+        double ennemySizeY;
 
         private World world = World.Instance;
 
         private void RenderWorldBackground()
         {
+            this.gameCanvas.Children.Clear();
             for (int i = 0; i < world.Width; i++)
             {
                 for (int j = 0; j < world.Height; j++)
                 {
                     UIElement shape = null;
-                    switch ((Tiles)world.Background[i, j])
+                    switch (world.Background[i, j])
                     {
                         case Tiles.FloorLeft:
                             shape = new Image
@@ -175,29 +176,29 @@ namespace DonkeyKong
         }
         private void RenderWorld()
         {
-            // Render barrels
-            var barrelImages = gameCanvas.Children.OfType<Image>().Where(e => e.Tag is Barrel).ToList();
-            foreach (var barrel in world.Barrels)
+            // Render ennemys
+            var ennemyImages = gameCanvas.Children.OfType<Image>().Where(e => e.Tag is Ennemy).ToList();
+            foreach (var ennemy in world.Ennemies)
             {
-                var shape = barrelImages.FirstOrDefault(b => b.Tag == barrel);
+                var shape = ennemyImages.FirstOrDefault(b => b.Tag == ennemy);
                 if (shape == null)
                 {
                     shape = new Image
                     {
-                        Width = barrelSizeX,
-                        Height = barrelSizeY,
+                        Width = ennemySizeX,
+                        Height = ennemySizeY,
                         Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/monster.png")),
-                        Tag = barrel,
+                        Tag = ennemy,
                         Margin = new Thickness(0)
                     };
                     // Add the TextBlock to the Canvas
                     gameCanvas.Children.Add(shape);
                 }
-                Canvas.SetLeft(shape, barrel.X * cellWidth + barrelOffsetX);
-                Canvas.SetTop(shape, barrel.Y * cellHeight + barrelOffsetY);
+                Canvas.SetLeft(shape, ennemy.X * cellWidth + ennemyOffsetX);
+                Canvas.SetTop(shape, ennemy.Y * cellHeight + ennemyOffsetY);
             }
 
-            foreach (var e in barrelImages.Where(e => (e.Tag as Barrel).IsDead))
+            foreach (var e in ennemyImages.Where(e => (e.Tag as Ennemy).IsDead))
             {
                 gameCanvas.Children.Remove(e);
             }
@@ -289,10 +290,10 @@ namespace DonkeyKong
                 cellWidth = this.gameCanvas.ActualWidth / world.Width;
                 cellHeight = this.gameCanvas.ActualWidth / world.Height;
 
-                barrelSizeX = cellWidth * .75;
-                barrelSizeY = cellHeight * .75;
-                barrelOffsetX = cellWidth * 0.125;
-                barrelOffsetY = cellHeight * 0.25;
+                ennemySizeX = cellWidth * .75;
+                ennemySizeY = cellHeight * .75;
+                ennemyOffsetX = cellWidth * 0.125;
+                ennemyOffsetY = cellHeight * 0.25;
 
                 this.gameCanvas.Children.Clear();
 
@@ -392,8 +393,9 @@ namespace DonkeyKong
             world.Player.Dump(true);
         }
 
+        bool isEditing = true;
 
-        Tiles EditorTile;
+        Tiles? editorTile;
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             var toggleButton = sender as RadioButton;
@@ -401,7 +403,39 @@ namespace DonkeyKong
             {
                 return;
             }
-            EditorTile = (Tiles)toggleButton.Tag;
+            editorTile = (Tiles)toggleButton.Tag;
+        }
+
+        private void gameCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!isEditing || editorTile == null)
+                return;
+
+            var pos = new { X = (int)(e.GetPosition(sender as Canvas).X / cellWidth), Y = (int)(e.GetPosition(sender as Canvas).Y / cellHeight) };
+
+            switch (editorTile.Value)
+            {
+                case Tiles.Empty:
+                case Tiles.FloorLeft:
+                case Tiles.FloorRight:
+                case Tiles.Ladder:
+                case Tiles.Fire:
+                    world.Background[pos.X, pos.Y] = editorTile.Value;
+                    break;
+                case Tiles.Ennemy:
+                    break;
+                case Tiles.Player:
+                    break;
+                case Tiles.Goal:
+                    world.Goal.X = pos.X;
+                    world.Goal.Y = pos.Y;
+                    break;
+                default:
+                    break;
+            }
+
+            RenderWorldBackground();
+            RenderWorld();
         }
     }
 }

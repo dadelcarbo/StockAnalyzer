@@ -124,7 +124,7 @@
   "Number": 1,
   "GoalPos": {},
   "PlayerStartPos": {},
-  "BarrelSource": {},
+  "EnnemySource": {},
   "Interval": 500,
-  "MaxBarrels": 6
+  "MaxEnnemys": 6
 }

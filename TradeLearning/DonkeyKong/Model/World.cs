@@ -4,12 +4,13 @@ namespace DonkeyKong.Model
     public enum Tiles
     {
         Empty = 0,
-        FloorLeft = 1, // Barrel go Left
-        FloorRight = 2, // Barrel go down
+        FloorLeft = 1, // Ennemy go Left
+        FloorRight = 2, // Ennemy go down
         Ladder = 3,
-        Barrel = 4,
+        Ennemy = 4,
         Goal = 5,
-        Fire = 6
+        Fire = 6,
+        Player = 7
     }
 
     public enum LevelStatus
@@ -33,7 +34,7 @@ namespace DonkeyKong.Model
         public LevelStatus Status;
         public Player Player { get; private set; }
         public Goal Goal { get; private set; }
-        public List<Barrel> Barrels { get; private set; } = new List<Barrel>();
+        public List<Ennemy> Ennemies { get; private set; } = new List<Ennemy>();
 
         Level level;
 
@@ -46,7 +47,7 @@ namespace DonkeyKong.Model
 
             this.Player = new Player() { X = level.PlayerStartPos.X, Y = level.PlayerStartPos.Y };
             this.Goal = new Goal() { X = level.GoalPos.X, Y = level.GoalPos.Y };
-            Barrels.Clear();
+            Ennemies.Clear();
 
             this.Background = new Tiles[world.Width, world.Height];
             for (int i = 0; i < world.Height; i++)
@@ -63,7 +64,7 @@ namespace DonkeyKong.Model
         bool skipCreation = false;
         public void Step()
         {
-            if (Barrels.Count < level.MaxBarrels)
+            if (Ennemies.Count < level.MaxEnnemys)
             {
                 if (skipCreation)
                 {
@@ -71,43 +72,43 @@ namespace DonkeyKong.Model
                 }
                 else if (rnd.NextDouble() > 0.5)
                 {
-                    this.Barrels.Add(new Barrel() { X = level.BarrelSource.X, Y = level.BarrelSource.Y });
+                    this.Ennemies.Add(new Ennemy() { X = level.EnnemySource.X, Y = level.EnnemySource.Y });
                     skipCreation = true;
                 }
             }
             Tiles tileBelow;
-            foreach (Barrel barrel in Barrels)
+            foreach (Ennemy ennemy in Ennemies)
             {
-                if (barrel.Y + 1 == Height) // Barrel dead
+                if (ennemy.Y + 1 == Height) // Ennemy dead
                 {
-                    barrel.IsDead = true;
+                    ennemy.IsDead = true;
                     break;
                 }
 
-                tileBelow = Background[barrel.X, barrel.Y + 1];
+                tileBelow = Background[ennemy.X, ennemy.Y + 1];
                 switch (tileBelow)
                 {
                     case Tiles.Empty:
-                        barrel.Y++;
+                        ennemy.Y++;
                         break;
                     case Tiles.FloorLeft:
-                        barrel.X--;
-                        barrel.IsMovingRight = false;
+                        ennemy.X--;
+                        ennemy.IsMovingRight = false;
                         break;
                     case Tiles.FloorRight:
-                        barrel.X++;
-                        barrel.IsMovingRight = true;
+                        ennemy.X++;
+                        ennemy.IsMovingRight = true;
                         break;
                     case Tiles.Ladder:
-                        barrel.X = barrel.IsMovingRight ? barrel.X + 1 : barrel.X - 1;
+                        ennemy.X = ennemy.IsMovingRight ? ennemy.X + 1 : ennemy.X - 1;
                         break;
                     case Tiles.Fire:
-                        barrel.Y++;
-                        barrel.IsDead = true;
+                        ennemy.Y++;
+                        ennemy.IsDead = true;
                         break;
                 }
             }
-            this.Barrels.RemoveAll(b => b.IsDead);
+            this.Ennemies.RemoveAll(b => b.IsDead);
 
             // Check if player is falling
             tileBelow = Background[Player.X, Player.Y + 1];
@@ -133,8 +134,8 @@ namespace DonkeyKong.Model
 
             Player.Dump();
 
-            // Check collision with barrels
-            if (Barrels.Any(b => b.X == Player.X && b.Y == Player.Y))
+            // Check collision with ennemys
+            if (Ennemies.Any(b => b.X == Player.X && b.Y == Player.Y))
             {
                 this.Status = LevelStatus.Lost;
                 return;

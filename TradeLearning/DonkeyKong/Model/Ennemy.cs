@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DonkeyKong.Model
 {
     [DebuggerDisplay("X:{X} Y:{Y}")]
-    public class Barrel : IMoveable
+    public class Ennemy : IMoveable
     {
         public int X { get; set; }
         public int Y { get; set; }
