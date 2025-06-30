@@ -4,9 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DonkeyKong"
+        xmlns:model="clr-namespace:DonkeyKong.Model"
+        xmlns:helpers="clr-namespace:DonkeyKong.Helpers"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="900"
         KeyDown="Window_KeyDown">
+    <Window.Resources>
+        <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+        <local:ViewModel x:Key="ViewModel"/>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -18,7 +25,35 @@
                     <Button Content="Start" Name="startGameBtn" HorizontalAlignment="Left" Margin="3" Click="startGameBtn_Click"/>
                 </StackPanel>
             </GroupBox>
-
+            <Expander Header="Level Editor" IsExpanded="True">
+                <StackPanel Name="editorTilesPanel"
+                    Orientation="Horizontal">
+                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Fire}" BorderThickness="1" BorderBrush="LightGray">
+                        <Image Source="/Sprites/fire.png" Height="25" Width="25"></Image>
+                    </RadioButton>
+                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.FloorRight}" BorderThickness="1" BorderBrush="LightGray">
+                        <StackPanel>
+                            <Image Source="/Sprites/wall.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
+                            <TextBlock Text="Right" FontWeight="ExtraBold" FontSize="10"  HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.FloorLeft}" BorderThickness="1" BorderBrush="LightGray">
+                        <StackPanel>
+                            <Image Source="/Sprites/wall.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
+                            <TextBlock Text="Left" FontWeight="ExtraBold" FontSize="10"  HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </RadioButton>
+                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Ladder}" BorderThickness="1" BorderBrush="LightGray">
+                        <Image Source="/Sprites/ladder.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
+                    </RadioButton>
+                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Barrel}" BorderThickness="1" BorderBrush="LightGray">
+                        <Image Source="/Sprites/monster.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
+                    </RadioButton>
+                    <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Goal}" BorderThickness="1" BorderBrush="LightGray">
+                        <Image Source="/Sprites/key.png" Height="25" Width="25" Margin="0,-5,0,0"></Image>
+                    </RadioButton>
+                </StackPanel>
+            </Expander>
         </StackPanel>
 
         <Border Grid.Column="1" BorderThickness="2" BorderBrush="Black" Height="500" Width="500">

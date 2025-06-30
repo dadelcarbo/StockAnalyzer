@@ -391,5 +391,17 @@ namespace DonkeyKong
 
             world.Player.Dump(true);
         }
+
+
+        Tiles EditorTile;
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var toggleButton = sender as RadioButton;
+            if (toggleButton == null || !toggleButton.IsChecked.Value)
+            {
+                return;
+            }
+            EditorTile = (Tiles)toggleButton.Tag;
+        }
     }
 }
