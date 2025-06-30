@@ -1,7 +1,4 @@
 ﻿
-
-using System.Diagnostics;
-
 namespace DonkeyKong.Model
 {
     public enum Tiles
@@ -25,40 +22,30 @@ namespace DonkeyKong.Model
     public class World
     {
         Random rnd = new Random();
-        public int Width => level.GetLength(0);
-        public int Height => level.GetLength(1);
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
-        private int[,] level = new int[,] {
-            {0,0,0,5,0,0,0,0,0,0 },
-            {0,0,0,3,0,0,0,0,0,0 },
-            {0,0,0,3,0,0,0,0,0,0 },
-            {2,2,2,2,2,2,3,2,2,0 },
-            {0,0,0,0,0,0,3,0,0,0 },
-            {0,0,0,0,0,0,3,0,0,0 },
-            {0,1,3,1,1,1,1,1,1,1 },
-            {0,0,3,0,0,0,0,0,0,0 },
-            {0,0,3,0,0,0,0,0,0,0 },
-            {2,2,2,2,2,2,2,2,2,6 },
-        };
         public Tiles[,] Background;
-
-        public (int X, int Y) PlayerStartPos = new(7, 8);
-        public (int X, int Y) GoalPos = new(3, 0);
-        public (int X, int Y) BarrelSource = new(1, 0);
 
         private static World world = new World();
         public static World Instance => world;
 
         public LevelStatus Status;
-        public Player Player { get; set; }
-        public Goal Goal { get; set; }
-        public List<Barrel> Barrels { get; set; } = new List<Barrel>();
-        int NB_BARRELS = 6;
+        public Player Player { get; private set; }
+        public Goal Goal { get; private set; }
+        public List<Barrel> Barrels { get; private set; } = new List<Barrel>();
 
-        public void Initialize(int level)
+        Level level;
+
+        public void Initialize(int levelNumber)
         {
-            this.Player = new Player() { X = PlayerStartPos.X, Y = PlayerStartPos.Y };
-            this.Goal = new Goal() { X = GoalPos.X, Y = GoalPos.Y };
+            this.level = Level.GetLevel(levelNumber);
+
+            Width = level.LevelTable.GetLength(0);
+            Height = level.LevelTable.GetLength(1);
+
+            this.Player = new Player() { X = level.PlayerStartPos.X, Y = level.PlayerStartPos.Y };
+            this.Goal = new Goal() { X = level.GoalPos.X, Y = level.GoalPos.Y };
             Barrels.Clear();
 
             this.Background = new Tiles[world.Width, world.Height];
@@ -66,7 +53,7 @@ namespace DonkeyKong.Model
             {
                 for (int j = 0; j < world.Width; j++)
                 {
-                    this.Background[j, i] = (Tiles)this.level[i, j];
+                    this.Background[j, i] = (Tiles)this.level.LevelTable[i, j];
                 }
             }
 
@@ -76,7 +63,7 @@ namespace DonkeyKong.Model
         bool skipCreation = false;
         public void Step()
         {
-            if (Barrels.Count < NB_BARRELS)
+            if (Barrels.Count < level.MaxBarrels)
             {
                 if (skipCreation)
                 {
@@ -84,7 +71,7 @@ namespace DonkeyKong.Model
                 }
                 else if (rnd.NextDouble() > 0.5)
                 {
-                    this.Barrels.Add(new Barrel() { X = BarrelSource.X, Y = BarrelSource.Y });
+                    this.Barrels.Add(new Barrel() { X = level.BarrelSource.X, Y = level.BarrelSource.Y });
                     skipCreation = true;
                 }
             }

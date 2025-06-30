@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace DonkeyKong
@@ -27,14 +25,6 @@ namespace DonkeyKong
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            cellWidth = this.gameCanvas.ActualWidth / world.Width;
-            cellHeight = this.gameCanvas.ActualWidth / world.Height;
-
-            barrelSizeX = cellWidth * .75;
-            barrelSizeY = cellHeight * .75;
-            barrelOffsetX = cellWidth * 0.125;
-            barrelOffsetY = cellHeight * 0.25;
-
             timer.Tick += Timer_Tick;
 
             startGameBtn_Click(null, null);
@@ -140,8 +130,8 @@ namespace DonkeyKong
 
             // Add the TextBlock to the Canvas
             gameCanvas.Children.Add(goal);
-            Canvas.SetLeft(goal, world.GoalPos.X * cellWidth);
-            Canvas.SetTop(goal, world.GoalPos.Y * cellHeight);
+            Canvas.SetLeft(goal, world.Goal.X * cellWidth);
+            Canvas.SetTop(goal, world.Goal.Y * cellHeight);
 
             PlayerLeft = new Image
             {
@@ -295,6 +285,15 @@ namespace DonkeyKong
             else
             {
                 world.Initialize(1);
+
+                cellWidth = this.gameCanvas.ActualWidth / world.Width;
+                cellHeight = this.gameCanvas.ActualWidth / world.Height;
+
+                barrelSizeX = cellWidth * .75;
+                barrelSizeY = cellHeight * .75;
+                barrelOffsetX = cellWidth * 0.125;
+                barrelOffsetY = cellHeight * 0.25;
+
                 this.gameCanvas.Children.Clear();
 
                 RenderWorldBackground();
