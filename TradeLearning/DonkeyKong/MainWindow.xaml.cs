@@ -335,7 +335,7 @@ namespace DonkeyKong
                 RenderWorldBackground();
                 RenderWorld();
 
-                timer.Interval = TimeSpan.FromMilliseconds(500);
+                timer.Interval = TimeSpan.FromMilliseconds(world.Level.Interval);
                 timer.Start();
                 startGameBtn.Content = "Stop";
 

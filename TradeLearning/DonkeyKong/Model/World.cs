@@ -36,34 +36,34 @@ namespace DonkeyKong.Model
         public Coord Goal { get; private set; }
         public Coord EnnemySource { get; private set; }
         public List<Ennemy> Ennemies { get; private set; } = new List<Ennemy>();
+        public Level Level { get; set; }
 
-        Level level;
         public bool NextLevel()
         {
-            if (level == null)
+            if (Level == null)
             {
                 Initialize(1);
                 return true;
             }
             else
             {
-                Initialize(level.Number + 1);
-                return level != null;
+                Initialize(Level.Number + 1);
+                return Level != null;
             }
         }
 
         public void Initialize(int levelNumber)
         {
-            this.level = Level.GetLevel(levelNumber);
-            if (level == null)
+            this.Level = Level.GetLevel(levelNumber);
+            if (Level == null)
                 return;
 
-            Width = level.LevelArray.GetLength(0);
-            Height = level.LevelArray[0].GetLength(0);
+            Width = Level.LevelArray.GetLength(0);
+            Height = Level.LevelArray[0].GetLength(0);
 
-            this.Player = new Player() { X = level.PlayerStartPos.X, Y = level.PlayerStartPos.Y };
-            this.Goal = level.GoalPos;
-            this.EnnemySource = level.EnnemySource;
+            this.Player = new Player() { X = Level.PlayerStartPos.X, Y = Level.PlayerStartPos.Y };
+            this.Goal = Level.GoalPos;
+            this.EnnemySource = Level.EnnemySource;
 
             Ennemies.Clear();
 
@@ -72,7 +72,7 @@ namespace DonkeyKong.Model
             {
                 for (int j = 0; j < world.Width; j++)
                 {
-                    this.Background[j, i] = (Tiles)this.level.LevelArray[i][j];
+                    this.Background[j, i] = (Tiles)this.Level.LevelArray[i][j];
                 }
             }
 
@@ -82,15 +82,15 @@ namespace DonkeyKong.Model
         bool skipCreation = false;
         public void Step()
         {
-            if (Ennemies.Count < level.MaxEnnemys)
+            if (Ennemies.Count < Level.MaxEnnemys)
             {
                 if (skipCreation)
                 {
                     skipCreation = false;
                 }
-                else if (rnd.NextDouble() > 0.75)
+                else if (rnd.NextDouble() > 0.8)
                 {
-                    this.Ennemies.Add(new Ennemy() { X = level.EnnemySource.X, Y = level.EnnemySource.Y });
+                    this.Ennemies.Add(new Ennemy() { X = Level.EnnemySource.X, Y = Level.EnnemySource.Y });
                     skipCreation = true;
                 }
             }

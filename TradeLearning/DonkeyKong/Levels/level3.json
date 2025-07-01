@@ -134,6 +134,6 @@
     "X": 9,
     "Y": 0
   },
-  "Interval": 500,
-  "MaxEnnemys": 10
+  "Interval": 350,
+  "MaxEnnemys": 6
 }
