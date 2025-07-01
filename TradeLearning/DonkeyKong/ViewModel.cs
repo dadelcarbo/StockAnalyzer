@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using DonkeyKong.Model;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace DonkeyKong
@@ -30,7 +31,13 @@ namespace DonkeyKong
         }
         #endregion
 
-        private int level;
-        public int Level { get => level; set => SetProperty(ref level, value); }
+        private int levelNumber;
+        public int LevelNumber { get => levelNumber; set => SetProperty(ref levelNumber, value); }
+
+
+        private Level editLevel;
+        public Level EditLevel { get => editLevel; set => SetProperty(ref editLevel, value); }
+
+        public IEnumerable<Level> Levels => Level.Levels;
     }
 }

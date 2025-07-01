@@ -16,16 +16,68 @@ namespace DonkeyKong
     {
         KeyboardAgent keyboardAgent = new KeyboardAgent();
 
+        ViewModel viewModel;
+
         public MainWindow()
         {
             InitializeComponent();
 
+            this.viewModel = (ViewModel)this.Resources["ViewModel"];
+
+            Level.Load();
+
+            // Level.GetLevel(1).Serialize();
+
             this.Loaded += MainWindow_Loaded;
+
+            this.viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             timer.Tick += Timer_Tick;
+
+            cellWidth = gameCanvas.ActualWidth / 10;
+            cellHeight = gameCanvas.ActualHeight / 10;
+
+            #region CREATE PLAYER SPRITES
+
+            PlayerLeft = new Image
+            {
+                Width = cellWidth,
+                Height = cellHeight,
+                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/RunLeft.png")),
+                Visibility = Visibility.Visible
+            };
+
+            PlayerRight = new Image
+            {
+                Width = cellWidth,
+                Height = cellHeight,
+                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/RunRight.png")),
+                Visibility = Visibility.Visible
+            };
+            PlayerJumpLeft = new Image
+            {
+                Width = cellWidth,
+                Height = cellHeight,
+                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/JumpLeft.png")),
+                Visibility = Visibility.Visible
+            };
+            PlayerJumpRight = new Image
+            {
+                Width = cellWidth,
+                Height = cellHeight,
+                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/JumpRight.png")),
+                Visibility = Visibility.Visible
+            };
+
+            playerShapes.Add(PlayerJumpLeft);
+            playerShapes.Add(PlayerJumpRight);
+            playerShapes.Add(PlayerLeft);
+            playerShapes.Add(PlayerRight);
+
+            #endregion
 
             startGameBtn_Click(null, null);
         }
@@ -44,8 +96,17 @@ namespace DonkeyKong
             if (timer != null && timer.IsEnabled)
             {
                 timer.Stop();
-                startGameBtn.Content = "Start";
-                MessageBox.Show("You won, Congratulations !!!");
+
+                if (this.world.NextLevel())
+                {
+                    MessageBox.Show($"You completed level !!! Let go to next.");
+                    RenderWorldBackground();
+                    timer.Start();
+                }
+                else
+                {
+                    MessageBox.Show($"You won the game, congratulation !!!");
+                }
             }
         }
 
@@ -61,6 +122,7 @@ namespace DonkeyKong
         private void RenderWorldBackground()
         {
             this.gameCanvas.Children.Clear();
+
             for (int i = 0; i < world.Width; i++)
             {
                 for (int j = 0; j < world.Height; j++)
@@ -120,6 +182,7 @@ namespace DonkeyKong
                             break;
                     }
                 }
+                RenderPlayer();
             }
 
             var goal = new Image
@@ -128,55 +191,29 @@ namespace DonkeyKong
                 Height = cellHeight,
                 Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/key.png"))
             };
-
-            // Add the TextBlock to the Canvas
             gameCanvas.Children.Add(goal);
             Canvas.SetLeft(goal, world.Goal.X * cellWidth);
             Canvas.SetTop(goal, world.Goal.Y * cellHeight);
 
-            PlayerLeft = new Image
+            var cave = new Image
             {
                 Width = cellWidth,
                 Height = cellHeight,
-                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/RunLeft.png"))
+                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/cave.png"))
             };
-            this.gameCanvas.Children.Add(PlayerLeft);
+            gameCanvas.Children.Add(cave);
+            Canvas.SetLeft(cave, world.EnnemySource.X * cellWidth);
+            Canvas.SetTop(cave, world.EnnemySource.Y * cellHeight);
 
-            PlayerRight = new Image
-            {
-                Width = cellWidth,
-                Height = cellHeight,
-                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/RunRight.png")),
-                Visibility = Visibility.Collapsed
-            };
-            this.gameCanvas.Children.Add(PlayerRight);
-            PlayerJumpLeft = new Image
-            {
-                Width = cellWidth,
-                Height = cellHeight,
-                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/JumpLeft.png")),
-                Visibility = Visibility.Collapsed
-            };
-            this.gameCanvas.Children.Add(PlayerJumpLeft);
-            PlayerJumpRight = new Image
-            {
-                Width = cellWidth,
-                Height = cellHeight,
-                Source = new BitmapImage(new Uri("pack://application:,,,/Sprites/JumpRight.png")),
-                Visibility = Visibility.Collapsed
-            };
-            this.gameCanvas.Children.Add(PlayerJumpRight);
+            gameCanvas.Children.Add(PlayerLeft);
+            gameCanvas.Children.Add(PlayerRight);
+            gameCanvas.Children.Add(PlayerJumpLeft);
+            gameCanvas.Children.Add(PlayerJumpRight);
 
-            playerShape = PlayerLeft;
-
-            playerShapes.Add(PlayerJumpLeft);
-            playerShapes.Add(PlayerJumpRight);
-            playerShapes.Add(PlayerLeft);
-            playerShapes.Add(PlayerRight);
         }
         private void RenderWorld()
         {
-            // Render ennemys
+            // Render ennemies
             var ennemyImages = gameCanvas.Children.OfType<Image>().Where(e => e.Tag is Ennemy).ToList();
             foreach (var ennemy in world.Ennemies)
             {
@@ -282,20 +319,18 @@ namespace DonkeyKong
             {
                 timer.Stop();
                 startGameBtn.Content = "Start";
+                levelComboBox.IsEnabled = true;
             }
             else
             {
                 world.Initialize(1);
-
-                cellWidth = this.gameCanvas.ActualWidth / world.Width;
-                cellHeight = this.gameCanvas.ActualWidth / world.Height;
 
                 ennemySizeX = cellWidth * .75;
                 ennemySizeY = cellHeight * .75;
                 ennemyOffsetX = cellWidth * 0.125;
                 ennemyOffsetY = cellHeight * 0.25;
 
-                this.gameCanvas.Children.Clear();
+                gameCanvas.Children.Clear();
 
                 RenderWorldBackground();
                 RenderWorld();
@@ -303,6 +338,9 @@ namespace DonkeyKong
                 timer.Interval = TimeSpan.FromMilliseconds(500);
                 timer.Start();
                 startGameBtn.Content = "Stop";
+
+                gameCanvas.Focus();
+                levelComboBox.IsEnabled = false;
             }
         }
 
@@ -393,8 +431,6 @@ namespace DonkeyKong
             world.Player.Dump(true);
         }
 
-        bool isEditing = true;
-
         Tiles? editorTile;
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
@@ -408,10 +444,10 @@ namespace DonkeyKong
 
         private void gameCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!isEditing || editorTile == null)
+            if (viewModel.EditLevel == null || editorTile == null)
                 return;
 
-            var pos = new { X = (int)(e.GetPosition(sender as Canvas).X / cellWidth), Y = (int)(e.GetPosition(sender as Canvas).Y / cellHeight) };
+            var pos = new Coord((int)(e.GetPosition(sender as Canvas).X / cellWidth), (int)(e.GetPosition(sender as Canvas).Y / cellHeight));
 
             switch (editorTile.Value)
             {
@@ -420,22 +456,50 @@ namespace DonkeyKong
                 case Tiles.FloorRight:
                 case Tiles.Ladder:
                 case Tiles.Fire:
-                    world.Background[pos.X, pos.Y] = editorTile.Value;
+                    viewModel.EditLevel.LevelArray[pos.Y][pos.X] = editorTile.Value;
                     break;
                 case Tiles.Ennemy:
+                    viewModel.EditLevel.EnnemySource = pos;
                     break;
                 case Tiles.Player:
+                    viewModel.EditLevel.PlayerStartPos = pos;
                     break;
                 case Tiles.Goal:
-                    world.Goal.X = pos.X;
-                    world.Goal.Y = pos.Y;
+                    viewModel.EditLevel.GoalPos = pos;
                     break;
                 default:
                     break;
             }
 
+            world.Initialize(this.viewModel.EditLevel.Number);
             RenderWorldBackground();
             RenderWorld();
+        }
+
+        private void newLevelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.EditLevel = new Level(new Coord(0, 9), new Coord(0, 9), new Coord(1, 0), 500, 10);
+        }
+
+        private void saveLevelButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.viewModel.EditLevel == null)
+                return;
+
+            this.viewModel.EditLevel.Serialize();
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "EditLevel":
+                    world.Initialize(this.viewModel.EditLevel.Number);
+
+                    RenderWorldBackground();
+                    RenderWorld();
+                    break;
+            }
         }
     }
 }

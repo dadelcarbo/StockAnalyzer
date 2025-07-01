@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Sprites\cave.png" />
     <None Remove="Sprites\fire.png" />
+    <None Remove="Sprites\gameBackground.jpeg" />
     <None Remove="Sprites\jack.png" />
     <None Remove="Sprites\JumpLeft.png" />
     <None Remove="Sprites\JumpRight.png" />
@@ -22,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Sprites\cave.png" />
     <Resource Include="Sprites\fire.png" />
     <Resource Include="Sprites\jack.png" />
     <Resource Include="Sprites\JumpLeft.png" />
@@ -35,6 +38,10 @@
     <Resource Include="Sprites\RunLeft.png" />
     <Resource Include="Sprites\RunRight.png" />
     <Resource Include="Sprites\wall.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Sprites\gameBackground.jpeg" />
   </ItemGroup>
 
 </Project>

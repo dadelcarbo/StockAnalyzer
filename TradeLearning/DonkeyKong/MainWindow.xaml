@@ -34,7 +34,7 @@
 
     </Window.Resources>
 
-    <Grid>
+    <Grid DataContext="{StaticResource ViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
@@ -48,8 +48,9 @@
             <Expander Header="Level Editor" IsExpanded="True">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Button Name="newLevelButton" Content="New" Margin="2"/>
-                        <Button Name="saveLevelButton" Content="Save" Margin="2"/>
+                        <ComboBox Name="levelComboBox" Margin="2" ItemsSource="{Binding Levels}" SelectedValue="{Binding EditLevel}" DisplayMemberPath="Number"/>
+                        <Button Name="newLevelButton" Content="New" Margin="2" Click="newLevelButton_Click"/>
+                        <Button Name="saveLevelButton" Content="Save" Margin="2" Click="saveLevelButton_Click"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <RadioButton Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Empty}" Height="32" Width="32" Content=""/>
@@ -77,7 +78,7 @@
                         <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Goal}" Height="32" Width="32">
                             <Image Source="/Sprites/key.png" Stretch="Fill"></Image>
                         </RadioButton>
-                        <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Goal}" Height="32" Width="32">
+                        <RadioButton  Checked="RadioButton_Checked" Tag="{x:Static model:Tiles.Player}" Height="32" Width="32">
                             <Image Source="/Sprites/RunLeft.png" Stretch="Fill"></Image>
                         </RadioButton>
                     </StackPanel>
@@ -85,8 +86,11 @@
             </Expander>
         </StackPanel>
 
-        <Border Grid.Column="1" BorderThickness="2" BorderBrush="Black" Height="500" Width="500">
-            <Canvas Name="gameCanvas" MouseDown="gameCanvas_MouseDown" Background="Transparent"/>
+        <Border Grid.Column="1" BorderThickness="2" BorderBrush="Black" >
+            <Grid>
+                <Image Grid.Column="1" Source="/Sprites/gameBackground.jpeg" Height="500" Width="500" Opacity="90"/>
+                <Canvas Name="gameCanvas" MouseDown="gameCanvas_MouseDown" Background="Transparent" ClipToBounds="True" Height="500" Width="500"/>
+            </Grid>
         </Border>
 
     </Grid>
