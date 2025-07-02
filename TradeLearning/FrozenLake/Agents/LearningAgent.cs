@@ -19,12 +19,12 @@ namespace FrozenLake.Agents
             this.world = world;
             this.rnd = random;
 
-            this.Policy = new double[world.Size, world.Size][];
-            this.Value = new double[world.Size, world.Size];
+            this.Policy = new double[world.Size.Width, world.Size.Height][];
+            this.Value = new double[world.Size.Width, world.Size.Height];
 
-            for (int i = 0; i < world.Size; i++)
+            for (int i = 0; i < world.Size.Width; i++)
             {
-                for (int j = 0; j < world.Size; j++)
+                for (int j = 0; j < world.Size.Height; j++)
                 {
                     var probabilities = new double[4];
                     //probabilities[0] = rnd.NextDouble();
@@ -44,11 +44,11 @@ namespace FrozenLake.Agents
             }
 
             // Update policy to prevent invalid moves
-            for (int i = 0; i < world.Size; i++)
+            for (int x = 0; x < world.Size.Width; x++)
             {
-                for (int j = 0; j < world.Size; j++)
+                for (int y = 0; y < world.Size.Height; y++)
                 {
-                    if (world.Tiles[i, j] == Tile.Wall)
+                    if (world.Tiles(x, y) == Tile.Wall)
                         continue;
 
                     double sum = 0;
@@ -57,35 +57,35 @@ namespace FrozenLake.Agents
                         switch (move)
                         {
                             case MoveAction.Left:
-                                if (!world.CanMove(i - 1, j))
+                                if (!world.CanMove(x - 1, y))
                                 {
-                                    Policy[i, j][(int)move] = 0;
+                                    Policy[x, y][(int)move] = 0;
                                 }
                                 break;
                             case MoveAction.Right:
-                                if (!world.CanMove(i + 1, j))
+                                if (!world.CanMove(x + 1, y))
                                 {
-                                    Policy[i, j][(int)move] = 0;
+                                    Policy[x, y][(int)move] = 0;
                                 }
                                 break;
                             case MoveAction.Up:
-                                if (!world.CanMove(i, j - 1))
+                                if (!world.CanMove(x, y - 1))
                                 {
-                                    Policy[i, j][(int)move] = 0;
+                                    Policy[x, y][(int)move] = 0;
                                 }
                                 break;
                             case MoveAction.Down:
-                                if (!world.CanMove(i, j + 1))
+                                if (!world.CanMove(x, y + 1))
                                 {
-                                    Policy[i, j][(int)move] = 0;
+                                    Policy[x, y][(int)move] = 0;
                                 }
                                 break;
                         }
 
-                        sum += Policy[i, j][(int)move];
+                        sum += Policy[x, y][(int)move];
                     }
                     // Normalize policy
-                    Policy[i, j].NormalizeNonZero();
+                    Policy[x, y].NormalizeNonZero();
                 }
             }
 
@@ -106,14 +106,14 @@ namespace FrozenLake.Agents
             do
             {
                 error = 0;
-                for (int i = 0; i < world.Size; i++)
+                for (int x = 0; x < world.Size.Width; x++)
                 {
-                    for (int j = 0; j < world.Size; j++)
+                    for (int y = 0; y < world.Size.Height; y++)
                     {
-                        if (world.Tiles[i, j] != Tile.Empty)
+                        if (world.Tiles(x, y) != Tile.Empty)
                             continue;
 
-                        this.X = i; this.Y = j;
+                        this.X = x; this.Y = y;
 
                         error += TrainingIteration(learningRate, epsilon, discountFactor, allowVisited);
                     }
@@ -145,7 +145,7 @@ namespace FrozenLake.Agents
                 }
                 else
                 {
-                    switch (world.Tiles[X, Y])
+                    switch (world.Tiles(X, Y))
                     {
                         case Tile.Wall:
                             MessageBox.Show("Agent stepped into a wall");
@@ -164,14 +164,14 @@ namespace FrozenLake.Agents
                             break;
                         case Tile.Empty:
                             AddMove(X, Y, move);
-                            world.Tiles[X, Y] = Tile.Visited;
+                            world.SetVisited(X, Y);
                             break;
                         case Tile.Visited:
                             // Debug.WriteLine($"Visited");
                             AddMove(X, Y, move);
                             break;
                         default:
-                            MessageBox.Show($"Agent on unsupported tile Type ${world.Tiles[X, Y]}");
+                            MessageBox.Show($"Agent on unsupported tile Type ${world.Tiles(X, Y)}");
                             break;
                     }
                 }

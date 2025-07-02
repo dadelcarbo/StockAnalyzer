@@ -24,9 +24,9 @@
             bool found = false;
             while (!found)
             {
-                int x = rnd.Next(0, world.Size);
-                int y = rnd.Next(0, world.Size);
-                if (world.Tiles[x, y] == Tile.Empty)
+                int x = rnd.Next(0, world.Size.Width);
+                int y = rnd.Next(0, world.Size.Height);
+                if (world.Tiles(x, y) == Tile.Empty)
                 {
                     found = true;
                     this.X = x;

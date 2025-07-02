@@ -16,11 +16,11 @@ namespace FrozenLake.Agents
             this.world = world;
             this.rnd = random;
 
-            this.Q = new double[world.Size, world.Size][];
+            this.Q = new double[world.Size.Width, world.Size.Height][];
 
-            for (int i = 0; i < world.Size; i++)
+            for (int i = 0; i < world.Size.Width; i++)
             {
-                for (int j = 0; j < world.Size; j++)
+                for (int j = 0; j < world.Size.Height; j++)
                 {
                     this.Q[i, j] = new double[4];
                 }
@@ -77,7 +77,7 @@ namespace FrozenLake.Agents
                         default:
                             break;
                     }
-                    switch (world.Tiles[X, Y])
+                    switch (world.Tiles(X, Y))
                     {
                         case Tile.Wall:
                             MessageBox.Show("Agent stepped into a wall");
@@ -93,13 +93,13 @@ namespace FrozenLake.Agents
                             done = true;
                             break;
                         case Tile.Empty:
-                            world.Tiles[X, Y] = Tile.Visited;
+                            world.SetVisited(X, Y);
                             break;
                         case Tile.Visited:
                             // Debug.WriteLine($"Visited");
                             break;
                         default:
-                            MessageBox.Show($"Agent on unsupported tile Type ${world.Tiles[X, Y]}");
+                            MessageBox.Show($"Agent on unsupported tile Type ${world.Tiles(X, Y)}");
                             break;
                     }
                 }

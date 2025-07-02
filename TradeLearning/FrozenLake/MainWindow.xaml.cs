@@ -44,7 +44,7 @@ namespace FrozenLake
             }
             else
             {
-                switch (world.Tiles[agent.X, agent.Y])
+                switch (world.Tiles(agent.X, agent.Y))
                 {
                     case Tile.Wall:
                         StopSimulation("Agent stepped into a wall");
@@ -56,36 +56,45 @@ namespace FrozenLake
                         StopSimulation("Agent Dead");
                         break;
                     case Tile.Empty:
-                        world.Tiles[agent.X, agent.Y] = Tile.Visited;
+                        world.SetVisited(agent.X, agent.Y);
                         break;
                     case Tile.Visited:
                         break;
                     default:
-                        StopSimulation($"Agent on unsupported tile Type ${world.Tiles[agent.X, agent.Y]}");
+                        StopSimulation($"Agent on unsupported tile Type ${world.Tiles(agent.X, agent.Y)}");
                         break;
                 }
             }
         }
 
+
+        int cellSize = 55;
         private void PopulateGrid()
         {
             ColorGrid.Children.Clear();
-            for (int j = 0; j < 10; j++)
+            ColorGrid.Rows = world.Size.Height;
+            ColorGrid.Columns = world.Size.Width;
+            ColorGrid.Width = world.Size.Width * cellSize;
+            ColorGrid.Height = world.Size.Height * cellSize;
+
+            for (int y = 0; y < world.Size.Height; y++)
             {
-                for (int i = 0; i < 10; i++)
+                for (int x = 0; x < world.Size.Width; x++)
                 {
-                    var tile = world.Tiles[i, j];
+                    var tile = world.Tiles(x, y);
 
                     var grid = new Grid();
                     var rect = new Rectangle
                     {
                         Fill = GetBrushFromValue(tile),
                         Stroke = Brushes.Black,
-                        StrokeThickness = 1
+                        StrokeThickness = 1,
+                        Height = cellSize,
+                        Width = cellSize
                     };
 
                     grid.Children.Add(rect);
-                    if (agent != null && agent.X == i && agent.Y == j)
+                    if (agent != null && agent.X == x && agent.Y == y)
                     {
                         var ellipse = new Ellipse
                         {
@@ -101,22 +110,22 @@ namespace FrozenLake
                     {
                         var margin = new Thickness(3);
                         var learningAgent = agent as LearningAgent;
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Value[i, j].ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Value[x, y].ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
 
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[i, j][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
                     }
                     else if (agent is QLearningAgent)
                     {
                         var margin = new Thickness(3);
                         var learningAgent = agent as QLearningAgent;
 
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[i, j][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[i, j][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[i, j][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[i, j][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
                     }
 
                     ColorGrid.Children.Add(grid);
@@ -186,17 +195,17 @@ namespace FrozenLake
 
         private void testButton_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < world.Size; i++)
+            for (int x = 0; x < world.Size.Width; x++)
             {
-                for (int j = 0; j < world.Size; j++)
+                for (int y = 0; y < world.Size.Height; y++)
                 {
-                    if (world.Tiles[i, j] != Tile.Empty)
+                    if (world.Tiles(x, y) != Tile.Empty)
                         continue;
 
-                    Debug.WriteLine($"Testing from {i},{j}");
+                    Debug.WriteLine($"Testing from {x},{y}");
 
                     world.Reset();
-                    agent.X = i; agent.Y = j;
+                    agent.X = x; agent.Y = y;
 
                     bool pathComplete = false;
                     while (!pathComplete)
@@ -210,7 +219,7 @@ namespace FrozenLake
                         }
                         else
                         {
-                            switch (world.Tiles[agent.X, agent.Y])
+                            switch (world.Tiles(agent.X, agent.Y))
                             {
                                 case Tile.Wall:
                                     MessageBox.Show("Agent stepped into a wall");
@@ -223,12 +232,12 @@ namespace FrozenLake
                                     MessageBox.Show("Agent stepped into a hole");
                                     return;
                                 case Tile.Empty:
-                                    world.Tiles[agent.X, agent.Y] = Tile.Visited;
+                                    world.SetVisited(agent.X, agent.Y);
                                     break;
                                 case Tile.Visited:
                                     break;
                                 default:
-                                    MessageBox.Show($"Agent on unsupported tile Type ${world.Tiles[agent.X, agent.Y]}");
+                                    MessageBox.Show($"Agent on unsupported tile Type ${world.Tiles(agent.X, agent.Y)}");
                                     return;
                             }
                         }

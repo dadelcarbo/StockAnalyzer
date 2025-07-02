@@ -67,9 +67,9 @@
                     else
                     {
                         bool found = false;
-                        for (int i = 0; !found && i < world.Size; i++)
+                        for (int i = 0; !found && i < world.Size.Width; i++)
                         {
-                            for (int j = 0; !found && j < world.Size; j++)
+                            for (int j = 0; !found && j < world.Size.Height; j++)
                             {
                                 if (world.CanMove(i, j, allowVisited))
                                 {

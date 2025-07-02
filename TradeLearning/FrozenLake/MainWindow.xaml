@@ -12,7 +12,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <UniformGrid Grid.Column="1" x:Name="ColorGrid" Rows="10" Columns="10"/>
+        <UniformGrid Grid.Column="1" x:Name="ColorGrid" VerticalAlignment="Top" HorizontalAlignment="Left"/>
         <StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" >
                 <ComboBox Width="120" Height="25" Name="agentComboBox" DisplayMemberPath="Name" Margin="2" SelectionChanged="agentComboBox_SelectionChanged"/>

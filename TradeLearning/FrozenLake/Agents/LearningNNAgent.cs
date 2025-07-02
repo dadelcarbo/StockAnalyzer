@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Tensorflow;
 using Tensorflow.Keras.Engine;
 using static Tensorflow.Binding;
 
@@ -17,20 +18,19 @@ namespace FrozenLake.Agents
 
             tf.enable_eager_execution();
 
-            policyNetwork = CreatePolicyNetwork();
-            valueNetwork = CreateValueNetwork();
+            policyNetwork = CreatePolicyNetwork(world.StateSize);
+            valueNetwork = CreateValueNetwork(world.StateSize);
 
         }
 
-        private static IModel CreatePolicyNetwork()
+        private static IModel CreatePolicyNetwork(int inputSize)
         {
-
-            // Define input shape (e.g., 2 continuous state variables)
-            var input = tf.keras.Input(shape: new Tensorflow.Shape(2));
+            // Define input shape
+            var input = tf.keras.Input(shape: new Tensorflow.Shape(inputSize));
 
             // Hidden layers
-            var dense1 = tf.keras.layers.Dense(64, activation: (Tensorflow.Keras.Activation)tf.nn.relu).Apply(input);
-            var dense2 = tf.keras.layers.Dense(64, activation: (Tensorflow.Keras.Activation)tf.nn.relu).Apply(dense1);
+            var dense1 = tf.keras.layers.Dense(inputSize, activation: (Tensorflow.Keras.Activation)tf.nn.relu).Apply(input);
+            var dense2 = tf.keras.layers.Dense(inputSize, activation: (Tensorflow.Keras.Activation)tf.nn.relu).Apply(dense1);
 
             // Output layer for discrete actions (e.g., 4 actions)
             var output = tf.keras.layers.Dense(4, activation: "softmax").Apply(dense2);
@@ -43,17 +43,17 @@ namespace FrozenLake.Agents
             model.compile(optimizer: tf.keras.optimizers.Adam(learning_rate: 0.001f),
                           loss: tf.keras.losses.SparseCategoricalCrossentropy(),
                           metrics: new[] { "accuracy" });
+
             return model;
         }
-        private static IModel CreateValueNetwork()
+        private static IModel CreateValueNetwork(int inputSize)
         {
-
             // Define input shape (e.g., 2 continuous state variables)
-            var input = tf.keras.Input(shape: new Tensorflow.Shape(2));
+            var input = tf.keras.Input(shape: new Tensorflow.Shape(inputSize));
 
             // Hidden layers
-            var dense1 = tf.keras.layers.Dense(64, activation: (Tensorflow.Keras.Activation)tf.nn.relu).Apply(input);
-            var dense2 = tf.keras.layers.Dense(64, activation: (Tensorflow.Keras.Activation)tf.nn.relu).Apply(dense1);
+            var dense1 = tf.keras.layers.Dense(inputSize, activation: (Tensorflow.Keras.Activation)tf.nn.relu).Apply(input);
+            var dense2 = tf.keras.layers.Dense(inputSize, activation: (Tensorflow.Keras.Activation)tf.nn.relu).Apply(dense1);
 
             // Output layer for values (e.g., 1 value)
             var output = tf.keras.layers.Dense(1).Apply(dense2);
@@ -85,14 +85,14 @@ namespace FrozenLake.Agents
             do
             {
                 error = 0;
-                for (int i = 0; i < world.Size; i++)
+                for (int x = 0; x < world.Size.Width; x++)
                 {
-                    for (int j = 0; j < world.Size; j++)
+                    for (int y = 0; y < world.Size.Height; y++)
                     {
-                        if (world.Tiles[i, j] != Tile.Empty)
+                        if (world.Tiles(x, y) != Tile.Empty)
                             continue;
 
-                        this.X = i; this.Y = j;
+                        this.X = x; this.Y = y;
 
                         error += TrainingIteration(learningRate, epsilon, discountFactor, allowVisited);
                     }
@@ -123,15 +123,23 @@ namespace FrozenLake.Agents
             path.Insert(0, new PathItem { X = x, Y = y, OutgoingMove = MoveAction.None });
         }
 
-        private float[] EvaluatePolicy(int x, int y)
+        private float[] EvaluatePolicy(float[] state)
         {
-            Tensorflow.NumPy.NDArray input = Tensorflow.NumPy.np.array(new float[,] { { 0.5f, -0.2f } });
+            Tensorflow.NumPy.NDArray input = Tensorflow.NumPy.np.array<float>(state).reshape(new Shape(1, state.Length));
 
             var output = policyNetwork.predict(input).Single.numpy();
 
             return output.ElementAt(0).ToArray<float>();
         }
 
+        private float EvaluateValue(float[] state)
+        {
+            Tensorflow.NumPy.NDArray input = Tensorflow.NumPy.np.array<float>(state);
+
+            var output = policyNetwork.predict(input).Single.numpy();
+
+            return output.ElementAt(0).ToArray<float>()[0];
+        }
 
         public override MoveAction Move(bool allowVisited)
         {
@@ -155,7 +163,8 @@ namespace FrozenLake.Agents
                 randomMoves = GetRandomMoves();
             }
 
-            var policy = EvaluatePolicy(X, Y).Select((value, index) => new { value, index }).OrderByDescending(x => x.value).ToArray();
+            var state = world.EncodeState(this);
+            var policy = EvaluatePolicy(state).Select((value, index) => new { value, index }).OrderByDescending(x => x.value).ToArray();
             while (move == MoveAction.None && i < 4)
             {
                 // Select next move
