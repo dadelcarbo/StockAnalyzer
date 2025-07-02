@@ -8,14 +8,6 @@ using System.Windows.Threading;
 
 namespace FrozenLake
 {
-    public enum Tile
-    {
-        Empty = 0,
-        Wall = 1,
-        Reward = 2,
-        Punish = 3,
-        Visited = 4
-    };
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -25,14 +17,14 @@ namespace FrozenLake
         private World world = new World();
         private IAgent agent;
 
-        List<IAgent> agents = new List<IAgent> { new Agent(), new GreedyAgent(), new LearningAgent(), new QLearningAgent(), new LearningNNAgent() };
+        List<IAgent> agents = new List<IAgent> { new LearningNNAgent(), new Agent(), new GreedyAgent(), new LearningAgent(), new QLearningAgent() };
 
         public MainWindow()
         {
             InitializeComponent();
 
             agentComboBox.ItemsSource = agents;
-            agentComboBox.SelectedItem = agents[3];
+            agentComboBox.SelectedItem = agents[0];
 
             PopulateGrid();
         }
