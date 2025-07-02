@@ -92,9 +92,6 @@ namespace FrozenLake.Agents
                             reward = -10;
                             done = true;
                             break;
-                        case Tile.Agent:
-                            MessageBox.Show("Agent on itself, that's a bug");
-                            break;
                         case Tile.Empty:
                             world.Tiles[X, Y] = Tile.Visited;
                             break;

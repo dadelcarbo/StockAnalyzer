@@ -162,9 +162,6 @@ namespace FrozenLake.Agents
                             AddMove(X, Y, move);
                             pathComplete = true;
                             break;
-                        case Tile.Agent:
-                            MessageBox.Show("Agent on itself, that's a bug");
-                            break;
                         case Tile.Empty:
                             AddMove(X, Y, move);
                             world.Tiles[X, Y] = Tile.Visited;

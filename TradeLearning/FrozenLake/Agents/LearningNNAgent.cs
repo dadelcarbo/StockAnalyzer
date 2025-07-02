@@ -110,6 +110,34 @@ namespace FrozenLake.Agents
             return 0;
         }
 
+        public static float[] EncodeState(Tile[,] grid, int agentRow, int agentCol)
+        {
+            int rows = grid.GetLength(0);
+            int cols = grid.GetLength(1);
+            int tileTypes = Enum.GetValues(typeof(Tile)).Length;
+
+            // Encode the grid layout (one-hot per tile)
+            float[] gridEncoding = new float[rows * cols * tileTypes];
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    int tileIndex = (int)grid[r, c];
+                    int flatIndex = (r * cols + c) * tileTypes + tileIndex;
+                    gridEncoding[flatIndex] = 1f;
+                }
+            }
+
+            // Encode the agent's position as a one-hot vector
+            float[] agentEncoding = new float[rows * cols];
+            int agentIndex = agentRow * cols + agentCol;
+            agentEncoding[agentIndex] = 1f;
+
+            // Combine both encodings
+            return gridEncoding.Concat(agentEncoding).ToArray();
+        }
+
+
 
         private void AddMove(int x, int y, MoveAction move)
         {
@@ -153,6 +181,7 @@ namespace FrozenLake.Agents
                 randomMoves = GetRandomMoves();
             }
 
+            var policy = EvaluatePolicy(X, Y).Select((value, index) => new { value, index }).OrderByDescending(x => x.value).ToArray();
             while (move == MoveAction.None && i < 4)
             {
                 // Select next move
@@ -162,7 +191,7 @@ namespace FrozenLake.Agents
                 }
                 else // exploitation
                 {
-                    var bestMove = EvaluatePolicy(X, Y).Select((value, index) => new { value, index }).OrderByDescending(x => x.value).ElementAt(i);
+                    var bestMove = policy[i];
                     if (bestMove.value == 0)
                         break;
 

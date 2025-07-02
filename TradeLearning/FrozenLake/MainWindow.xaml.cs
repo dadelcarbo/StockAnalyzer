@@ -14,8 +14,7 @@ namespace FrozenLake
         Wall = 1,
         Reward = 2,
         Punish = 3,
-        Agent = 4,
-        Visited = 5
+        Visited = 4
     };
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -64,9 +63,6 @@ namespace FrozenLake
                     case Tile.Punish:
                         StopSimulation("Agent Dead");
                         break;
-                    case Tile.Agent:
-                        StopSimulation("Agent on itself, that's a bug");
-                        break;
                     case Tile.Empty:
                         world.Tiles[agent.X, agent.Y] = Tile.Visited;
                         break;
@@ -87,10 +83,6 @@ namespace FrozenLake
                 for (int i = 0; i < 10; i++)
                 {
                     var tile = world.Tiles[i, j];
-                    if (agent != null && agent.X == i && agent.Y == j)
-                    {
-                        tile = Tile.Agent;
-                    }
 
                     var grid = new Grid();
                     var rect = new Rectangle
@@ -99,7 +91,20 @@ namespace FrozenLake
                         Stroke = Brushes.Black,
                         StrokeThickness = 1
                     };
+
                     grid.Children.Add(rect);
+                    if (agent != null && agent.X == i && agent.Y == j)
+                    {
+                        var ellipse = new Ellipse
+                        {
+                            Fill = Brushes.Pink,
+                            Stroke = Brushes.Black,
+                            StrokeThickness = 1,
+                            Width = 30,
+                            Height = 30
+                        };
+                        grid.Children.Add(ellipse);
+                    }
                     if (agent is LearningAgent)
                     {
                         var margin = new Thickness(3);
@@ -136,7 +141,6 @@ namespace FrozenLake
                 Tile.Reward => Brushes.Gold,
                 Tile.Punish => Brushes.Red,
                 Tile.Wall => Brushes.LightSlateGray,
-                Tile.Agent => Brushes.Pink,
                 Tile.Visited => Brushes.LightGray,
                 _ => throw new NotSupportedException($"Enum value for Tile {value} not supported")
             };

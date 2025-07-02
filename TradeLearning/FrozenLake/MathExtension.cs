@@ -18,6 +18,27 @@ public static class MathExtension
         return maxIndex;
     }
 
+    /// <summary>
+    /// Nth element in descending order. Starts at n=0
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="array"></param>
+    /// <param name="rank">Nth element in descresing order. Starts at n=0</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static T MaxRank<T>(this T[] array, int rank) where T : IComparable<T>
+    {
+        if (array == null || array.Length == 0)
+            throw new ArgumentException("Array is null or empty.");
+
+        if (array.Length <= rank)
+            throw new ArgumentException("rank is small than array size.");
+
+        var rankMax = array.Select((value, index) => new { value, index }).OrderByDescending(x => x.value).ElementAt(rank).value;
+
+        return rankMax;
+    }
+
     public static T Max<T>(this T[] array) where T : IComparable<T>
     {
         if (array == null || array.Length == 0)
@@ -28,7 +49,7 @@ public static class MathExtension
         {
             if (array[i].CompareTo(max) > 0)
             {
-                max = array[i] ;
+                max = array[i];
             }
         }
         return max;
