@@ -56,6 +56,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (!stockDictionary.ContainsKey(stockName))
                     {
                         var stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.Yahoo, BarDuration.Daily);
+                        if (row.Length > 3)
+                        {
+                            stockSerie.ISIN = row[3];
+                        }
                         stockDictionary.Add(stockName, stockSerie);
 
                         if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie

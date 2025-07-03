@@ -9,12 +9,13 @@ class Program
     static async Task<int> Main(string[] args)
     {
         using var logger = Logger.Instance;
-#if DEBUG
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch(); // Prompts to attach a debugger
-        }
-#endif
+
+        //#if DEBUG
+        //        if (!Debugger.IsAttached)
+        //        {
+        //            Debugger.Launch(); // Prompts to attach a debugger
+        //        }
+        //#endif
 
         if (args.Length < 2)
         {
