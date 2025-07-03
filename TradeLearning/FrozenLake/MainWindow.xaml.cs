@@ -127,6 +127,21 @@ namespace FrozenLake
                         grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
                         grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
                     }
+                    else if (agent is LearningNNAgent)
+                    {
+                        var margin = new Thickness(3);
+                        var learningAgent = agent as LearningNNAgent;
+
+                        var res = learningAgent.GetValuePolicy(x, y);
+
+                        grid.Children.Add(new TextBlock { Text = res.Value.ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
+
+
+                        grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                    }
 
                     ColorGrid.Children.Add(grid);
                 }

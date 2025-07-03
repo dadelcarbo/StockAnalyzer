@@ -11,6 +11,15 @@ namespace FrozenLake.Agents
         IModel policyNetwork;
         IModel valueNetwork;
 
+        public (float Value, float[] Policy) GetValuePolicy(int x, int y)
+        {
+            var state = world.EncodeState(x, y);
+            var value = EvaluateValue(state);
+            var policy = EvaluatePolicy(state);
+
+            return (value, policy);
+        }
+
         public override void Initialize(World world, Random random)
         {
             this.world = world;
@@ -107,7 +116,7 @@ namespace FrozenLake.Agents
             path.Clear();
             world.Reset();
 
-            var state = world.EncodeState(this);
+            var state = world.EncodeState(this.X, this.Y);
 
             return 0;
         }
@@ -134,7 +143,7 @@ namespace FrozenLake.Agents
 
         private float EvaluateValue(float[] state)
         {
-            Tensorflow.NumPy.NDArray input = Tensorflow.NumPy.np.array<float>(state);
+            Tensorflow.NumPy.NDArray input = Tensorflow.NumPy.np.array<float>(state).reshape(new Shape(1, state.Length));
 
             var output = policyNetwork.predict(input).Single.numpy();
 
@@ -163,7 +172,8 @@ namespace FrozenLake.Agents
                 randomMoves = GetRandomMoves();
             }
 
-            var state = world.EncodeState(this);
+            var state = world.EncodeState(this.X, this.Y);
+            var value = EvaluateValue(state);
             var policy = EvaluatePolicy(state).Select((value, index) => new { value, index }).OrderByDescending(x => x.value).ToArray();
             while (move == MoveAction.None && i < 4)
             {

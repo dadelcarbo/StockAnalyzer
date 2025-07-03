@@ -1,6 +1,4 @@
-﻿
-using FrozenLake.Agents;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace FrozenLake
 {
@@ -108,7 +106,7 @@ namespace FrozenLake
             return true;
         }
 
-        public float[] EncodeState(IAgent agent)
+        public float[] EncodeState(int agentX, int agentY)
         {
             int nbTiles = Enum.GetValues(typeof(Tile)).Length;
 
@@ -128,7 +126,7 @@ namespace FrozenLake
             }
 
             // Encode the agent's position as a one-hot vector
-            int agentIndex = arraySize * nbTiles + agent.Y * Size.Width + agent.X;
+            int agentIndex = arraySize * nbTiles + agentY * Size.Width + agentX;
             gridEncoding[agentIndex] = 1f;
 
             //int i = 0;
