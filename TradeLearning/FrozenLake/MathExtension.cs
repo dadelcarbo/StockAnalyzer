@@ -61,6 +61,12 @@ public static class MathExtension
         return deterministic ? new Random(0) : new Random();
     }
 
+    /// <summary>
+    /// Normalize a vector. Just ignore value equal to zero. (1,0,0,1) will give (.5,0,0,.5). Sum of values will be 1.
+    /// </summary>
+    /// <param name="values"></param>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="InvalidProgramException"></exception>
     public static void NormalizeNonZero(this double[] values)
     {
         if (values == null || values.Length == 0)
@@ -90,6 +96,11 @@ public static class MathExtension
             throw new InvalidProgramException("Normalization failed");
 
     }
+    /// <summary>
+    /// Pseudo normalize of a vector, not using quadradic formula. Sum of values will be 1.
+    /// </summary>
+    /// <param name="values"></param>
+    /// <exception cref="ArgumentException"></exception>
     public static void Normalize(this double[] values)
     {
         if (values == null || values.Length == 0)
@@ -137,6 +148,14 @@ public static class MathExtension
             int j = rand.Next(i + 1);
             (array[i], array[j]) = (array[j], array[i]);
         }
+    }
+
+    public static float[] ToFloatArray(this double[] array)
+    {
+        var res = new float[array.Length];
+        for (int i = 0; i < array.Length; i++)
+            res[i] = (float)array[i];
+        return res;
     }
 
 }

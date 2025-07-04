@@ -53,6 +53,8 @@ namespace FrozenLake.Agents
                           loss: tf.keras.losses.SparseCategoricalCrossentropy(),
                           metrics: new[] { "accuracy" });
 
+
+
             return model;
         }
         private static IModel CreateValueNetwork(int inputSize)
@@ -93,19 +95,35 @@ namespace FrozenLake.Agents
             double error;
             do
             {
+                List<(float[] State, float[] ActionValues)> batch = [];
                 error = 0;
-                for (int x = 0; x < world.Size.Width; x++)
+                for (int y = 0; y < world.Size.Height; y++)
                 {
-                    for (int y = 0; y < world.Size.Height; y++)
+                    for (int x = 0; x < world.Size.Width; x++)
                     {
                         if (world.Tiles(x, y) != Tile.Empty)
                             continue;
 
-                        this.X = x; this.Y = y;
+                        var actionValues = new double[4];
+                        foreach (var action in new[] { MoveAction.Left, MoveAction.Right, MoveAction.Up, MoveAction.Down })
+                        {
+                            actionValues[(int)action] = world.CanMove(x, y, action, true) ? 1 : 0;
+                        }
+                        actionValues.NormalizeNonZero();
 
-                        error += TrainingIteration(learningRate, epsilon, discountFactor, allowVisited);
+                        batch.Add(new(world.EncodeState(x, y), actionValues.ToFloatArray()));
                     }
                 }
+                float[] flat = batch.SelectMany(b => b.State).ToArray();
+                var states = Tensorflow.NumPy.np.array(flat).reshape(new Shape(batch.Count, world.StateSize));
+
+                flat = batch.SelectMany(b => b.ActionValues).ToArray();
+                var targets = Tensorflow.NumPy.np.array(flat).reshape(new Shape(batch.Count, 4));
+
+                policyNetwork.fit(states, targets, batch_size: 1, epochs: 10);
+
+
+
                 Debug.WriteLine($"Iteration: {iteration} Error: {error}");
             }
             while (++iteration < nbEpisodes && error > 0.001);

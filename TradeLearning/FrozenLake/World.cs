@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using FrozenLake.Agents;
+using System.Diagnostics;
 
 namespace FrozenLake
 {
@@ -94,6 +95,24 @@ namespace FrozenLake
                 }
                 Debug.WriteLine("");
             }
+        }
+
+        public bool CanMove(int x, int y, MoveAction action, bool allowVisited = true)
+        {
+            switch (action)
+            {
+                case MoveAction.Left:
+                    return CanMove(x - 1, y, allowVisited);
+                case MoveAction.Right:
+                    return CanMove(x + 1, y, allowVisited);
+                case MoveAction.Up:
+                    return CanMove(x, y - 1, allowVisited);
+                case MoveAction.Down:
+                    return CanMove(x, y + 1, allowVisited);
+                case MoveAction.None:
+                    return true;
+            }
+            return false;
         }
 
         public bool CanMove(int x, int y, bool allowVisited = true)
