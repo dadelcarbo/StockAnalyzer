@@ -6,6 +6,82 @@ using static Tensorflow.Binding;
 
 namespace FrozenLake.Agents
 {
+
+    public class MyCallback : ICallback
+    {
+        public Dictionary<string, List<float>> history { get; set; }
+
+        public void on_epoch_begin(int epoch)
+        {
+            Debug.WriteLine($"on_epoch_begin {epoch}");
+        }
+
+        public void on_epoch_end(int epoch, Dictionary<string, float> epoch_logs)
+        {
+            Debug.WriteLine($"on_epoch_end {epoch}");
+        }
+
+        public void on_predict_batch_begin(long step)
+        {
+            Debug.WriteLine($"on_predict_batch_begin {step}");
+        }
+
+        public void on_predict_batch_end(long end_step, Dictionary<string, Tensors> logs)
+        {
+            Debug.WriteLine($"on_predict_batch_end {end_step}");
+        }
+
+        public void on_predict_begin()
+        {
+            Debug.WriteLine($"on_predict_begin");
+        }
+
+        public void on_predict_end()
+        {
+            Debug.WriteLine($"on_predict_end");
+        }
+
+        public void on_test_batch_begin(long step)
+        {
+            Debug.WriteLine($"on_test_batch_begin {step}");
+        }
+
+        public void on_test_batch_end(long end_step, Dictionary<string, float> logs)
+        {
+            Debug.WriteLine($"on_test_batch_end {end_step}");
+        }
+
+        public void on_test_begin()
+        {
+            Debug.WriteLine($"on_test_begin");
+        }
+
+        public void on_test_end(Dictionary<string, float> logs)
+        {
+            Debug.WriteLine($"on_test_end");
+        }
+
+        public void on_train_batch_begin(long step)
+        {
+            Debug.WriteLine($"on_train_batch_begin {step}");
+        }
+
+        public void on_train_batch_end(long end_step, Dictionary<string, float> logs)
+        {
+            Debug.WriteLine($"on_train_batch_end {end_step}");
+        }
+
+        public void on_train_begin()
+        {
+            Debug.WriteLine($"on_train_begin");
+        }
+
+        public void on_train_end()
+        {
+            Debug.WriteLine($"on_train_end");
+        }
+    }
+
     public class LearningNNAgent : AgentBase, ILearningAgent
     {
         IModel policyNetwork;
@@ -50,7 +126,7 @@ namespace FrozenLake.Agents
 
             // Compile model
             model.compile(optimizer: tf.keras.optimizers.Adam(learning_rate: 0.001f),
-                          loss: tf.keras.losses.SparseCategoricalCrossentropy(),
+                          loss: tf.keras.losses.CategoricalCrossentropy(),
                           metrics: new[] { "accuracy" });
 
 
@@ -59,7 +135,6 @@ namespace FrozenLake.Agents
         }
         private static IModel CreateValueNetwork(int inputSize)
         {
-            // Define input shape (e.g., 2 continuous state variables)
             var input = tf.keras.Input(shape: new Tensorflow.Shape(inputSize));
 
             // Hidden layers
@@ -75,7 +150,7 @@ namespace FrozenLake.Agents
 
             // Compile model
             model.compile(optimizer: tf.keras.optimizers.Adam(learning_rate: 0.001f),
-                          loss: tf.keras.losses.SparseCategoricalCrossentropy(),
+                          loss: tf.keras.losses.CategoricalCrossentropy(),
                           metrics: new[] { "accuracy" });
             return model;
         }
@@ -90,7 +165,6 @@ namespace FrozenLake.Agents
         /// </param>
         public void Train(int nbEpisodes, double learningRate, double epsilon, double discountFactor, bool allowVisited)
         {
-
             int iteration = 0;
             double error;
             do
@@ -115,12 +189,12 @@ namespace FrozenLake.Agents
                     }
                 }
                 float[] flat = batch.SelectMany(b => b.State).ToArray();
-                var states = Tensorflow.NumPy.np.array(flat).reshape(new Shape(batch.Count, world.StateSize));
+                var states = Tensorflow.NumPy.np.array(flat).reshape(new Shape(1, batch.Count, world.StateSize));
 
                 flat = batch.SelectMany(b => b.ActionValues).ToArray();
-                var targets = Tensorflow.NumPy.np.array(flat).reshape(new Shape(batch.Count, 4));
+                var targets = Tensorflow.NumPy.np.array(flat).reshape(new Shape(1, batch.Count, 4));
 
-                policyNetwork.fit(states, targets, batch_size: 1, epochs: 10);
+                var callback = policyNetwork.fit(states, targets, batch_size: 10, epochs: 100);
 
 
 

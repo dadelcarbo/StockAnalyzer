@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -26,17 +27,32 @@ namespace DonkeyKong
 
             Level.Load();
 
-            // Level.GetLevel(1).Serialize();
-
             this.Loaded += MainWindow_Loaded;
 
             this.viewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
+        }
+
+        private DateTime lastUpdate;
+        private void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            if (viewModel.State != EngineState.Playing)
+                return;
+
+            var now = DateTime.Now;
+            double dt = (now - lastUpdate).TotalMilliseconds;
+
+            if (dt < world.Level.Interval)
+                return;
+
+            GameTick(this, null);
+
+            lastUpdate = now;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            timer.Tick += Timer_Tick;
-
             cellWidth = gameCanvas.ActualWidth / 10;
             cellHeight = gameCanvas.ActualHeight / 10;
 
@@ -84,29 +100,24 @@ namespace DonkeyKong
 
         private void OnPlayerDead()
         {
-            if (timer != null && timer.IsEnabled)
-            {
-                timer.Stop();
-                startGameBtn.Content = "Start";
-                MessageBox.Show("Game Over !!!");
-            }
+            viewModel.State = EngineState.Idle;
+            startGameBtn.Content = "Start";
+            MessageBox.Show("Game Over !!!");
         }
         private void OnLevelCompleted()
         {
-            if (timer != null && timer.IsEnabled)
-            {
-                timer.Stop();
+            viewModel.State = EngineState.Idle;
 
-                if (this.world.NextLevel())
-                {
-                    MessageBox.Show($"You completed level !!! Let go to next.");
-                    RenderWorldBackground();
-                    timer.Start();
-                }
-                else
-                {
-                    MessageBox.Show($"You won the game, congratulation !!!");
-                }
+            if (this.world.NextLevel())
+            {
+                MessageBox.Show($"You completed level !!! Let go to next.");
+                RenderWorldBackground();
+
+                viewModel.State = EngineState.Playing;
+            }
+            else
+            {
+                MessageBox.Show($"You won the game, congratulation !!!");
             }
         }
 
@@ -312,12 +323,11 @@ namespace DonkeyKong
             }
         }
 
-        DispatcherTimer timer = new DispatcherTimer();
         private void startGameBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (timer.IsEnabled)
+            if (viewModel.State == EngineState.Playing)
             {
-                timer.Stop();
+                viewModel.State = EngineState.Idle;
                 startGameBtn.Content = "Start";
                 levelComboBox.IsEnabled = true;
             }
@@ -342,8 +352,7 @@ namespace DonkeyKong
                 RenderWorldBackground();
                 RenderWorld();
 
-                timer.Interval = TimeSpan.FromMilliseconds(world.Level.Interval);
-                timer.Start();
+                viewModel.State = EngineState.Playing;
                 startGameBtn.Content = "Stop";
 
                 gameCanvas.Focus();
@@ -351,7 +360,7 @@ namespace DonkeyKong
             }
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void GameTick(object sender, EventArgs e)
         {
             var action = keyboardAgent.Decide();
             ProcessAction(action);

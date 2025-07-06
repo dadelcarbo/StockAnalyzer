@@ -4,6 +4,12 @@ using System.Runtime.CompilerServices;
 
 namespace DonkeyKong
 {
+    public enum EngineState
+    {
+        Idle,
+        Playing,
+        Editing
+    }
     internal class ViewModel : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged
@@ -30,6 +36,11 @@ namespace DonkeyKong
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+
+
+
+        private EngineState state;
+        public EngineState State { get => state; set => SetProperty(ref state, value); }
 
         private int levelNumber;
         public int LevelNumber { get => levelNumber; set => SetProperty(ref levelNumber, value); }

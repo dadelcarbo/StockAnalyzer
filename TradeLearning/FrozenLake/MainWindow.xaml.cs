@@ -26,7 +26,7 @@ namespace FrozenLake
             agentComboBox.ItemsSource = agents;
             agentComboBox.SelectedItem = agents[0];
 
-            PopulateGrid();
+            PopulateGrid(false);
         }
 
         private void RunTimer_Tick(object sender, EventArgs e)
@@ -36,7 +36,7 @@ namespace FrozenLake
 
             var move = agent.Move(allowVisitedCheckBox.IsChecked.Value);
             Debug.WriteLine($"X:{agent.X} Y:{agent.Y} move:{move}");
-            PopulateGrid();
+            PopulateGrid(false);
 
             if (move == MoveAction.None)
             {
@@ -69,7 +69,7 @@ namespace FrozenLake
 
 
         int cellSize = 55;
-        private void PopulateGrid()
+        private void PopulateGrid(bool displayWeight)
         {
             ColorGrid.Children.Clear();
             ColorGrid.Rows = world.Size.Height;
@@ -106,43 +106,46 @@ namespace FrozenLake
                         };
                         grid.Children.Add(ellipse);
                     }
-                    if (agent is LearningAgent)
+
+                    if (displayWeight)
                     {
-                        var margin = new Thickness(3);
-                        var learningAgent = agent as LearningAgent;
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Value[x, y].ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
+                        if (agent is LearningAgent)
+                        {
+                            var margin = new Thickness(3);
+                            var learningAgent = agent as LearningAgent;
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Value[x, y].ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
 
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Policy[x, y][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        }
+                        else if (agent is QLearningAgent)
+                        {
+                            var margin = new Thickness(3);
+                            var learningAgent = agent as QLearningAgent;
+
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        }
+                        else if (agent is LearningNNAgent)
+                        {
+                            var margin = new Thickness(3);
+                            var learningAgent = agent as LearningNNAgent;
+
+                            var res = learningAgent.GetValuePolicy(x, y);
+
+                            grid.Children.Add(new TextBlock { Text = res.Value.ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
+
+
+                            grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                            grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
+                        }
                     }
-                    else if (agent is QLearningAgent)
-                    {
-                        var margin = new Thickness(3);
-                        var learningAgent = agent as QLearningAgent;
-
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = learningAgent.Q[x, y][(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
-                    }
-                    else if (agent is LearningNNAgent)
-                    {
-                        var margin = new Thickness(3);
-                        var learningAgent = agent as LearningNNAgent;
-
-                        var res = learningAgent.GetValuePolicy(x, y);
-
-                        grid.Children.Add(new TextBlock { Text = res.Value.ToString(".###"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 9 });
-
-
-                        grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Up].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Top, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Down].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Right].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
-                        grid.Children.Add(new TextBlock { Text = res.Policy[(int)MoveAction.Left].ToString("0.##"), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, FontSize = 9, Margin = margin });
-                    }
-
                     ColorGrid.Children.Add(grid);
                 }
             }
@@ -205,7 +208,7 @@ namespace FrozenLake
         {
             this.agent = agentComboBox.SelectedItem as IAgent;
             this.agent.Initialize(world, MathExtension.GetRandom(true));
-            this.PopulateGrid();
+            this.PopulateGrid(true);
         }
 
         private void testButton_Click(object sender, RoutedEventArgs e)
@@ -261,7 +264,7 @@ namespace FrozenLake
             }
 
             MessageBox.Show("100% Successful !");
-            PopulateGrid();
+            PopulateGrid(true);
         }
 
         int iteration = 0;
@@ -306,7 +309,7 @@ namespace FrozenLake
                 sw.Stop();
                 MessageBox.Show($"Training completed in {sw.Elapsed.TotalSeconds}");
 
-                PopulateGrid();
+                PopulateGrid(true);
             }
         }
     }
