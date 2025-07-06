@@ -724,9 +724,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.fr-FR.resx">
       <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.resx">
       <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.resx">
       <Generator>ResXFileCodeGenerator</Generator>

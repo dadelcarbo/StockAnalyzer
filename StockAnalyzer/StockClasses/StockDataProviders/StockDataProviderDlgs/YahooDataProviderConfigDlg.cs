@@ -56,6 +56,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
                         ListViewItem viewItem = new ListViewItem(row[0]);
                         viewItem.SubItems.Add(row[1]);
                         viewItem.SubItems.Add(row[2]);
+                        viewItem.SubItems.Add(row.Length > 3 ? row[3] : string.Empty);
                         this.personalListView.Items.Add(viewItem);
                     }
                 }
@@ -198,6 +199,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
                 ListViewItem newItem = new ListViewItem(this.symbolTextBox.Text);
                 newItem.SubItems.Add(this.nameTextBox.Text);
                 newItem.SubItems.Add(this.groupComboBox.SelectedItem.ToString());
+                newItem.SubItems.Add(string.Empty);
                 this.personalListView.Items.Insert(0, newItem);
 
                 needRestart = true;

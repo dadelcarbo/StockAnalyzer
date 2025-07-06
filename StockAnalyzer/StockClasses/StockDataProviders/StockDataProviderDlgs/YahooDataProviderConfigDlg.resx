@@ -117,348 +117,369 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 13</value>
-  </data>
-  <data name="testButton.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="backToStep1Button.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+  <data name="personalListView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left, Right</value>
+  </data>
+  <data name="symbolColumnHeader.Text" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="nameColumnHeader.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="nameColumnHeader.Width" type="System.Int32, mscorlib">
+    <value>240</value>
+  </data>
+  <data name="groupColumnHeader.Text" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="groupColumnHeader.Width" type="System.Int32, mscorlib">
+    <value>83</value>
+  </data>
+  <data name="isinColumnHeader.Text" xml:space="preserve">
+    <value>ISIN</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="personalListView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 195</value>
+  </data>
+  <data name="personalListView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>538, 159</value>
+  </data>
+  <data name="personalListView.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;personalListView.Name" xml:space="preserve">
+    <value>personalListView</value>
+  </data>
+  <data name="&gt;&gt;personalListView.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;personalListView.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;personalListView.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="okButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
   </data>
   <data name="okButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>347, 363</value>
+    <value>478, 363</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="label4.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="okButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
   </data>
-  <data name="backToStep1Button.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 26</value>
+  <data name="okButton.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="&gt;&gt;cancelButton.Parent" xml:space="preserve">
+  <data name="okButton.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="&gt;&gt;okButton.Name" xml:space="preserve">
+    <value>okButton</value>
+  </data>
+  <data name="&gt;&gt;okButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;okButton.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;cancelButton.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="&gt;&gt;okButton.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
-  <data name="removeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>117, 22</value>
+  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 35</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>41, 13</value>
+  </data>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>step1GroupBox</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="symbolTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>53, 32</value>
+  </data>
+  <data name="symbolTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>85, 20</value>
+  </data>
+  <data name="symbolTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;symbolTextBox.Name" xml:space="preserve">
+    <value>symbolTextBox</value>
+  </data>
+  <data name="&gt;&gt;symbolTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;symbolTextBox.Parent" xml:space="preserve">
+    <value>step1GroupBox</value>
+  </data>
+  <data name="&gt;&gt;symbolTextBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="testButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="testButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAADkElEQVQ4T12Re0xTVxzHr5tDLTCgoAKL
+        FYqPGl8g6HQsOOfkUdStk8XqZEgv3Pbe253RSc6yOTbB6ILp1EWc0W1OoyyLMdFw1GZGmQxYaBgiaKHS
+        2wkYRVEy56Mvb/tbTofE7Y9Pzsn53fv5fX/nMIjglwV3zF2+L94uNhcuEltzMwVXQveHN5TequHZ8raR
+        ufDpnbRAxcBUj8mt8PHOqfX0H0TwOE6KYBhzo15llCYG8WBaiJMmhExS1JMdI4uhzrcajsjFcC5UDWfh
+        SzgCG+CAXAj41nSf2Jd4AREc9a/g4sYUzjUpuP3mcvjqzpuwczgHdj/Ig5NeDNbbeX5Big2YpQR/3V2d
+        XB9i4TvQwUcDiR5Tp0aPCH6BES+8n1LeExX84s/XoWZwOewcWgHW+wVg6o17auxS/Sg0aTP45lXLxKvq
+        M9sHsn1UUPvwNTD3TOtABCsY8fymFMOVmOBnzqVQ5c6G6oEcsPTNDHGXVd1mm0lFu9B5EcGxYldar/Xv
+        FXBY1kNZl9KPCI5jRJshabM9PnT0lgWODlXAsWEL1N/fAp87s58a29VtiOAJJfY4hopKW1N37e//QLZK
+        6/xse6IXERxDCwquRfOboXl6oKxF7R+jVe3jWmddRwRP3NQ0haFwv2inlDbN+KGkUVOFCJ6MCH6JCmg8
+        BWvL17C2/EzWlp/FntMuYW25GYjgaETwi4jgCPOlomShLSdrDPuy9HCC9Q0pYWgnvmPBG0ZHco3QpzxD
+        pc9qYpMukT41747yP4/ojr3NFJ2YEU7BX1fu510xHrPzlQBdqYyej9ZjBXe059hjI3zzWAt13tXwbWAt
+        8O7IAKM7rgljdCRXbr0x3/fxlUwwO5MCpp7kn2mKZyOaLxXlmySF/PVfebD3UQHs8xQCTcW8fXheGERw
+        gtGh9FQ7c8HSmQ7lV5VernPaSa59jljeobaWX4t7tEWaGay99xbsppKHBVB2LTrIrD20IAy9UcPvqQcr
+        uzM8O3rXQMXlDDD9oZa5dpVP6EyTt7pehZrBHDg0shms/e/Avgc6KLVPlscEo5JIw8W5DRVtSz3f3xSh
+        pjcPKruy4BPHEqjtXwPH71lAaEn3lv0637WtW+svaUz1/19A543ccGrhQf3pWYHK5lzvHgcLe3pYoPuN
+        DXOelJxe+S4iOKm4If1EMZk39B/Bc6IIeif6n7L59+oXH6DQPSI4HhE8frQR/WbSPw4UD7iHn4yDAAAA
+        AElFTkSuQmCC
+</value>
+  </data>
+  <data name="testButton.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="testButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>238, 28</value>
   </data>
   <data name="testButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 26</value>
   </data>
-  <data name="&gt;&gt;contextMenuStrip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="testButton.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
   </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+  <data name="testButton.Text" xml:space="preserve">
+    <value>Test  </value>
+  </data>
+  <data name="testButton.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;testButton.Name" xml:space="preserve">
+    <value>testButton</value>
+  </data>
+  <data name="&gt;&gt;testButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;testButton.Parent" xml:space="preserve">
+    <value>step1GroupBox</value>
+  </data>
+  <data name="&gt;&gt;testButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="addButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="addButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>327, 58</value>
+  </data>
+  <data name="addButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 25</value>
+  </data>
+  <data name="addButton.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="addButton.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="&gt;&gt;addButton.Name" xml:space="preserve">
+    <value>addButton</value>
+  </data>
+  <data name="&gt;&gt;addButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;addButton.Parent" xml:space="preserve">
+    <value>step2GroupBox</value>
+  </data>
+  <data name="&gt;&gt;addButton.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 179</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 13</value>
+  </data>
+  <data name="label2.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Personal List</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="nameTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>53, 29</value>
+  </data>
+  <data name="nameTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>266, 20</value>
+  </data>
+  <data name="nameTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;nameTextBox.Name" xml:space="preserve">
+    <value>nameTextBox</value>
+  </data>
+  <data name="&gt;&gt;nameTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;nameTextBox.Parent" xml:space="preserve">
+    <value>step2GroupBox</value>
+  </data>
+  <data name="&gt;&gt;nameTextBox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="groupComboBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>53, 61</value>
+  </data>
+  <data name="groupComboBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>266, 21</value>
+  </data>
+  <data name="groupComboBox.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;groupComboBox.Name" xml:space="preserve">
+    <value>groupComboBox</value>
+  </data>
+  <data name="&gt;&gt;groupComboBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupComboBox.Parent" xml:space="preserve">
+    <value>step2GroupBox</value>
+  </data>
+  <data name="&gt;&gt;groupComboBox.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="step1GroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 12</value>
+  </data>
+  <data name="step1GroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>319, 69</value>
+  </data>
+  <data name="step1GroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="step1GroupBox.Text" xml:space="preserve">
+    <value>Step 1: Verify the symbol is supported</value>
+  </data>
+  <data name="&gt;&gt;step1GroupBox.Name" xml:space="preserve">
+    <value>step1GroupBox</value>
+  </data>
+  <data name="&gt;&gt;step1GroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;step1GroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;step1GroupBox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 64</value>
+  </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>36, 13</value>
+  </data>
+  <data name="label4.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
+  </data>
+  <data name="&gt;&gt;label4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+    <value>step2GroupBox</value>
+  </data>
+  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 32</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 13</value>
+  </data>
+  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label3.Parent" xml:space="preserve">
     <value>step2GroupBox</value>
   </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
-  <data name="&gt;&gt;personalListView.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="cancelButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
-  <data name="personalListView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>407, 159</value>
-  </data>
-  <data name="cancelButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+  <data name="backToStep1Button.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
   </data>
-  <data name="symbolColumnHeader.Text" xml:space="preserve">
-    <value>Symbol</value>
+  <data name="backToStep1Button.Location" type="System.Drawing.Point, System.Drawing">
+    <value>327, 25</value>
   </data>
-  <data name="step1GroupBox.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
+  <data name="backToStep1Button.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 26</value>
   </data>
-  <data name="&gt;&gt;symbolTextBox.Parent" xml:space="preserve">
-    <value>step1GroupBox</value>
-  </data>
-  <data name="nameColumnHeader.Text" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="&gt;&gt;step1GroupBox.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;removeToolStripMenuItem.Name" xml:space="preserve">
-    <value>removeToolStripMenuItem</value>
-  </data>
-  <data name="okButton.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Yahoo! Download Configuration</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-  <data name="&gt;&gt;nameTextBox.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="label3.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="nameColumnHeader.Width" type="System.Int32, mscorlib">
-    <value>240</value>
-  </data>
-  <data name="&gt;&gt;okButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;step1GroupBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="addButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>327, 58</value>
-  </data>
-  <data name="&gt;&gt;testButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;testButton.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="okButton.Text" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="&gt;&gt;groupColumnHeader.Name" xml:space="preserve">
-    <value>groupColumnHeader</value>
-  </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="nameTextBox.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="nameTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>53, 29</value>
-  </data>
-  <data name="testButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
-  </data>
-  <data name="&gt;&gt;addButton.Name" xml:space="preserve">
-    <value>addButton</value>
-  </data>
-  <data name="step2GroupBox.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
-  </data>
-  <data name="personalListView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left, Right</value>
-  </data>
-  <data name="&gt;&gt;okButton.Name" xml:space="preserve">
-    <value>okButton</value>
-  </data>
-  <data name="&gt;&gt;step2GroupBox.Name" xml:space="preserve">
-    <value>step2GroupBox</value>
-  </data>
-  <data name="&gt;&gt;nameColumnHeader.Name" xml:space="preserve">
-    <value>nameColumnHeader</value>
-  </data>
-  <data name="contextMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>118, 26</value>
-  </data>
-  <data name="&gt;&gt;step1GroupBox.Name" xml:space="preserve">
-    <value>step1GroupBox</value>
-  </data>
-  <data name="&gt;&gt;personalListView.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="step1GroupBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>319, 69</value>
-  </data>
-  <data name="step2GroupBox.Text" xml:space="preserve">
-    <value>Step 2: Customise properties</value>
-  </data>
-  <data name="groupColumnHeader.Width" type="System.Int32, mscorlib">
-    <value>83</value>
-  </data>
-  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 64</value>
-  </data>
-  <data name="addButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 25</value>
-  </data>
-  <data name="testButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAA29JREFUOE9dkmlM
-        E0EUgNcLsYBAQQWMBQpqjaIgeGLw5ihe9YhVQaSFbXe3KlWC8UABIwZTrwga8Y5iDDHRAEo0iiJgaJBT
-        gUq3ChpFUeLdy22fMxWJ+uPLTN57+817M0tsKc0YThvc31MdXlqmKn4qUxMdTuu9Wza/5Jsye8ZzWb0T
-        Yee7IGta1yij0sAzU7pRRfgbxACSdSIIVYVUoGCdbRmvguwkO9SuZF1/HOidBvnmJXCRS4Tb9my4Bfvg
-        IqyDU1w8ZLzxNzMdPveQwPW34P76AFI/zLb/9Vw4+G4B5PZEwZHPMXDdlAGatzEWmvWwqlhvS/57CVdk
-        l8MZkMDWLh+jslEkRZKBBHNvQ0Bqm6tt74s5kPNqLuR2zwfNxzhQtnv+VDQLLtCV4jCqavEs5qmwbH9X
-        pBkL8r7OBlXbmHok4BHM3YQAWZO7bZduJmQaIiG7KwrUHWPtZIOgRVWuFOBT8LwID6Y5qF3zZT6c56SQ
-        0sy3oJgnwZTLfDdpveyX3qjhUncaXO5RQ9HH7bBHF/lTUSesRUVDk7SeBBYl1wQeKujcyGnYVRZ5nY8J
-        xdxxgkdWix7JqvytKdVCSz81QjNZM+45yjsnVI4kMOQd8cjkyuBzSRWiTBQfgRiCBbg9nrw8VoQIR0TI
-        b4uny8ujw1DcDTEI4aR6uNqPro2K6Ec7K9TRwdqSAAf4JKp+8jxFq18O3cEvw9I/OaZS4oOfmjK4Wv6G
-        MXi8JVYXBzu6oJ7zCyi9u1GlG23FK5bheF/egza4GS9/V8Dx72LINy2Bk9ZlQBlcrITkisgBOjl998sQ
-        87amcFDpfK3KNr9ruIs/I6IRYpUsjzv8KQaOfYuDE8Z4wF0Ry89PcoAKvRWtfGO2LhrUjaGQ+pRvIhvH
-        XCfrJjCp9UJN6jPPb9vZsba8D4vgCJZ8jYOUZ242YlnhZAf4RmWPA0+nt4QZD7QvhbSGMFA+EXJkncBM
-        NwZxu/Uz0I8WBYW9m0DTuQJOfJZAsnYE1y/ok7jI7k8sSaudaTz7moGc9hhIb46AHa3TIa9zKVz5oAa6
-        OtSU8iBEn9UitiRVBFr+F+AndVl3Y8pp6c1x1vSqaNPRVjkcbZMD3q8vmfAj6ebClajGN7EktDixdFL3
-        P4K/xnHCdyK9GkmtKZp2CoP3KOaFGNx3sbhm2C8OFA+4TktjlwAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 35</value>
-  </data>
-  <data name="&gt;&gt;groupColumnHeader.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
-  <data name="&gt;&gt;personalListView.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>YahooDataProviderConfigDlg</value>
-  </data>
-  <data name="groupColumnHeader.Text" xml:space="preserve">
-    <value>Group</value>
-  </data>
-  <data name="&gt;&gt;label4.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="testButton.Text" xml:space="preserve">
-    <value>Test  </value>
-  </data>
-  <data name="cancelButton.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;symbolTextBox.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;step2GroupBox.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="personalListView.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;groupComboBox.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="symbolTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>85, 20</value>
-  </data>
-  <data name="&gt;&gt;symbolTextBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="cancelButton.Text" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 13</value>
-  </data>
-  <data name="testButton.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleLeft</value>
-  </data>
-  <data name="&gt;&gt;removeToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="&gt;&gt;okButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;step2GroupBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="okButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
-  <data name="&gt;&gt;okButton.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;addButton.Parent" xml:space="preserve">
-    <value>step2GroupBox</value>
-  </data>
-  <data name="&gt;&gt;nameColumnHeader.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="step1GroupBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 12</value>
-  </data>
-  <data name="&gt;&gt;step1GroupBox.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="removeToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAABFVJREFUSEu1lH1M
-        1WUUx5/79rv3CgiCAi4UnOAIzBXZUoalpokiMBC84L0oqaQSlMUgUFFM/YOKBQXlzFBLtJxtuVyZyz9c
-        2UzUsek0YDXNgUNUTCNFXj6dHwyn4cuVrbs9e37bPef7Oef7PM9R6v/+kZUdQVZuA4XFsO4depbl0r0k
-        +4fOjKWGx2U3ZmY9fXbh4o9PuRbW16W7zh53ZRxRLHv9Mof2wYkf4ch+qD1E99ZP6Mx67WZHxtKp7kDO
-        ORfnNqa7Lv65PIfrZe9ze/c2OHWE5rVFKD4qh++qYdsG2FwCVdJJTRV8+xWdOStpT1u05kGQJkfG1PMO
-        58UreYV0f7oD9u6Bz6S4kgIuOOefOTprdpgi/00RLIVqHbAOKtfAewVQVgjf7OB2YRE3ktP3XU91Ge8G
-        NSen/nwlawU9m7fA9t2wWgrLzOSyw8HxmbFL78SS4CihUv7cKtVXrobyt6E0Dza+AWtehS+q6Cot5Xr8
-        vCY9qTV+3uTLSQ5uFkv8Lql4pcTPd0GKgz/iEg7ft1sSU7awQQQrpeoyEd8k3+tzpCoB5C2Bd4vp2rSR
-        q3OSW9pSnGKDeFz2AaTKd7KTW3FJnHkpNv+h58WMxGhcaSdZmy0AEV+7HApF/K1XIDtD9hXSpdjxpdiR
-        IwXMS5PKndyMTaRh2stz3bkMvTFEz8zAmQKrRLxosViwSARlJc+GxDiYPg1Cw2SN45KXH7Um2xi3xe8O
-        7IiK/pDoCTBpHIQ9IYKjIFj2oCDwD6TF7sVpm1fEoMT7k/5SpmbmzoDnn4SxuvhICAgEvxH8Y/Okzmo/
-        MGhAuzKd60mYBctTRTwAQkQ8SHZ/f/Dxg2G+tJps1Bq09Y8NuaUsu5gjXq8U8XARDZOqQ2QFiHAvwBeG
-        yvL0pVGZ+EVZJroN6VKmku4w8b04E54S8UipXAcE+dFi0JpuW20dePuA1zAYIrvmyU/KfM0tQI8yRzFU
-        Eivy5XDlUJ8R33VAaCDtNisXlNVWryxBfxutfQC7N1iHIh1zQJkrHglBmfvGxZQxAhgNUXJjxgtghCdN
-        SsvtFzittOBOg3YHgM2bk5K7X5mfeyAEZTjBKnlMKRMhRgCTg/sAcgZtylL738Q6ZVmgV66L611g1Nir
-        zMfuPyqU1UXsdMhPhpni/5SxfYCJo+j08aBVaV73SzyqtLRuHWIViKcP9crI18o0sAuU5VfKZarGhcMs
-        WTogWgCRgVxRlnUP8/aY0mokvxeAnNNOZfx+QDzBIliQAPGRECuPSgfEhNDhYW975MFJwG/K9HsvYPhw
-        6mTa7FSmYffkMToEnFEya8b3AV4UQLg/N5S2wB3AQWUOuST26IA2u4UdyuS8F6B57cbxLCTJ7JkTAS+M
-        pcOonXBHvD/msLJUYLfLGPFguzLUDLRp5IjzxITChFF02YYcfBzx/tgGZbhGSADVyjDg1vXGyEObJLci
-        dDDies4eZZx+1aqJRYbP+zX+BXgzxfZAFZiJAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="&gt;&gt;groupComboBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;testButton.Name" xml:space="preserve">
-    <value>testButton</value>
-  </data>
-  <data name="&gt;&gt;symbolTextBox.Name" xml:space="preserve">
-    <value>symbolTextBox</value>
-  </data>
-  <data name="&gt;&gt;label4.Name" xml:space="preserve">
-    <value>label4</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Personal List</value>
-  </data>
-  <data name="&gt;&gt;nameTextBox.Name" xml:space="preserve">
-    <value>nameTextBox</value>
-  </data>
-  <data name="&gt;&gt;testButton.Parent" xml:space="preserve">
-    <value>step1GroupBox</value>
-  </data>
-  <data name="&gt;&gt;symbolColumnHeader.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;backToStep1Button.Parent" xml:space="preserve">
-    <value>step2GroupBox</value>
+  <data name="backToStep1Button.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
   </data>
   <data name="backToStep1Button.Text" xml:space="preserve">
     <value>Step 1</value>
@@ -466,220 +487,158 @@
   <data name="&gt;&gt;backToStep1Button.Name" xml:space="preserve">
     <value>backToStep1Button</value>
   </data>
-  <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
+  <data name="&gt;&gt;backToStep1Button.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 32</value>
-  </data>
-  <data name="label2.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="groupComboBox.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
+  <data name="&gt;&gt;backToStep1Button.Parent" xml:space="preserve">
+    <value>step2GroupBox</value>
   </data>
   <data name="&gt;&gt;backToStep1Button.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="&gt;&gt;groupComboBox.Name" xml:space="preserve">
-    <value>groupComboBox</value>
-  </data>
-  <data name="groupComboBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>266, 21</value>
-  </data>
-  <data name="cancelButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>266, 363</value>
-  </data>
-  <data name="symbolTextBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>53, 32</value>
-  </data>
-  <data name="personalListView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 195</value>
-  </data>
-  <data name="addButton.Text" xml:space="preserve">
-    <value>Add</value>
-  </data>
-  <data name="&gt;&gt;nameTextBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>step1GroupBox</value>
-  </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;contextMenuStrip.Name" xml:space="preserve">
-    <value>contextMenuStrip</value>
-  </data>
-  <data name="&gt;&gt;backToStep1Button.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="nameTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>266, 20</value>
+  <data name="step2GroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 87</value>
   </data>
   <data name="step2GroupBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>408, 88</value>
   </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>41, 13</value>
+  <data name="step2GroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
   </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>36, 13</value>
+  <data name="step2GroupBox.Text" xml:space="preserve">
+    <value>Step 2: Customise properties</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Symbol</value>
-  </data>
-  <data name="&gt;&gt;nameTextBox.Parent" xml:space="preserve">
+  <data name="&gt;&gt;step2GroupBox.Name" xml:space="preserve">
     <value>step2GroupBox</value>
   </data>
-  <data name="label1.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;groupComboBox.Parent" xml:space="preserve">
-    <value>step2GroupBox</value>
-  </data>
-  <data name="&gt;&gt;label3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="testButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>238, 28</value>
-  </data>
-  <data name="&gt;&gt;label2.Name" xml:space="preserve">
-    <value>label2</value>
-  </data>
-  <data name="addButton.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="backToStep1Button.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="step2GroupBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 87</value>
-  </data>
-  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>21, 179</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>434, 398</value>
-  </data>
-  <data name="&gt;&gt;cancelButton.Name" xml:space="preserve">
-    <value>cancelButton</value>
-  </data>
-  <data name="&gt;&gt;personalListView.Name" xml:space="preserve">
-    <value>personalListView</value>
-  </data>
-  <data name="&gt;&gt;addButton.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="backToStep1Button.Location" type="System.Drawing.Point, System.Drawing">
-    <value>327, 25</value>
+  <data name="&gt;&gt;step2GroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;step2GroupBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;step2GroupBox.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="testButton.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+  <metadata name="contextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="removeToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAETUlEQVRIS7WUa0zVZRzHf+f2P+coyOUo
+        BwYIjsvwkiuyhQxLSRNFYCJ40HMQEvFCECgDD+pRTH1BxdLCdIYXSqScbblcmcsXrmwm6th0mrqa5tB5
+        QUwz5Ppph5MO/uKkF31ePs/39/08z/bsEfm/Ib9gDPlFl3C6YN279Cwpojuv4PvO7EUadfZ5XM7Nf/HC
+        goWfnHUsuNg0z3HhlCP7uLDknTscPQinf4Djh6DxKN212+jMf7utPXvRZHXJQFyxLyy6PM9x44+lhdyv
+        /oCOht1w9jjX11YgfLwZvt0FuzfA9krY6oL6rfDNl3QWlvAwK2eNuvAxzbbsyVdt9hstpU66P62DA/th
+        5zY6K8u5Zp97/sT0GVFC2XKor4JdbsE6qFkD75dDtRO+rqPDWcGD9HkH72c6tH3Lr6dn/tSSv4ye7Ttg
+        TwOsdkFuLndsNk5NS1r0JEiqrZIaF9RWQs1q2LwSqkphYzGsWQyfb6Wrqor7KXOa3fnbKXMm3plto81V
+        Cfv2Q8lKmOuADBu/J6ce63uIJ5CWsYMNxVDjhOpS2FQM6wth9WIozYP3XHRt2sjdmek3WzPssHM3VH8I
+        mXZIt/MoeTbn30gqU/f2g6lp8TiyzrC2ADYVwtql4MyDFW9BQTasWAa1O+CLBigshjlZMNdOW1Ial6a8
+        OUvd90yIn5aNPQNW5UHFQijJgcIcSJ8BacmQOAUioyAymlveFhp1plHqjkHRHhv/EfHjIS4aooIhMhTC
+        giEkBAICuWn25pzJe4x67j/xp+iuM2sqvDoaItzlQWANBMsI/jZ50WQ0H1bPDJqHorvSkzodlmZChBXC
+        gyDECgEB4GsBP39u60w0apT16tnn8kgM+5g5BUoyIcYKUYEQHghWy78CfxjmD17+XBYdP4thgrrjmXSJ
+        rrI7KhpcufCCFcYGeQQhFm5qlOYOo6kdH1/w9oMhvqB48aPo76l7BqRH9LEM84MtZRAXCi8FewSRgTw0
+        GbkmRtNFMYT8pTV6BGYfMA7jkRg4LPot6r6nQPSe72LSKIgbCbEhMC4IRnjRLErR49w5UcI6NcoTASYf
+        zoieQ6J/pX9jHxDNaVYtg4wJkDAKJoZ5BDFWWsXQqM43iWG+++Tu8l6JVuGA6E+qc70gRgdJiVCWDtOi
+        YVKERzAhlE7fodwWxVs94+aEKFndbonRB7x8uShavhLd07dADL+weTkkx8D0GI8gPgzGBtIihnXqfF9O
+        ilKPW+LlCyYje0X7nTojhEVAeSqkjIWk0R5BQjjtQ82t6uxA/Cq633oFw4fTJMJe0fn1CzAyHOyxkDbO
+        I3g9AmICeCDK/H7BZ3BE9OG3RNsraDUbqBOdvV8AxbsB28swezzMHAOvRdCuVU73Cz2HY2LYgtkMlqHs
+        EU29el8IGnGVhEgYH0qXacgR9f5guCSae4Rb2SWap15dLz2ij+sWQ6R6fbDsF23iXaNCnWg+e7z2D3gz
+        xfZfp9/fAAAAAElFTkSuQmCC
+</value>
   </data>
-  <data name="groupComboBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>53, 61</value>
+  <data name="removeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>117, 22</value>
   </data>
   <data name="removeToolStripMenuItem.Text" xml:space="preserve">
     <value>Remove</value>
   </data>
-  <data name="&gt;&gt;addButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="contextMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>118, 26</value>
   </data>
-  <data name="addButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+  <data name="&gt;&gt;contextMenuStrip.Name" xml:space="preserve">
+    <value>contextMenuStrip</value>
+  </data>
+  <data name="&gt;&gt;contextMenuStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cancelButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
   </data>
-  <data name="&gt;&gt;symbolColumnHeader.Name" xml:space="preserve">
-    <value>symbolColumnHeader</value>
+  <data name="cancelButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>397, 363</value>
   </data>
-  <data name="symbolTextBox.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="cancelButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
   </data>
-  <data name="okButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
+  <data name="cancelButton.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
-    <value>step2GroupBox</value>
+  <data name="cancelButton.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="&gt;&gt;cancelButton.Name" xml:space="preserve">
+    <value>cancelButton</value>
   </data>
   <data name="&gt;&gt;cancelButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="step1GroupBox.Text" xml:space="preserve">
-    <value>Step 1: Verify the symbol is supported</value>
+  <data name="&gt;&gt;cancelButton.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;cancelButton.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>Group</value>
-  </data>
-  <data name="&gt;&gt;label3.Name" xml:space="preserve">
-    <value>label3</value>
-  </data>
-  <metadata name="label4.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="contextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="testButton.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="addButton.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>66</value>
   </metadata>
-  <metadata name="nameTextBox.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="okButton.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="cancelButton.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="personalListView.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="backToStep1Button.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>fr-FR</value>
-  </metadata>
-  <metadata name="groupComboBox.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="step1GroupBox.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="step2GroupBox.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="label3.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="label1.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="label2.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="symbolTextBox.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>565, 398</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Yahoo! Download Configuration</value>
+  </data>
+  <data name="&gt;&gt;symbolColumnHeader.Name" xml:space="preserve">
+    <value>symbolColumnHeader</value>
+  </data>
+  <data name="&gt;&gt;symbolColumnHeader.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;nameColumnHeader.Name" xml:space="preserve">
+    <value>nameColumnHeader</value>
+  </data>
+  <data name="&gt;&gt;nameColumnHeader.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupColumnHeader.Name" xml:space="preserve">
+    <value>groupColumnHeader</value>
+  </data>
+  <data name="&gt;&gt;groupColumnHeader.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;isinColumnHeader.Name" xml:space="preserve">
+    <value>isinColumnHeader</value>
+  </data>
+  <data name="&gt;&gt;isinColumnHeader.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;removeToolStripMenuItem.Name" xml:space="preserve">
+    <value>removeToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;removeToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>YahooDataProviderConfigDlg</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
