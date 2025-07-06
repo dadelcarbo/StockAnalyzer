@@ -323,7 +323,14 @@ namespace DonkeyKong
             }
             else
             {
-                world.Initialize(1);
+                if (viewModel.EditLevel == null)
+                {
+                    world.Initialize(1);
+                }
+                else
+                {
+                    world.Initialize(viewModel.EditLevel.Number);
+                }
 
                 ennemySizeX = cellWidth * .75;
                 ennemySizeY = cellHeight * .75;
