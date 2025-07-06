@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics;
+
 namespace DonkeyKong.Model
 {
     public enum Tiles
@@ -170,31 +172,58 @@ namespace DonkeyKong.Model
             }
         }
 
+
+        public int StateSize => Width * Height * Enum.GetValues(typeof(Tiles)).Length;
+
         public float[] EncodeState()
         {
             int nbTiles = Enum.GetValues(typeof(Tiles)).Length;
-            return null;
-            //// Encode the grid layout (one-hot per tile)
-            //float[] gridEncoding = new float[StateSize]; // +1 to allocate for the agent
 
-            //int arraySize = Size.Width * Size.Height;
+            // Encode the grid layout (one-hot per tile)
+            float[] gridEncoding = new float[StateSize]; // +1 to allocate for the agent
 
-            //for (int y = 0; y < Size.Height; y++)
+            int arraySize = Width * Height;
+            int index;
+
+            for (int y = 0; y < this.Height; y++)
+            {
+                for (int x = 0; x < this.Width; x++)
+                {
+                    int tile = (int)Background[x, y];
+                    index = arraySize * tile + y * this.Width + x;
+                    gridEncoding[index] = 1f;
+                }
+            }
+
+            // Encode the agent's position as a one-hot vector
+            index = arraySize * (int)Tiles.Player + Player.Y * this.Width + Player.X;
+            gridEncoding[index] = 1f;
+
+            index = arraySize * (int)Tiles.Goal + Goal.Y * this.Width + Goal.X;
+            gridEncoding[index] = 1f;
+
+            foreach (var ennemy in this.Ennemies.Where(e => !e.IsDead))
+            {
+                index = arraySize * (int)Tiles.Ennemy + ennemy.Y * this.Width + ennemy.X;
+                gridEncoding[index] = 1f;
+            }
+
+            //int i = 0;
+            //foreach (var tile in Enum.GetValues(typeof(Tiles)))
             //{
-            //    for (int x = 0; x < Size.Width; x++)
+            //    Debug.WriteLine(tile.ToString());
+            //    for (int y = 0; y < this.Height; y++)
             //    {
-            //        int tile = (int)Tiles(x, y);
-            //        int index = arraySize * tile + y * Size.Width + x;
-            //        gridEncoding[index] = 1f;
+            //        for (int x = 0; x < this.Width; x++)
+            //        {
+            //            Debug.Write($"{gridEncoding[i]} ");
+            //            i++;
+            //        }
+            //        Debug.WriteLine("");
             //    }
             //}
 
-            //// Encode the agent's position as a one-hot vector
-            //int agentIndex = arraySize * nbTiles + agentY * Size.Width + agentX;
-            //gridEncoding[agentIndex] = 1f;
-
-            // Combine both encodings
-            //return gridEncoding;
+            return gridEncoding;
         }
 
     }

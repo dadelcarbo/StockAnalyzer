@@ -368,6 +368,8 @@ namespace DonkeyKong
             world.Step();
 
             RenderWorld();
+
+            world.EncodeState();
         }
 
         private void ProcessAction(AgentAction action)

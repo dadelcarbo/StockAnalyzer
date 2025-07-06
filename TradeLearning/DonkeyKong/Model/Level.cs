@@ -41,7 +41,7 @@ public class Level
         Interval = interval;
         MaxEnnemys = maxEnnemys;
 
-        LevelArray = new Tiles[10][];
+        LevelArray = new Tiles[12][];
         for (int i = 0; i < 10; i++)
         {
             LevelArray[i] = new Tiles[10];
