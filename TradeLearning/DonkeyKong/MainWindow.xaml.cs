@@ -54,7 +54,7 @@ namespace DonkeyKong
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             cellWidth = gameCanvas.ActualWidth / 10;
-            cellHeight = gameCanvas.ActualHeight / 10;
+            cellHeight = gameCanvas.ActualHeight / 12;
 
             #region CREATE PLAYER SPRITES
 

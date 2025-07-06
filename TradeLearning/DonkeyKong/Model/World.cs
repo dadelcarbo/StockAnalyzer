@@ -3,14 +3,17 @@ namespace DonkeyKong.Model
 {
     public enum Tiles
     {
+        // Static element (background)
         Empty = 0,
         FloorLeft = 1, // Ennemy go Left
         FloorRight = 2, // Ennemy go down
         Ladder = 3,
-        Ennemy = 4,
-        Goal = 5,
+        Goal = 4,
+        EnnemySource = 5,
         Fire = 6,
-        Player = 7
+        // Dynamic elements
+        Ennemy = 7,
+        Player = 8
     }
 
     public enum LevelStatus
@@ -58,8 +61,8 @@ namespace DonkeyKong.Model
             if (Level == null)
                 return;
 
-            Width = Level.LevelArray.GetLength(0);
-            Height = Level.LevelArray[0].GetLength(0);
+            Height = Level.LevelArray.GetLength(0);
+            Width = Level.LevelArray[0].GetLength(0);
 
             this.Player = new Player() { X = Level.PlayerStartPos.X, Y = Level.PlayerStartPos.Y };
             this.Goal = Level.GoalPos;
@@ -166,5 +169,33 @@ namespace DonkeyKong.Model
                 return;
             }
         }
+
+        public float[] EncodeState()
+        {
+            int nbTiles = Enum.GetValues(typeof(Tiles)).Length;
+            return null;
+            //// Encode the grid layout (one-hot per tile)
+            //float[] gridEncoding = new float[StateSize]; // +1 to allocate for the agent
+
+            //int arraySize = Size.Width * Size.Height;
+
+            //for (int y = 0; y < Size.Height; y++)
+            //{
+            //    for (int x = 0; x < Size.Width; x++)
+            //    {
+            //        int tile = (int)Tiles(x, y);
+            //        int index = arraySize * tile + y * Size.Width + x;
+            //        gridEncoding[index] = 1f;
+            //    }
+            //}
+
+            //// Encode the agent's position as a one-hot vector
+            //int agentIndex = arraySize * nbTiles + agentY * Size.Width + agentX;
+            //gridEncoding[agentIndex] = 1f;
+
+            // Combine both encodings
+            //return gridEncoding;
+        }
+
     }
 }
