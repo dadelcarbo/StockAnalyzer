@@ -170,59 +170,8 @@
             }
         }
 
-
         public int StateSize => Width * Height * Enum.GetValues(typeof(Tiles)).Length;
 
-        public float[] EncodeState()
-        {
-            int nbTiles = Enum.GetValues(typeof(Tiles)).Length;
-
-            // Encode the grid layout (one-hot per tile)
-            float[] gridEncoding = new float[StateSize]; // +1 to allocate for the agent
-
-            int arraySize = Width * Height;
-            int index;
-
-            for (int y = 0; y < this.Height; y++)
-            {
-                for (int x = 0; x < this.Width; x++)
-                {
-                    int tile = (int)Background[x, y];
-                    index = arraySize * tile + y * this.Width + x;
-                    gridEncoding[index] = 1f;
-                }
-            }
-
-            // Encode the agent's position as a one-hot vector
-            index = arraySize * (int)Tiles.Player + Player.Y * this.Width + Player.X;
-            gridEncoding[index] = 1f;
-
-            index = arraySize * (int)Tiles.Goal + Goal.Y * this.Width + Goal.X;
-            gridEncoding[index] = 1f;
-
-            foreach (var ennemy in this.Ennemies.Where(e => !e.IsDead))
-            {
-                index = arraySize * (int)Tiles.Ennemy + ennemy.Y * this.Width + ennemy.X;
-                gridEncoding[index] = 1f;
-            }
-
-            //int i = 0;
-            //foreach (var tile in Enum.GetValues(typeof(Tiles)))
-            //{
-            //    Debug.WriteLine(tile.ToString());
-            //    for (int y = 0; y < this.Height; y++)
-            //    {
-            //        for (int x = 0; x < this.Width; x++)
-            //        {
-            //            Debug.Write($"{gridEncoding[i]} ");
-            //            i++;
-            //        }
-            //        Debug.WriteLine("");
-            //    }
-            //}
-
-            return gridEncoding;
-        }
 
         internal Tiles[] GetState()
         {

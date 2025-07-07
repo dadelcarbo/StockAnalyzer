@@ -38,34 +38,14 @@ namespace DonkeyKong
             CompositionTarget.Rendering += CompositionTarget_Rendering;
         }
 
-        private DateTime lastUpdate;
-        private void CompositionTarget_Rendering(object sender, EventArgs e)
-        {
-            if (viewModel.State == EngineState.Idle || viewModel.State == EngineState.Editing)
-                return;
-
-            var now = DateTime.Now;
-            if (viewModel.State == EngineState.Playing)
-            {
-                double dt = (now - lastUpdate).TotalMilliseconds;
-
-                if (dt < world.Level.Interval)
-                    return;
-            }
-
-
-            //if (viewModel.State == EngineState.Training)
-            //    Task.Delay(50).Wait();
-
-            GameTick(this, null);
-
-            lastUpdate = now;
-        }
-
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            cellWidth = gameCanvas.ActualWidth / 10;
-            cellHeight = gameCanvas.ActualHeight / 12;
+            world.Initialize(1);
+
+            learningAgent.Initialize();
+
+            cellWidth = gameCanvas.ActualWidth / world.Width;
+            cellHeight = gameCanvas.ActualHeight / world.Height;
 
             #region CREATE PLAYER SPRITES
 
@@ -107,6 +87,30 @@ namespace DonkeyKong
             #endregion
 
             //startGameBtn_Click(null, null);
+        }
+
+        private DateTime lastUpdate;
+        private void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            if (viewModel.State == EngineState.Idle || viewModel.State == EngineState.Editing)
+                return;
+
+            var now = DateTime.Now;
+            if (viewModel.State == EngineState.Playing)
+            {
+                double dt = (now - lastUpdate).TotalMilliseconds;
+
+                if (dt < world.Level.Interval)
+                    return;
+            }
+
+
+            //if (viewModel.State == EngineState.Training)
+            //    Task.Delay(50).Wait();
+
+            GameTick(this, null);
+
+            lastUpdate = now;
         }
 
         private void OnPlayerDead()
