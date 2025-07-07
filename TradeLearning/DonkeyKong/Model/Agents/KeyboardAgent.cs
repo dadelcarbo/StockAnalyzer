@@ -2,18 +2,33 @@
 
 namespace DonkeyKong.Model.Agents
 {
-    public class RandomAgent : IAgent
+    public class KeyboardAgent : IAgent
     {
-        Random rnd = new Random();
+        public bool IsCapturingData { get; set; } = true;
+        public string Name => "Keyboard";
         public Key LastKey { get; set; } = Key.None;
         public AgentAction Decide()
         {
-            return (AgentAction)rnd.Next(0, 6);
+            var action = LastKey switch
+            {
+                Key.Left => AgentAction.Left,
+                Key.Right => AgentAction.Right,
+                Key.Up => AgentAction.Up,
+                Key.Down => AgentAction.Down,
+                _ => AgentAction.None
+            };
+            this.LastKey = Key.None;
+            return action;
         }
 
-        World world = World.Instance;
+        public void Initialize()
+        {
+        }
+        public void OnDead()
+        {
+        }
 
-        public void Initialize(World world)
+        public void OnWin()
         {
         }
     }

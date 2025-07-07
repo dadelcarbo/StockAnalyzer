@@ -11,7 +11,12 @@
 
     public interface IAgent
     {
-        void Initialize(World world);
+        public bool IsCapturingData { get; set; }
+        string Name { get; }
+        void Initialize();
         AgentAction Decide();
+
+        void OnDead();
+        void OnWin();
     }
 }

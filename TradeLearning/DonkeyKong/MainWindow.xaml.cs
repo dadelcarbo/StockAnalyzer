@@ -17,7 +17,7 @@ namespace DonkeyKong
     public partial class MainWindow : Window
     {
         KeyboardAgent keyboardAgent = new KeyboardAgent();
-        IAgent randomAgent = new RandomAgent();
+        IAgent learningAgent = new LearningAgent();
 
         ViewModel viewModel;
 
@@ -26,7 +26,8 @@ namespace DonkeyKong
             InitializeComponent();
 
             this.viewModel = (ViewModel)this.Resources["ViewModel"];
-            this.viewModel.Agent = randomAgent;
+            this.viewModel.Agents = [keyboardAgent, learningAgent];
+            this.viewModel.Agent = learningAgent;
 
             Level.Load();
 
@@ -40,14 +41,21 @@ namespace DonkeyKong
         private DateTime lastUpdate;
         private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
-            if (viewModel.State != EngineState.Playing)
+            if (viewModel.State == EngineState.Idle || viewModel.State == EngineState.Editing)
                 return;
 
             var now = DateTime.Now;
-            double dt = (now - lastUpdate).TotalMilliseconds;
+            if (viewModel.State == EngineState.Playing)
+            {
+                double dt = (now - lastUpdate).TotalMilliseconds;
 
-            if (dt < world.Level.Interval)
-                return;
+                if (dt < world.Level.Interval)
+                    return;
+            }
+
+
+            //if (viewModel.State == EngineState.Training)
+            //    Task.Delay(50).Wait();
 
             GameTick(this, null);
 
@@ -98,7 +106,7 @@ namespace DonkeyKong
 
             #endregion
 
-            startGameBtn_Click(null, null);
+            //startGameBtn_Click(null, null);
         }
 
         private void OnPlayerDead()
@@ -107,20 +115,22 @@ namespace DonkeyKong
             startGameBtn.Content = "Start";
             MessageBox.Show("Game Over !!!");
         }
-        private void OnLevelCompleted()
+        private void OnLevelCompleted(bool silent = false)
         {
             viewModel.State = EngineState.Idle;
 
             if (this.world.NextLevel())
             {
-                MessageBox.Show($"You completed level !!! Let go to next.");
+                if (!silent)
+                    MessageBox.Show($"You completed level !!! Let go to next.");
                 RenderWorldBackground();
 
                 viewModel.State = EngineState.Playing;
             }
             else
             {
-                MessageBox.Show($"You won the game, congratulation !!!");
+                if (!silent)
+                    MessageBox.Show($"You won the game, congratulation !!!");
             }
         }
 
@@ -135,6 +145,11 @@ namespace DonkeyKong
 
         private void RenderWorldBackground()
         {
+            ennemySizeX = cellWidth * .75;
+            ennemySizeY = cellHeight * .75;
+            ennemyOffsetX = cellWidth * 0.125;
+            ennemyOffsetY = cellHeight * 0.25;
+
             this.gameCanvas.Children.Clear();
 
             for (int i = 0; i < world.Width; i++)
@@ -310,6 +325,33 @@ namespace DonkeyKong
                 }
             }
         }
+        private void trainBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (viewModel.State == EngineState.Training)
+            {
+                viewModel.State = EngineState.Idle;
+                learningAgent.IsCapturingData = false;
+
+                if (records.Count > 0)
+                {
+                    var folderPath = @"C:\Temp";
+
+                    string fileName = Path.Combine(folderPath, $"Record_{DateTime.Now.ToString("yyyMMdd_hhmmss_ff")}.json");
+                    var options = new JsonSerializerOptions { WriteIndented = true };
+                    using FileStream createStream = File.Create(fileName);
+                    JsonSerializer.Serialize(createStream, records, options);
+                }
+            }
+            else
+            {
+                viewModel.State = EngineState.Training;
+                learningAgent.IsCapturingData = true;
+                world.Initialize(1);
+
+                RenderWorldBackground();
+                RenderWorld();
+            }
+        }
 
         private void startGameBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -318,16 +360,6 @@ namespace DonkeyKong
                 viewModel.State = EngineState.Idle;
                 startGameBtn.Content = "Start";
                 levelComboBox.IsEnabled = true;
-
-                if (records.Count > 0)
-                {
-                    var folderPath = @"C:\Temp";
-
-                    string fileName = Path.Combine(folderPath, $"Record_{DateTime.Now.ToString("yyyMMdd_hhmmss")}.json");
-                    var options = new JsonSerializerOptions { WriteIndented = true };
-                    using FileStream createStream = File.Create(fileName);
-                    JsonSerializer.Serialize(createStream, records, options);
-                }
             }
             else
             {
@@ -339,13 +371,6 @@ namespace DonkeyKong
                 {
                     world.Initialize(viewModel.EditLevel.Number);
                 }
-
-                ennemySizeX = cellWidth * .75;
-                ennemySizeY = cellHeight * .75;
-                ennemyOffsetX = cellWidth * 0.125;
-                ennemyOffsetY = cellHeight * 0.25;
-
-                gameCanvas.Children.Clear();
 
                 RenderWorldBackground();
                 RenderWorld();
@@ -368,10 +393,24 @@ namespace DonkeyKong
                 case LevelStatus.Running:
                     break;
                 case LevelStatus.Completed:
-                    OnLevelCompleted();
+                    if (viewModel.State == EngineState.Training)
+                    {
+                        viewModel.Agent.OnWin();
+                    }
+                    else
+                    {
+                        OnLevelCompleted();
+                    }
                     return;
                 case LevelStatus.Lost:
-                    OnPlayerDead();
+                    if (viewModel.State == EngineState.Training)
+                    {
+                        viewModel.Agent.OnDead();
+                    }
+                    else
+                    {
+                        OnPlayerDead();
+                    }
                     return;
                 default:
                     break;
@@ -383,15 +422,6 @@ namespace DonkeyKong
             world.Step();
 
             RenderWorld();
-
-            records.Add(new Record
-            {
-                Action = action,
-                Level = world.Level.Number,
-                Step = ++step,
-                Reward = 0,
-                State = world.GetState()
-            });
 
 
         }

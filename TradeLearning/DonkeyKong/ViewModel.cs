@@ -9,6 +9,7 @@ namespace DonkeyKong
     {
         Idle,
         Playing,
+        Training,
         Editing
     }
     internal class ViewModel : INotifyPropertyChanged
@@ -50,7 +51,10 @@ namespace DonkeyKong
 
         public IEnumerable<Level> Levels => Level.Levels;
 
+        private IAgent agent;
+        public IAgent Agent { get => agent; set => SetProperty(ref agent, value); }
 
-        public IAgent Agent { get; set; }
+        private List<IAgent> agents;
+        public List<IAgent> Agents { get => agents; set => SetProperty(ref agents, value); }
     }
 }

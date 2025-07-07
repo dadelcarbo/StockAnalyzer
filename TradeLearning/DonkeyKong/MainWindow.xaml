@@ -45,6 +45,15 @@
                     <Button Content="Start" Name="startGameBtn" HorizontalAlignment="Left" Margin="3" Click="startGameBtn_Click"/>
                 </StackPanel>
             </GroupBox>
+            <GroupBox Header="Learning">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="3">
+                        <Label>Agent: </Label>
+                        <ComboBox ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" DisplayMemberPath="Name" Width="160"/>
+                    </StackPanel>
+                    <Button Content="Train" Name="trainBtn" HorizontalAlignment="Left" Click="trainBtn_Click" Margin="3"/>
+                </StackPanel>
+            </GroupBox>
             <Expander Header="Level Editor" IsExpanded="True">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
