@@ -230,7 +230,7 @@ namespace FrozenLake.Agents
 
             var output = policyNetwork.predict(input).Single.numpy();
 
-            return output.ElementAt(0).ToArray<float>();
+            return [.. output.ElementAt(0)];
         }
 
         private float EvaluateValue(float[] state)

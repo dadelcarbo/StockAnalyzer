@@ -1,4 +1,6 @@
-﻿namespace DonkeyKong.Model
+﻿using System.Runtime.CompilerServices;
+
+namespace DonkeyKong.Model
 {
     [Flags]
     public enum Tiles
@@ -13,7 +15,7 @@
         Fire = 32,          // 0b0000000000100000,
         // Dynamic elements
         Ennemy = 64,        // 0b0000000001000000,
-        Player = 128,       // 0b0000000010000000    
+        Player = 128       // 0b0000000010000000    
     }
 
     public enum LevelStatus
@@ -31,7 +33,12 @@
 
         public Tiles[,] Background;
 
-        private static World world = new World();
+        static World()
+        {
+            NbTiles = Enum.GetValues(typeof(Tiles)).Length;
+        }
+
+        private static World world = new();
         public static World Instance => world;
 
         public LevelStatus Status;
@@ -70,10 +77,10 @@
 
             Ennemies.Clear();
 
-            this.Background = new Tiles[world.Width, world.Height];
-            for (int i = 0; i < world.Height; i++)
+            this.Background = new Tiles[this.Width, this.Height];
+            for (int i = 0; i < this.Height; i++)
             {
-                for (int j = 0; j < world.Width; j++)
+                for (int j = 0; j < this.Width; j++)
                 {
                     this.Background[j, i] = (Tiles)this.Level.LevelArray[i][j];
                 }
@@ -170,28 +177,29 @@
             }
         }
 
-        public int StateSize => Width * Height * Enum.GetValues(typeof(Tiles)).Length;
+        public int StateSize => Width * Height * NbTiles;
 
+        public static int NbTiles { get; private set; }
 
         internal Tiles[] GetState()
         {
             // Set background (Wall, Ladders, Fire).
-            var state = new Tiles[world.Width * world.Height];
-            for (int y = 0; y < world.Height; y++)
+            var state = new Tiles[this.Width * this.Height];
+            for (int y = 0; y < this.Height; y++)
             {
-                for (int x = 0; x < world.Width; x++)
+                for (int x = 0; x < this.Width; x++)
                 {
-                    state[x + y * world.Width] = this.Level.LevelArray[y][x];
+                    state[x + y * this.Width] = this.Level.LevelArray[y][x];
                 }
             }
 
-            state[Player.X + Player.Y * world.Width] |= Tiles.Player;
-            state[Goal.X + Goal.Y * world.Width] |= Tiles.Goal;
-            state[EnnemySource.X + EnnemySource.Y * world.Width] |= Tiles.EnnemySource;
+            state[Player.X + Player.Y * this.Width] |= Tiles.Player;
+            state[Goal.X + Goal.Y * this.Width] |= Tiles.Goal;
+            state[EnnemySource.X + EnnemySource.Y * this.Width] |= Tiles.EnnemySource;
 
             foreach (var ennemy in this.Ennemies.Where(e => !e.IsDead))
             {
-                state[ennemy.X + ennemy.Y * world.Width] |= Tiles.Ennemy;
+                state[ennemy.X + ennemy.Y * this.Width] |= Tiles.Ennemy;
             }
 
             return state;
