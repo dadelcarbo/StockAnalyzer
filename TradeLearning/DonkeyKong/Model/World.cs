@@ -1,21 +1,19 @@
-﻿
-using System.Diagnostics;
-
-namespace DonkeyKong.Model
+﻿namespace DonkeyKong.Model
 {
+    [Flags]
     public enum Tiles
     {
         // Static element (background)
-        Empty = 0,
-        FloorLeft = 1, // Ennemy go Left
-        FloorRight = 2, // Ennemy go down
-        Ladder = 3,
-        Goal = 4,
-        EnnemySource = 5,
-        Fire = 6,
+        Empty = 0,          // 0b0000000000000000,
+        FloorLeft = 1,      // 0b0000000000000001,  // Ennemy go Left
+        FloorRight = 2,     // 0b0000000000000010, //   Ennemy go down
+        Ladder = 4,         // 0b0000000000000100,                      // 0b0000000000000100
+        Goal = 8,           // 0b0000000000001000,
+        EnnemySource = 16,  // 0b0000000000010000,
+        Fire = 32,          // 0b0000000000100000,
         // Dynamic elements
-        Ennemy = 7,
-        Player = 8
+        Ennemy = 64,        // 0b0000000001000000,
+        Player = 128,       // 0b0000000010000000    
     }
 
     public enum LevelStatus
@@ -226,5 +224,28 @@ namespace DonkeyKong.Model
             return gridEncoding;
         }
 
+        internal Tiles[] GetState()
+        {
+            // Set background (Wall, Ladders, Fire).
+            var state = new Tiles[world.Width * world.Height];
+            for (int y = 0; y < world.Height; y++)
+            {
+                for (int x = 0; x < world.Width; x++)
+                {
+                    state[x + y * world.Width] = this.Level.LevelArray[y][x];
+                }
+            }
+
+            state[Player.X + Player.Y * world.Width] |= Tiles.Player;
+            state[Goal.X + Goal.Y * world.Width] |= Tiles.Goal;
+            state[EnnemySource.X + EnnemySource.Y * world.Width] |= Tiles.EnnemySource;
+
+            foreach (var ennemy in this.Ennemies.Where(e => !e.IsDead))
+            {
+                state[ennemy.X + ennemy.Y * world.Width] |= Tiles.Ennemy;
+            }
+
+            return state;
+        }
     }
 }

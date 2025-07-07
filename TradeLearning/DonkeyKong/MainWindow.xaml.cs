@@ -1,12 +1,13 @@
 ﻿using DonkeyKong.Model;
 using DonkeyKong.Model.Agents;
 using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace DonkeyKong
 {
@@ -16,6 +17,7 @@ namespace DonkeyKong
     public partial class MainWindow : Window
     {
         KeyboardAgent keyboardAgent = new KeyboardAgent();
+        IAgent randomAgent = new RandomAgent();
 
         ViewModel viewModel;
 
@@ -24,6 +26,7 @@ namespace DonkeyKong
             InitializeComponent();
 
             this.viewModel = (ViewModel)this.Resources["ViewModel"];
+            this.viewModel.Agent = randomAgent;
 
             Level.Load();
 
@@ -306,21 +309,6 @@ namespace DonkeyKong
                     p.Visibility = Visibility.Collapsed;
                 }
             }
-            world.Player.Dump(false);
-
-            switch (world.Status)
-            {
-                case LevelStatus.Running:
-                    break;
-                case LevelStatus.Completed:
-                    OnLevelCompleted();
-                    break;
-                case LevelStatus.Lost:
-                    OnPlayerDead();
-                    break;
-                default:
-                    break;
-            }
         }
 
         private void startGameBtn_Click(object sender, RoutedEventArgs e)
@@ -330,6 +318,16 @@ namespace DonkeyKong
                 viewModel.State = EngineState.Idle;
                 startGameBtn.Content = "Start";
                 levelComboBox.IsEnabled = true;
+
+                if (records.Count > 0)
+                {
+                    var folderPath = @"C:\Temp";
+
+                    string fileName = Path.Combine(folderPath, $"Record_{DateTime.Now.ToString("yyyMMdd_hhmmss")}.json");
+                    var options = new JsonSerializerOptions { WriteIndented = true };
+                    using FileStream createStream = File.Create(fileName);
+                    JsonSerializer.Serialize(createStream, records, options);
+                }
             }
             else
             {
@@ -360,16 +358,42 @@ namespace DonkeyKong
             }
         }
 
+        public int step = 0;
+        List<Record> records = [];
+
         private void GameTick(object sender, EventArgs e)
         {
-            var action = keyboardAgent.Decide();
-            ProcessAction(action);
+            switch (world.Status)
+            {
+                case LevelStatus.Running:
+                    break;
+                case LevelStatus.Completed:
+                    OnLevelCompleted();
+                    return;
+                case LevelStatus.Lost:
+                    OnPlayerDead();
+                    return;
+                default:
+                    break;
+            }
 
+            var action = viewModel.Agent.Decide();
+
+            ProcessAction(action);
             world.Step();
 
             RenderWorld();
 
-            world.EncodeState();
+            records.Add(new Record
+            {
+                Action = action,
+                Level = world.Level.Number,
+                Step = ++step,
+                Reward = 0,
+                State = world.GetState()
+            });
+
+
         }
 
         private void ProcessAction(AgentAction action)

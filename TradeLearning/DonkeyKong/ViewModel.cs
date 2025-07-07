@@ -1,4 +1,5 @@
 ﻿using DonkeyKong.Model;
+using DonkeyKong.Model.Agents;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -37,8 +38,6 @@ namespace DonkeyKong
         }
         #endregion
 
-
-
         private EngineState state;
         public EngineState State { get => state; set => SetProperty(ref state, value); }
 
@@ -50,5 +49,8 @@ namespace DonkeyKong
         public Level EditLevel { get => editLevel; set => SetProperty(ref editLevel, value); }
 
         public IEnumerable<Level> Levels => Level.Levels;
+
+
+        public IAgent Agent { get; set; }
     }
 }
