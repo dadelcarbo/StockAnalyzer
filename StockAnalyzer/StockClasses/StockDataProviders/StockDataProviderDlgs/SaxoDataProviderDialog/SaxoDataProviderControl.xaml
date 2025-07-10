@@ -31,14 +31,9 @@
             <Label Margin="2" Content="Max:"/>
             <telerik:RadNumericUpDown Value="{Binding MaxLeverage}" LargeChange="0.5" SmallChange="0.5" VerticalContentAlignment="Center" VerticalAlignment="Center" MinWidth="50"/>
 
-            <Label Margin="2" Content="Bid Min:"/>
-            <TextBox Text="{Binding MinBid}" VerticalContentAlignment="Center" VerticalAlignment="Center" Width="20"/>
-            <Label Margin="2" Content="Max:"/>
-            <TextBox Text="{Binding MaxBid}" VerticalContentAlignment="Center" VerticalAlignment="Center" Width="20"/>
+            <CheckBox Content="XL" IsChecked="{Binding XlOnly}" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
-            <CheckBox Content="XL Only" IsChecked="{Binding XlOnly}" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-
-            <Button Command="{Binding SearchCommand}" Margin="4" >Search</Button>
+            <Button Command="{Binding SearchCommand}" Margin="50,0,0,0" >Search</Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Command="{Binding AddCommand}" Margin="4" >Add</Button>

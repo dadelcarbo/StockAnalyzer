@@ -93,49 +93,28 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             var newProducts = new List<SaxoProduct>();
             try
             {
-                var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?rowsPerPage=1000&underlying={this.underlying.value}&locale=fr_BE");
-                //var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/list?page=1&rowsPerPage=1000&underlying={entry.key}&locale=fr_BE");
+                var productTypes = xlOnly ? $"&productTypes=TurbosXL" : $"&productTypes=Turbos";
+                var leverStart = minLeverage != 0 ? $"&leverageStart={minLeverage}" : string.Empty;
+                var leverEnd = maxLeverage != 0 ? $"&leverageEnd={maxLeverage}" : string.Empty;
+
+                var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?rowsPerPage=1000&underlying={this.underlying.value}{productTypes}{leverStart}{leverEnd}&locale=fr_BE");
                 if (!string.IsNullOrEmpty(jsonData))
                 {
                     var result = JsonConvert.DeserializeObject<SaxoResult>(jsonData);
                     foreach (var p in result?.data?.groups?.products)
                     {
-                        if (xlOnly && !p.type.value.Contains("XL"))
-                            continue;
-                        double parsed = 0.0;
-                        double leverage = 0.0;
-                        if (double.TryParse(p.leverage.value, out parsed))
-                        {
-                            if (minLeverage != 0 && maxLeverage != 0)
-                            {
-                                if (parsed < minLeverage || parsed > maxLeverage)
-                                    continue;
-                            }
-                            leverage = parsed;
-                        }
-                        double? bid = null;
-                        if (p?.bid?.valueTuple != null && p.bid.valueTuple.value > 0)
-                        {
-                            if (minBid != 0 && maxBid != 0)
-                            {
-                                if (p.bid.valueTuple.value < minBid || p.bid.valueTuple.value > maxBid)
-                                    continue;
-                            }
-                            bid = p.bid.valueTuple.value;
-                        }
-
                         var product = new SaxoProduct
                         {
                             ISIN = p.isin.value,
                             StockName = p.name.value,
                             Type = p.type.value,
                             Ratio = p.ratioCalculated.value,
-                            Leverage = leverage,
-                            Bid = bid
+                            Leverage = p.leverage?.value,
+                            Bid = p?.bid?.valueTuple?.value
                         };
                         if (p?.ask?.valueTuple != null)
                         {
-                            product.Ask = p.ask.valueTuple.value;
+                            product.Ask = p?.ask?.valueTuple?.value;
                         }
                         if (product.StockName.Contains("long"))
                         {
@@ -253,19 +232,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         private SaxoProduct selectedProduct;
         public SaxoProduct SelectedProduct { get => selectedProduct; set => SetProperty(ref selectedProduct, value); }
 
-        private double minLeverage = 0;
+        private double minLeverage = 1;
         public double MinLeverage { get => minLeverage; set => SetProperty(ref minLeverage, value); }
 
         private double maxLeverage = 0;
         public double MaxLeverage { get => maxLeverage; set => SetProperty(ref maxLeverage, value); }
 
-        private double minBid = 4;
-        public double MinBid { get => minBid; set => SetProperty(ref minBid, value); }
-
-        private double maxBid = 6;
-        public double MaxBid { get => maxBid; set => SetProperty(ref maxBid, value); }
-
-        private bool xlOnly = true;
+        private bool xlOnly = false;
         public bool XlOnly { get => xlOnly; set => SetProperty(ref xlOnly, value); }
 
         private CommandBase searchCommand;

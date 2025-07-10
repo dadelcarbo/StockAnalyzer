@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
 {
@@ -23,6 +24,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         public string sizeFormat { get; set; }
         public bool pushable { get; set; }
         public string subscriptionString { get; set; }
+
+        public override string ToString()
+        {
+            return valueTuple == null ? "null" : valueTuple.ToString();
+        }
     }
 
     public class ValueTuple
@@ -31,6 +37,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         //public float timestamp { get; set; }
         //public float size { get; set; }
         //public float delayMinutes { get; set; }
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
     }
 
 
@@ -46,17 +57,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         public List<Product> products { get; set; }
     }
 
-    public class Isin
-    {
-        public string value { get; set; }
-        public string type { get; set; }
-        public bool pushable { get; set; }
-    }
-
     public class Leverage
     {
         public string type { get; set; }
-        public string value { get; set; }
+        public double value { get; set; }
         public int precisionMin { get; set; }
         public int precisionMax { get; set; }
         public string currency { get; set; }
@@ -64,7 +68,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         //public PushableMetadata pushableMetadata { get; set; }
     }
 
-    public class Name
+    [DebuggerDisplay("{value}")]
+    public class StringValue
     {
         public string value { get; set; }
         public string type { get; set; }
@@ -85,12 +90,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         public RatioCalculated ratioCalculated { get; set; }
         public RealPriceCurrency realPriceCurrency { get; set; }
         public Leverage leverage { get; set; }
-        public Name name { get; set; }
+        public StringValue name { get; set; }
         public BidAsk ask { get; set; }
-        public Underlying underlying { get; set; }
-        public Type type { get; set; }
+        public StringValue underlying { get; set; }
+        public StringValue type { get; set; }
         public BidAsk bid { get; set; }
-        public Isin isin { get; set; }
+        public StringValue isin { get; set; }
+
+
+        public override string ToString()
+        {
+            return name == null ? "null" : name.ToString();
+        }
     }
 
     public class PushableMetadata
@@ -130,20 +141,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
     {
         public Data data { get; set; }
         public string status { get; set; }
-    }
-
-    public class Type
-    {
-        public string value { get; set; }
-        public string type { get; set; }
-        public bool pushable { get; set; }
-    }
-
-    public class Underlying
-    {
-        public string value { get; set; }
-        public string type { get; set; }
-        public bool pushable { get; set; }
     }
 
     public class Value

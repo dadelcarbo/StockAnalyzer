@@ -7,7 +7,7 @@
         public string Type { get; set; }
         public double? Bid { get; set; }
         public double? Ask { get; set; }
-        public double Leverage { get; set; }
+        public double? Leverage { get; set; }
         public double Ratio { get; set; }
         public double? Spread
         {
