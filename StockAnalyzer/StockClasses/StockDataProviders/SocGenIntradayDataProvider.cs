@@ -247,7 +247,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var url = $"https://bourse.societegenerale.fr/product-details/{stockSerie.Symbol.ToLower()}";
             Process.Start(url);
         }
-        public override void ApplyTrim(StockSerie stockSerie, DateTime date)
+        public override void ApplyTrimBefore(StockSerie stockSerie, DateTime date)
         {
             if (!stockSerie.Initialise())
                 return;

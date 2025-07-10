@@ -1629,7 +1629,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-        public virtual void ApplyClean(DateTime endDate)
+        public virtual void ApplyTrimAfter(DateTime endDate)
         {
             // Clean Data
             foreach (var stockSerie in stockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC))
@@ -1640,7 +1640,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     File.Delete(fileName);
                 }
-                if (!stockSerie.Initialise()) 
+                if (!stockSerie.Initialise())
                     continue;
 
                 stockSerie.BarDuration = BarDuration.Daily;
@@ -1673,6 +1673,32 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             });
 
             File.WriteAllText(configPath, json);
+        }
+
+        public override void ApplyTrimBefore(StockSerie stockSerie, DateTime date)
+        {
+            // Delete non archive file
+            var fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+            if (!stockSerie.Initialise())
+                return;
+
+            stockSerie.BarDuration = BarDuration.Daily;
+            if (stockSerie.LastValue.DATE < date)
+                return;
+
+            // Trim archive
+            fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+            using StreamWriter sw = new StreamWriter(fileName);
+            foreach (var value in stockSerie.Values.Where(v => v.DATE > date))
+            {
+                sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
+            }
+
+            stockSerie.IsInitialised = false;
         }
     }
 }

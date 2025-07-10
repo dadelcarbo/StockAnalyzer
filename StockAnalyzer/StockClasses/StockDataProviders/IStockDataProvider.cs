@@ -48,6 +48,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         bool RemoveEntry(StockSerie stockSerie);
 
         void AddSplit(StockSerie stockSerie, DateTime date, float before, float after);
-        void ApplyTrim(StockSerie stockSerie, DateTime upToDate);
+        void ApplyTrimBefore(StockSerie stockSerie, DateTime upToDate);
     }
 }

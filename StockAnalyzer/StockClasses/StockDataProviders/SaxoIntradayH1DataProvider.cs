@@ -391,7 +391,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        public override void ApplyTrim(StockSerie stockSerie, DateTime date)
+        public override void ApplyTrimBefore(StockSerie stockSerie, DateTime date)
         {
             if (!stockSerie.Initialise())
                 return;

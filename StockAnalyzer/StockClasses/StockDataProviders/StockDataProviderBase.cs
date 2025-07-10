@@ -461,7 +461,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             return;
         }
-        public virtual void ApplyTrim(StockSerie stockSerie, DateTime date)
+        public virtual void ApplyTrimBefore(StockSerie stockSerie, DateTime date)
         {
             return;
         }

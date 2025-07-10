@@ -47,14 +47,14 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
                 {
                     var dataProvider = StockDataProviderBase.GetDataProvider(stockSerie.DataProvider);
                     if (dataProvider == null) { continue; }
-                    dataProvider.ApplyTrim(stockSerie, this.TrimBeforeDate);
+                    dataProvider.ApplyTrimBefore(stockSerie, this.TrimBeforeDate);
                 }
             }
             else
             {
                 var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
                 if (dataProvider == null) { return; }
-                dataProvider.ApplyTrim(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.TrimBeforeDate);
+                dataProvider.ApplyTrimBefore(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.TrimBeforeDate);
             }
             StockAnalyzerForm.MainFrame.ApplyTheme();
 
@@ -66,7 +66,7 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
             if (dataProvider == null) { return; }
 
-            dataProvider.ApplyClean(this.TrimAfterDate);
+            dataProvider.ApplyTrimAfter(this.TrimAfterDate);
         }
     }
 }
