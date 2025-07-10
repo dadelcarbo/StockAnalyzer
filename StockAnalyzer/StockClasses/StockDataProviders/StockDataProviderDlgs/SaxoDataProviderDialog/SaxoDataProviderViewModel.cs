@@ -114,14 +114,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                             leverage = parsed;
                         }
                         double? bid = null;
-                        if (p.bid.value != null && double.TryParse(p.bid.value.value, out parsed))
+                        if (p?.bid?.valueTuple != null && p.bid.valueTuple.value > 0)
                         {
                             if (minBid != 0 && maxBid != 0)
                             {
-                                if (parsed < minBid || parsed > maxBid)
+                                if (p.bid.valueTuple.value < minBid || p.bid.valueTuple.value > maxBid)
                                     continue;
                             }
-                            bid = parsed;
+                            bid = p.bid.valueTuple.value;
                         }
 
                         var product = new SaxoProduct
@@ -133,9 +133,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                             Leverage = leverage,
                             Bid = bid
                         };
-                        if (p.ask.value != null && double.TryParse(p.ask.value.value, out parsed))
+                        if (p?.ask?.valueTuple != null)
                         {
-                            product.Ask = parsed;
+                            product.Ask = p.ask.valueTuple.value;
                         }
                         if (product.StockName.Contains("long"))
                         {

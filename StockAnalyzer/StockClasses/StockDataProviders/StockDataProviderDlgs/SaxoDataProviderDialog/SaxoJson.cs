@@ -11,25 +11,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
     #endregion
     #region Product
-    public class Ask
+
+
+    public class BidAsk
     {
-        public Value value { get; set; }
+        public ValueTuple valueTuple { get; set; }
         public string type { get; set; }
-        public int precisionMin { get; set; }
-        public int precisionMax { get; set; }
+        public string valueRender { get; set; }
+        public string valueFormat { get; set; }
+        public string timestampFormat { get; set; }
+        public string sizeFormat { get; set; }
         public bool pushable { get; set; }
-        // public PushableMetadata pushableMetadata { get; set; }
+        public string subscriptionString { get; set; }
     }
 
-    public class Bid
+    public class ValueTuple
     {
-        public Value value { get; set; }
-        public string type { get; set; }
-        public int precisionMin { get; set; }
-        public int precisionMax { get; set; }
-        public bool pushable { get; set; }
-        //public PushableMetadata pushableMetadata { get; set; }
+        public double value { get; set; }
+        //public float timestamp { get; set; }
+        //public float size { get; set; }
+        //public float delayMinutes { get; set; }
     }
+
+
 
     public class Data
     {
@@ -82,10 +86,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         public RealPriceCurrency realPriceCurrency { get; set; }
         public Leverage leverage { get; set; }
         public Name name { get; set; }
-        public Ask ask { get; set; }
+        public BidAsk ask { get; set; }
         public Underlying underlying { get; set; }
         public Type type { get; set; }
-        public Bid bid { get; set; }
+        public BidAsk bid { get; set; }
         public Isin isin { get; set; }
     }
 
