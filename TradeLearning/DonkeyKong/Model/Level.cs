@@ -22,7 +22,6 @@ public class Level
 {
     public static ObservableCollection<Level> Levels { get; set; } = new();
 
-    public Tiles[][] LevelArray { get; set; }
     public int Number { get; set; }
 
     public Coord GoalPos { get; set; }
@@ -30,6 +29,7 @@ public class Level
     public Coord EnnemySource { get; set; }
     public int Interval { get; set; } // ms
     public int MaxEnnemys { get; set; }
+    public Tiles[][] LevelArray { get; set; }
 
     public Level() { }
     public Level(Coord goalPos, Coord playerStartPos, Coord ennemySource, int interval, int maxEnnemys)

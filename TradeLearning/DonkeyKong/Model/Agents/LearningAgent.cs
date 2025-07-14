@@ -8,16 +8,18 @@ namespace DonkeyKong.Model.Agents
 {
     public class LearningAgent : IAgent
     {
+        AgentAction[] actions = Enum.GetValues<AgentAction>();
         public string Name => "Learning";
 
+        private const int BATCH_SIZE = 5;
         GameRecord gameRecord = new();
         int step = 0;
 
         /// <summary>
         /// Represent the exploration/exploitation ratio. 0 being 100% random
         /// </summary>
-        public double Epsilon { get; set; } = 0.75;
-        public bool IsCapturingData { get; set; } = true;
+        public double Epsilon { get; set; } = 0.90;
+        public bool IsLearning { get; set; } = true;
 
         Random rnd = new Random();
 
@@ -54,7 +56,7 @@ namespace DonkeyKong.Model.Agents
             Tensorflow.NumPy.NDArray input = Tensorflow.NumPy.np.array<float>(state).reshape(new Shape(1, state.Length));
 
             var output = policyNetwork.predict(input);
-            
+
             //.Single.numpy();
 
             return output.ElementAt(0).ToArray<float>();
@@ -104,25 +106,27 @@ namespace DonkeyKong.Model.Agents
 
         public AgentAction Decide()
         {
-            if (++step > 50 && IsCapturingData)
+            if (++step > 50 && IsLearning)
             {
-                if (world.Player.Y < 10)
-                {
-                    LevelComplete((world.Height - world.Player.Y) / (float)world.Height);
-                }
-                else
-                {
-                    LevelComplete(float.NaN);
-                }
+                var vec = (X: world.Level.GoalPos.X - world.Player.X, Y: world.Level.GoalPos.Y - world.Player.Y);
+                var distToGoal = (float)Math.Sqrt(vec.X * vec.X + vec.Y * vec.Y);
+                var maxDist = (float)Math.Sqrt(world.Width * world.Width + world.Height * world.Height);
+
+                var reward = (maxDist - distToGoal) / maxDist;
+                reward = reward * reward;
+
+                LevelComplete(reward);
+
                 world.Initialize(1);
                 return AgentAction.None;
             }
+
             // Get state
             var state = world.GetState();
 
-            var action = rnd.NextDouble() > Epsilon ? (AgentAction)rnd.Next(0, 6) : this.Calculate(state);
+            var action = rnd.NextDouble() > Epsilon ? (AgentAction)rnd.Next(0, actions.Length) : this.Calculate(state);
 
-            if (IsCapturingData)
+            if (IsLearning)
             {
                 gameRecord.Records.Add(new Record
                 {
@@ -145,12 +149,12 @@ namespace DonkeyKong.Model.Agents
 
         public void Initialize()
         {
-            policyNetwork = CreatePolicyNetwork(world.StateSize, Enum.GetValues<AgentAction>().Length);
+            policyNetwork = CreatePolicyNetwork(world.StateSize, actions.Length);
         }
 
         public void OnDead()
         {
-            if (IsCapturingData)
+            if (IsLearning)
             {
                 LevelComplete(-1);
             }
@@ -159,14 +163,14 @@ namespace DonkeyKong.Model.Agents
 
         public void OnWin()
         {
-            if (IsCapturingData)
+            if (IsLearning)
             {
                 LevelComplete(1);
             }
             world.Initialize(1);
         }
 
-        public float Decay { get; set; } = 0.9f;
+        public float Decay { get; set; } = 0.98f;
         private void LevelComplete(float reward)
         {
             if (!float.IsNaN(reward))
@@ -177,12 +181,71 @@ namespace DonkeyKong.Model.Agents
                     record.Reward = value;
                     value *= Decay;
                 }
-                gameRecord.Serialize();
+                // gameRecord.Serialize();
+                gameRecords.Add(gameRecord);
+                if (gameRecords.Count >= BATCH_SIZE)
+                {
+                    // Train model
+                    TrainModel();
+
+                    gameRecords.Clear();
+                    gameRecords.AddRange(GameRecord.Load());
+                }
             }
 
             gameRecord = new GameRecord() { Level = world.Level.Number };
 
             this.step = 0;
         }
+
+        private void TrainModel()
+        {
+            Debug.WriteLine($"TrainModel: {nbFit}");
+            List<(float[] State, float[] ActionValues)> batch = [];
+            foreach (var game in gameRecords)
+            {
+                foreach (var record in game.Records)
+                {
+                    float[] actionValues;
+                    if (record.Reward > 0)
+                    {
+                        actionValues = new float[actions.Length];
+                        actionValues[(int)record.Action] = record.Reward;
+                        actionValues.NormalizeNonZero();
+                    }
+                    else if (record.Reward < 0)
+                    {
+                        actionValues = new float[actions.Length];
+                        for (int i = 0; i < actions.Length; i++)
+                        {
+                            actionValues[i] = 1;
+                        }
+                        actionValues[(int)record.Action] = 1 + record.Reward;
+                        actionValues.NormalizeNonZero();
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    batch.Add(new(EncodeOneHot(record.State), actionValues));
+                }
+            }
+
+
+            float[] flat = batch.SelectMany(b => b.State).ToArray();
+            var states = Tensorflow.NumPy.np.array(flat).reshape(new Shape(1, batch.Count, world.StateSize));
+
+            flat = batch.SelectMany(b => b.ActionValues).ToArray();
+            var targets = Tensorflow.NumPy.np.array(flat).reshape(new Shape(1, batch.Count, actions.Length));
+
+            var callback = policyNetwork.fit(states, targets, batch_size: 10, epochs: 20);
+
+            nbFit++;
+        }
+
+        int nbFit = 0;
+
+        List<GameRecord> gameRecords = new List<GameRecord>();
     }
 }
