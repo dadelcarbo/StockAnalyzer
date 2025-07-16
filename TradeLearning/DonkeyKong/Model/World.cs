@@ -64,6 +64,8 @@ namespace DonkeyKong.Model
 
         public void Initialize(int levelNumber)
         {
+            this.Ennemies.ForEach(e => e.IsDead = true);
+
             this.Level = Level.GetLevel(levelNumber);
             if (Level == null)
                 return;
@@ -160,7 +162,7 @@ namespace DonkeyKong.Model
                 this.Player.IsJumping = false;
             }
 
-            Player.Dump();
+            //Player.Dump();
 
             // Check collision with ennemys
             if (Ennemies.Any(b => b.X == Player.X && b.Y == Player.Y))

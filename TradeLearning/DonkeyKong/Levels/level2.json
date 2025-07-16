@@ -1,4 +1,19 @@
 {
+  "Number": 2,
+  "GoalPos": {
+    "X": 8,
+    "Y": 0
+  },
+  "PlayerStartPos": {
+    "X": 8,
+    "Y": 10
+  },
+  "EnnemySource": {
+    "X": 9,
+    "Y": 0
+  },
+  "Interval": 350,
+  "MaxEnnemys": 3,
   "LevelArray": [
     [
       0,
@@ -144,20 +159,5 @@
       2,
       32
     ]
-  ],
-  "Number": 2,
-  "GoalPos": {
-    "X": 8,
-    "Y": 0
-  },
-  "PlayerStartPos": {
-    "X": 8,
-    "Y": 10
-  },
-  "EnnemySource": {
-    "X": 9,
-    "Y": 0
-  },
-  "Interval": 350,
-  "MaxEnnemys": 3
+  ]
 }

@@ -100,6 +100,42 @@ namespace DonkeyKong.Helpers
             var check = Math.Abs(values.Sum() - 1);
             if (check > 0.001)
                 throw new InvalidProgramException("Normalization failed");
+        }
+
+
+        /// <summary>
+        /// Normalize a vector. Just ignore value equal to zero. (1,0,0,1) will give (.5,0,0,.5). Sum of values will be 1.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="InvalidProgramException"></exception>
+        public static void NormalizeNonZero(this float[] values)
+        {
+            if (values == null || values.Length == 0)
+                throw new ArgumentException("Array cannot be null or empty.");
+
+            float sum = 0.0f;
+            int count = 0;
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i] != 0)
+                {
+                    count++;
+                    sum += values[i];
+                }
+            }
+
+            for (int i = 0; count > 0 && i < values.Length; i++)
+            {
+                if (values[i] != 0)
+                {
+                    values[i] /= sum;
+                }
+            }
+
+            var check = Math.Abs(values.Sum() - 1);
+            if (check > 0.001)
+                throw new InvalidProgramException("Normalization failed");
 
         }
         /// <summary>

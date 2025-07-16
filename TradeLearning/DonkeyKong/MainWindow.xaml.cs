@@ -96,7 +96,7 @@ namespace DonkeyKong
                 return;
 
             var now = DateTime.Now;
-            if (viewModel.State == EngineState.Playing)
+            if (viewModel.State == EngineState.Playing || viewModel.Agent is KeyboardAgent)
             {
                 double dt = (now - lastUpdate).TotalMilliseconds;
 
@@ -267,7 +267,7 @@ namespace DonkeyKong
                 Canvas.SetLeft(shape, ennemy.X * cellWidth + ennemyOffsetX);
                 Canvas.SetTop(shape, ennemy.Y * cellHeight + ennemyOffsetY);
             }
-
+            var ennemyShape = ennemyImages.Where(e => (e.Tag is Ennemy)).ToList();
             foreach (var e in ennemyImages.Where(e => (e.Tag as Ennemy).IsDead))
             {
                 gameCanvas.Children.Remove(e);
@@ -287,7 +287,7 @@ namespace DonkeyKong
         List<Image> playerShapes = new();
 
         Key lastKey = Key.None;
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void Canvas_KeyDown(object sender, KeyEventArgs e)
         {
             this.keyboardAgent.LastKey = e.Key;
             return;
@@ -333,8 +333,10 @@ namespace DonkeyKong
         {
             if (viewModel.State == EngineState.Training)
             {
+                agentComboBox.IsEnabled = true;
                 viewModel.State = EngineState.Idle;
-                learningAgent.IsCapturingData = false;
+                viewModel.Agent.IsLearning = false;
+                controlPanel.Focusable = true;
 
                 if (records.Count > 0)
                 {
@@ -348,8 +350,11 @@ namespace DonkeyKong
             }
             else
             {
+                agentComboBox.IsEnabled = false;
+                controlPanel.Focusable = false;
+                gameCanvas.Focus();
                 viewModel.State = EngineState.Training;
-                learningAgent.IsCapturingData = true;
+                viewModel.Agent.IsLearning = true;
                 world.Initialize(1);
 
                 RenderWorldBackground();
@@ -435,9 +440,9 @@ namespace DonkeyKong
             if (action == AgentAction.None)
                 return;
 
-            Debug.WriteLine($"=>ProcessAction {action}");
+            // Debug.WriteLine($"=>ProcessAction {action}");
 
-            world.Player.Dump(true);
+            // world.Player.Dump(false);
 
             if (world.Player.IsFalling || world.Player.IsJumping)
             {
@@ -447,9 +452,9 @@ namespace DonkeyKong
                     world.Player.IsMovingRight = true;
 
 
-                Debug.WriteLine($"!=ProcessAction {action}");
+                //Debug.WriteLine($"!=ProcessAction {action}");
 
-                world.Player.Dump(true);
+                // world.Player.Dump(true);
                 return;
             }
 
@@ -502,9 +507,9 @@ namespace DonkeyKong
                     break;
             }
 
-            Debug.WriteLine($"<=ProcessAction {action}");
+            //Debug.WriteLine($"<=ProcessAction {action}");
 
-            world.Player.Dump(true);
+            // world.Player.Dump(true);
         }
 
         Tiles? editorTile;
@@ -576,6 +581,12 @@ namespace DonkeyKong
                     RenderWorld();
                     break;
             }
+        }
+
+        private void controlPanel_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (viewModel.State == EngineState.Training)
+                gameCanvas.Focus();
         }
     }
 }

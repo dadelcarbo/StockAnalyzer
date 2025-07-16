@@ -11,7 +11,7 @@
 
     public interface IAgent
     {
-        public bool IsCapturingData { get; set; }
+        public bool IsLearning { get; set; }
         string Name { get; }
         void Initialize();
         AgentAction Decide();

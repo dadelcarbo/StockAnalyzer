@@ -7,8 +7,7 @@
         xmlns:model="clr-namespace:DonkeyKong.Model"
         xmlns:helpers="clr-namespace:DonkeyKong.Helpers"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="900"
-        KeyDown="Window_KeyDown">
+        Title="MainWindow" Height="600" Width="900">
     <Window.Resources>
         <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
         <local:ViewModel x:Key="ViewModel"/>
@@ -39,7 +38,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel>
+        <StackPanel Name="controlPanel" GotFocus="controlPanel_GotFocus">
             <GroupBox Header="Game">
                 <StackPanel>
                     <Button Content="Start" Name="startGameBtn" HorizontalAlignment="Left" Margin="3" Click="startGameBtn_Click"/>
@@ -49,7 +48,7 @@
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="3">
                         <Label>Agent: </Label>
-                        <ComboBox ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" DisplayMemberPath="Name" Width="160"/>
+                        <ComboBox Name="agentComboBox" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" DisplayMemberPath="Name" Width="160"/>
                     </StackPanel>
                     <Button Content="Train" Name="trainBtn" HorizontalAlignment="Left" Click="trainBtn_Click" Margin="3"/>
                 </StackPanel>
@@ -98,7 +97,8 @@
         <Border Grid.Column="1" BorderThickness="2" BorderBrush="Black" >
             <Grid>
                 <Image Grid.Column="1" Source="/Sprites/gameBackground.jpeg" Height="500" Width="500" Opacity="90"/>
-                <Canvas Name="gameCanvas" MouseDown="gameCanvas_MouseDown" Background="Transparent" ClipToBounds="True" Height="500" Width="500"/>
+                <Canvas Name="gameCanvas" MouseDown="gameCanvas_MouseDown" Focusable="True" KeyDown="Canvas_KeyDown"
+                        Background="Transparent" ClipToBounds="True" Height="500" Width="500"/>
             </Grid>
         </Border>
 
