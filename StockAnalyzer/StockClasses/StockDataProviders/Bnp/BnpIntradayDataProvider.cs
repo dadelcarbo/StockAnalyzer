@@ -262,5 +262,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bnp
 
             stockSerie.IsInitialised = false;
         }
+
+        public override bool RemoveEntry(StockSerie stockSerie)
+        {
+            string fileName = Path.Combine(Folders.PersonalFolder, CONFIG_FILE);
+            if (!File.Exists(fileName))
+                return false;
+
+            var lines = File.ReadAllLines(fileName).Where(l => !l.Contains(stockSerie.ISIN));
+            File.WriteAllLines(fileName, lines);
+
+            return true;
+        }
     }
 }
