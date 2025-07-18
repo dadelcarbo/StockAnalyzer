@@ -4872,6 +4872,20 @@ namespace StockAnalyzerApp
             url = url.Replace("%ISIN%", this.currentStockSerie.ISIN);
             Process.Start(url);
         }
+        internal void openInTradingViewMenu()
+        {
+            string url = $"https://www.tradingview.com/";
+            if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.PEA_EURONEXT))
+            {
+                url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.Symbol}/financials-statistics-and-ratios/";
+            }
+            else
+            {
+                Clipboard.SetText(currentStockSerie.StockName);
+            }
+            Process.Start(url);
+        }
+
         internal void OpenInDataProvider()
         {
             IStockDataProvider dataProvider = StockDataProviderBase.GetDataProvider(this.CurrentStockSerie.DataProvider);

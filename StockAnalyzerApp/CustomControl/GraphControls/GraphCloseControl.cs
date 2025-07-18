@@ -2667,6 +2667,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             StockAnalyzerForm.MainFrame.OpenInZBMenu();
         }
+        void openInTradingViewMenu_Click(object sender, EventArgs e)
+        {
+            StockAnalyzerForm.MainFrame.openInTradingViewMenu();
+        }
         void openInDataProvider_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.OpenInDataProvider();
