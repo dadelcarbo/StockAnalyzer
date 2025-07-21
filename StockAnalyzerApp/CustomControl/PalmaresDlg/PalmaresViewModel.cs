@@ -17,6 +17,13 @@ using System.Windows;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
+    public enum Operator
+    {
+        No,
+        LT,
+        GT
+    }
+
     public class PalmaresViewModel : NotifyPropertyChangedBase
     {
         static public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
@@ -64,6 +71,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+
         private float indicator1Min;
         public float Indicator1Min
         {
@@ -77,6 +85,17 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+
+        private Operator indicator1Operator;
+        public Operator Indicator1Operator { get => indicator1Operator; set { SetProperty(ref indicator1Operator, value); } }
+
+        private Operator indicator2Operator;
+        public Operator Indicator2Operator { get => indicator2Operator; set { SetProperty(ref indicator2Operator, value); } }
+
+        private Operator indicator3Operator;
+        public Operator Indicator3Operator { get => indicator3Operator; set { SetProperty(ref indicator3Operator, value); } }
+
+
         private string indicator2;
         public string Indicator2
         {
@@ -528,35 +547,44 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     float stockIndicator1 = float.NaN;
                     if (viewableSeries1 != null)
                     {
-                        if (Indicator1.StartsWith("ROR"))
-                            stockIndicator1 = stockSerie.CalculateLastROR((int)viewableSeries1.Parameters[0]);
+                        if (Indicator1.StartsWith("RO"))
+                            stockIndicator1 = stockSerie.CalculateLastROx(Indicator1, (int)viewableSeries1.Parameters[0]);
                         else
                             try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
 
-                        if (stockIndicator1 != float.NaN && indicator1Min > 0 && stockIndicator1 < indicator1Min)
-                            continue;
+                        if (stockIndicator1 != float.NaN && indicator1Operator != Operator.No)
+                        {
+                            if (indicator1Operator == Operator.LT && stockIndicator1 > indicator1Min) continue;
+                            if (indicator1Operator == Operator.GT && stockIndicator1 < indicator1Min) continue;
+                        }
                     }
                     float stockIndicator2 = float.NaN;
                     if (viewableSeries2 != null)
                     {
-                        if (Indicator2.StartsWith("ROR"))
-                            stockIndicator2 = stockSerie.CalculateLastROR((int)viewableSeries2.Parameters[0]);
+                        if (Indicator2.StartsWith("RO"))
+                            stockIndicator2 = stockSerie.CalculateLastROx(Indicator2, (int)viewableSeries2.Parameters[0]);
                         else
                             try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
 
-                        if (stockIndicator2 != float.NaN && indicator2Min > 0 && stockIndicator2 < indicator2Min)
-                            continue;
+                        if (stockIndicator2 != float.NaN && indicator2Operator != Operator.No)
+                        {
+                            if (indicator2Operator == Operator.LT && stockIndicator2 > indicator2Min) continue;
+                            if (indicator2Operator == Operator.GT && stockIndicator2 < indicator2Min) continue;
+                        }
                     }
                     float stockIndicator3 = float.NaN;
                     if (viewableSeries3 != null)
                     {
-                        if (Indicator3.StartsWith("ROR"))
-                            stockIndicator3 = stockSerie.CalculateLastROR((int)viewableSeries3.Parameters[0]);
+                        if (Indicator3.StartsWith("RO"))
+                            stockIndicator3 = stockSerie.CalculateLastROx(Indicator3, (int)viewableSeries3.Parameters[0]);
                         else
                             try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
 
-                        if (stockIndicator3 != float.NaN && indicator3Min > 0 && stockIndicator3 < indicator3Min)
-                            continue;
+                        if (stockIndicator3 != float.NaN && indicator3Operator != Operator.No)
+                        {
+                            if (indicator3Operator == Operator.LT && stockIndicator3 > indicator3Min) continue;
+                            if (indicator3Operator == Operator.GT && stockIndicator3 < indicator3Min) continue;
+                        }
                     }
                     #endregion
 

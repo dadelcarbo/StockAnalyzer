@@ -1038,6 +1038,26 @@ namespace StockAnalyzer.StockClasses
         #endregion
         #region Indicators calculation
 
+
+        public float CalculateLastROx(string rox, int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
+        {
+            switch (rox.Substring(0, 3))
+            {
+                case "ROR":
+                    return CalculateLastROR(period, inputType, smoothingPeriod);
+                case "ROD":
+                    return CalculateLastROD(period, inputType, smoothingPeriod);
+                case "ROC":
+                    return CalculateLastROC(period);
+                default:
+                    break;
+            }
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, inputType, smoothingPeriod);
+
+            var min = lowSerie.GetMin(this.LastIndex - period, this.LastIndex);
+            return (this.LastValue.CLOSE - min) / min;
+        }
+
         public float CalculateLastROR(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
         {
             GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, inputType, smoothingPeriod);
@@ -1094,12 +1114,12 @@ namespace StockAnalyzer.StockClasses
             for (int i = 0; i < Math.Min(period, this.Count); i++)
             {
                 min = highSerie.GetMax(0, i);
-                serie[i] = (closeSerie[i] - min) / min;
+                serie[i] = -(closeSerie[i] - min) / min;
             }
             for (int i = period; i < this.Count; i++)
             {
                 min = highSerie.GetMax(i - period, i);
-                serie[i] = (closeSerie[i] - min) / min;
+                serie[i] = -(closeSerie[i] - min) / min;
             }
             serie.Name = $"ROD_{period}";
             return serie;

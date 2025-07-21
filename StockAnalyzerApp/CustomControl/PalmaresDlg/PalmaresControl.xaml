@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:PalmaresViewModel x:Key="ViewModel"/>
+        <local:OperatorToStringConverter x:Key="OperatorConverter"/>
     </UserControl.Resources>
     <Grid DataContext="{Binding Source={StaticResource ViewModel}}">
         <Grid.RowDefinitions>
@@ -75,21 +76,39 @@
                     <StackPanel>
                         <TextBox Text="{Binding Indicator1}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Label>>=</Label>
+                            <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator1Operator}" VerticalContentAlignment="Center">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource OperatorConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                             <TextBox Text="{Binding Indicator1Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel>
                         <TextBox Text="{Binding Indicator2}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Label>>=</Label>
+                            <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator2Operator}" VerticalContentAlignment="Center">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource OperatorConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                             <TextBox Text="{Binding Indicator2Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel>
                         <TextBox Text="{Binding Indicator3}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
-                            <Label>>=</Label>
+                            <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator3Operator}" VerticalContentAlignment="Center">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource OperatorConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                             <TextBox Text="{Binding Indicator3Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>

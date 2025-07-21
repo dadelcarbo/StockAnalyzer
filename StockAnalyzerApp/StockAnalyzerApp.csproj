@@ -329,6 +329,7 @@
     </Compile>
     <Compile Include="CustomControl\InstrumentDlgs\InstrumentsViewModel.cs" />
     <Compile Include="CustomControl\PalmaresDlg\FilterSettings.cs" />
+    <Compile Include="CustomControl\PalmaresDlg\OperatorConverter.cs" />
     <Compile Include="CustomControl\PortfolioDlg\OrderViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\PortfolioControl.xaml.cs">
       <DependentUpon>PortfolioControl.xaml</DependentUpon>
