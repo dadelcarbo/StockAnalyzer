@@ -1038,28 +1038,6 @@ namespace StockAnalyzer.StockClasses
         #endregion
         #region Indicators calculation
 
-        public FloatSerie CalculateRateOfRise(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
-        {
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-
-            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, inputType, smoothingPeriod);
-
-            FloatSerie serie = new FloatSerie(Values.Count());
-            float min;
-
-            for (int i = 1; i < Math.Min(period, this.Count); i++)
-            {
-                min = lowSerie.GetMin(0, i);
-                serie[i] = (closeSerie[i] - min) / min;
-            }
-            for (int i = period; i < this.Count; i++)
-            {
-                min = lowSerie.GetMin(i - period, i);
-                serie[i] = (closeSerie[i] - min) / min;
-            }
-            serie.Name = $"ROR_{period}";
-            return serie;
-        }
         public float CalculateLastROR(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
         {
             GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, inputType, smoothingPeriod);
@@ -1074,6 +1052,28 @@ namespace StockAnalyzer.StockClasses
             var @ref = closeSerie[this.LastIndex - period];
             return (this.LastValue.CLOSE - @ref) / @ref;
         }
+        public FloatSerie CalculateRateOfRise(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
+        {
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+
+            GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie _, inputType, smoothingPeriod);
+
+            FloatSerie serie = new FloatSerie(Values.Count());
+            float min;
+
+            for (int i = 0; i < Math.Min(period, this.Count); i++)
+            {
+                min = lowSerie.GetMin(0, i);
+                serie[i] = (closeSerie[i] - min) / min;
+            }
+            for (int i = period; i < this.Count; i++)
+            {
+                min = lowSerie.GetMin(i - period, i);
+                serie[i] = (closeSerie[i] - min) / min;
+            }
+            serie.Name = $"ROR_{period}";
+            return serie;
+        }
         public float CalculateLastROD(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
         {
             GetHighLowSeries(out FloatSerie _, out FloatSerie highSerie, inputType, smoothingPeriod);
@@ -1082,50 +1082,56 @@ namespace StockAnalyzer.StockClasses
             return (this.LastValue.CLOSE - max) / max;
         }
 
-        public FloatSerie CalculateRateOfDecline(int period)
+        public FloatSerie CalculateRateOfDecline(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
         {
             FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie highSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie rodSerie = new FloatSerie(Values.Count());
-            float max;
 
+            GetHighLowSeries(out FloatSerie _, out FloatSerie highSerie, inputType, smoothingPeriod);
+
+            FloatSerie serie = new FloatSerie(Values.Count());
+            float min;
+
+            for (int i = 0; i < Math.Min(period, this.Count); i++)
+            {
+                min = highSerie.GetMax(0, i);
+                serie[i] = (closeSerie[i] - min) / min;
+            }
+            for (int i = period; i < this.Count; i++)
+            {
+                min = highSerie.GetMax(i - period, i);
+                serie[i] = (closeSerie[i] - min) / min;
+            }
+            serie.Name = $"ROD_{period}";
+            return serie;
+        }
+
+        public FloatSerie CalculateRateOfChange(int period, int smoothingPeriod = 0)
+        {
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+            if (smoothingPeriod > 1)
+                closeSerie = closeSerie.CalculateEMA(smoothingPeriod);
+
+            FloatSerie serie = new FloatSerie(Values.Count());
             if (period == 0)
             {
-                max = closeSerie[0];
-
-                for (int i = 1; i < this.Count; i++)
+                FloatSerie openSerie = this.GetSerie(StockDataType.OPEN);
+                if (smoothingPeriod > 1)
+                    openSerie = openSerie.CalculateEMA(smoothingPeriod);
+                for (int i = 0; i < this.Count; i++)
                 {
-                    max = Math.Max(highSerie[i], max);
-                    rodSerie[i] = -(closeSerie[i] - max) / max;
+                    serie[i] = (closeSerie[i] - openSerie[i]) / openSerie[i];
                 }
             }
             else
             {
                 for (int i = 1; i < Math.Min(period, this.Count); i++)
                 {
-                    max = highSerie.GetMax(0, i);
-                    rodSerie[i] = -(closeSerie[i] - max) / max;
+                    serie[i] = (closeSerie[i] - closeSerie[0]) / closeSerie[0];
                 }
                 for (int i = period; i < this.Count; i++)
                 {
-                    max = highSerie.GetMax(i - period, i);
-                    rodSerie[i] = -(closeSerie[i] - max) / max;
+                    serie[i] = (closeSerie[i] - closeSerie[i - period]) / closeSerie[i - period];
                 }
-            }
-            rodSerie.Name = $"ROD_{period}";
-            return rodSerie;
-        }
-        public FloatSerie CalculateRateOfChange(int period)
-        {
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            FloatSerie serie = new FloatSerie(Values.Count());
-            for (int i = 1; i < Math.Min(period, this.Count); i++)
-            {
-                serie[i] = (closeSerie[i] - closeSerie[0]) / closeSerie[0];
-            }
-            for (int i = period; i < this.Count; i++)
-            {
-                serie[i] = (closeSerie[i] - closeSerie[i - period]) / closeSerie[i - period];
             }
             serie.Name = $"ROC_{period}";
             return serie;
