@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames => new string[] { "TOPEMA.Sup", "TOPEMA.Res", "WMA" };
+        public override string[] SerieNames => new string[] { "TOPEMA.Sup", "TOPEMA.Res", "EMA" };
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2), new Pen(Color.Blue, 2) };
 
@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             float alphaDown = 2.0f / (float)(periodDown + 1);
             int smoothingPeriod = (int)this.parameters[2];
 
-            FloatSerie emaSerie = stockSerie.GetIndicator($"WMA({smoothingPeriod})").Series[0];
+            FloatSerie emaSerie = stockSerie.GetIndicator($"EMA({smoothingPeriod})").Series[0];
 
             this.Series[0] = supportSerie;
             this.Series[0].Name = this.SerieNames[0];

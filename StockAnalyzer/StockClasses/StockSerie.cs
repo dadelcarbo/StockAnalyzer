@@ -3580,6 +3580,10 @@ namespace StockAnalyzer.StockClasses
                     sw.WriteLine(value.ToString());
                 }
             }
+            else if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
         }
         #endregion
 

@@ -13,6 +13,7 @@
         <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <local:PalmaresViewModel x:Key="ViewModel"/>
         <local:OperatorToStringConverter x:Key="OperatorConverter"/>
+        <local:OperatorToVisibilityConverter x:Key="OperatorToVisibilityConverter"/>
     </UserControl.Resources>
     <Grid DataContext="{Binding Source={StaticResource ViewModel}}">
         <Grid.RowDefinitions>
@@ -40,12 +41,12 @@
                         <Label>M€</Label>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox Content="Screener" VerticalAlignment="Center"  VerticalContentAlignment="Center" Width="70" IsChecked="{Binding ScreenerOnly}"/>
+                        <CheckBox Content="Screener" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="70" IsChecked="{Binding ScreenerOnly}"/>
                         <ComboBox Name="ScreenerCbx" ItemsSource="{Binding Screeners}" SelectedItem="{Binding Screener}" DisplayMemberPath="Name"
                                   ToolTip="{Binding Screener.Description}" Background="Transparent"
                                   Width="200" Height="20" VerticalContentAlignment="Center"/>
 
-                        <Button Height="24" Width="24"  VerticalAlignment="Center" Margin="1" BorderThickness="0"  Background="Transparent"
+                        <Button Height="24" Width="24" VerticalAlignment="Center" Margin="1" BorderThickness="0"  Background="Transparent"
                                 ToolTip="{Binding SelectedItem.Code, ElementName=ScreenerCbx}"
                                 Click="Button_Click">
                             <Image Source="/Resources/Wizard.jpg" />
@@ -56,10 +57,10 @@
             <GroupBox Header="Settings">
                 <StackPanel Orientation="Horizontal">
                     <ComboBox ItemsSource="{Binding Settings}" SelectedValue="{Binding Setting}" Width="140" VerticalAlignment="Center"/>
-                    <Button x:Name="saveFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="1" Click="saveFilters_Click">
+                    <Button x:Name="saveFilters" Height="24" Width="24" VerticalAlignment="Center" Margin="1" Click="saveFilters_Click">
                         <Image Source="../../Resources/SaveAnalysis.png" />
                     </Button>
-                    <Button x:Name="clearFilters" Height="24" Width="24"  VerticalAlignment="Center" Margin="1" Click="clearFilters_Click">
+                    <Button x:Name="clearFilters" Height="24" Width="24" VerticalAlignment="Center" Margin="1" Click="clearFilters_Click">
                         <Image Source="../../Resources/ClearFilters.png" />
                     </Button>
                 </StackPanel>
@@ -74,7 +75,7 @@
             <GroupBox Header="Speed Indicators" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
                     <StackPanel>
-                        <TextBox Text="{Binding Indicator1}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        <TextBox Text="{Binding Indicator1}" Width="140" Height="24" Margin="1" VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
                             <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator1Operator}" VerticalContentAlignment="Center">
                                 <ComboBox.ItemTemplate>
@@ -83,11 +84,12 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <TextBox Text="{Binding Indicator1Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                            <TextBox Text="{Binding Indicator1Min}" Width="60" Height="24" Margin="1" VerticalContentAlignment="Center"
+                                     Visibility="{Binding Indicator1Operator, Converter={StaticResource OperatorToVisibilityConverter}}"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel>
-                        <TextBox Text="{Binding Indicator2}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        <TextBox Text="{Binding Indicator2}" Width="140" Height="24" Margin="1" VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
                             <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator2Operator}" VerticalContentAlignment="Center">
                                 <ComboBox.ItemTemplate>
@@ -96,11 +98,12 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <TextBox Text="{Binding Indicator2Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                            <TextBox Text="{Binding Indicator2Min}" Width="60" Height="24" Margin="1" VerticalContentAlignment="Center"
+                                     Visibility="{Binding Indicator2Operator, Converter={StaticResource OperatorToVisibilityConverter}}"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel>
-                        <TextBox Text="{Binding Indicator3}" Width="140" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                        <TextBox Text="{Binding Indicator3}" Width="140" Height="24" Margin="1" VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
                             <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator3Operator}" VerticalContentAlignment="Center">
                                 <ComboBox.ItemTemplate>
@@ -109,7 +112,8 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <TextBox Text="{Binding Indicator3Min}" Width="60" Height="24" Margin="1"  VerticalContentAlignment="Center"/>
+                            <TextBox Text="{Binding Indicator3Min}" Width="60" Height="24" Margin="1" VerticalContentAlignment="Center"
+                                     Visibility="{Binding Indicator3Operator, Converter={StaticResource OperatorToVisibilityConverter}}"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
@@ -130,7 +134,7 @@
                     <CheckBox Content="Intraday" VerticalAlignment="Center" IsChecked="{Binding DownloadIntraday}" ToolTip="Download intraday data from ABC Bourse"/>
                 </StackPanel>
             </GroupBox>
-            <Button x:Name="exportToExcel" Height="24" Width="24"  VerticalAlignment="Center" Margin="6,10,0,0" 
+            <Button x:Name="exportToExcel" Height="24" Width="24" VerticalAlignment="Center" Margin="6,10,0,0" 
                     Visibility="{Binding ExportEnabled, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 
                     Click="exportToExcel_Click">
                 <Image Source="../../Resources/Excel.png" />

@@ -2,10 +2,24 @@
 
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
+    public class OperatorToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return  (value == null || !(value is Operator) || ((Operator)value) == Operator.No) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Operator.No;
+        }
+    }
+
     public class OperatorToStringConverter : IValueConverter
     {
         public static Array All => Enum.GetValues(typeof(Operator));
