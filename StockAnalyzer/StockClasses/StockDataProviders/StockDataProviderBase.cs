@@ -305,7 +305,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     new YahooIntradayDataProvider(),
                     new SocGenIntradayDataProvider(),
                     new VontobelIntradayDataProvider(),
-                    new InvestingIntradayDataProvider()
+                    new InvestingIntradayDataProvider(), 
+                    new BnpIntradayDataProvider()
                 };
             }
             return configDialogs;

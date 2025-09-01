@@ -7,9 +7,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_ATRRATIO : StockIndicatorBase
     {
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
-        public override string[] ParameterNames => new string[] { "Period1", "Period2" };
+        public override string[] ParameterNames => new string[] { "SlowPeriod", "FastPeriod" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 6, 18 };
+        public override Object[] ParameterDefaultValues => new Object[] { 9, 35 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[] { "ATRRATIO(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" };
 
@@ -21,10 +21,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override void ApplyTo(StockSerie stockSerie)
         {
-            FloatSerie fastAtrSerie = stockSerie.GetIndicator("ATR(" + this.parameters[0] + ")").Series[0];
-            FloatSerie slowAtrSerie = stockSerie.GetIndicator("ATR(" + this.parameters[1] + ")").Series[0];
+            FloatSerie fastAtrSerie = stockSerie.GetSerie(StockDataType.ATR).CalculateEMA((int)this.parameters[0]);
+            FloatSerie slowAtrSerie = stockSerie.GetSerie(StockDataType.ATR).CalculateEMA((int)this.parameters[1]);
 
-            FloatSerie atrRatio = slowAtrSerie.Div(fastAtrSerie);
+            FloatSerie atrRatio = (slowAtrSerie - fastAtrSerie) / stockSerie.GetSerie(StockDataType.CLOSE);
 
             this.series[0] = atrRatio;
             this.Series[0].Name = this.Name;

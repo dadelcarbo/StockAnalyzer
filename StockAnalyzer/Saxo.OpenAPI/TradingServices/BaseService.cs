@@ -3,6 +3,7 @@ using Saxo.OpenAPI.AuthenticationServices;
 using Saxo.OpenAPI.Models;
 using StockAnalyzer.StockLogging;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -115,7 +116,7 @@ namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
                     }
                 }
                 StockLog.Write($"Exception: {ex.Message}\r\n${content}");
-                throw new HttpRequestException(ex.Message + Environment.NewLine + content, ex);
+                throw new HttpRequestException(ex.Message + Environment.NewLine + content, ((AggregateException) ex)?.InnerExceptions?.FirstOrDefault());
             }
         }
 
