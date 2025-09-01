@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>True</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="UltimateDownloader.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="UltimateDownloader.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj" />
+    <ProjectReference Include="..\StockAnalyzer\StockAnalyzerLib.csproj" />
+  </ItemGroup>
+
+</Project>
