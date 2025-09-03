@@ -15,7 +15,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period" };
         public override string[] SerieNames => new string[] { "OBVEX(" + this.Parameters[0].ToString() + ")" };
 
-        static HLine[] lines = null;
         public override HLine[] HorizontalLines
         {
             get

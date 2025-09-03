@@ -54,7 +54,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public FloatSerie[] Series => series;
 
         abstract public Pen[] SeriePens { get; }
-        public virtual HLine[] HorizontalLines => null;
+
+        protected HLine[] lines = null;
+        public virtual HLine[] HorizontalLines => lines;
 
         protected Area[] areas;
         public virtual Area[] Areas => areas;

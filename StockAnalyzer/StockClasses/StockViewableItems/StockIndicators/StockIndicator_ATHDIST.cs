@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
 
-        public override HLine[] HorizontalLines => null;
+        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(1, new Pen(Color.LightGray)), new HLine(2, new Pen(Color.LightGray)), new HLine(3, new Pen(Color.LightGray)) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {

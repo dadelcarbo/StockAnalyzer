@@ -6,7 +6,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_DONCHIANS : StockIndicatorBase
     {
-        public override string Definition => "Display the highest and lowest lines for the specified period of a EMA.";
+        public override string Definition => "Display the highest and lowest lines for the specified period of a EMA. t's a DONCHIAN channel on a smoothed curve";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] { "Period", "EMAPeriod" };
         public override Object[] ParameterDefaultValues => new Object[] { 20, 3 };

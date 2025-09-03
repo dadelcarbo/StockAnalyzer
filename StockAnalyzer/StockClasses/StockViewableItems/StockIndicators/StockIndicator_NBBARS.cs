@@ -24,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-        static HLine[] lines = null;
+
         public override HLine[] HorizontalLines
         {
             get
