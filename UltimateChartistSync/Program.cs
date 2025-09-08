@@ -41,9 +41,10 @@ class Program
             int count = 1;
             while (!hasConnection && sw.Elapsed.TotalMinutes < 10)
             {
-                logger.WriteLine($"❌ Sync failed: No network connection attempt: {count++}");
+                logger.WriteLine($"❌ Sync failed: No network connection attempt: {count}");
                 await Task.Delay(30000); // 30s
                 hasConnection = await HasNetworkConnectionAsync();
+                count++;
             }
             if (hasConnection)
             {

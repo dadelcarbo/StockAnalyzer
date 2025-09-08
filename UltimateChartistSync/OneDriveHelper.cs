@@ -343,7 +343,7 @@ namespace UltimateChartistSync
 
             // UpdateLastSyncFile
             await File.WriteAllTextAsync(lastSyncPath, Environment.MachineName + "=>" + DateTime.UtcNow.ToString("o"));
-            await UploadFileAsync($"{oneDrivePath}/LastSync.txt", lastSyncPath);
+            await UploadFileAsync($"{oneDrivePath}/{syncFileName}", lastSyncPath);
 
             Logger.Instance.WriteLine("✅ Sync complete.");
         }
