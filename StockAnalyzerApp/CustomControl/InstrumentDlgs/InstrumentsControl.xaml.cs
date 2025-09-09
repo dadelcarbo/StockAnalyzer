@@ -19,7 +19,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
     {
         private System.Windows.Forms.Form Form { get; }
 
-        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
 
         public InstrumentViewModel ViewModel;
         public InstrumentsControl(System.Windows.Forms.Form form)
@@ -46,7 +46,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             this.Form.TopMost = true;
             StockAnalyzerForm.MainFrame.Activate();
-            this.SelectedStockChanged(line.StockName, BarDuration.Daily, true);
+            this.SelectedStockChanged(line.StockName, true);
 
             this.Form.TopMost = false;
         }

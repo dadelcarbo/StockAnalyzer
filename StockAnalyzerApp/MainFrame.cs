@@ -444,11 +444,11 @@ namespace StockAnalyzerApp
                 Directory.CreateDirectory(folderName);
             }
             folderName = Folders.Tweets;
-            if (Directory.Exists(folderName))
+            if (!Directory.Exists(folderName))
             {
-                Directory.Delete(folderName, true);
+                Directory.CreateDirectory(folderName);
+                //Directory.Delete(folderName, true);
             }
-            Directory.CreateDirectory(folderName);
             folderName = Folders.Saxo;
             if (!Directory.Exists(folderName))
             {
@@ -2433,7 +2433,7 @@ namespace StockAnalyzerApp
                 instrumentsDlg.instrumentsControl1.ViewModel.Group = this.Group;
 
                 instrumentsDlg.FormClosing += new FormClosingEventHandler(instrumentsDlg_FormClosing);
-                instrumentsDlg.instrumentsControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
+                instrumentsDlg.instrumentsControl1.SelectedStockChanged += OnSelectedStockChanged;
                 instrumentsDlg.Show();
             }
             else
@@ -2443,7 +2443,7 @@ namespace StockAnalyzerApp
         }
         private void instrumentsDlg_FormClosing(object sender, FormClosingEventArgs e)
         {
-            instrumentsDlg.instrumentsControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+            instrumentsDlg.instrumentsControl1.SelectedStockChanged -= OnSelectedStockChanged;
             this.instrumentsDlg = null;
         }
         #endregion
