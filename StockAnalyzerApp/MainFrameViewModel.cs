@@ -37,6 +37,9 @@ namespace StockAnalyzerApp
         }
         #endregion
 
+        private string analysisFile;
+        public string AnalysisFile { get { return analysisFile; } set { SetProperty(ref analysisFile, value); } }
+
         #region Theme
         private string theme;
         public string Theme { get { return theme; } set { SetProperty(ref theme, value); } }

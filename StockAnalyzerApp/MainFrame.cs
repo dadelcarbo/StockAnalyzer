@@ -465,15 +465,15 @@ namespace StockAnalyzerApp
             InitialiseThemeCombo();
 
             // Deserialize Drawing Items - Read Analysis files
-            if (Settings.Default.AnalysisFile == string.Empty)
+            if (string.IsNullOrEmpty(this.ViewModel.AnalysisFile))
             {
-                Settings.Default.AnalysisFile = Path.Combine(Folders.PersonalFolder, "UltimateChartist.ulc");
+                this.ViewModel.AnalysisFile = Path.Combine(Folders.PersonalFolder, "UltimateChartist.ulc");
                 Settings.Default.Save();
             }
             else
             {
                 StockSplashScreen.ProgressText = "Reading Drawing items ...";
-                LoadAnalysis(Settings.Default.AnalysisFile);
+                LoadAnalysis(this.ViewModel.AnalysisFile);
             }
 
             var cac40 = this.StockDictionary["CAC40"];
@@ -1226,7 +1226,7 @@ namespace StockAnalyzerApp
                     id += " - " + this.CurrentStockSerie.ISIN;
                 }
                 id += " - " + this.CurrentStockSerie.DataProvider;
-                this.Text = "Ultimate Chartist - " + Settings.Default.AnalysisFile.Split('\\').Last() + " - " + id;
+                this.Text = "Ultimate Chartist - " + this.ViewModel.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
                 if (!this.IsReportingIntraday && (currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO_5M)))
@@ -1571,7 +1571,7 @@ namespace StockAnalyzerApp
                         StockSplashScreen.ProgressVal++;
                     }
 
-                    this.SaveAnalysis(Settings.Default.AnalysisFile);
+                    this.SaveAnalysis(this.ViewModel.AnalysisFile);
 
                     if (this.currentStockSerie.Initialise())
                     {
@@ -1670,7 +1670,7 @@ namespace StockAnalyzerApp
                         StockSplashScreen.ProgressVal++;
                     }
 
-                    this.SaveAnalysis(Settings.Default.AnalysisFile);
+                    this.SaveAnalysis(this.ViewModel.AnalysisFile);
 
                     if (this.currentStockSerie.Initialise())
                     {
@@ -1985,7 +1985,7 @@ namespace StockAnalyzerApp
             Cursor currentCursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
 
-            this.SaveAnalysis(Settings.Default.AnalysisFile);
+            this.SaveAnalysis(this.ViewModel.AnalysisFile);
 
             this.Cursor = currentCursor;
 
@@ -2169,7 +2169,7 @@ namespace StockAnalyzerApp
             CurrentStockSerie.StockAnalysis.Excluded = true;
             if (!handled)
             {
-                SaveAnalysis(Settings.Default.AnalysisFile);
+                SaveAnalysis(this.ViewModel.AnalysisFile);
             }
 
             // Remove from current combo list.
@@ -4571,7 +4571,7 @@ namespace StockAnalyzerApp
                 this.currentStockSerie.StockAnalysis.Theme = this.currentTheme;
                 this.defaultThemeStripButton.CheckState = CheckState.Checked;
             }
-            SaveAnalysis(Settings.Default.AnalysisFile);
+            SaveAnalysis(this.ViewModel.AnalysisFile);
         }
         void deleteThemeStripButton_Click(object sender, EventArgs e)
         {
@@ -4682,7 +4682,7 @@ namespace StockAnalyzerApp
                 string analysisFileName = openFileDialog.FileName;
                 this.LoadAnalysis(analysisFileName);
 
-                Settings.Default.AnalysisFile = analysisFileName;
+                this.ViewModel.AnalysisFile = analysisFileName;
                 Settings.Default.Save();
 
                 // Apply the them of the loaded analysis file if any
@@ -4696,7 +4696,7 @@ namespace StockAnalyzerApp
         {
             if (this.currentStockSerie == null) return;
 
-            this.SaveAnalysis(Settings.Default.AnalysisFile);
+            this.SaveAnalysis(this.ViewModel.AnalysisFile);
         }
         private void saveAnalysisFileAsMenuItem_Click(object sender, EventArgs e)
         {
@@ -4712,7 +4712,7 @@ namespace StockAnalyzerApp
             {
                 string analysisFileName = saveFileDialog.FileName;
                 this.SaveAnalysis(analysisFileName);
-                Settings.Default.AnalysisFile = analysisFileName;
+                this.ViewModel.AnalysisFile = analysisFileName;
                 Settings.Default.Save();
             }
         }

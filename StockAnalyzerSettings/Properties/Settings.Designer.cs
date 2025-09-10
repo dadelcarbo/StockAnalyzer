@@ -49,18 +49,6 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AnalysisFile {
-            get {
-                return ((string)(this["AnalysisFile"]));
-            }
-            set {
-                this["AnalysisFile"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("INDICES")]
         public string SelectedGroup {
             get {
