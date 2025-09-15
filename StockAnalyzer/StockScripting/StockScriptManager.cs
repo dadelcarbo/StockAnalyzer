@@ -38,6 +38,17 @@ namespace StockAnalyzer.StockScripting
 
         private bool MatchFilter(StockSerie stockSerie, StockDailyValue bar, int index)
         {
+            var previousBar = stockSerie.ValueArray[index - 1];
+
+
+            var rebound = (bar.CLOSE - bar.LOW) / bar.CLOSE;
+
+            if (rebound > 0.05)
+                return true;
+            else
+                return false;
+
+
             return stockSerie.GetTrailStop("TRAILATR(75,35,1.25,0.25,EMA)").GetEvents("Consolidation")[index];
 
             if (bar.VARIATION < 0)

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using StockAnalyzer.StockLogging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using System.Text.Json;
 using System.IO;
-using StockAnalyzer.StockLogging;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace StockAnalyzer.StockHelpers
 {
@@ -81,7 +82,12 @@ namespace StockAnalyzer.StockHelpers
             try
             {
                 using var fs = File.Create(Path.Combine(folder, $"{item.Name}.{extension}"));
-                JsonSerializer.Serialize(fs, item);
+
+                JsonSerializer.Serialize(fs, item, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+                });
 
                 if (!Items.Any(i => i.Name == item.Name))
                 {
