@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 }
                 else
                 {
-                    if (lowSerie[i - 1] <= lowSerie[i] && closeSerie[i] > lowSerie[i])
+                    if (lowSerie[i - 1] <= lowSerie[i] && closeSerie[i] > lowSerie[i]) // Wait for low serie to turn up.
                     {
                         longStopSerie[i] = lowSerie[i];
                         isBull = true;

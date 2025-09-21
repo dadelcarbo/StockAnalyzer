@@ -6,14 +6,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_NSTDEV : StockIndicatorBase
     {
-        public StockIndicator_NSTDEV()
-        {
-        }
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
-
-        public override string Name => "NSTDEV(" + this.Parameters[0].ToString() + ")";
-
-        public override string Definition => "NSTDEV(int Period)";
         public override object[] ParameterDefaultValues => new Object[] { 20 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
         public override string[] ParameterNames => new string[] { "Period" };

@@ -39,6 +39,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
             this.Areas[0].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
             this.Areas[0].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
+
             this.Areas[1].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
             this.Areas[1].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
 
@@ -50,29 +51,29 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             {
                 int eventIndex = 0;
                 bool bullish = fastEma[i] > slowEma[i];
-                this.Events[eventIndex++][i] = bullish;
-                this.Events[eventIndex++][i] = !bullish;
+                this.Events[eventIndex++][i] = bullish; // Bullish
+                this.Events[eventIndex++][i] = !bullish;// Bearish
                 if (bullish)
                 {
-                    this.Events[eventIndex++][i] = closeSerie[i] > unchSerie[i];
-                    this.Events[eventIndex++][i] = false;
+                    this.Events[eventIndex++][i] = closeSerie[i] > unchSerie[i]; // Strong
+                    this.Events[eventIndex++][i] = false;                        // Weak
 
                     this.areas[0].UpLine[i] = unchSerie[i];
-                    this.areas[0].DownLine[i] = fastEma[i];
+                    this.areas[0].DownLine[i] = lowSerie[i];
                 }
                 else
                 {
-                    this.Events[eventIndex++][i] = false;
-                    this.Events[eventIndex++][i] = closeSerie[i] < unchSerie[i];
+                    this.Events[eventIndex++][i] = false;                        // Strong
+                    this.Events[eventIndex++][i] = closeSerie[i] < unchSerie[i]; // Weak
 
-                    this.areas[1].UpLine[i] = fastEma[i];
+                    this.areas[1].UpLine[i] = lowSerie[i];
                     this.areas[1].DownLine[i] = unchSerie[i];
                 }
 
-                this.Events[eventIndex++][i] = closeSerie[i - 1] <= unchSerie[i - 1] && closeSerie[i] > unchSerie[i];
-                this.Events[eventIndex++][i] = closeSerie[i - 1] <= fastEma[i - 1] && closeSerie[i] > fastEma[i];
-                this.Events[eventIndex++][i] = closeSerie[i - 1] <= slowEma[i - 1] && closeSerie[i] > slowEma[i];
-                this.Events[eventIndex][i] = closeSerie[i - 1] <= lowSerie[i - 1] && closeSerie[i] > lowSerie[i];
+                this.Events[eventIndex++][i] = closeSerie[i - 1] <= unchSerie[i - 1] && closeSerie[i] > unchSerie[i];   // Broken Unc Up
+                this.Events[eventIndex++][i] = closeSerie[i - 1] <= fastEma[i - 1] && closeSerie[i] > fastEma[i];       // Broken fast Up
+                this.Events[eventIndex++][i] = closeSerie[i - 1] <= slowEma[i - 1] && closeSerie[i] > slowEma[i];       // Broken Slow Up
+                this.Events[eventIndex][i] = closeSerie[i - 1] <= lowSerie[i - 1] && closeSerie[i] > lowSerie[i];       // Broken Low Up
             }
         }
 

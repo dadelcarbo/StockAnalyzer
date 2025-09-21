@@ -759,7 +759,7 @@ namespace StockAnalyzer.StockClasses
                                 }
                                 else
                                 {
-                                    if (!stockEvent.Events[eventIndex][index])
+                                    if (!stockEvent.Events[eventIndex][this.LastCompleteIndex]) // Bug: Force last complete index, instead of calculating bas on right index based on parameter date
                                         return false;
                                 }
                             }
@@ -1122,6 +1122,36 @@ namespace StockAnalyzer.StockClasses
                 serie[i] = -(closeSerie[i] - min) / min;
             }
             serie.Name = $"ROD_{period}";
+            return serie;
+        }
+
+        /// <summary>
+        /// Calulcate drawdown in value (euro), not %
+        /// </summary>
+        /// <param name="period"></param>
+        /// <param name="inputType"></param>
+        /// <param name="smoothingPeriod"></param>
+        /// <returns></returns>
+        public FloatSerie CalculateDrawdownValue(int period, InputType inputType = InputType.HighLow, int smoothingPeriod = -1)
+        {
+            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
+
+            GetHighLowSeries(out FloatSerie _, out FloatSerie highSerie, inputType, smoothingPeriod);
+
+            FloatSerie serie = new FloatSerie(Values.Count());
+            float max;
+
+            for (int i = 0; i < Math.Min(period, this.Count); i++)
+            {
+                max = highSerie.GetMax(0, i);
+                serie[i] = max - closeSerie[i];
+            }
+            for (int i = period; i < this.Count; i++)
+            {
+                max = highSerie.GetMax(i - period, i);
+                serie[i] = max - closeSerie[i];
+            }
+            serie.Name = $"DD_{period}";
             return serie;
         }
 

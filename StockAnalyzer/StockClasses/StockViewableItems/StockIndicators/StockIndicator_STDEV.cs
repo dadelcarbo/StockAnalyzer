@@ -12,6 +12,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period" };
 
         public override string[] SerieNames => new string[] { "STDEV(" + this.Parameters[0].ToString() + ")" };
+        public override string[] SerieFormats => serieFormats ??= new string[] { "P2" };
 
         public override Pen[] SeriePens
         {
@@ -26,8 +27,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie emaSerie = closeSerie.CalculateMA((int)this.Parameters[0]);
 
-            this.series[0] = closeSerie.CalculateStdev((int)this.Parameters[0]) / closeSerie;
+            this.series[0] = closeSerie.CalculateStdev((int)this.Parameters[0]) / emaSerie;
             this.Series[0].Name = this.Name;
         }
 

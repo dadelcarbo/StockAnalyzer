@@ -626,57 +626,47 @@ namespace StockAnalyzer.StockMath
             }
             return correlationSerie;
         }
-        public void CalculateBB(FloatSerie referenceAverage, int period, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
+        public void CalculateBB(FloatSerie maSerie, int period, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)
         {
             float squareSum = 0.0f;
             float tmp = 0.0f;
-            float upBB = 0.0f;
-            float downBB = 0.0f;
-            float referenceAverageVal = 0.0f;
+            float stdev = 0.0f;
+            float maValue = 0.0f;
 
             bbUpSerie = new FloatSerie(this.Values.Count());
             bbUpSerie.Name = "BBUp";
             bbDownSerie = new FloatSerie(this.Values.Count());
             bbDownSerie.Name = "BBDown";
 
-            for (int i = 0; i < this.Values.Count(); i++)
+
+            maValue = maSerie.Values[0];
+            bbUpSerie.Values[0] = maValue;
+            bbDownSerie.Values[0] = maValue;
+            for (int i = 1; i < this.Values.Count(); i++)
             {
-                referenceAverageVal = referenceAverage.Values[i];
+                maValue = maSerie.Values[i];
                 if (i < period)
                 {
-                    // Calculate BB
-                    if (i == 0)
+                    squareSum = 0.0f;
+                    for (int j = 0; j <= i; j++)
                     {
-                        upBB = 0.0f;
-                        downBB = 0.0f;
+                        tmp = this.Values[j] - maValue;
+                        squareSum += tmp * tmp;
                     }
-                    else
-                    {
-                        squareSum = 0.0f;
-                        for (int j = 0; j <= i; j++)
-                        {
-                            tmp = this.Values[j] - referenceAverageVal;
-                            squareSum += tmp * tmp;
-                        }
-                        tmp = (float)Math.Sqrt(squareSum / (double)(i + 1));
-                        upBB = BBUpCoef * tmp;
-                        downBB = BBDownCoef * tmp;
-                    }
+                    stdev = (float)Math.Sqrt(squareSum / (double)(i + 1));
                 }
                 else
                 {
                     squareSum = 0.0f;
                     for (int j = i - period + 1; j <= i; j++)
                     {
-                        tmp = this.Values[j] - referenceAverageVal;
+                        tmp = this.Values[j] - maValue;
                         squareSum += tmp * tmp;
                     }
-                    tmp = (float)Math.Sqrt(squareSum / (double)period);
-                    upBB = BBUpCoef * tmp;
-                    downBB = BBDownCoef * tmp;
+                    stdev = (float)Math.Sqrt(squareSum / (double)period);
                 }
-                if (bbUpSerie != null) { bbUpSerie.Values[i] = referenceAverageVal + upBB; }
-                if (bbDownSerie != null) { bbDownSerie.Values[i] = referenceAverageVal + downBB; }
+                bbUpSerie.Values[i] = maValue + stdev * BBUpCoef;
+                bbDownSerie.Values[i] = maValue + BBDownCoef;
             }
         }
         public void CalculateBBEX(FloatSerie referenceAverage, int period, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)

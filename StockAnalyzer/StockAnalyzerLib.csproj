@@ -307,7 +307,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXEMABREAKOUT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXBREAKOUT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXNEW.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_FLAG.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_ROB.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_NEARTOP.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXOLD.cs" />
@@ -319,8 +318,11 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATHDIST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DDLINE.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DRAWDOWNADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA2SR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DDADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RSN.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPOSC.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TTM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockSRIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MMA.cs" />

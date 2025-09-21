@@ -25,7 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.DarkRed) };
 
-        public override Area[] Areas => areas ??= new Area[] { new Area { Color = Color.FromArgb(64, Color.Blue) } };
+        public override Area[] Areas => areas ??= new Area[] { new Area { Color = Color.FromArgb(32, Color.Blue) } };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
