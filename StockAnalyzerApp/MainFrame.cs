@@ -431,8 +431,6 @@ namespace StockAnalyzerApp
             }
 
 
-            OneDriveSync();
-
             string folderName = Folders.DividendFolder;
             if (!Directory.Exists(folderName))
             {
@@ -454,6 +452,10 @@ namespace StockAnalyzerApp
             {
                 Directory.CreateDirectory(folderName);
             }
+
+            StockSplashScreen.ProgressText = "Synchronizing One Drive...";
+            StockSplashScreen.ProgressVal = 20;
+            OneDriveSync(true);
 
             StockSplashScreen.ProgressText = "Initialize stock dictionary...";
             StockSplashScreen.ProgressVal = 30;
@@ -1304,7 +1306,7 @@ namespace StockAnalyzerApp
             Settings.Default.Save();
 
             this.IsClosing = true;
-            OneDriveSync();
+            OneDriveSync(false);
         }
 
         public void OnSerieEventProcessed()
@@ -4929,7 +4931,7 @@ namespace StockAnalyzerApp
         }
 
         private static string syncFileName = ".LastSync.txt";
-        private static void OneDriveSync()
+        private static void OneDriveSync(bool wait)
         {
             if (Environment.MachineName == "DADELCARBO")
             {
@@ -4953,7 +4955,8 @@ namespace StockAnalyzerApp
                 };
 
                 var p = Process.Start(startInfo);
-                p.WaitForExit(60000);
+                if (wait)
+                    p.WaitForExit(60000);
             }
         }
     }
