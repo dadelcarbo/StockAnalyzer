@@ -4952,7 +4952,8 @@ namespace StockAnalyzerApp
                     FileName = oneDriveSyncExe,
                 };
 
-                Process.Start(startInfo);
+                var p = Process.Start(startInfo);
+                p.WaitForExit(60000);
             }
         }
     }
