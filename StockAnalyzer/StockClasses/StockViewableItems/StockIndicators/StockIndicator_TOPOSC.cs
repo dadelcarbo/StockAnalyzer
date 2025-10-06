@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 
@@ -21,6 +22,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "OSC UNCH", $"EMA({parameters[0]})", $"EMA({parameters[1]})", "SUM/10" };
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.DarkRed) };
+        public override Area[] Areas => areas ??= new Area[]
+            {
+                new Area {Name="Bull", Color = Color.FromArgb(64, Color.Green), Visibility = true }
+            };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -30,6 +35,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             FloatSerie slowSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
             FloatSerie fastSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
             FloatSerie unchSerie = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
+
+            this.Areas[0].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[0].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
 
             int fastPeriod = (int)this.parameters[0];
             int slowPeriod = (int)this.parameters[1];
@@ -80,7 +88,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 }
                 else
                 {
-                    if (closeSerie[i] < support) // Broken down
+                    if (closeSerie[i] < slowEma) // Broken down
                     {
                         fastEma = float.NaN;
                         slowEma = float.NaN;
@@ -98,6 +106,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         unch = fastEma + osc;
                         support = slowEma - osc;
                     }
+                }
+
+                if (unch > fastEma)
+                {
+                    this.areas[0].UpLine[i] = unch;
+                    this.areas[0].DownLine[i] = fastEma;
                 }
 
                 unchSerie[i] = unch;
