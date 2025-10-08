@@ -103,5 +103,31 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             this.Cursor = Cursors.Arrow;
 
         }
+        private void ExcludeSelectedBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+
+            StockSplashScreen.FadeInOutSpeed = 0.25;
+            StockSplashScreen.ProgressVal = 0;
+            StockSplashScreen.ProgressMax = 100;
+            StockSplashScreen.ProgressMin = 0;
+            StockSplashScreen.ShowSplashScreen();
+
+            try
+            {
+                foreach (var serie in this.gridView.Items.Cast<StockSerie>())
+                {
+                    var dp = StockDataProviderBase.GetDataProvider(serie.DataProvider);
+                    var handled = dp.RemoveEntry(serie);
+
+                    serie.StockAnalysis.Excluded = true;
+                }
+
+            }
+            catch { }
+
+            StockSplashScreen.CloseForm(true);
+            this.Cursor = Cursors.Arrow;
+        }
     }
 }

@@ -41,6 +41,7 @@
 
 
                     <Button Content="Force Download" Click="ForceDownloadBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
+                    <Button Content="Exclude Selected" Click="ExcludeSelectedBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
