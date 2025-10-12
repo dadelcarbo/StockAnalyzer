@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
@@ -62,6 +63,7 @@ using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
+using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions.LookupAndReference;
 
 namespace StockAnalyzerApp
 {
@@ -2089,7 +2091,7 @@ namespace StockAnalyzerApp
             return snapshot;
         }
 
-        public string GetStockSnapshotAsHtml(StockSerie stockSerie, string theme, int nbBars = 0)
+        public string GetStockSnapshotAsHtml(StockSerie stockSerie, string theme, bool mainGraphOnly, int nbBars = 0)
         {
             this.CurrentStockSerie = stockSerie;
             if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
@@ -2105,16 +2107,19 @@ namespace StockAnalyzerApp
                 this.ChangeZoom(stockSerie.LastIndex - nbBars, stockSerie.LastIndex);
             }
 
-            return SnapshotAsHtml();
+            return SnapshotAsHtml(mainGraphOnly);
         }
 
-        private string SnapshotAsHtml()
+        private string SnapshotAsHtml(bool mainGraphOnly)
         {
             List<Bitmap> bitmaps = new List<Bitmap>();
             int width = 0;
             int height = -2;
             foreach (GraphControl graphCtrl in this.graphList.Where(g => !(g is GraphScrollerControl)))
             {
+                if (mainGraphOnly && !(graphCtrl is GraphCloseControl))
+                    continue;
+
                 Bitmap bmp = graphCtrl.GetSnapshot();
                 if (bmp != null)
                 {
@@ -2766,7 +2771,7 @@ namespace StockAnalyzerApp
                     this.ViewModel.BarDuration = position.BarDuration;
                     barDurationChangeFromUI = false;
 
-                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme);
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme, false);
 
                     var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockSerie.StockName) + "\r\n";
                     var lastValue = stockSerie.ValueArray.Last();
@@ -2808,7 +2813,7 @@ namespace StockAnalyzerApp
 
             var portfolioSerie = StockDictionary[portfolio.Name];
             this.ViewModel.BarDuration = BarDuration.Daily;
-            var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio2", 350);
+            var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio2", false, 350);
             picturehtml = stockPictureTemplate.Replace("%STOCKNAME%", portfolio.Name).Replace(" - %DURATION%", "").Replace("%IMG%", portfolioSerieBitmapString) + "\r\n" + picturehtml;
 
             reportBody += @" 
@@ -2858,7 +2863,7 @@ namespace StockAnalyzerApp
                     this.ViewModel.BarDuration = order.BarDuration;
                     barDurationChangeFromUI = false;
 
-                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, order.Theme, 350);
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, order.Theme, false, 350);
 
                     var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockSerie.StockName) + "\r\n";
                     var lastValue = stockSerie.LastValue;
@@ -2985,34 +2990,29 @@ namespace StockAnalyzerApp
 
                 this.ViewModel.BarDuration = BarDuration.Daily;
 
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary["McClellanSum.EURO_A"], "EUROA_SUM", 770);
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary["McClellanSum.EURO_A"], "EUROA_SUM", false, 770);
                 htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
             }
 
-            // Find Pattern
-
-            string pattern = @"%%.*?%%";
-
-            // Instantiate the regular expression object.
-            Regex regex = new Regex(pattern);
-
-            // Match the regular expression pattern against the input string.
-            MatchCollection matches = regex.Matches(htmlReportTemplate);
-
-            foreach (Match match in matches)
+            #region Report indices
+            var indiceReport = string.Empty;
+            var lines = File.ReadAllLines(Path.Combine(Folders.PersonalFolder, "ReportIndices.cfg"));
+            foreach (var line in lines)
             {
-                var fields = match.Value.Replace("%%", "").Split('|');
+                this.Size = new Size(800, 700);
+                var fields = line.Split('|');
                 var stockName = fields[0];
                 //var duration = fields[1];
                 var theme = fields[2];
                 var nbBars = int.Parse(fields[3]);
                 if (!StockDictionary.ContainsKey(stockName))
                     continue;
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, nbBars);
-                string data = $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
-
-                htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, nbBars);
+                indiceReport += $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
             }
+
+            htmlReportTemplate = htmlReportTemplate.Replace("%%INDICES_REPORT%%", indiceReport);
+            #endregion
 
             StockSplashScreen.CloseForm(true);
             #endregion
@@ -3141,7 +3141,7 @@ namespace StockAnalyzerApp
                     this.OnSelectedStockAndDurationChanged(alertValue.StockSerie.StockName, (BarDuration)alertDef.BarDuration, false);
                     // StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{trailStopIndicatorName}");
 
-                    var bitmapString = this.SnapshotAsHtml();
+                    var bitmapString = this.SnapshotAsHtml(false);
 
                     var stockName = stockNameTemplate.Replace("%MSG%", alertValue.StockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var stokValue = alertValue.StockSerie.CalculateLastFastOscillator(stokPeriod, InputType.Close);

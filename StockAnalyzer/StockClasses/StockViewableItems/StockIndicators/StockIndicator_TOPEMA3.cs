@@ -85,12 +85,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     }
                     else
                     {
-                        //fastEma = Math.Max(fastEma, fastEma + fastAlfa * (lowSerie[i] - fastEma));
-                        //midEma = Math.Max(midEma, midEma + midAlfa * (lowSerie[i] - midEma));
-                        //slowEma = Math.Max(slowEma, slowEma + slowAlfa * (lowSerie[i] - slowEma));
-                        fastEma = fastEma + fastAlfa * (lowSerie[i] - fastEma);
-                        midEma = midEma + midAlfa * (lowSerie[i] - midEma);
-                        slowEma = slowEma + slowAlfa * (lowSerie[i] - slowEma);
+                        fastEma = Math.Max(fastEma, fastEma + fastAlfa * (lowSerie[i] - fastEma));
+                        midEma = Math.Max(midEma, midEma + midAlfa * (lowSerie[i] - midEma));
+                        slowEma = Math.Max(slowEma, slowEma + slowAlfa * (lowSerie[i] - slowEma));
+                        //fastEma = fastEma + fastAlfa * (lowSerie[i] - fastEma);
+                        //midEma = midEma + midAlfa * (lowSerie[i] - midEma);
+                        //slowEma = slowEma + slowAlfa * (lowSerie[i] - slowEma);
 
 
                         if (fastEma > midEma)
