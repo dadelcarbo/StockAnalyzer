@@ -78,7 +78,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     if (closeSerie[i] < slowEma)
                     {
-                        this.Events[3][i] = true;// SupportBroken
+                        this.Events[6][i] = true;     // EndOfBull
                         isBullish = false;
                         bottom = lowSerie[i];
                         fastEma = midEma = slowEma = float.NaN;
@@ -92,13 +92,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                         //midEma = midEma + midAlfa * (lowSerie[i] - midEma);
                         //slowEma = slowEma + slowAlfa * (lowSerie[i] - slowEma);
 
-
                         if (fastEma > midEma)
                         {
                             this.areas[0].UpLine[i] = fastEma;
                             this.areas[0].DownLine[i] = midEma;
                         }
-
                     }
                 }
                 else
@@ -107,10 +105,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                     {
                         isBullish = true;
                         fastEma = midEma = slowEma = bottom;
-                        this.Events[0][i] = true; // SupportDetected
+                        this.Events[5][i] = true; // BullStart 
                         if (previousBottom < bottom)
                         {
-                            this.Events[6][i] = true; // HigerLow
+                            this.Events[9][i] = true; // HigerLow
                             this.StockTexts.Add(new StockText { AbovePrice = false, Index = i - 1, Text = "HL" });
                         }
                         previousBottom = bottom;
@@ -124,21 +122,31 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 midSupportSerie[i] = midEma;
                 slowSupportSerie[i] = slowEma;
 
-                this.Events[8][i] = isBullish; // Bullish
+                this.Events[0][i] = isBullish; // Bullish
+                this.Events[1][i] = !isBullish; // Bearish
+                if (isBullish)
+                {
+                    this.Events[2][i] = closeSerie[i] < midEma; // Weak
+                    this.Events[3][i] = closeSerie[i] > midEma && closeSerie[i] < fastEma; // Medium
+                    this.Events[4][i] = closeSerie[i] > fastEma; // Strong
+
+                    this.Events[7][i] = !this.Events[3][i - 1] && this.Events[3][i]; // MediumStart
+                    this.Events[8][i] = !this.Events[4][i - 1] && this.Events[4][i]; // StrongStart
+                }
             }
         }
 
         private static readonly string[] eventNames = new string[]
         {
-            "SupportDetected", "ResistanceDetected",          // 0,1
-            "ResistanceBroken", "SupportBroken",              // 2,3
-            "FirstResistanceBroken", "FirstSupportBroken",    // 4,5
-            "HigherLow", "LowerHigh",                         // 6,7
-            "Bullish", "Bearish",                             // 8,9
+            "Bullish", "Bearish",           // 0,1
+            "Weak", "Medium", "Strong",     // 2,3,4
+            "BullStart", "BullEnd",         // 5,6
+            "MediumStart", "StrongStart",   // 7,8
+            "HigherLow"                     // 9
         };
         public override string[] EventNames => eventNames;
 
-        private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, true, true, false, false };
+        private static readonly bool[] isEvent = new bool[] { false, false, false, false, false, true, true, true, true, true };
         public override bool[] IsEvent => isEvent;
     }
 }
