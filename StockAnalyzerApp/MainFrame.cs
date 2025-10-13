@@ -64,6 +64,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
 using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions.LookupAndReference;
+using Match = System.Text.RegularExpressions.Match;
 
 namespace StockAnalyzerApp
 {
@@ -3012,6 +3013,34 @@ namespace StockAnalyzerApp
             }
 
             htmlReportTemplate = htmlReportTemplate.Replace("%%INDICES_REPORT%%", indiceReport);
+            #endregion
+
+            #region Report embedded definitions
+
+            // Find Pattern
+
+            string pattern = @"§§.*?§§";
+
+            // Instantiate the regular expression object.
+            Regex regex = new Regex(pattern);
+
+            // Match the regular expression pattern against the input string.
+            MatchCollection matches = regex.Matches(htmlReportTemplate);
+
+            foreach (Match match in matches)
+            {
+                var fields = match.Value.Replace("§§", "").Split('|');
+                var stockName = fields[0];
+                //var duration = fields[1];
+                var theme = fields[2];
+                var nbBars = int.Parse(fields[3]);
+                if (!StockDictionary.ContainsKey(stockName))
+                    continue;
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, nbBars);
+                string data = $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+
+                htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
+            }
             #endregion
 
             StockSplashScreen.CloseForm(true);
