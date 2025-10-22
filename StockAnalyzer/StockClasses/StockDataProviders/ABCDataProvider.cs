@@ -61,11 +61,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private HttpClient httpClient = null;
         public string verifToken = null;
 
+        public bool forbidden = false;
+
         private bool Initialize()
         {
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 return false;
-            if (this.httpClient == null)
+            if (this.httpClient == null && !forbidden)
             {
                 try
                 {
@@ -77,6 +79,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var resp = httpClient.GetAsync("download/historiques").GetAwaiter().GetResult();
                     if (!resp.IsSuccessStatusCode)
                     {
+                        if (resp.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                        {
+                            forbidden = true;
+                        }
                         StockLog.Write("Failed initializing ABC Provider HttpClient: " + resp.Content.ReadAsStringAsync().Result);
                         return false;
                     }
@@ -111,7 +117,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return false;
                 }
             }
-            return true;
+            return httpClient != null;
         }
 
         private string FindToken(string pattern, string body)
