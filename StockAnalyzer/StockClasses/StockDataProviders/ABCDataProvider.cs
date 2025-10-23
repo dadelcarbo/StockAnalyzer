@@ -4,6 +4,7 @@ using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -404,6 +405,49 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
             }
+
+            LoadDataFromCotations();
+        }
+
+        private void LoadDataFromCotations()
+        {
+            string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
+            var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderByDescending(f => File.GetCreationTime(f)).FirstOrDefault();
+
+            if (!File.Exists(dataFile))
+                return;
+
+            var lines = File.ReadAllLines(dataFile).Select(l => l.Split(';'));
+            foreach (var serieData in lines.GroupBy(l => l[0]))
+            {
+                var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == serieData.Key);
+                if (stockSerie == null)
+                    continue;
+
+                this.LoadFromCSV(stockSerie);
+
+                var lastDate = stockSerie.Count > 0 ? stockSerie.Values.Last().DATE : DateTime.MinValue;
+
+                var dailyValues = serieData.Where(row => DateTime.Parse(row[1], frenchCulture) > lastDate).Select(row => new StockDailyValue(
+                    float.Parse(row[2], frenchCulture),
+                    float.Parse(row[3], frenchCulture),
+                    float.Parse(row[4], frenchCulture),
+                    float.Parse(row[5], frenchCulture),
+                    long.Parse(row[6], frenchCulture),
+                    DateTime.Parse(row[1], frenchCulture))).OrderBy(d => d.DATE).ToList();
+
+                if (dailyValues.Count > 0)
+                {
+                    foreach (var dailyValue in dailyValues)
+                    {
+                        stockSerie.Add(dailyValue.DATE, dailyValue);
+                    }
+                    this.SaveToCSV(stockSerie, happyNewMonth);
+                }
+            }
+
+            File.Delete(dataFile);
         }
 
         private bool InitAbcGroup(ABCDownloadGroup config, bool download)
