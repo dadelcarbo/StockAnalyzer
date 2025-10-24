@@ -407,6 +407,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             LoadDataFromCotations();
+            LoadDataFromSeance();
         }
 
         private void LoadDataFromCotations()
@@ -448,6 +449,46 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             File.Delete(dataFile);
+        }
+
+        private void LoadDataFromSeance()
+        {
+            string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
+            var dataFiles = Directory.EnumerateFiles(downloadPath, "Seance*.csv").OrderByDescending(f => File.GetCreationTime(f));
+
+            foreach (var dataFile in dataFiles)
+            {
+                var date = File.GetLastWriteTime(dataFile);
+                if (date.Date == DateTime.Today)
+                {
+                    var lines = File.ReadAllLines(dataFile).Select(l => l.Split(';'));
+                    foreach (var row in lines)
+                    {
+                        var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == row[0]);
+                        if (stockSerie == null)
+                            continue;
+
+                        if (stockSerie.Count > 0)
+                            stockSerie.IsInitialised = false;
+
+                        this.LoadFromCSV(stockSerie);
+                        if (stockSerie.Count == 0)
+                            continue;
+
+                        var dailyValue = new StockDailyValue(
+                        float.Parse(row[2], frenchCulture),
+                        float.Parse(row[3], frenchCulture),
+                        float.Parse(row[4], frenchCulture),
+                        float.Parse(row[5], frenchCulture),
+                        long.Parse(row[6], frenchCulture),
+                        date);
+
+                        stockSerie.Add(date, dailyValue);
+                    }
+                }
+                File.Delete(dataFile);
+            }
         }
 
         private bool InitAbcGroup(ABCDownloadGroup config, bool download)
