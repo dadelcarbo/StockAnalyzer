@@ -25,6 +25,9 @@
                     <Label Content="Group " Width="50"/>
                     <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="120" VerticalAlignment="Center"/>
 
+                    <Label Content="Provider " Width="55"/>
+                    <ComboBox ItemsSource="{Binding DataProviders}" SelectedValue="{Binding DataProvider}" Width="120" VerticalAlignment="Center"/>
+
                     <Button Content="{Binding RunStatus}" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
                     <Button x:Name="exportToExcel" Height="24" Width="24"  VerticalAlignment="Center"
                             Visibility="{Binding ExportEnabled, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" 

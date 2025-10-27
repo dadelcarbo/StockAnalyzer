@@ -1,7 +1,9 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockLogging;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
     public class InstrumentViewModel : NotifyPropertyChangedBase
     {
+
         static public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
 
         private StockSerie.Groups group;
@@ -23,7 +26,26 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 {
                     group = value;
                     OnPropertyChanged("Group");
-                    this.Lines = new ObservableCollection<StockSerie>(StockDictionary.Instance.Values.Where(s => s.BelongsToGroupFull(this.group)));
+                    this.Lines = new ObservableCollection<StockSerie>(GetLines());
+
+                    OnPropertyChanged("Lines");
+                }
+            }
+        }
+
+        static public Array DataProviders => Enum.GetValues(typeof(StockDataProvider));
+
+        private StockDataProvider dataProvider = StockDataProvider.ABC;
+        public StockDataProvider DataProvider
+        {
+            get { return dataProvider; }
+            set
+            {
+                if (value != dataProvider)
+                {
+                    dataProvider = value;
+                    OnPropertyChanged("DataProvider");
+                    this.Lines = new ObservableCollection<StockSerie>(GetLines());
 
                     OnPropertyChanged("Lines");
                 }
@@ -93,6 +115,11 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             ProgressVisibility = Visibility.Collapsed;
         }
 
+        private IEnumerable<StockSerie> GetLines()
+        {
+            return StockDictionary.Instance.Values.Where(s => s.DataProvider == dataProvider && s.BelongsToGroupFull(this.group));
+        }
+
         private bool canceled = false;
         public async Task CalculateAsync()
         {
@@ -115,7 +142,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             try
             {
-                var stockList = StockDictionary.Instance.Values.Where(s => s.BelongsToGroupFull(this.group)).ToList();
+                var stockList = GetLines().ToList();
                 this.Progress = 0;
                 this.NbStocks = stockList.Count;
                 int count = 0;
