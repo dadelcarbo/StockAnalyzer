@@ -4,7 +4,6 @@ using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -30,6 +29,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public bool LabelOnly { get; set; }
 
+        public string[] Prefixes { get; set; }
+
         /// <summary>
         /// Date of the last download attempt
         /// </summary>
@@ -39,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         /// Date of the last downloaded date for the refSerie
         /// </summary>
         public DateTime LastDownloaded { get; set; } = DateTime.MinValue;
-        public bool SkipDownload { get; set; }
+        public bool SkipDownload { get; set; } = true;
     }
 
 
@@ -66,6 +67,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private bool Initialize()
         {
+            return false;
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 return false;
             if (this.httpClient == null && !forbidden)
@@ -343,8 +345,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         static readonly string defaultConfigFileContent = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
 
-        static string configPath => Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "AbcDownloadConfig.txt");
-        static string defaultConfigPath => Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
+        static string configPath => Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
 
         static List<ABCDownloadGroup> downloadGroups = null;
 
@@ -356,16 +357,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             #region init group config file
             if (!File.Exists(configPath))
             {
-                if (File.Exists(defaultConfigPath))
-                    File.Copy(defaultConfigPath, configPath);
-            }
-            else
-            {
-                if (File.Exists(defaultConfigPath) && File.GetLastWriteTime(defaultConfigPath) > File.GetLastWriteTime(configPath))
-                {
-                    File.Delete(configPath);
-                    File.Copy(defaultConfigPath, configPath);
-                }
+                MessageBox.Show("The default ABC configuration file is missing.", "ABC Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
             downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
             #endregion
@@ -495,21 +488,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             var destFolder = config.LabelOnly ? DataFolder + ABC_DAILY_CFG_GROUP_FOLDER : DataFolder + ABC_DAILY_CFG_FOLDER;
             string fileName = Path.Combine(destFolder, config.Group.ToString() + ".txt");
-            if (download && !config.SkipDownload && !File.Exists(fileName) || File.GetLastWriteTime(fileName) < DateTime.Now.AddDays(-7)) // File is older than 7 days
-            {
-                try
-                {
-                    this.DownloadLabels(destFolder, config.Group.ToString() + ".txt", config.AbcCode);
-                }
-                catch (Exception ex)
-                {
-                    StockLog.Write(ex);
-                }
-            }
 
             if (!config.LabelOnly)
             {
-                InitFromLibelleFile(fileName);
+                InitFromLibelleFile(config, fileName);
 
                 if (download)
                 {
@@ -521,7 +503,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             else
             {
                 groupSeries.Add(config.Group, null);
-
             }
             if (config.Group == StockSerie.Groups.SRD || config.Group == StockSerie.Groups.SRD_LO)
             {
@@ -652,7 +633,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-        private void InitFromLibelleFile(string fileName)
+        private void InitFromLibelleFile(ABCDownloadGroup config, string fileName)
         {
             if (File.Exists(fileName))
             {
@@ -663,7 +644,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 while (!sr.EndOfStream)
                 {
                     line = sr.ReadLine();
-                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(group, line))
+                    if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(config, line))
                     {
                         string[] row = line.Split(';');
                         string stockName = row[1].ToUpper(); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
@@ -742,6 +723,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 StockLog.Write("File does not exist");
             }
+        }
+
+        private bool IsinMatchGroup(ABCDownloadGroup group, string line)
+        {
+            if (group.Prefixes != null && group.Prefixes.Length > 0)
+            {
+                return group.Prefixes.Any(prefix => line.StartsWith(prefix));
+            }
+            return true;
         }
 
         private bool IsinMatchGroup(Groups group, string line)
@@ -1379,37 +1369,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return success;
         }
 
-        private void DownloadLibelleFromABC(string destFolder, Groups group, bool initLibelle = true)
-        {
-            string groupName = GetABCGroup(group);
-            if (groupName == null)
-                return;
-            string fileName = destFolder + @"\" + group.ToString() + ".txt";
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-            {
-                if (!File.Exists(fileName) || File.GetLastWriteTime(fileName) < DateTime.Now.AddDays(-7)) // File is older than 7 days
-                {
-                    try
-                    {
-                        this.DownloadLabels(destFolder, group.ToString() + ".txt", groupName);
-                    }
-                    catch (Exception ex)
-                    {
-                        StockLog.Write(ex);
-                    }
-                }
-            }
-
-            if (initLibelle)
-            {
-                InitFromLibelleFile(fileName);
-            }
-            if (group == StockSerie.Groups.SRD || group == StockSerie.Groups.SRD_LO)
-            {
-                InitSRDFromLibelleFile(fileName, group);
-
-            }
-        }
         private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, ABCDownloadGroup group, bool loadData = true)
         {
             bool success = true;
