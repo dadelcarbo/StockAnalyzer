@@ -470,16 +470,10 @@ namespace StockAnalyzerApp
             InitialiseThemeCombo();
 
             // Deserialize Drawing Items - Read Analysis files
-            if (string.IsNullOrEmpty(this.ViewModel.AnalysisFile))
-            {
-                this.ViewModel.AnalysisFile = Path.Combine(Folders.PersonalFolder, "UltimateChartist.ulc");
-                Settings.Default.Save();
-            }
-            else
-            {
-                StockSplashScreen.ProgressText = "Reading Drawing items ...";
-                LoadAnalysis(this.ViewModel.AnalysisFile);
-            }
+            this.ViewModel.AnalysisFile = Path.Combine(Folders.PersonalFolder, "UltimateChartist.ulc");
+
+            StockSplashScreen.ProgressText = "Reading Drawing items ...";
+            LoadAnalysis(this.ViewModel.AnalysisFile);
 
             var cac40 = this.StockDictionary["CAC40"];
             cac40.Initialise();
@@ -4714,7 +4708,6 @@ namespace StockAnalyzerApp
                 this.LoadAnalysis(analysisFileName);
 
                 this.ViewModel.AnalysisFile = analysisFileName;
-                Settings.Default.Save();
 
                 // Apply the them of the loaded analysis file if any
                 if (this.currentStockSerie != null && this.currentStockSerie.StockAnalysis.Theme != string.Empty)
