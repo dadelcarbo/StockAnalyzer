@@ -364,13 +364,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
             #endregion
 
-            // Load Config files
-            string fileName = Path.Combine(Folders.PersonalFolder, UserConfigFileName);
-            if (!File.Exists(fileName))
-            {
-                File.WriteAllText(fileName, defaultConfigFileContent);
-            }
-            InitFromFile(download, fileName);
 
             // Intialize Groups
             foreach (var config in downloadGroups)
@@ -380,6 +373,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     config.LastDownload = DateTime.Now;
                 }
             }
+
+            // Load Config files
+            string fileName = Path.Combine(Folders.PersonalFolder, UserConfigFileName);
+            if (!File.Exists(fileName))
+            {
+                File.WriteAllText(fileName, defaultConfigFileContent);
+            }
+            InitFromFile(download, fileName);
+
+            LoadDataFromCotations();
+            LoadDataFromSeance();
 
             // Save download Config
             if (!download)
@@ -400,12 +404,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
             }
 
-            LoadDataFromCotations();
-            LoadDataFromSeance();
         }
 
+        List<AbcDownloadHistory> downloadHistory;
         private void LoadDataFromCotations()
         {
+            if (downloadHistory == null)
+            {
+                downloadHistory = AbcDownloadHistory.Load(Path.Combine(DataFolder, ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt"));
+            }
             string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
             var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderByDescending(f => File.GetCreationTime(f)).FirstOrDefault();
@@ -420,9 +427,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (stockSerie == null)
                     continue;
 
-                this.LoadFromCSV(stockSerie);
+                DateTime lastDate = DateTime.MinValue;
 
-                var lastDate = stockSerie.Count > 0 ? stockSerie.Values.Last().DATE : DateTime.MinValue;
+                var history = downloadHistory.FirstOrDefault(h => h.Id == stockSerie.ISIN);
+                if (history != null)
+                {
+                    lastDate = history.LastDate;
+                }
+                else
+                {
+                    this.LoadFromCSV(stockSerie);
+                    lastDate = stockSerie.Count > 0 ? stockSerie.Values.Last().DATE : DateTime.MinValue;
+
+                    history = new AbcDownloadHistory(stockSerie.ISIN, lastDate);
+                    downloadHistory.Add(history);
+                }
 
                 var dailyValues = serieData.Where(row => DateTime.Parse(row[1], frenchCulture) > lastDate).Select(row => new StockDailyValue(
                     float.Parse(row[2], frenchCulture),
@@ -434,15 +453,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 if (dailyValues.Count > 0)
                 {
+                    if (stockSerie.Count == 0)
+                        this.LoadFromCSV(stockSerie);
+
                     foreach (var dailyValue in dailyValues)
                     {
                         stockSerie.Add(dailyValue.DATE, dailyValue);
+                        history.LastDate = dailyValue.DATE;
                     }
-                    this.SaveToCSV(stockSerie, happyNewMonth);
+                    this.SaveToCSV(stockSerie, true);
                 }
             }
 
             File.Delete(dataFile);
+
+            AbcDownloadHistory.Save(Path.Combine(DataFolder, ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt"), downloadHistory);
         }
 
         private void LoadDataFromSeance()

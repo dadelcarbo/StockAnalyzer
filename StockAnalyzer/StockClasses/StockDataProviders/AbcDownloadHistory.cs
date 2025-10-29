@@ -12,14 +12,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
     {
         public string Id { get; set; }
         public DateTime LastDate { get; set; }
-        public DateTime LastDownloadDate { get; set; }
 
-        public AbcDownloadHistory(string id, DateTime lastDate, DateTime lastDownloadDate)
-        {
-            Id = id;
-            LastDate = lastDate;
-            LastDownloadDate = lastDownloadDate;
-        }
         public AbcDownloadHistory(string id, DateTime lastDate)
         {
             Id = id;
@@ -31,11 +24,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (File.Exists(fileName))
             {
                 var lines = File.ReadAllLines(fileName);
-                return lines.Select(l => l.Split(';'))
+                return lines.Select(l => l.Split(','))
                     .Select(f => new AbcDownloadHistory(
                         f[0],
-                        DateTime.ParseExact(f[1], "dd/MM/yy", CultureInfo.InvariantCulture),
-                        DateTime.ParseExact(f[2], "dd/MM/yy", CultureInfo.InvariantCulture))).ToList();
+                        DateTime.ParseExact(f[1], "yy/MM/dd", CultureInfo.InvariantCulture))).ToList();
             }
             else
             {
@@ -45,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         static public void Save(string fileName, List<AbcDownloadHistory> history)
         {
-            File.WriteAllLines(fileName, history.Select(h => $"{h.Id};{h.LastDate:dd/MM/yy};{h.LastDownloadDate:dd/MM/yy}"));
+            File.WriteAllLines(fileName, history.Select(h => $"{h.Id},{h.LastDate:yy/MM/dd}"));
         }
     }
 }
