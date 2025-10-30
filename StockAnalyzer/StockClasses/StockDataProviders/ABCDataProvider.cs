@@ -403,15 +403,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             {
                 StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
             }
-
         }
 
         List<AbcDownloadHistory> downloadHistory;
         private void LoadDataFromCotations()
         {
+            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
             if (downloadHistory == null)
             {
-                downloadHistory = AbcDownloadHistory.Load(Path.Combine(DataFolder, ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt"));
+                downloadHistory = AbcDownloadHistory.Load(historyFileName);
             }
             string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
@@ -427,23 +427,20 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (stockSerie == null)
                     continue;
 
-                DateTime lastDate = DateTime.MinValue;
-
                 var history = downloadHistory.FirstOrDefault(h => h.Id == stockSerie.ISIN);
                 if (history != null)
                 {
-                    lastDate = history.LastDate;
+                    history.LastDate = history.LastDate;
                 }
                 else
                 {
-                    this.LoadFromCSV(stockSerie);
-                    lastDate = stockSerie.Count > 0 ? stockSerie.Values.Last().DATE : DateTime.MinValue;
+                    this.LoadFromCSV(stockSerie, false);
 
-                    history = new AbcDownloadHistory(stockSerie.ISIN, lastDate);
+                    history = new AbcDownloadHistory(stockSerie.ISIN, stockSerie.Count > 0 ? stockSerie.Values.Last().DATE : DateTime.MinValue, stockSerie.StockName, stockSerie.StockGroup.ToString());
                     downloadHistory.Add(history);
                 }
 
-                var dailyValues = serieData.Where(row => DateTime.Parse(row[1], frenchCulture) > lastDate).Select(row => new StockDailyValue(
+                var dailyValues = serieData.Where(row => DateTime.Parse(row[1], frenchCulture) > history.LastDate).Select(row => new StockDailyValue(
                     float.Parse(row[2], frenchCulture),
                     float.Parse(row[3], frenchCulture),
                     float.Parse(row[4], frenchCulture),
@@ -454,20 +451,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 if (dailyValues.Count > 0)
                 {
                     if (stockSerie.Count == 0)
-                        this.LoadFromCSV(stockSerie);
+                        this.LoadFromCSV(stockSerie, false);
 
                     foreach (var dailyValue in dailyValues)
                     {
                         stockSerie.Add(dailyValue.DATE, dailyValue);
                         history.LastDate = dailyValue.DATE;
                     }
-                    this.SaveToCSV(stockSerie, true);
+                    this.SaveToCSV(stockSerie, false);
                 }
+                stockSerie.IsInitialised = false;
             }
 
             File.Delete(dataFile);
 
-            AbcDownloadHistory.Save(Path.Combine(DataFolder, ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt"), downloadHistory);
+            AbcDownloadHistory.Save(historyFileName, downloadHistory);
         }
 
         private void LoadDataFromSeance()
@@ -1624,12 +1622,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        public bool LoadFromCSV(StockSerie stockSerie)
+        public bool LoadFromCSV(StockSerie stockSerie, bool loadArchive = true)
         {
             StockLog.Write($"Serie: {stockSerie.StockName}");
             bool result = false;
             string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
-            if (File.Exists(fileName))
+            if (loadArchive && File.Exists(fileName))
             {
                 using (StreamReader sr = new StreamReader(fileName))
                 {
