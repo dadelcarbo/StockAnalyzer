@@ -671,7 +671,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(config, line))
                     {
                         string[] row = line.Split(';');
-                        string stockName = row[1].ToUpper(); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
+                        string stockName = row[1].ToUpper().Replace(","," "); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
                         if (!stockDictionary.ContainsKey(stockName))
                         {
                             var existingInstrument = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
