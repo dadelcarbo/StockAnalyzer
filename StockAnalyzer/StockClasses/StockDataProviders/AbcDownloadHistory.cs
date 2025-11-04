@@ -29,7 +29,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 return lines.Select(l => l.Split(','))
                     .Select(f => new AbcDownloadHistory(
                         f[0],
-                        DateTime.ParseExact(f[1], "yy/MM/dd", CultureInfo.InvariantCulture),
+                        DateTime.ParseExact(f[1], "yyyy/MM/dd", CultureInfo.InvariantCulture),
                         f[2],
                         f[3])).ToList();
             }
@@ -41,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         static public void Save(string fileName, List<AbcDownloadHistory> history)
         {
-            File.WriteAllLines(fileName, history.Select(h => $"{h.Id},{h.LastDate:yy/MM/dd},{h.Name},{h.Group}"));
+            File.WriteAllLines(fileName, history.Select(h => $"{h.Id},{h.LastDate:yyyy/MM/dd},{h.Name},{h.Group}"));
         }
     }
 }
