@@ -21,7 +21,7 @@ using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    class ABCDownloadGroup
+    class ABCGroup
     {
         public Groups Group { get; set; }
 
@@ -349,7 +349,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         static string configPath => Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
 
-        static List<ABCDownloadGroup> downloadGroups = null;
+        static List<ABCGroup> abcGroupConfig = null;
 
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
@@ -363,12 +363,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 MessageBox.Show("The default ABC configuration file is missing.", "ABC Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            downloadGroups = JsonSerializer.Deserialize<List<ABCDownloadGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
+            abcGroupConfig = JsonSerializer.Deserialize<List<ABCGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
             #endregion
 
 
             // Intialize Groups
-            foreach (var config in downloadGroups)
+            foreach (var config in abcGroupConfig)
             {
                 if (InitAbcGroup(config, download))
                 {
@@ -388,31 +388,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
             var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderBy(f => File.GetCreationTime(f));
 
+            LoadDataFromWebCache();
+
             foreach (var file in dataFile)
             {
                 LoadDataFromCotations(file);
             }
 
-            LoadDataFromSeance();
+            LoadDataFromSeance(); // Intraday download
 
-            // Save download Config
-            if (!download)
-                return;
-
-            var json = JsonSerializer.Serialize(downloadGroups, new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-                Converters = { new JsonStringEnumConverter() }
-            });
-
-            File.WriteAllText(configPath, json);
-
-            // For analysis only
-            foreach (var g in dictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
-            {
-                StockLog.Write($"Group: {g.Key} prefix: {g.Select(s => s.ISIN.Substring(0, 2)).Distinct().Aggregate((i, j) => i + " " + j)}");
-            }
+            StockDictionary.Instance["CAC40"].Initialise();
         }
 
         private void LoadDataFromWebCache()
@@ -582,7 +567,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private bool InitAbcGroup(ABCDownloadGroup config, bool download)
+        private bool InitAbcGroup(ABCGroup config, bool download)
         {
             var destFolder = config.LabelOnly ? DataFolder + ABC_DAILY_CFG_GROUP_FOLDER : DataFolder + ABC_DAILY_CFG_FOLDER;
             string fileName = Path.Combine(destFolder, config.Group.ToString() + ".txt");
@@ -610,7 +595,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return true;
         }
 
-        private bool DownloadGroupFromAbc(ABCDownloadGroup config)
+        private bool DownloadGroupFromAbc(ABCGroup config)
         {
             var startDate = config.LastDownloaded.Year < ARCHIVE_START_YEAR ? new DateTime(ARCHIVE_START_YEAR, 5, 1) : config.LastDownloaded.AddDays(1);
 
@@ -731,7 +716,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
-        private void InitFromLibelleFile(ABCDownloadGroup config, string fileName)
+        private void InitFromLibelleFile(ABCGroup config, string fileName)
         {
             if (File.Exists(fileName))
             {
@@ -823,7 +808,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private bool IsinMatchGroup(ABCDownloadGroup group, string line)
+        private bool IsinMatchGroup(ABCGroup group, string line)
         {
             if (group.Prefixes != null && group.Prefixes.Length > 0)
             {
@@ -977,7 +962,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         private static string GetABCGroup(Groups stockGroup)
         {
-            var groupConfig = downloadGroups.FirstOrDefault(g => g.Group == stockGroup);
+            var groupConfig = abcGroupConfig.FirstOrDefault(g => g.Group == stockGroup);
             //if (groupConfig == null)
             //{
             //    MessageBox.Show($"Group {stockGroup} not defined in configuration file", "Download configuration error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1453,7 +1438,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return success;
         }
 
-        private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, ABCDownloadGroup group, bool loadData = true)
+        private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, ABCGroup group, bool loadData = true)
         {
             bool success = true;
 
@@ -1779,6 +1764,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public virtual void ApplyTrimAfter(DateTime endDate)
         {
+            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
+            if (File.Exists(historyFileName))
+                File.Delete(historyFileName);
+            this.downloadHistory = new List<AbcDownloadHistory>();
+
             // Clean Data
             foreach (var stockSerie in stockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC))
             {
@@ -1807,13 +1797,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             // Update download config file
-            foreach (var config in downloadGroups.Where(c => !c.LabelOnly))
+            foreach (var config in abcGroupConfig.Where(c => !c.LabelOnly))
             {
                 config.LastDownloaded = endDate.AddDays(-1);
                 config.LastDownload = endDate.AddDays(-1);
             }
 
-            var json = JsonSerializer.Serialize(downloadGroups, new JsonSerializerOptions
+            var json = JsonSerializer.Serialize(abcGroupConfig, new JsonSerializerOptions
             {
                 WriteIndented = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
