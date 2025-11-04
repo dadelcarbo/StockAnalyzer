@@ -382,7 +382,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             InitFromFile(download, fileName);
 
-            LoadDataFromCotations();
+            string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
+            var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderBy(f => File.GetCreationTime(f));
+
+            foreach (var file in dataFile)
+            {
+                LoadDataFromCotations(file);
+            }
+
             LoadDataFromSeance();
 
             // Save download Config
@@ -406,16 +414,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         List<AbcDownloadHistory> downloadHistory;
-        private void LoadDataFromCotations()
+        private void LoadDataFromCotations(string dataFile)
         {
             var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
             if (downloadHistory == null)
             {
                 downloadHistory = AbcDownloadHistory.Load(historyFileName);
             }
-            string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
-            var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderByDescending(f => File.GetCreationTime(f)).FirstOrDefault();
 
             if (!File.Exists(dataFile))
                 return;
@@ -671,7 +676,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(config, line))
                     {
                         string[] row = line.Split(';');
-                        string stockName = row[1].ToUpper().Replace(","," "); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
+                        string stockName = row[1].ToUpper().Replace(",", " "); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
                         if (!stockDictionary.ContainsKey(stockName))
                         {
                             var existingInstrument = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
