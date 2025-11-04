@@ -384,9 +384,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             InitFromFile(download, fileName);
 
-            LoadDataFromWebCache();
+            string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
+            var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderBy(f => File.GetCreationTime(f));
 
-            LoadDataFromCotations();
+            foreach (var file in dataFile)
+            {
+                LoadDataFromCotations(file);
+            }
+
             LoadDataFromSeance();
 
             // Save download Config
@@ -526,7 +532,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         stockSerie.Add(dailyValue.DATE, dailyValue);
                         history.LastDate = dailyValue.DATE;
                     }
-                    this.SaveToCSV(stockSerie, false); // Not true need to detect if need to save archive
+                    this.SaveToCSV(stockSerie, false);
                 }
                 stockSerie.IsInitialised = false;
             }
