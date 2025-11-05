@@ -402,7 +402,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         private void LoadDataFromWebCache()
         {
-            string downloadPath = DataFolder + ABC_TMP_CACHE_FOLDER;
+            string downloadPath = DataFolder + ABC_WEB_CACHE_FOLDER;
             var dataFiles = Directory.EnumerateFiles(downloadPath, "*.csv").OrderByDescending(f => File.GetCreationTime(f)).OrderBy(f => f).GroupBy(f => Path.GetFileNameWithoutExtension(f).Split('_')[0]);
 
             foreach (var fileGroup in dataFiles)
@@ -1557,7 +1557,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
                 else
                 {
-                    MessageBox.Show("ABD DataProvider Group error", $"Group definition file not found for Group: {group}");
+                    MessageBox.Show($"Group definition file not found for Group: {group}", "ABD DataProvider Group error");
                 }
             }
 

@@ -33,7 +33,6 @@ namespace StockAnalyzer.StockClasses
             PEA,
             PEA_EURONEXT,
             CAC40,
-            DAX40,
             SBF120,
             CAC_AT,
             CACALL,
