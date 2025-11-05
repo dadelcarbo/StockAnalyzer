@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace ABCDownloader;
@@ -44,23 +46,56 @@ public class ViewModel : INotifyPropertyChanged
 
     public AsyncRelayCommand DownloadCommand { get; }
 
+    public ICommand OpenAbcCommand { get; }
+    public ICommand OpenFolderCommand { get; }
+    public ICommand PreviousMonthCommand { get; }
+
     private readonly HttpClient _httpClient;
 
     public ViewModel()
     {
         _httpClient = new HttpClient();
         DownloadCommand = new AsyncRelayCommand(DownloadAsync, () => !string.IsNullOrEmpty(Curl));
+        OpenAbcCommand = new AsyncRelayCommand(OpenAbcAsync);
+        OpenFolderCommand = new AsyncRelayCommand(OpenFolderAsync);
+        PreviousMonthCommand = new AsyncRelayCommand(PreviousMonthAsync);
     }
 
+    private async Task OpenAbcAsync()
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "https://www.abcbourse.com/download/historiques",
+            UseShellExecute = true
+        });
+    }
+
+    private async Task OpenFolderAsync()
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = Folder,
+            UseShellExecute = true
+        });
+    }
+
+    private async Task PreviousMonthAsync()
+    {
+        this.FromDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(-1);
+        this.ToDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(1).AddDays(-1);
+    }
     private async Task DownloadAsync()
     {
-        string folder = @"C:\ProgramData\UltimateChartistDev\data\daily\ABC\WebCache";
         try
         {
+            this.Data = $"Downloading From: {fromDate.ToString("yyyy/MM/dd")} To: {fromDate.ToString("yyyy/MM/dd")}" + Environment.NewLine;
+
             var cookies = ExtractCookiesFromCurl();
             var secrets = ExtractSecretsFromCurl();
 
-            var markets = new List<string> { "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap" };
+            var markets = new List<string> { "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap",
+                                             "germanyf", "usau", "uke", "belg", "torontot", "spainm", "holln", "italiai", "lisboal",
+                                             "switzs", "devp", "mpp", "cryptou" };
 
             foreach (var market in markets)
             {
@@ -73,7 +108,7 @@ public class ViewModel : INotifyPropertyChanged
 
                 this.Data += Environment.NewLine + $"Data for market {market} downloaded successfully" + Environment.NewLine;
 
-                await Task.Delay(2000); // To avoid overwhelming the server
+                await Task.Delay(200); // To avoid overwhelming the server
 
             }
             this.Data += Environment.NewLine + "Completed !!!!";
@@ -140,7 +175,7 @@ public class ViewModel : INotifyPropertyChanged
             var parts = cookie.Split('=', 2);
             if (parts.Length == 2)
             {
-                result.Add(parts[0].Trim(), parts[1].Trim());
+                result.TryAdd(parts[0].Trim(), parts[1].Trim());
             }
         }
 
@@ -177,12 +212,13 @@ public class ViewModel : INotifyPropertyChanged
     }
 
     private DateTime fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-
     public DateTime FromDate { get => fromDate; set => SetProperty(ref fromDate, value); }
 
     private DateTime toDate = DateTime.Today;
-
     public DateTime ToDate { get => toDate; set => SetProperty(ref toDate, value); }
+
+    private string folder = @"C:\ProgramData\UltimateChartistDev\data\daily\ABC\WebCache";
+    public string Folder { get => folder; set => SetProperty(ref folder, value); }
 }
 
 public class AsyncRelayCommand : ICommand

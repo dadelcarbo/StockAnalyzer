@@ -410,6 +410,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 NotifyProgress($"Processing {Path.GetFileNameWithoutExtension(fileGroup.Key)}");
                 var lines = fileGroup.SelectMany(f => File.ReadAllLines(f));
                 LoadDataFromWebCache(lines);
+
+                foreach (var f in fileGroup)
+                {
+                    File.Delete(f);
+                }
             }
         }
         private void LoadDataFromWebCache(IEnumerable<string> lines)
