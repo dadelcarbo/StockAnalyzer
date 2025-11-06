@@ -390,26 +390,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
 
-            downloadHistory = AbcDownloadHistory.Load(historyFileName);
-            if (downloadHistory.Count == 0)
-            {
-                foreach (var group in StockDictionary.Instance.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
-                {
-                    NotifyProgress($"Generating download history for {group.Key}");
-                    foreach (var stockSerie in group)
-                    {
-                        this.LoadFromCSV(stockSerie, true);
-                        if (stockSerie.Count > 0)
-                        {
-                            var history = new AbcDownloadHistory(stockSerie.ISIN, stockSerie.Values.Last().DATE, stockSerie.StockName, stockSerie.StockGroup.ToString());
-                            downloadHistory.Add(history);
-                        }
-                        stockSerie.IsInitialised = false;
-                    }
-                }
-
-                AbcDownloadHistory.Save(historyFileName, downloadHistory);
-            }
+            GetDownloadHistory(historyFileName);
 
             LoadDataFromWebCache();
 
@@ -421,6 +402,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             LoadDataFromSeance(); // Intraday download
 
             StockDictionary.Instance["CAC40"].Initialise();
+        }
+
+        private void GetDownloadHistory(string historyFileName)
+        {
+            downloadHistory = AbcDownloadHistory.Load(historyFileName);
+            if (downloadHistory.Count == 0)
+            {
+                foreach (var group in StockDictionary.Instance.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
+                {
+                    NotifyProgress($"Generating download history for {group.Key}");
+                    foreach (var stockSerie in group)
+                    {
+                        var lastDate = this.GetLastDate(stockSerie);
+                        if (lastDate > DateTime.MinValue)
+                        {
+                            var history = new AbcDownloadHistory(stockSerie.ISIN, lastDate, stockSerie.StockName, stockSerie.StockGroup.ToString());
+                            downloadHistory.Add(history);
+                        }
+                    }
+                }
+
+                AbcDownloadHistory.Save(historyFileName, downloadHistory);
+            }
         }
 
         private void LoadDataFromWebCache()
@@ -1697,6 +1701,59 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 }
             }
         }
+
+        public DateTime GetLastDate(StockSerie stockSerie)
+        {
+            DateTime date = DateTime.MinValue;
+            string fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+            if (File.Exists(fileName))
+            {
+                var lines = File.ReadAllLines(fileName);
+                if (lines.Length > 0)
+                {
+                    string[] row = lines.Last().Split(';');
+                    return DateTime.ParseExact(row[0], DATEFORMAT, usCulture);
+                }
+            }
+            fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+            if (File.Exists(fileName))
+            {
+                var line = ReadLastLine(fileName);
+                if (!string.IsNullOrEmpty(line))
+                {
+                    string[] row = line.Split(';');
+                    return DateTime.ParseExact(row[0], DATEFORMAT, usCulture);
+                }
+            }
+            return date;
+        }
+
+
+        public static string ReadLastLine(string filePath)
+        {
+            var encoding = Encoding.UTF8;
+
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            long position = fs.Length - 1;
+            int byteRead;
+            var lineBytes = new List<byte>();
+
+            while (position >= 0)
+            {
+                fs.Seek(position, SeekOrigin.Begin);
+                byteRead = fs.ReadByte();
+
+                if (byteRead == '\n' && lineBytes.Count > 0)
+                    break;
+
+                lineBytes.Insert(0, (byte)byteRead);
+                position--;
+            }
+
+            return encoding.GetString(lineBytes.ToArray()).TrimEnd('\r', '\n');
+        }
+
+
 
         public bool LoadFromCSV(StockSerie stockSerie, bool loadArchive = true)
         {
