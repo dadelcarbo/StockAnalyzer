@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
@@ -49,6 +50,7 @@ public class ViewModel : INotifyPropertyChanged
     public ICommand OpenAbcCommand { get; }
     public ICommand OpenFolderCommand { get; }
     public ICommand PreviousMonthCommand { get; }
+    public ICommand TestCommand { get; }
 
     private readonly HttpClient _httpClient;
 
@@ -59,6 +61,7 @@ public class ViewModel : INotifyPropertyChanged
         OpenAbcCommand = new AsyncRelayCommand(OpenAbcAsync);
         OpenFolderCommand = new AsyncRelayCommand(OpenFolderAsync);
         PreviousMonthCommand = new AsyncRelayCommand(PreviousMonthAsync);
+        TestCommand = new AsyncRelayCommand(TestAsync);
     }
 
     private async Task OpenAbcAsync()
@@ -84,6 +87,99 @@ public class ViewModel : INotifyPropertyChanged
         this.FromDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(-1);
         this.ToDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(1).AddDays(-1);
     }
+
+    private async Task TestAsync()
+    {
+        var handler = new HttpClientHandler();
+        handler.UseCookies = false;
+
+        // In production code, don't destroy the HttpClient through using, but better use IHttpClientFactory factory or at least reuse an existing HttpClient instance
+        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests
+        // https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
+
+        var cookieContainer = new CookieContainer();
+        using var httpClient = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
+        httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
+        httpClient.BaseAddress = new Uri("https://www.abcbourse.com");
+
+        using (var request = new HttpRequestMessage(new HttpMethod("GET"), "download/historiques"))
+        {
+            request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+            request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
+            request.Headers.TryAddWithoutValidation("priority", "u=0, i");
+            request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
+            request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+            request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
+            request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+            request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+            request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
+            request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+            request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+            request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
+            request.Headers.TryAddWithoutValidation("Cookie", "__eoi=ID=ead3dff89a2100c4:T=1762438747:RT=1762438747:S=AA-AfjbTKMaIkfAf3GQjhr2sogKO");
+
+            var resp = await httpClient.SendAsync(request);
+            if (!resp.IsSuccessStatusCode)
+            {
+                Debug.WriteLine("Failed initializing ABC Provider HttpClient: " + resp.StatusCode);
+                Debug.WriteLine(resp.Content.ReadAsStringAsync().Result);
+                return;
+            }
+
+            var verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
+            Dictionary<string, string> secrets = [];
+            secrets["__RequestVerificationToken"] = verifToken;
+
+            Dictionary<string, string> cookies = [];
+            Debug.WriteLine("Response Headers");
+            foreach (var header in resp.Headers)
+            {
+                Debug.WriteLine($"{header.Key}: {string.Join(";", header.Value)}");
+            }
+
+            Debug.WriteLine("Response Cookies");
+            foreach (var cookie in cookieContainer.GetCookies(httpClient.BaseAddress).Cast<Cookie>())
+            {
+                Debug.WriteLine($"{cookie.Name}: {cookie.Value}");
+                cookies[cookie.Name] = cookie.Value;
+            }
+
+
+            var markets = new List<string> { "eurolistap" };
+
+            foreach (var market in markets)
+            {
+                this.Data += $"Downloading market: {market}";
+
+                var content = await DownloadDataAsync(this.FromDate, this.ToDate, cookies, secrets, market);
+
+                // Save the string to the file
+                await File.WriteAllTextAsync(Path.Combine(folder, $"{market}_{FromDate.ToString("yyy_MM")}.csv"), content);
+
+                this.Data += Environment.NewLine + $"Data for market {market} downloaded successfully" + Environment.NewLine;
+
+                await Task.Delay(20); // To avoid overwhelming the server
+
+            }
+            this.Data = "Completed !!!!" + Environment.NewLine + this.Data;
+
+
+
+
+        }
+    }
+
+    private string FindToken(string pattern, string body)
+    {
+        int index = body.IndexOf(pattern);
+        body = body.Substring(index);
+        index = body.IndexOf("value=") + 7;
+        body = body.Substring(index);
+        index = body.IndexOf('"');
+        body = body.Remove(index);
+        return body;
+    }
+
     private async Task DownloadAsync()
     {
         try

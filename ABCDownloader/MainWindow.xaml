@@ -26,7 +26,8 @@
             <DatePicker SelectedDate="{Binding ToDate, Mode=TwoWay}" Margin="5"/>
             <Button Grid.Row="0" Grid.Column="1" Content=" &lt; " ToolTip="Previous Month" Command="{Binding PreviousMonthCommand}"/>
             <TextBox Text="{Binding Folder}" Margin="5" Width="500" VerticalContentAlignment="Center"/>
-            <Button Grid.Row="0" Grid.Column="1" Content="Open" Command="{Binding OpenFolderCommand}"/>
+            <Button Grid.Row="0" Grid.Column="1" Content="Open" Command="{Binding OpenFolderCommand}" Margin="5"/>
+            <Button Grid.Row="0" Grid.Column="1" Content="Test" Command="{Binding TestCommand}" Margin="5"/>
         </StackPanel>
         <Button Grid.Row="0" Grid.Column="1" Content="ABC" Margin="0,5,75,5" HorizontalAlignment="Right" Command="{Binding OpenAbcCommand}"/>
         <Button Grid.Row="0" Grid.Column="1" Content="Download" Command="{Binding DownloadCommand}" Margin="5" HorizontalAlignment="Right"/>
