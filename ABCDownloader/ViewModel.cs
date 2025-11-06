@@ -108,10 +108,10 @@ public class ViewModel : INotifyPropertyChanged
 
                 this.Data += Environment.NewLine + $"Data for market {market} downloaded successfully" + Environment.NewLine;
 
-                await Task.Delay(200); // To avoid overwhelming the server
+                await Task.Delay(20); // To avoid overwhelming the server
 
             }
-            this.Data += Environment.NewLine + "Completed !!!!";
+            this.Data =  "Completed !!!!"+  Environment.NewLine + this.Data;
         }
         catch (Exception ex)
         {

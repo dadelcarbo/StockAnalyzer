@@ -67,6 +67,8 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             if (dataProvider == null) { return; }
 
             dataProvider.ApplyTrimAfter(this.TrimAfterDate);
+
+            MessageBox.Show("ABC Data cleaned successfully.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

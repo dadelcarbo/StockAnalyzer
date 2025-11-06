@@ -16,7 +16,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Markup.Localizer;
 using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -57,6 +56,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         private static readonly string CONFIG_FILE = "EuronextDownload.cfg";
         private static readonly string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
         private static readonly string ABC_WEB_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\WebCache";
+        private static readonly string ABC_WEB_PROCESSED_FOLDER = ABC_DAILY_FOLDER + @"\Processed";
         private static readonly string ABC_TMP_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\TmpCache";
 
         #region ABC DOWNLOAD HELPER
@@ -388,6 +388,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
             var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderBy(f => File.GetCreationTime(f));
 
+            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
+
+            downloadHistory = AbcDownloadHistory.Load(historyFileName);
+            if (downloadHistory.Count == 0)
+            {
+                foreach (var group in StockDictionary.Instance.Values.Where(s => s.DataProvider == StockDataProvider.ABC).GroupBy(s => s.StockGroup))
+                {
+                    NotifyProgress($"Generating download history for {group.Key}");
+                    foreach (var stockSerie in group)
+                    {
+                        this.LoadFromCSV(stockSerie, true);
+                        if (stockSerie.Count > 0)
+                        {
+                            var history = new AbcDownloadHistory(stockSerie.ISIN, stockSerie.Values.Last().DATE, stockSerie.StockName, stockSerie.StockGroup.ToString());
+                            downloadHistory.Add(history);
+                        }
+                        stockSerie.IsInitialised = false;
+                    }
+                }
+
+                AbcDownloadHistory.Save(historyFileName, downloadHistory);
+            }
+
             LoadDataFromWebCache();
 
             foreach (var file in dataFile)
@@ -413,18 +436,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                 foreach (var f in fileGroup)
                 {
-                    File.Delete(f);
+                    var destFile = f.Replace(ABC_WEB_CACHE_FOLDER, ABC_WEB_PROCESSED_FOLDER);
+                    if (File.Exists(destFile))
+                        File.Delete(destFile);
+                    File.Move(f, destFile);
                 }
             }
         }
         private void LoadDataFromWebCache(IEnumerable<string> lines)
         {
-            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
-            if (downloadHistory == null)
-            {
-                downloadHistory = AbcDownloadHistory.Load(historyFileName);
-            }
-
             var splitLines = lines.Select(l => l.Split(';'));
             foreach (var serieData in splitLines.GroupBy(l => l[0]))
             {
@@ -464,6 +484,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 stockSerie.IsInitialised = false;
             }
 
+            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
             AbcDownloadHistory.Save(historyFileName, downloadHistory);
         }
 
@@ -482,12 +503,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         List<AbcDownloadHistory> downloadHistory;
         private void LoadDataFromCotations(string dataFile)
         {
-            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
-            if (downloadHistory == null)
-            {
-                downloadHistory = AbcDownloadHistory.Load(historyFileName);
-            }
-
             var lines = File.ReadAllLines(dataFile).Select(l => l.Split(';'));
             foreach (var serieData in lines.GroupBy(l => l[0]))
             {
@@ -529,6 +544,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             File.Delete(dataFile);
 
+            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
             AbcDownloadHistory.Save(historyFileName, downloadHistory);
         }
 
@@ -703,6 +719,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (!Directory.Exists(DataFolder + ABC_WEB_CACHE_FOLDER))
             {
                 Directory.CreateDirectory(DataFolder + ABC_WEB_CACHE_FOLDER);
+            }
+            if (!Directory.Exists(DataFolder + ABC_WEB_PROCESSED_FOLDER))
+            {
+                Directory.CreateDirectory(DataFolder + ABC_WEB_PROCESSED_FOLDER);
             }
             if (!Directory.Exists(DataFolder + ABC_TMP_CACHE_FOLDER))
             {
@@ -1655,7 +1675,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 return;
             string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
             var lastDate = stockSerie.Keys.Last();
-            var pivotDate = new DateTime(lastDate.Year, lastDate.Month, 1).AddDays(-1);
+            var pivotDate = forceArchive ? new DateTime(lastDate.Year, lastDate.Month, 1).AddDays(-1) : DateTime.MinValue;
             if (forceArchive || !File.Exists(fileName))
             {
                 if (stockSerie.Values.Any(v => v.DATE <= pivotDate))
