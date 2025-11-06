@@ -93,9 +93,10 @@ public class ViewModel : INotifyPropertyChanged
             var cookies = ExtractCookiesFromCurl();
             var secrets = ExtractSecretsFromCurl();
 
-            var markets = new List<string> { "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap",
-                                             "germanyf", "usau", "uke", "belg", "torontot", "spainm", "holln", "italiai", "lisboal",
-                                             "switzs", "devp", "mpp", "cryptou" };
+            var markets = new List<string> {
+                "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap",
+                "germanyf", "usau", "uke", "belg", "torontot", "spainm", "holln", "italiai", "lisboal",
+                "switzs", "devp", "mpp", "cryptou", "trackp" };
 
             foreach (var market in markets)
             {
@@ -111,7 +112,7 @@ public class ViewModel : INotifyPropertyChanged
                 await Task.Delay(20); // To avoid overwhelming the server
 
             }
-            this.Data =  "Completed !!!!"+  Environment.NewLine + this.Data;
+            this.Data = "Completed !!!!" + Environment.NewLine + this.Data;
         }
         catch (Exception ex)
         {
