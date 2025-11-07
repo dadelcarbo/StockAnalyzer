@@ -348,14 +348,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static readonly string defaultConfigFileContent = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
 
         static string configPath => Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
+        static string historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
+        static string excludeFileName = Path.Combine(Folders.PersonalFolder, "AbcExclude.txt");
 
         static List<ABCGroup> abcGroupConfig = null;
+        static string[] excludeList = new string[] { };
 
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
             download = false;
             stockDictionary = dictionary;
             CreateDirectories();
+
+            if (File.Exists(excludeFileName))
+            {
+                excludeList = File.ReadAllLines(excludeFileName);
+            }
 
             #region init group config file
             if (!File.Exists(configPath))
@@ -388,7 +396,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
             var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderBy(f => File.GetCreationTime(f));
 
-            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
+
 
             GetDownloadHistory(historyFileName);
 
@@ -488,7 +496,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 stockSerie.IsInitialised = false;
             }
 
-            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
             AbcDownloadHistory.Save(historyFileName, downloadHistory);
         }
 
@@ -548,7 +555,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             File.Delete(dataFile);
 
-            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
             AbcDownloadHistory.Save(historyFileName, downloadHistory);
         }
 
@@ -1846,7 +1852,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         public virtual void ApplyTrimAfter(DateTime endDate)
         {
-            var historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
             if (File.Exists(historyFileName))
                 File.Delete(historyFileName);
             this.downloadHistory = new List<AbcDownloadHistory>();
