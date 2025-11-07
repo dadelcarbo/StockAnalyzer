@@ -26,7 +26,7 @@ public class ViewModel : INotifyPropertyChanged
             {
                 _curl = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Curl)));
-                DownloadCommand.RaiseCanExecuteChanged();
+                DownloadCurlCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -45,23 +45,25 @@ public class ViewModel : INotifyPropertyChanged
         }
     }
 
-    public AsyncRelayCommand DownloadCommand { get; }
+    public AsyncRelayCommand DownloadCurlCommand { get; }
 
     public ICommand OpenAbcCommand { get; }
     public ICommand OpenFolderCommand { get; }
     public ICommand PreviousMonthCommand { get; }
-    public ICommand TestCommand { get; }
+    public ICommand NextMonthCommand { get; }
+    public ICommand DownloadCommand { get; }
 
     private readonly HttpClient _httpClient;
 
     public ViewModel()
     {
         _httpClient = new HttpClient();
-        DownloadCommand = new AsyncRelayCommand(DownloadAsync, () => !string.IsNullOrEmpty(Curl));
+        DownloadCurlCommand = new AsyncRelayCommand(DownloadCurlAsync, () => !string.IsNullOrEmpty(Curl));
         OpenAbcCommand = new AsyncRelayCommand(OpenAbcAsync);
         OpenFolderCommand = new AsyncRelayCommand(OpenFolderAsync);
         PreviousMonthCommand = new AsyncRelayCommand(PreviousMonthAsync);
-        TestCommand = new AsyncRelayCommand(TestAsync);
+        NextMonthCommand = new AsyncRelayCommand(NextMonthAsync);
+        DownloadCommand = new AsyncRelayCommand(DownloadAsync);
     }
 
     private async Task OpenAbcAsync()
@@ -87,87 +89,97 @@ public class ViewModel : INotifyPropertyChanged
         this.FromDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(-1);
         this.ToDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(1).AddDays(-1);
     }
-
-    private async Task TestAsync()
+    private async Task NextMonthAsync()
     {
-        var handler = new HttpClientHandler();
-        handler.UseCookies = false;
+        this.FromDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(1);
+        this.ToDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(1).AddDays(-1);
+    }
 
-        // In production code, don't destroy the HttpClient through using, but better use IHttpClientFactory factory or at least reuse an existing HttpClient instance
-        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests
-        // https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
-
-        var cookieContainer = new CookieContainer();
-        using var httpClient = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
-        httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
-        httpClient.BaseAddress = new Uri("https://www.abcbourse.com");
-
-        using (var request = new HttpRequestMessage(new HttpMethod("GET"), "download/historiques"))
+    private async Task DownloadAsync()
+    {
+        try
         {
-            request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-            request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
-            request.Headers.TryAddWithoutValidation("priority", "u=0, i");
-            request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
-            request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-            request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
-            request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-            request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-            request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
-            request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-            request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-            request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
-            request.Headers.TryAddWithoutValidation("Cookie", "__eoi=ID=ead3dff89a2100c4:T=1762438747:RT=1762438747:S=AA-AfjbTKMaIkfAf3GQjhr2sogKO");
+            var handler = new HttpClientHandler();
+            handler.UseCookies = false;
 
-            var resp = await httpClient.SendAsync(request);
-            if (!resp.IsSuccessStatusCode)
+            // In production code, don't destroy the HttpClient through using, but better use IHttpClientFactory factory or at least reuse an existing HttpClient instance
+            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests
+            // https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
+
+            var cookieContainer = new CookieContainer();
+            using var httpClient = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
+            httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
+            httpClient.BaseAddress = new Uri("https://www.abcbourse.com");
+
+            using (var request = new HttpRequestMessage(new HttpMethod("GET"), "download/historiques"))
             {
-                Debug.WriteLine("Failed initializing ABC Provider HttpClient: " + resp.StatusCode);
-                Debug.WriteLine(resp.Content.ReadAsStringAsync().Result);
-                return;
-            }
+                request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
+                request.Headers.TryAddWithoutValidation("priority", "u=0, i");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
+                request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
+                request.Headers.TryAddWithoutValidation("Cookie", "__eoi=ID=ead3dff89a2100c4:T=1762438747:RT=1762438747:S=AA-AfjbTKMaIkfAf3GQjhr2sogKO");
 
-            var verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
-            Dictionary<string, string> secrets = [];
-            secrets["__RequestVerificationToken"] = verifToken;
+                var resp = await httpClient.SendAsync(request);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine("Failed initializing ABC Provider HttpClient: " + resp.StatusCode);
+                    Debug.WriteLine(resp.Content.ReadAsStringAsync().Result);
+                    return;
+                }
 
-            Dictionary<string, string> cookies = [];
-            Debug.WriteLine("Response Headers");
-            foreach (var header in resp.Headers)
-            {
-                Debug.WriteLine($"{header.Key}: {string.Join(";", header.Value)}");
-            }
+                var verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
+                Dictionary<string, string> secrets = [];
+                secrets["__RequestVerificationToken"] = verifToken;
 
-            Debug.WriteLine("Response Cookies");
-            foreach (var cookie in cookieContainer.GetCookies(httpClient.BaseAddress).Cast<Cookie>())
-            {
-                Debug.WriteLine($"{cookie.Name}: {cookie.Value}");
-                cookies[cookie.Name] = cookie.Value;
-            }
+                Dictionary<string, string> cookies = [];
+                Debug.WriteLine("Response Headers");
+                foreach (var header in resp.Headers)
+                {
+                    Debug.WriteLine($"{header.Key}: {string.Join(";", header.Value)}");
+                }
 
-            var markets = new List<string> {
+                Debug.WriteLine("Response Cookies");
+                foreach (var cookie in cookieContainer.GetCookies(httpClient.BaseAddress).Cast<Cookie>())
+                {
+                    Debug.WriteLine($"{cookie.Name}: {cookie.Value}");
+                    cookies[cookie.Name] = cookie.Value;
+                }
+
+                var markets = new List<string> {
                 "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap",
                 "germanyf", "usau", "uke", "belg", "torontot", "spainm", "holln", "italiai", "lisboal",
                 "switzs", "devp", "mpp", "cryptou", "trackp" };
 
-            foreach (var market in markets)
-            {
-                this.Data = $"Downloading market: {market}";
+                foreach (var market in markets)
+                {
+                    this.Data = $"Downloading market: {market}";
 
-                var content = await DownloadDataAsync(this.FromDate, this.ToDate, cookies, secrets, market);
+                    var content = await DownloadDataAsync(this.FromDate, this.ToDate, cookies, secrets, market);
 
-                // Save the string to the file
-                await File.WriteAllTextAsync(Path.Combine(folder, $"{market}_{FromDate.ToString("yyy_MM")}.csv"), content);
+                    // Save the string to the file
+                    await File.WriteAllTextAsync(Path.Combine(folder, $"{market}_{FromDate.ToString("yyy_MM")}.csv"), content);
 
-                this.Data += Environment.NewLine + $"Data for market {market} downloaded successfully" + Environment.NewLine;
+                    this.Data += Environment.NewLine + $"Data for market {market} downloaded successfully" + Environment.NewLine;
 
-                await Task.Delay(200); // To avoid overwhelming the server
+                    await Task.Delay(200); // To avoid overwhelming the server
 
+                }
+                this.Data = $"Downloading From: {fromDate.ToString("yyyy/MM/dd")} To: {fromDate.ToString("yyyy/MM/dd")}" + Environment.NewLine;
+                this.Data += $"Completed !!!!";
             }
-            this.Data = "Completed !!!!" + Environment.NewLine + this.Data;
-
-
-
-
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            Data += Environment.NewLine + "Error downloading data. Please check the URL and try again.";
         }
     }
 
@@ -182,7 +194,7 @@ public class ViewModel : INotifyPropertyChanged
         return body;
     }
 
-    private async Task DownloadAsync()
+    private async Task DownloadCurlAsync()
     {
         try
         {

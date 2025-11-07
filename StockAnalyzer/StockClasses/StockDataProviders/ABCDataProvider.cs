@@ -352,7 +352,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         static string excludeFileName = Path.Combine(Folders.PersonalFolder, "AbcExclude.txt");
 
         static List<ABCGroup> abcGroupConfig = null;
-        static string[] excludeList = new string[] { };
+        static List<string> excludeList = new List<string>();
 
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
@@ -362,7 +362,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             if (File.Exists(excludeFileName))
             {
-                excludeList = File.ReadAllLines(excludeFileName);
+                excludeList = File.ReadAllLines(excludeFileName).ToList();
             }
 
             #region init group config file
@@ -373,7 +373,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             abcGroupConfig = JsonSerializer.Deserialize<List<ABCGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
             #endregion
-
 
             // Intialize Groups
             foreach (var config in abcGroupConfig)
@@ -766,6 +765,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     {
                         string[] row = line.Split(';');
                         string stockName = row[1].ToUpper().Replace(",", " "); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
+                        if (excludeList.Contains(row[0]))
+                            continue;
                         if (!stockDictionary.ContainsKey(stockName))
                         {
                             var existingInstrument = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
@@ -865,6 +866,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                     {
                         string[] row = line.Split(';');
+                        if (excludeList.Contains(row[0]))
+                            continue;
+
                         StockSerie stockSerie = new StockSerie(row[1], string.IsNullOrEmpty(row[2]) ? row[3] : row[2], row[0], (Groups)Enum.Parse(typeof(Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
                         stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN?.Substring(0, 2) switch
                         {
@@ -1924,6 +1928,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             stockSerie.IsInitialised = false;
+        }
+        public static void AddToExcludedList(IEnumerable<string> isins)
+        {
+            foreach (var isin in isins)
+            {
+                if (!string.IsNullOrEmpty(isin) && !excludeList.Contains(isin))
+                {
+                    excludeList.Add(isin);
+                }
+            }
+            File.WriteAllLines(excludeFileName, excludeList);
+        }
+        public override bool RemoveEntry(StockSerie stockSerie)
+        {
+            if (!string.IsNullOrEmpty(stockSerie.ISIN) && !excludeList.Contains(stockSerie.ISIN))
+            {
+                excludeList.Add(stockSerie.ISIN);
+                File.WriteAllLines(excludeFileName, excludeList);
+            }
+            return false;
         }
     }
 }

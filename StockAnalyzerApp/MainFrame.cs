@@ -475,13 +475,14 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading Drawing items ...";
             LoadAnalysis(this.ViewModel.AnalysisFile);
 
+            ABCDataProvider.AddToExcludedList(StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.ISIN));
+
             var cac40 = this.StockDictionary["CAC40"];
             cac40.Initialise();
 
             // Generate breadth 
             if (Settings.Default.GenerateBreadth)
             {
-
                 foreach (StockSerie stockserie in this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
                 {
                     StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;

@@ -13,7 +13,7 @@ using Telerik.Windows.Controls;
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
     /// <summary>
-    /// Interaction logic for InstrumentControl.xaml
+    /// Interaction logic for InstrumentControl.xaml(
     /// </summary>
     public partial class InstrumentsControl : UserControl
     {
@@ -115,7 +115,17 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             try
             {
-                foreach (var serie in this.gridView.Items.Cast<StockSerie>())
+                var abcSeries = this.gridView.Items.Cast<StockSerie>().Where(s => s.DataProvider == StockDataProvider.ABC);
+                if (abcSeries.Any())
+                {
+                    ABCDataProvider.AddToExcludedList(abcSeries.Select(s => s.ISIN));
+                    foreach (var serie in abcSeries)
+                    {
+                        serie.StockAnalysis.Excluded = true;
+                    }
+                }
+
+                foreach (var serie in this.gridView.Items.Cast<StockSerie>().Where(s => s.DataProvider != StockDataProvider.ABC))
                 {
                     var dp = StockDataProviderBase.GetDataProvider(serie.DataProvider);
                     var handled = dp.RemoveEntry(serie);
