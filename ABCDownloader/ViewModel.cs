@@ -169,7 +169,7 @@ public class ViewModel : INotifyPropertyChanged
 
                     this.Data += Environment.NewLine + $"Data for market {market} downloaded successfully" + Environment.NewLine;
 
-                    await Task.Delay(200); // To avoid overwhelming the server
+                    await Task.Delay(20); // To avoid overwhelming the server
 
                 }
                 this.Data = $"Downloading From: {fromDate.ToString("yyyy/MM/dd")} To: {fromDate.ToString("yyyy/MM/dd")}" + Environment.NewLine;
