@@ -144,12 +144,14 @@ public class ViewModel : INotifyPropertyChanged
                 cookies[cookie.Name] = cookie.Value;
             }
 
-
-            var markets = new List<string> { "eurolistap" };
+            var markets = new List<string> {
+                "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap",
+                "germanyf", "usau", "uke", "belg", "torontot", "spainm", "holln", "italiai", "lisboal",
+                "switzs", "devp", "mpp", "cryptou", "trackp" };
 
             foreach (var market in markets)
             {
-                this.Data += $"Downloading market: {market}";
+                this.Data = $"Downloading market: {market}";
 
                 var content = await DownloadDataAsync(this.FromDate, this.ToDate, cookies, secrets, market);
 
@@ -158,7 +160,7 @@ public class ViewModel : INotifyPropertyChanged
 
                 this.Data += Environment.NewLine + $"Data for market {market} downloaded successfully" + Environment.NewLine;
 
-                await Task.Delay(20); // To avoid overwhelming the server
+                await Task.Delay(200); // To avoid overwhelming the server
 
             }
             this.Data = "Completed !!!!" + Environment.NewLine + this.Data;
@@ -314,7 +316,7 @@ public class ViewModel : INotifyPropertyChanged
     private DateTime toDate = DateTime.Today;
     public DateTime ToDate { get => toDate; set => SetProperty(ref toDate, value); }
 
-    private string folder = @"C:\ProgramData\UltimateChartistDev\data\daily\ABC\WebCache";
+    private string folder = @"C:\ProgramData\UltimateChartist\data\daily\ABC\WebCache";
     public string Folder { get => folder; set => SetProperty(ref folder, value); }
 }
 
