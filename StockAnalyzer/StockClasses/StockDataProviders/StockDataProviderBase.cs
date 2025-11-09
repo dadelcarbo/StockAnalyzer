@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.Bnp;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
+using StockAnalyzer.StockClasses.StockDataProviders.Bnp;
 using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.CNN;
 using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;

@@ -263,7 +263,8 @@
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockClasses\StockAlertValue.cs" />
-    <Compile Include="StockClasses\StockDataProviders\AbcDownloadHistory.cs" />
+    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcClient.cs" />
+    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcDownloadHistory.cs" />
     <Compile Include="StockClasses\StockDataProviders\Bnp\BnpIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Bnp\BnpModel.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoIntradayDataProvider.cs" />
@@ -429,7 +430,7 @@
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
     <Compile Include="StockClasses\BarDuration.cs" />
-    <Compile Include="StockClasses\StockDataProviders\ABCDataProvider.cs" />
+    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\ABCDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\InvestingDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\InvestingIntradayDataProvider.cs" />

@@ -1,35 +1,18 @@
-﻿using System;
+﻿using ABCDownloader.AbcDataProvider;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
-using System.Windows.Documents;
 using System.Windows.Input;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ABCDownloader;
 
 public class ViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
-
-    // Example property
-    private string _curl;
-    public string Curl
-    {
-        get => _curl;
-        set
-        {
-            if (_curl != value)
-            {
-                _curl = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Curl)));
-                DownloadCurlCommand.RaiseCanExecuteChanged();
-            }
-        }
-    }
 
     private string _data;
     public string Data
@@ -45,25 +28,47 @@ public class ViewModel : INotifyPropertyChanged
         }
     }
 
-    public AsyncRelayCommand DownloadCurlCommand { get; }
+    private string _isin;
+    public string Isin
+    {
+        get => _isin;
+        set
+        {
+            if (_isin != value)
+            {
+                _isin = value.Trim();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Isin)));
+            }
+        }
+    }
 
     public ICommand OpenAbcCommand { get; }
     public ICommand OpenFolderCommand { get; }
     public ICommand PreviousMonthCommand { get; }
     public ICommand NextMonthCommand { get; }
-    public ICommand DownloadCommand { get; }
+    public ICommand DownloadDataCommand { get; }
+    public ICommand DownloadLabelCommand { get; }
+    public ICommand DownloadIsinCommand { get; }
 
     private readonly HttpClient _httpClient;
+
+    //List<string> markets = new List<string> { "indicesmkp", "indicessecp", "eurolistap", "spainm" };
+
+    List<string> markets = new List<string> {
+            "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap",
+            "germanyf", "usau", "uke", "belg", "torontot", "spainm", "holln", "italiai", "lisboal",
+            "switzs", "devp", "mpp", "cryptou", "trackp" };
 
     public ViewModel()
     {
         _httpClient = new HttpClient();
-        DownloadCurlCommand = new AsyncRelayCommand(DownloadCurlAsync, () => !string.IsNullOrEmpty(Curl));
         OpenAbcCommand = new AsyncRelayCommand(OpenAbcAsync);
         OpenFolderCommand = new AsyncRelayCommand(OpenFolderAsync);
         PreviousMonthCommand = new AsyncRelayCommand(PreviousMonthAsync);
         NextMonthCommand = new AsyncRelayCommand(NextMonthAsync);
-        DownloadCommand = new AsyncRelayCommand(DownloadAsync);
+        DownloadDataCommand = new AsyncRelayCommand(DownloadDataAsync);
+        DownloadLabelCommand = new AsyncRelayCommand(DownloadLabelAsync);
+        DownloadIsinCommand = new AsyncRelayCommand(DownloadIsinAsync);
     }
 
     private async Task OpenAbcAsync()
@@ -94,87 +99,26 @@ public class ViewModel : INotifyPropertyChanged
         this.FromDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(1);
         this.ToDate = new DateTime(fromDate.Year, fromDate.Month, 1).AddMonths(1).AddDays(-1);
     }
-
-    private async Task DownloadAsync()
+    private async Task DownloadLabelAsync()
     {
         try
         {
-            var handler = new HttpClientHandler();
-            handler.UseCookies = false;
-
-            // In production code, don't destroy the HttpClient through using, but better use IHttpClientFactory factory or at least reuse an existing HttpClient instance
-            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests
-            // https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
-
-            var cookieContainer = new CookieContainer();
-            using var httpClient = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
-            httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
-            httpClient.BaseAddress = new Uri("https://www.abcbourse.com");
-
-            using (var request = new HttpRequestMessage(new HttpMethod("GET"), "download/historiques"))
+            foreach (var market in markets)
             {
-                request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
-                request.Headers.TryAddWithoutValidation("priority", "u=0, i");
-                request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
-                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
-                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-                request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
-                request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-                request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
-                request.Headers.TryAddWithoutValidation("Cookie", "__eoi=ID=ead3dff89a2100c4:T=1762438747:RT=1762438747:S=AA-AfjbTKMaIkfAf3GQjhr2sogKO");
+                this.Data = $"Downloading market: {market}";
 
-                var resp = await httpClient.SendAsync(request);
-                if (!resp.IsSuccessStatusCode)
-                {
-                    Debug.WriteLine("Failed initializing ABC Provider HttpClient: " + resp.StatusCode);
-                    Debug.WriteLine(resp.Content.ReadAsStringAsync().Result);
-                    return;
-                }
+                var content = await AbcClient.DownloadLabelAsync(market);
 
-                var verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
-                Dictionary<string, string> secrets = [];
-                secrets["__RequestVerificationToken"] = verifToken;
+                // Save the string to the file
+                await File.WriteAllTextAsync(Path.Combine(folder, $"{market}_Label.csv"), content);
 
-                Dictionary<string, string> cookies = [];
-                Debug.WriteLine("Response Headers");
-                foreach (var header in resp.Headers)
-                {
-                    Debug.WriteLine($"{header.Key}: {string.Join(";", header.Value)}");
-                }
+                this.Data += Environment.NewLine + $"Labels for market {market} downloaded successfully" + Environment.NewLine;
 
-                Debug.WriteLine("Response Cookies");
-                foreach (var cookie in cookieContainer.GetCookies(httpClient.BaseAddress).Cast<Cookie>())
-                {
-                    Debug.WriteLine($"{cookie.Name}: {cookie.Value}");
-                    cookies[cookie.Name] = cookie.Value;
-                }
+                await Task.Delay(20); // To avoid overwhelming the server
 
-                var markets = new List<string> {
-                "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap",
-                "germanyf", "usau", "uke", "belg", "torontot", "spainm", "holln", "italiai", "lisboal",
-                "switzs", "devp", "mpp", "cryptou", "trackp" };
-
-                foreach (var market in markets)
-                {
-                    this.Data = $"Downloading market: {market}";
-
-                    var content = await DownloadDataAsync(this.FromDate, this.ToDate, cookies, secrets, market);
-
-                    // Save the string to the file
-                    await File.WriteAllTextAsync(Path.Combine(folder, $"{market}_{FromDate.ToString("yyy_MM")}.csv"), content);
-
-                    this.Data += Environment.NewLine + $"Data for market {market} downloaded successfully" + Environment.NewLine;
-
-                    await Task.Delay(20); // To avoid overwhelming the server
-
-                }
-                this.Data = $"Downloading From: {fromDate.ToString("yyyy/MM/dd")} To: {fromDate.ToString("yyyy/MM/dd")}" + Environment.NewLine;
-                this.Data += $"Completed !!!!";
             }
+            this.Data = $"Downloading From: {fromDate.ToString("yyyy/MM/dd")} To: {fromDate.ToString("yyyy/MM/dd")}" + Environment.NewLine;
+            this.Data += $"Completed !!!!";
         }
         catch (Exception ex)
         {
@@ -182,37 +126,34 @@ public class ViewModel : INotifyPropertyChanged
             Data += Environment.NewLine + "Error downloading data. Please check the URL and try again.";
         }
     }
-
-    private string FindToken(string pattern, string body)
-    {
-        int index = body.IndexOf(pattern);
-        body = body.Substring(index);
-        index = body.IndexOf("value=") + 7;
-        body = body.Substring(index);
-        index = body.IndexOf('"');
-        body = body.Remove(index);
-        return body;
-    }
-
-    private async Task DownloadCurlAsync()
+    private async Task DownloadIsinAsync()
     {
         try
         {
-            this.Data = $"Downloading From: {fromDate.ToString("yyyy/MM/dd")} To: {fromDate.ToString("yyyy/MM/dd")}" + Environment.NewLine;
+            this.Data = $"Downloading market: {this.Isin}";
 
-            var cookies = ExtractCookiesFromCurl();
-            var secrets = ExtractSecretsFromCurl();
+            if (string.IsNullOrEmpty(_isin))
+                return;
 
-            var markets = new List<string> {
-                "indicesmkp", "indicessecp", "eurolistap", "eurolistbp", "eurolistcp", "eurogp", "euroap",
-                "germanyf", "usau", "uke", "belg", "torontot", "spainm", "holln", "italiai", "lisboal",
-                "switzs", "devp", "mpp", "cryptou", "trackp" };
+            var content = await AbcClient.DownloadIsinAsync(this.FromDate, this.ToDate, this.Isin);
 
+            this.Data += Environment.NewLine + content + Environment.NewLine;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            Data += Environment.NewLine + "Error downloading data. Please check the URL and try again.";
+        }
+    }
+    private async Task DownloadDataAsync()
+    {
+        try
+        {
             foreach (var market in markets)
             {
-                this.Data += $"Downloading market: {market}";
+                this.Data = $"Downloading market: {market}";
 
-                var content = await DownloadDataAsync(this.FromDate, this.ToDate, cookies, secrets, market);
+                var content = await AbcClient.DownloadDataAsync(this.FromDate, this.ToDate, market);
 
                 // Save the string to the file
                 await File.WriteAllTextAsync(Path.Combine(folder, $"{market}_{FromDate.ToString("yyy_MM")}.csv"), content);
@@ -222,60 +163,20 @@ public class ViewModel : INotifyPropertyChanged
                 await Task.Delay(20); // To avoid overwhelming the server
 
             }
-            this.Data = "Completed !!!!" + Environment.NewLine + this.Data;
+            this.Data = $"Downloading From: {fromDate.ToString("yyyy/MM/dd")} To: {fromDate.ToString("yyyy/MM/dd")}" + Environment.NewLine;
+            this.Data += $"Completed !!!!";
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error: {ex.Message}");
-            Data = "Error downloading data. Please check the URL and try again.";
+            Data += Environment.NewLine + "Error downloading data. Please check the URL and try again.";
         }
     }
 
-    private static readonly HttpClient httpClient = new HttpClient();
-
-    public static async Task<string> DownloadDataAsync(DateTime dateFrom, DateTime dateTo, Dictionary<string, string> cookies, Dictionary<string, string> secrets, string market)
-    {
-        using (var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/historiques"))
-        {
-            request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-            request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
-            request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
-            request.Headers.TryAddWithoutValidation("origin", "https://www.abcbourse.com");
-            request.Headers.TryAddWithoutValidation("priority", "u=0, i");
-            request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com/download/historiques");
-            request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
-            request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-            request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
-            request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-            request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-            request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
-            request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-            request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-            request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
-
-            var cookieString = cookies.Select(c => $"{c.Key}={c.Value}").Aggregate((i, j) => $"{i};{j}");
-            request.Headers.TryAddWithoutValidation("Cookie", cookieString);
-
-            var requestVerificationToken = secrets.ContainsKey("__RequestVerificationToken") ? secrets["__RequestVerificationToken"] : "";
-
-            var data = $"dateFrom={dateFrom.ToString("yyyy-MM-dd")}&__Invariant=dateFrom&dateTo={dateTo.ToString("yyyy-MM-dd")}&__Invariant=dateTo&txtOneSico=&cbox={market}&sFormat=ab&typeData=isin&__RequestVerificationToken={requestVerificationToken}&cbYes=false";
-            request.Content = new StringContent(data);
-            request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
-
-            var response = await httpClient.SendAsync(request);
-
-            // Ensure the request was successful
-            response.EnsureSuccessStatusCode();
-
-            // Return the response content as a string
-            return await response.Content.ReadAsStringAsync();
-        }
-    }
-
-    private Dictionary<string, string> ExtractCookiesFromCurl()
+    private Dictionary<string, string> ExtractCookiesFromCurl(string curl)
     {
         var result = new Dictionary<string, string>();
-        var lines = Curl.Replace("'", "").Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim());
+        var lines = curl.Replace("'", "").Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim());
 
         var cookies = lines.FirstOrDefault(l => l.StartsWith("-b"))?.Replace("-b ", "").Replace(" \\", "").Split(';');
         if (cookies == null)
@@ -292,10 +193,10 @@ public class ViewModel : INotifyPropertyChanged
 
         return result;
     }
-    private Dictionary<string, string> ExtractSecretsFromCurl()
+    private Dictionary<string, string> ExtractSecretsFromCurl(string curl)
     {
         var result = new Dictionary<string, string>();
-        var lines = Curl.Replace("'", "").Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim());
+        var lines = curl.Replace("'", "").Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim());
         var rawData = lines.FirstOrDefault(l => l.StartsWith("--data-raw"))?.Replace("--data-raw ", "").Split('&');
 
         foreach (var data in rawData)

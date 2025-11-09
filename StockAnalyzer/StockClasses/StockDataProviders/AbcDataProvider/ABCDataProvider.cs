@@ -18,7 +18,7 @@ using System.Threading;
 using System.Windows.Forms;
 using static StockAnalyzer.StockClasses.StockSerie;
 
-namespace StockAnalyzer.StockClasses.StockDataProviders
+namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
     class ABCGroup
     {
@@ -792,6 +792,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                                 StockSerie.Groups.GERMANY => "f",
                                 StockSerie.Groups.SPAIN => "m",
                                 StockSerie.Groups.USA => "u",
+                                StockSerie.Groups.CANADA => "t",
                                 _ => string.Empty
                             };
 
@@ -1330,7 +1331,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     downloadingGroups = "True";
                     var groups = new Groups[] {
                         StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL,
-                        StockSerie.Groups.ITALIA, StockSerie.Groups.GERMANY, StockSerie.Groups.SPAIN, StockSerie.Groups.USA,
+                        StockSerie.Groups.ITALIA, StockSerie.Groups.GERMANY, StockSerie.Groups.SPAIN, StockSerie.Groups.USA, StockSerie.Groups.CANADA,
                         StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
 
                     foreach (var group in groups)
