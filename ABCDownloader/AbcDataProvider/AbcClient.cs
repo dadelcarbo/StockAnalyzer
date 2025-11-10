@@ -41,11 +41,10 @@ public static class AbcClient
 
             var requestVerificationToken = secrets.ContainsKey("__RequestVerificationToken") ? secrets["__RequestVerificationToken"] : "";
 
-            request.Content = new StringContent($"cbox={market}&cbPlace=true&__RequestVerificationToken={requestVerificationToken}&cbPlace=false");
+            request.Content = new StringContent($"cbox={market}&cbPlace=false&__RequestVerificationToken={requestVerificationToken}&cbPlace=false");
             request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
 
             var response = await httpClient.SendAsync(request);
-
 
             // Ensure the request was successful
             response.EnsureSuccessStatusCode();

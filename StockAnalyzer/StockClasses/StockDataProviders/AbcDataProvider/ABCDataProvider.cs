@@ -44,7 +44,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         public bool SkipDownload { get; set; } = true;
     }
 
-
     public class ABCDataProvider : StockDataProviderBase, IConfigDialog
     {
         private static readonly string ABC_INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\ABC";
@@ -58,286 +57,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         private static readonly string ABC_WEB_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\WebCache";
         private static readonly string ABC_WEB_PROCESSED_FOLDER = ABC_DAILY_FOLDER + @"\Processed";
         private static readonly string ABC_TMP_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\TmpCache";
-
-        #region ABC DOWNLOAD HELPER
-
-        private CookieContainer cookieContainer = null;
-        private HttpClient httpClient = null;
-        public string verifToken = null;
-
-        public bool forbidden = false;
-
-        private bool Initialize()
-        {
-            return false;
-            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-                return false;
-            if (this.httpClient == null && !forbidden)
-            {
-                try
-                {
-                    cookieContainer = new CookieContainer();
-                    var httpClient = new HttpClient(new HttpClientHandler { CookieContainer = cookieContainer });
-                    httpClient.DefaultRequestHeaders.CacheControl = new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true };
-                    httpClient.BaseAddress = new Uri("https://www.abcbourse.com/");
-
-                    var resp = httpClient.GetAsync("download/historiques").GetAwaiter().GetResult();
-                    if (!resp.IsSuccessStatusCode)
-                    {
-                        if (resp.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                        {
-                            forbidden = true;
-                        }
-                        StockLog.Write("Failed initializing ABC Provider HttpClient: " + resp.Content.ReadAsStringAsync().Result);
-                        return false;
-                    }
-
-                    verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
-                    this.httpClient = httpClient;
-
-                    //{
-                    //    using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://www.abcbourse.com/api/palmares/GetPalmares?sVar=h&sDate=yesterday&sMarket=eurolistBp"))
-                    //    {
-                    //        request.Headers.TryAddWithoutValidation("authority", "www.abcbourse.com");
-                    //        request.Headers.TryAddWithoutValidation("accept", "*/*");
-                    //        request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr;q=0.8");
-                    //        request.Headers.TryAddWithoutValidation("cookie", "_ga=GA1.2.464449205.1632342487; _lr_env_src_ats=false; __gads=ID=976880403fdbddc8:T=1632428829:S=ALNI_MaBr79UeSpSeSqMxoN1lLLjyu4cow; trc_cookie_storage=taboola^%^2520global^%^253Auser-id^%^3Dada4ba88-668c-4676-ae3e-bde92c328c2a-tuct8454c22; _cc_id=56e047fe9db05b649ec837d55b875b99; cto_bundle=BtDmjl8wb3haeWdkUXZMTmlIMThZajVnYnZuSTVOazRtSmZkbjlYNUxacGpzekYzUHdLTFBwNnByVUlSYUNVbnNORkRteUhhdG1rb2xDSHNNN3c3VWo1Q2lRcGVpUFFiYW1lSHM0QmZ4Vm1aRnNrOUZmTiUyRlRTYUZTSlROZlA1UkRQWWpIakdEYnl4VSUyQk1FSWRCeFAwMEtpeEtBJTNEJTNE; cto_bidid=DnArOV9reXNHJTJCU1lDcDA1SSUyRjJWU1R2cGRFWVlnN2xzR1ZRWDZOeGlpT0ZNeDY0cnJFYW1Bdnl0Tm9BYmNXNU5FTiUyQmhoUDVhYzQwczJoeVRtWWs5MVEwTEREdXJ5V3ZjS1A2dXMyNnFuVjMlMkJ6MzFjJTNE; _sharedID=cff2808b-85cd-4eee-b7c5-4fffb1b1c95a; st_audience_clientId=e9972dd0-17e6-4908-8b46-945f66a66b93; euconsent-v2=CPeG8YAPeG8YABcAIEENCdCgAP_AAH_AAAqIIDkZ_C9NQWNjcX59E_s0eYxHxgCWoWQADACJgygBCAPA8IQEwGAYIAVAAogKAAAAoiJBAAAhCAlAAAEAQAAAACGMAEAAAAAAIKIAgEARAgEICAhBkQAQEIIQAABBABQAgAAEQhoAQAAAAAAgAEAAAAAgAICBAAQAAAAAAQAAAAAAAIggOACYKkxAA2JQYE2QaRQogBBGABQAIAAIAIGCKAAIAADghABQYAgAAAAAiAgAAACiBgEAAAEACEAAAABAAEAAAAgAAAAAAAAAIgAAQAEAAAAACACBABAAAAAAAEEABACAAAAAEABAAAAAACAAAAIAAAAAgMAAAAAAAAABAAAAAAAAAAAA.x7xHCHw.4YpAQgBZAC6AGwASoAxAB-gEQAKMAVIA4oB6wElgPVAiIBEkCUQEsQJagTOAwsBzIDpwJDIUFhQYChEFOoKzwWZgtHBb6C50F5IMUgAhACgACADQAIQAhAEgACAAUACAAKgAaACYAGA; uid_dm=1e044079-e36f-0cff-fe1e-0c440d91a916; ABCBourse=CfDJ8MljebP1noVHmnIJ9WWUbjS_F7bpGT7FiQ4UDwwtFw1tVtBRixr5N8LbAIH0tGV5LndBCUYDa8Oykl0LR_LsLvc05iK4zcC1RXGfkpSNadQmZ7veFbN75vKqfYXZgbep0SOd9KLtR4ST7eDNuqRoDk9LJoKerMV2a2Y0zp3iMP4VF9J5hFHDC0VqsWA2RHJQTdTmvSHPRTT_F1UEoC09R_IFo-jy8qsyT9UE0frCthidPufQh4Nlcep7gPOemBW-hZZ_MLCIJ3cFyESGz9q-oeUNeEBZusmxgQH84Gcz2ly_huSmHW4oMJTJqzVN_WntueWZ7G5dppKjPXQaaZJmEC5WOhv-Wy8q7TNezY_TnBGbm92t8-sdmzIaOA2BOBk6R7Rn6WlbrRSli861HjKIOWpwsqH47VWESywjgFNwvOyHRLAei8EvHXqzrOEYIEMr0qPS2HggRf_8Wd6WAGE4v-094K6Y2K5nSEODs_fV99EhxpkFHbjs6pZb36NqG8JDNYbruH_CcfaPD_ozFxDEIXObcxF8Y6t-enZfwaT0-Zw3M8Myo4bsdYv1h_cbJZ8biiwpq0-SEmDXHm3oAsRTXE8; __gpi=UID=00000ab92d108069:T=1662555905:RT=1664536430:S=ALNI_MYfNfUGYztjsp4dm20XpALFN26Tkw; panoramaId_expiry=1665150040558; panoramaId=d68c3887a8e3ed9102825e0b0b6f4945a702fd1fff99f1051c96b1a6627c2a52; _gid=GA1.2.1226607729.1665126201; _pbjs_userid_consent_data=3998499341092627; pbjs-id5id=^%^7B^%^22created_at^%^22^%^3A^%^222021-09-23T20^%^3A14^%^3A46Z^%^22^%^2C^%^22id5_consent^%^22^%^3Atrue^%^2C^%^22original_uid^%^22^%^3A^%^22ID5*ZPJ4_59biN2x3L0NXIOD0UbpNXdnUrVS0OnMlYG0HaMmHoQ-JiQzaG_7O6cLE7n3JiAbQLciZE11bxHTiHp-IiYhDOoFwJEObHZrOZJVXNMmIhD8cCuN4rnmyWFPEEbpJiR2Scg71__dxl9QkfZfGCYv20BtzmLskhB61K76VaYmMWjG_pou3lPXvn4JIlt4JjIP_9aWS7-Eolf2niuI8yY3MkLC1iZrJAdD78F5qPomORqaK9jk7X2lhRTzPpU2JjxLUA17CtFYdwIdoYqcRw^%^22^%^2C^%^22universal_uid^%^22^%^3A^%^22ID5*WUHcz3q2P6fmXBU6dbiiQBsIcVuuiuALH74xdGjW3qwmHstExugHo7McT68weLCKJiAUFZrKSqcAKE8MapnVHSYhsXl2gGZ95BU5idZXsdImIjsM0DLfp2ZMsOL6IvhsJiQM0eTKl81TKjP61j8vMCYvnu1N1RoyxnJbu-2EUq4mMdp2Z-KCbEGs_YOni1VkJjI-G2Yo3fwydJSGMGyNyiY3ejh4S4iCz-RDL-pvYAYmOePZexov8zG0J9XT5BHoJjxOnGx52VPhUiefRQiI4A^%^22^%^2C^%^22signature^%^22^%^3A^%^22ID5_AeqFG1kejV_-mV80Yp-ZKoqTvAqPPtcslA-IVQ59ucTH5vI79Wxu56Sh8okW5jzb82Z1Jj1EyAzDRTaTLkQG1q4^%^22^%^2C^%^22link_type^%^22^%^3A2^%^2C^%^22cascade_needed^%^22^%^3Afalse^%^2C^%^22privacy^%^22^%^3A^%^7B^%^22jurisdiction^%^22^%^3A^%^22gdpr^%^22^%^2C^%^22id5_consent^%^22^%^3Atrue^%^7D^%^7D; pbjs-id5id_last=Fri^%^2C^%^2007^%^20Oct^%^202022^%^2007^%^3A03^%^3A35^%^20GMT; .AspNetCore.Antiforgery.fDmU841VioE=CfDJ8MljebP1noVHmnIJ9WWUbjR6lv7HEM5W6Tr0VZ0Sr1fuXEU2vI62yiJxtSXwEMg5AO3qgEbWVZZWB6W8_vnAc8EgOHKtQW1d_xc8XKcmSFswopOOrP4VetJzh2xte1I7OhZcHsqTAtwkrIaYC0_MVzI; _lr_retry_request=true; cto_bidid=uqBTY19reXNHJTJCU1lDcDA1SSUyRjJWU1R2cGRFWVlnN2xzR1ZRWDZOeGlpT0ZNeDY0cnJFYW1Bdnl0Tm9BYmNXNU5FTiUyQmhoUDVhYzQwczJoeVRtWWs5MVEwTEREcWtOdmw1VE5JOUN6eXBhdkIlMkJyWWJFJTNE; cto_bidid=uqBTY19reXNHJTJCU1lDcDA1SSUyRjJWU1R2cGRFWVlnN2xzR1ZRWDZOeGlpT0ZNeDY0cnJFYW1Bdnl0Tm9BYmNXNU5FTiUyQmhoUDVhYzQwczJoeVRtWWs5MVEwTEREcWtOdmw1VE5JOUN6eXBhdkIlMkJyWWJFJTNE; cto_bundle=Pud6Vl8wb3haeWdkUXZMTmlIMThZajVnYnZ1eHo5YjFVUXVoQjRRc0RyWmxudWdNa0NCYmNXTFFkcG1pWEliOFExRmhOWlhma3RBaDVqMTYlMkZHakVJTTdwYzFTVVB4Y2VadFpkVUpoNThGcG50JTJCMlU2RjRKbDZVNEolMkZucWwlMkJvdHRzdFdIcDk3Q2xCUGcyb2RjbnVDR3JKalRJZyUzRCUzRA; cto_bundle=Pud6Vl8wb3haeWdkUXZMTmlIMThZajVnYnZ1eHo5YjFVUXVoQjRRc0RyWmxudWdNa0NCYmNXTFFkcG1pWEliOFExRmhOWlhma3RBaDVqMTYlMkZHakVJTTdwYzFTVVB4Y2VadFpkVUpoNThGcG50JTJCMlU2RjRKbDZVNEolMkZucWwlMkJvdHRzdFdIcDk3Q2xCUGcyb2RjbnVDR3JKalRJZyUzRCUzRA");
-                    //        request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com/palmares/palmares");
-                    //        request.Headers.TryAddWithoutValidation("sec-ch-ua", "^^");
-                    //        request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    //        request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "^^");
-                    //        request.Headers.TryAddWithoutValidation("sec-fetch-dest", "empty");
-                    //        request.Headers.TryAddWithoutValidation("sec-fetch-mode", "cors");
-                    //        request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
-                    //        request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36");
-
-                    //        var response = httpClient.SendAsync(request).GetAwaiter().GetResult();
-                    //        var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    //    }
-                    //}
-                }
-                catch (Exception ex)
-                {
-                    StockLog.Write(ex);
-                    return false;
-                }
-            }
-            return httpClient != null;
-        }
-
-        private string FindToken(string pattern, string body)
-        {
-            int index = body.IndexOf(pattern);
-            body = body.Substring(index);
-            index = body.IndexOf("value=") + 7;
-            body = body.Substring(index);
-            index = body.IndexOf('"');
-            body = body.Remove(index);
-            return body;
-        }
-
-        const string DOWNLOAD_ISIN_BODY =
-            "dateFrom=$START_DATE&__Invariant=dateFrom&" +
-            "dateTo=$END_DATE&__Invariant=dateTo&" +
-            "cbox=oneSico&" +
-            "txtOneSico=$ISIN&" +
-            "sFormat=x&" +
-            "typeData=isin&" +
-            "__RequestVerificationToken=$TOKEN&" +
-            "cbYes=false";
-
-        public bool DownloadISIN(string destFolder, string fileName, DateTime startDate, DateTime endDate, string ISIN)
-        {
-            if (startDate > endDate)
-                return true;
-            if (!this.Initialize()) return false;
-
-            try
-            {
-                var postData = DOWNLOAD_ISIN_BODY;
-
-                postData = postData.Replace("$START_DATE", startDate.ToString("yyyy-MM-dd"));
-                postData = postData.Replace("$END_DATE", endDate.ToString("yyyy-MM-dd"));
-                postData = postData.Replace("$ISIN", ISIN);
-                postData = postData.Replace("$TOKEN", verifToken);
-
-                var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                var resp = httpClient.PostAsync("download/historiques", content).GetAwaiter().GetResult();
-                if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
-                    return false;
-                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
-                respStream.CopyTo(fileStream);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        const string DOWNLOAD_GROUP_BODY =
-            "dateFrom=$START_DATE&" +
-            "dateTo=$END_DATE&" +
-            "cbox=$GROUP&" +
-            "txtOneSico=&" +
-            "sFormat=w&" +
-            "typeData=isin&" +
-            "__RequestVerificationToken=$TOKEN&"
-            + "cbYes=false";
-
-        static DateTime cacheEndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-        public bool DownloadGroup(string fileName, DateTime startDate, DateTime endDate, string group)
-        {
-            if (!this.Initialize())
-                return false;
-
-            try
-            {
-                string cacheFileName = fileName.Replace("\\TMP\\", "\\TMPCache\\");
-                if (File.Exists(cacheFileName))
-                {
-                    File.Copy(cacheFileName, fileName);
-                    return true;
-                }
-
-                var postData = DOWNLOAD_GROUP_BODY;
-
-                postData = postData.Replace("$START_DATE", startDate.ToString("yyyy-MM-dd"));
-                postData = postData.Replace("$END_DATE", endDate.ToString("yyyy-MM-dd"));
-                postData = postData.Replace("$GROUP", group);
-                postData = postData.Replace("$TOKEN", verifToken);
-
-                // StockLog.Write("Downloading group: " + postData);
-
-                var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                var resp = httpClient.PostAsync("download/historiques", content).GetAwaiter().GetResult();
-                if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
-                {
-                    StockLog.Write("Failed downloading group: " + resp.Content.ReadAsStringAsync().Result.Substring(0, 200));
-                    return false;
-                }
-                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-                using (var fileStream = File.Create(fileName))
-                {
-                    respStream.CopyTo(fileStream);
-                }
-                if (endDate < cacheEndDate)
-                {
-                    File.Copy(fileName, cacheFileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                StockLog.Write(ex);
-                return false;
-            }
-            return true;
-        }
-
-        const string DOWNLOAD_INTRADAY_GROUP_BODY =
-            "splace=$GROUP&" +
-            "sformat=w&" +
-            "__RequestVerificationToken=$TOKEN";
-        public bool DownloadIntradayGroup(string destFolder, string fileName, string group)
-        {
-            StockLog.Write(group);
-            if (!this.Initialize())
-                return false;
-
-            var now = DateTime.Now.TimeOfDay;
-            if (now < TimeSpan.FromHours(9) || now > TimeSpan.FromHours(17.5))
-                return false;
-
-            try
-            {
-                var postData = DOWNLOAD_INTRADAY_GROUP_BODY;
-
-                postData = postData.Replace("$GROUP", group);
-                postData = postData.Replace("$TOKEN", verifToken);
-
-                var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                var resp = httpClient.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
-                if (!resp.IsSuccessStatusCode || resp.Content.Headers.ContentType.MediaType.Contains("html"))
-                    return false;
-                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
-                respStream.CopyTo(fileStream);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        const string DOWNLOAD_LABEL_BODY =
-            "cbox=$GROUP&" +
-            "__RequestVerificationToken=$TOKEN&" +
-            "cbPlace=false";
-        public bool DownloadLabels(string destFolder, string fileName, string group)
-        {
-            if (!this.Initialize())
-                return false;
-
-            try
-            {
-                var postData = DOWNLOAD_LABEL_BODY;
-
-                postData = postData.Replace("$GROUP", group);
-                postData = postData.Replace("$TOKEN", verifToken);
-
-                var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                var resp = httpClient.PostAsync("download/libelles", content).GetAwaiter().GetResult();
-                if (!resp.IsSuccessStatusCode)
-                    return false;
-                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
-                respStream.CopyTo(fileStream);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        const string DOWNLOAD_INTRADAY_BODY =
-            "sformat=ex&" +
-            "splace=$GROUP&" +
-            "__RequestVerificationToken=$TOKEN";
-
-        public bool DownloadGroupIntraday(string destFolder, string fileName, string group)
-        {
-            if (!this.Initialize()) return false;
-
-            try
-            {
-                var postData = DOWNLOAD_INTRADAY_BODY;
-
-                postData = postData.Replace("$GROUP", group);
-                postData = postData.Replace("$TOKEN", verifToken);
-
-                var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                var resp = httpClient.PostAsync("download/telechargement_intraday", content).GetAwaiter().GetResult();
-                if (!resp.IsSuccessStatusCode)
-                    return false;
-                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
-                respStream.CopyTo(fileStream);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
-        }
-        #endregion
 
         public string UserConfigFileName => CONFIG_FILE;
 
@@ -356,7 +75,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
-            download = false;
             stockDictionary = dictionary;
             CreateDirectories();
 
@@ -365,14 +83,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 excludeList = File.ReadAllLines(excludeFileName).ToList();
             }
 
-            #region init group config file
             if (!File.Exists(configPath))
             {
-                MessageBox.Show("The default ABC configuration file is missing.", "ABC Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The default ABC configuration file is missing in:" + Environment.NewLine + configPath, "ABC Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             abcGroupConfig = JsonSerializer.Deserialize<List<ABCGroup>>(File.ReadAllText(configPath), new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() } });
-            #endregion
 
             // Intialize Groups
             foreach (var config in abcGroupConfig)
@@ -656,6 +372,38 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 MessageBox.Show($"Reference serie:{config.RefSerie} not found for group {config.Group}", "Download configuration error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+        }
+
+        private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, ABCGroup group, bool loadData = true)
+        {
+            bool success = true;
+
+            NotifyProgress($"Downloading data for {group.Group} from {startDate.ToShortDateString()}");
+            try
+            {
+                while (endDate - startDate >= new TimeSpan(31, 0, 0, 0))
+                {
+                    var endOfMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
+                    DownloadMonthlyFileFromABC(destFolder, startDate, endOfMonth, group, false);
+                    startDate = endOfMonth.AddDays(1);
+                }
+
+                string fileName = destFolder + @"\" + group.AbcCode + "_" + endDate.Year + "_" + endDate.Month.ToString("0#") + ".csv";
+                if (AbcClient.DownloadData(fileName, startDate, endDate, group.AbcCode))
+                {
+                    if (loadData)
+                    {
+                        this.LoadGroupData(group.AbcCode, group.Group);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+                MessageBox.Show(ex.Message, "Connection failed");
+                success = false;
+            }
+            return success;
         }
 
         private void InitFromSector(SectorCode sector)
@@ -1158,7 +906,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 for (int i = DateTime.Today.Year - 1; i >= ARCHIVE_START_YEAR; i--)
                 {
                     fileName = filePattern.Replace("*", i.ToString());
-                    if (!this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, new DateTime(i, 1, 1), new DateTime(i, 12, 31), isin))
+                    if (!AbcClient.DownloadIsin(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName), new DateTime(i, 1, 1), new DateTime(i, 12, 31), isin))
                     {
                         break;
                     }
@@ -1166,7 +914,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
                 int year = DateTime.Today.Year;
                 fileName = filePattern.Replace("*", year.ToString());
-                if (this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, new DateTime(year, 1, 1), DateTime.Today, isin))
+                if (AbcClient.DownloadIsin(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName), new DateTime(year, 1, 1), DateTime.Today, isin))
                 {
                     nbFile++;
                 }
@@ -1222,7 +970,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 return true;
 
             var fileName = stockSerie.ISIN + "_" + stockSerie.Symbol + "_" + stockSerie.StockGroup.ToString() + ".csv";
-            if (this.DownloadISIN(DataFolder + ABC_TMP_FOLDER, fileName, lastLoadedDate.AddDays(1), DateTime.Today, stockSerie.ISIN))
+            if (AbcClient.DownloadIsin(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName), lastLoadedDate.AddDays(1), DateTime.Today, stockSerie.ISIN))
             {
                 stockSerie.IsInitialised = false;
 
@@ -1266,104 +1014,106 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         }
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
-            StockLog.Write("DownloadIntradayData Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
+            return false;
+            //StockLog.Write("DownloadIntradayData Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
 
-            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-            {
-                NotifyProgress("Downloading intraday for" + stockSerie.StockGroup.ToString());
+            //if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            //{
+            //    NotifyProgress("Downloading intraday for" + stockSerie.StockGroup.ToString());
 
-                if (!stockSerie.Initialise() || stockSerie.Count == 0)
-                {
-                    return false;
-                }
+            //    if (!stockSerie.Initialise() || stockSerie.Count == 0)
+            //    {
+            //        return false;
+            //    }
 
-                if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || stockSerie.Keys.Last().Date == DateTime.Today)
-                {
-                    return false;
-                }
+            //    if (DateTime.Today.DayOfWeek == DayOfWeek.Saturday || DateTime.Today.DayOfWeek == DayOfWeek.Sunday || stockSerie.Keys.Last().Date == DateTime.Today)
+            //    {
+            //        return false;
+            //    }
 
-                string abcGroup = GetABCGroup(stockSerie.StockGroup);
-                if (abcGroup != null)
-                {
-                    var destFolder = DataFolder + ABC_INTRADAY_FOLDER;
-                    string fileName = abcGroup + ".csv";
-                    if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
-                    {
-                        // Deinitialise all the stocks belonging to group
-                        foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
-                        {
-                            serie.IsInitialised = false;
-                            serie.ClearBarDurationCache();
-                        }
-                    }
-                }
-            }
-            return true;
+            //    string abcGroup = GetABCGroup(stockSerie.StockGroup);
+            //    if (abcGroup != null)
+            //    {
+            //        var destFolder = DataFolder + ABC_INTRADAY_FOLDER;
+            //        string fileName = abcGroup + ".csv";
+            //        if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
+            //        {
+            //            // Deinitialise all the stocks belonging to group
+            //            foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(stockSerie.StockGroup)))
+            //            {
+            //                serie.IsInitialised = false;
+            //                serie.ClearBarDurationCache();
+            //            }
+            //        }
+            //    }
+            //}
+            //return true;
         }
 
         private String downloadingGroups = String.Empty;
         TimeSpan nextDownload = new TimeSpan(9, 1, 0);
         public void DownloadAllGroupsIntraday()
         {
-            StockLog.Write(string.Empty);
-            try
-            {
-                if (IntradayDownloadSuspended)
-                    return;
-                var now = DateTime.Now.TimeOfDay;
-                if (DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Today.DayOfWeek == DayOfWeek.Saturday || now.Hours > 18 || now.Hours < 9)
-                    return;
-                while (downloadingGroups != String.Empty)
-                {
-                    Thread.Sleep(500);
-                }
-                lock (downloadingGroups)
-                {
-                    // Download ABC intraday data
-                    if (now < nextDownload)
-                    {
-                        StockLog.Write("Up To Date");
-                        return;
-                    }
-                    int minutes = ((int)now.TotalMinutes / 5) * 5;
-                    nextDownload = TimeSpan.FromMinutes(minutes + 5);
+            return;
+            //StockLog.Write(string.Empty);
+            //try
+            //{
+            //    if (IntradayDownloadSuspended)
+            //        return;
+            //    var now = DateTime.Now.TimeOfDay;
+            //    if (DateTime.Today.DayOfWeek == DayOfWeek.Sunday || DateTime.Today.DayOfWeek == DayOfWeek.Saturday || now.Hours > 18 || now.Hours < 9)
+            //        return;
+            //    while (downloadingGroups != String.Empty)
+            //    {
+            //        Thread.Sleep(500);
+            //    }
+            //    lock (downloadingGroups)
+            //    {
+            //        // Download ABC intraday data
+            //        if (now < nextDownload)
+            //        {
+            //            StockLog.Write("Up To Date");
+            //            return;
+            //        }
+            //        int minutes = ((int)now.TotalMinutes / 5) * 5;
+            //        nextDownload = TimeSpan.FromMinutes(minutes + 5);
 
-                    downloadingGroups = "True";
-                    var groups = new Groups[] {
-                        StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL,
-                        StockSerie.Groups.ITALIA, StockSerie.Groups.GERMANY, StockSerie.Groups.SPAIN, StockSerie.Groups.USA, StockSerie.Groups.CANADA,
-                        StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
+            //        downloadingGroups = "True";
+            //        var groups = new Groups[] {
+            //            StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL,
+            //            StockSerie.Groups.ITALIA, StockSerie.Groups.GERMANY, StockSerie.Groups.SPAIN, StockSerie.Groups.USA, StockSerie.Groups.CANADA,
+            //            StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
 
-                    foreach (var group in groups)
-                    {
-                        string abcGroup = GetABCGroup(group);
-                        if (abcGroup != null)
-                        {
-                            var destFolder = DataFolder + ABC_INTRADAY_FOLDER;
-                            string fileName = abcGroup + ".csv";
-                            if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
-                            {
-                                // Deinitialise all the stocks belonging to group
-                                foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(group)))
-                                {
-                                    using (new StockSerieLocker(serie))
-                                    {
-                                        serie.IsInitialised = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                StockLog.Write(ex.Message);
-            }
-            finally
-            {
-                downloadingGroups = String.Empty;
-            }
+            //        foreach (var group in groups)
+            //        {
+            //            string abcGroup = GetABCGroup(group);
+            //            if (abcGroup != null)
+            //            {
+            //                var destFolder = DataFolder + ABC_INTRADAY_FOLDER;
+            //                string fileName = abcGroup + ".csv";
+            //                if (this.DownloadIntradayGroup(destFolder, fileName, abcGroup))
+            //                {
+            //                    // Deinitialise all the stocks belonging to group
+            //                    foreach (StockSerie serie in stockDictionary.Values.Where(s => s.BelongsToGroup(group)))
+            //                    {
+            //                        using (new StockSerieLocker(serie))
+            //                        {
+            //                            serie.IsInitialised = false;
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    StockLog.Write(ex.Message);
+            //}
+            //finally
+            //{
+            //    downloadingGroups = String.Empty;
+            //}
         }
 
         /// <summary>
@@ -1428,9 +1178,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             return stockValue;
         }
 
-
-
-
         public static List<SectorCode> SectorCodes = new List<SectorCode>
         {
                 new SectorCode(45,"Biens de consommation"),
@@ -1447,68 +1194,38 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         };
         private bool DownloadSectorFromABC(string destFolder, int sector)
         {
-            bool success = true;
+            return false;
+            //bool success = true;
 
-            string fileName = destFolder + @"\" + sector + ".txt";
-            if (File.Exists(fileName))
-            {
-                if (File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
-                    return true;
-            }
-            if (!this.Initialize())
-                return false;
+            //string fileName = destFolder + @"\" + sector + ".txt";
+            //if (File.Exists(fileName))
+            //{
+            //    if (File.GetLastWriteTime(fileName) > DateTime.Now.AddDays(-7)) // File has been updated during the last 7 days
+            //        return true;
+            //}
+            //if (!this.Initialize())
+            //    return false;
 
-            try
-            {
-                // Send POST request
-                string url = $"/api/General/DownloadSector?sectorCode={sector}";
-                var resp = httpClient.GetAsync(url).Result;
-                if (!resp.IsSuccessStatusCode)
-                    return false;
-                using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-                using var fileStream = File.Create(Path.Combine(destFolder, fileName));
-                respStream.CopyTo(fileStream);
-            }
-            catch (Exception ex)
-            {
-                StockLog.Write(ex);
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed loading sectors");
-                success = false;
-            }
-            return success;
+            //try
+            //{
+            //    // Send POST request
+            //    string url = $"/api/General/DownloadSector?sectorCode={sector}";
+            //    var resp = httpClient.GetAsync(url).Result;
+            //    if (!resp.IsSuccessStatusCode)
+            //        return false;
+            //    using var respStream = resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+            //    using var fileStream = File.Create(Path.Combine(destFolder, fileName));
+            //    respStream.CopyTo(fileStream);
+            //}
+            //catch (Exception ex)
+            //{
+            //    StockLog.Write(ex);
+            //    System.Windows.Forms.MessageBox.Show(ex.Message, "Connection failed loading sectors");
+            //    success = false;
+            //}
+            //return success;
         }
 
-        private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, ABCGroup group, bool loadData = true)
-        {
-            bool success = true;
-
-            NotifyProgress($"Downloading data for {group.Group} from {startDate.ToShortDateString()}");
-            try
-            {
-                while (endDate - startDate >= new TimeSpan(31, 0, 0, 0))
-                {
-                    var endOfMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
-                    DownloadMonthlyFileFromABC(destFolder, startDate, endOfMonth, group, false);
-                    startDate = endOfMonth.AddDays(1);
-                }
-
-                string fileName = destFolder + @"\" + group.AbcCode + "_" + endDate.Year + "_" + endDate.Month.ToString("0#") + ".csv";
-                if (this.DownloadGroup(fileName, startDate, endDate, group.AbcCode))
-                {
-                    if (loadData)
-                    {
-                        this.LoadGroupData(group.AbcCode, group.Group);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                StockLog.Write(ex);
-                MessageBox.Show(ex.Message, "Connection failed");
-                success = false;
-            }
-            return success;
-        }
         private bool SaveResponseToFile(string fileName, HttpWebRequest req)
         {
             bool success = true;

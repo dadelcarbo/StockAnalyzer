@@ -103,6 +103,10 @@ public class ViewModel : INotifyPropertyChanged
     {
         try
         {
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
             foreach (var market in markets)
             {
                 this.Data = $"Downloading market: {market}";
