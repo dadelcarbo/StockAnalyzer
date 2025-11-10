@@ -84,9 +84,11 @@ namespace StockAnalyzer.StockClasses
         public string ABCName { get; set; }
 
         public StockDataProvider DataProvider { get; private set; }
-
+        public char Market => AbcId?.Length == 13 ? AbcId[0] : 'p';
         public string IsinPrefix => ISIN?.Substring(0, 2);
+        public string AbcId { get; set; }
         public string ISIN { get; set; }
+
         /// <summary>
         /// Investing.com ticker used for download
         /// </summary>

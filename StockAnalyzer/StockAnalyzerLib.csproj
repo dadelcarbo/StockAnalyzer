@@ -265,6 +265,7 @@
     <Compile Include="StockClasses\StockAlertValue.cs" />
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcClient.cs" />
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcDownloadHistory.cs" />
+    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\ABCGroup.cs" />
     <Compile Include="StockClasses\StockDataProviders\Bnp\BnpIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Bnp\BnpModel.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoIntradayDataProvider.cs" />

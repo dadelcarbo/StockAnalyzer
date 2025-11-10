@@ -9,7 +9,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
     public static class AbcClient
@@ -18,14 +17,21 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         static Dictionary<string, string> secrets { get; set; }
         static Dictionary<string, string> cookies { get; set; }
 
+        static bool asyncResult = false;
+
         public static bool DownloadLabel(string fileName, string market)
         {
-            var data = DownloadLabelAsync(market).GetAwaiter().GetResult();
-            if (string.IsNullOrEmpty(data))
-                return false;
+            asyncResult = false;
+            Task.Run(async () =>
+            {
+                var data = await DownloadLabelAsync(market);
+                if (string.IsNullOrEmpty(data))
+                    return;
+                File.WriteAllText(fileName, data);
+                asyncResult = true;
+            }).Wait();
 
-            File.WriteAllText(fileName, data);
-            return true;
+            return asyncResult;
         }
         public static async Task<string> DownloadLabelAsync(string market)
         {
@@ -36,41 +42,39 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             }
             try
             {
-                using (var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/libelles"))
-                {
-                    request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-                    request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-                    request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
-                    request.Headers.TryAddWithoutValidation("origin", "https://www.abcbourse.com");
-                    request.Headers.TryAddWithoutValidation("priority", "u=0, i");
-                    request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com/download/libelles");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-                    request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-                    request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
+                using var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/libelles");
+                request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+                request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
+                request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
+                request.Headers.TryAddWithoutValidation("origin", "https://www.abcbourse.com");
+                request.Headers.TryAddWithoutValidation("priority", "u=0, i");
+                request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com/download/libelles");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
+                request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
 
-                    var cookieString = cookies.Select(c => $"{c.Key}={c.Value}").Aggregate((i, j) => $"{i};{j}");
-                    request.Headers.TryAddWithoutValidation("Cookie", cookieString);
+                var cookieString = cookies.Select(c => $"{c.Key}={c.Value}").Aggregate((i, j) => $"{i};{j}");
+                request.Headers.TryAddWithoutValidation("Cookie", cookieString);
 
-                    var requestVerificationToken = secrets.ContainsKey("__RequestVerificationToken") ? secrets["__RequestVerificationToken"] : "";
+                var requestVerificationToken = secrets.ContainsKey("__RequestVerificationToken") ? secrets["__RequestVerificationToken"] : "";
 
-                    request.Content = new StringContent($"cbox={market}&cbPlace=true&__RequestVerificationToken={requestVerificationToken}&cbPlace=false");
-                    request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
+                request.Content = new StringContent($"cbox={market}&cbPlace=true&__RequestVerificationToken={requestVerificationToken}&cbPlace=false");
+                request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
 
-                    var response = await httpClient.SendAsync(request);
+                var response = await httpClient.SendAsync(request);
 
 
-                    // Ensure the request was successful
-                    response.EnsureSuccessStatusCode();
+                // Ensure the request was successful
+                response.EnsureSuccessStatusCode();
 
-                    // Return the response content as a string
-                    return await response.Content.ReadAsStringAsync();
-                }
+                // Return the response content as a string
+                return await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {
@@ -81,12 +85,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public static bool DownloadData(string fileName, DateTime dateFrom, DateTime dateTo, string market)
         {
-            var data = DownloadDataAsync(dateFrom, dateTo, market).GetAwaiter().GetResult();
-            if (string.IsNullOrEmpty(data))
-                return false;
+            asyncResult = false;
+            Task.Run(async () =>
+            {
+                var data = await DownloadDataAsync(dateFrom, dateTo, market);
+                if (string.IsNullOrEmpty(data))
+                    return;
+                File.WriteAllText(fileName, data);
+                asyncResult = true;
+            }).Wait();
 
-            File.WriteAllText(fileName, data);
-            return true;
+            return asyncResult;
         }
         public static async Task<string> DownloadDataAsync(DateTime dateFrom, DateTime dateTo, string market)
         {
@@ -97,41 +106,39 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             }
             try
             {
-                using (var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/historiques"))
-                {
-                    request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-                    request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
-                    request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
-                    request.Headers.TryAddWithoutValidation("origin", "https://www.abcbourse.com");
-                    request.Headers.TryAddWithoutValidation("priority", "u=0, i");
-                    request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com/download/historiques");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-                    request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-                    request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
+                using var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/historiques");
+                request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
+                request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
+                request.Headers.TryAddWithoutValidation("origin", "https://www.abcbourse.com");
+                request.Headers.TryAddWithoutValidation("priority", "u=0, i");
+                request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com/download/historiques");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
+                request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
 
-                    var cookieString = cookies.Select(c => $"{c.Key}={c.Value}").Aggregate((i, j) => $"{i};{j}");
-                    request.Headers.TryAddWithoutValidation("Cookie", cookieString);
+                var cookieString = cookies.Select(c => $"{c.Key}={c.Value}").Aggregate((i, j) => $"{i};{j}");
+                request.Headers.TryAddWithoutValidation("Cookie", cookieString);
 
-                    var requestVerificationToken = secrets.ContainsKey("__RequestVerificationToken") ? secrets["__RequestVerificationToken"] : "";
+                var requestVerificationToken = secrets.ContainsKey("__RequestVerificationToken") ? secrets["__RequestVerificationToken"] : "";
 
-                    var data = $"dateFrom={dateFrom.ToString("yyyy-MM-dd")}&__Invariant=dateFrom&dateTo={dateTo.ToString("yyyy-MM-dd")}&__Invariant=dateTo&txtOneSico=&cbox={market}&sFormat=ab&typeData=isin&cbYes=true&__RequestVerificationToken={requestVerificationToken}&cbYes=false";
-                    request.Content = new StringContent(data);
-                    request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
+                var data = $"dateFrom={dateFrom.ToString("yyyy-MM-dd")}&__Invariant=dateFrom&dateTo={dateTo.ToString("yyyy-MM-dd")}&__Invariant=dateTo&txtOneSico=&cbox={market}&sFormat=ab&typeData=isin&cbYes=true&__RequestVerificationToken={requestVerificationToken}&cbYes=false";
+                request.Content = new StringContent(data);
+                request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
 
-                    var response = await httpClient.SendAsync(request);
+                var response = await httpClient.SendAsync(request);
 
-                    // Ensure the request was successful
-                    response.EnsureSuccessStatusCode();
+                // Ensure the request was successful
+                response.EnsureSuccessStatusCode();
 
-                    // Return the response content as a string
-                    return await response.Content.ReadAsStringAsync();
-                }
+                // Return the response content as a string
+                return await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {
@@ -142,12 +149,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public static bool DownloadIsin(string fileName, DateTime dateFrom, DateTime dateTo, string isin)
         {
-            var data = DownloadIsinAsync(dateFrom, dateTo, isin).GetAwaiter().GetResult();
-            if (string.IsNullOrEmpty(data))
-                return false;
+            asyncResult = false;
+            Task.Run(async () =>
+            {
+                var data = await DownloadIsinAsync(dateFrom, dateTo, isin);
+                if (string.IsNullOrEmpty(data) || data.StartsWith(" <!DOCTYPE"))
+                    return;
+                File.WriteAllText(fileName, data);
+                asyncResult = true;
+            }).Wait();
 
-            File.WriteAllText(fileName, data);
-            return true;
+            return asyncResult;
         }
         public static async Task<string> DownloadIsinAsync(DateTime dateFrom, DateTime dateTo, string isin)
         {
@@ -156,42 +168,40 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             try
             {
-                using (var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/historiques"))
-                {
-                    request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-                    request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
-                    request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
-                    request.Headers.TryAddWithoutValidation("origin", "https://www.abcbourse.com");
-                    request.Headers.TryAddWithoutValidation("priority", "u=0, i");
-                    request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com/download/historiques");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-                    request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-                    request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
+                using var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/historiques");
+                request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
+                request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
+                request.Headers.TryAddWithoutValidation("origin", "https://www.abcbourse.com");
+                request.Headers.TryAddWithoutValidation("priority", "u=0, i");
+                request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com/download/historiques");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
+                request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
 
-                    var cookieString = cookies.Select(c => $"{c.Key}={c.Value}").Aggregate((i, j) => $"{i};{j}");
-                    request.Headers.TryAddWithoutValidation("Cookie", cookieString);
+                var cookieString = cookies.Select(c => $"{c.Key}={c.Value}").Aggregate((i, j) => $"{i};{j}");
+                request.Headers.TryAddWithoutValidation("Cookie", cookieString);
 
-                    var requestVerificationToken = secrets.ContainsKey("__RequestVerificationToken") ? secrets["__RequestVerificationToken"] : "";
+                var requestVerificationToken = secrets.ContainsKey("__RequestVerificationToken") ? secrets["__RequestVerificationToken"] : "";
 
-                    var data = $"dateFrom={dateFrom.ToString("yyyy-MM-dd")}&__Invariant=dateFrom&dateTo={dateTo.ToString("yyyy-MM-dd")}&__Invariant=dateTo&cbox=oneSico&txtOneSico={isin}&sFormat=x&typeData=isin&__RequestVerificationToken={requestVerificationToken}&cbYes=false";
+                var data = $"dateFrom={dateFrom.ToString("yyyy-MM-dd")}&__Invariant=dateFrom&dateTo={dateTo.ToString("yyyy-MM-dd")}&__Invariant=dateTo&cbox=oneSico&txtOneSico={isin}&sFormat=x&typeData=isin&__RequestVerificationToken={requestVerificationToken}&cbYes=false";
 
-                    request.Content = new StringContent(data);
-                    request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
+                request.Content = new StringContent(data);
+                request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
 
-                    var response = await httpClient.SendAsync(request);
+                var response = await httpClient.SendAsync(request);
 
-                    // Ensure the request was successful
-                    response.EnsureSuccessStatusCode();
+                // Ensure the request was successful
+                response.EnsureSuccessStatusCode();
 
-                    // Return the response content as a string
-                    return await response.Content.ReadAsStringAsync();
-                }
+                // Return the response content as a string
+                return await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {
@@ -200,11 +210,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             }
         }
 
+        static bool forbidden = false;
         private static async Task<bool> InitClientAsync()
         {
             try
             {
-                if (httpClient != null)
+                if (forbidden || httpClient != null)
                     return true;
 
                 var handler = new HttpClientHandler();
@@ -219,42 +230,42 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 httpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue { NoCache = true };
                 httpClient.BaseAddress = new Uri("https://www.abcbourse.com");
 
-                using (var request = new HttpRequestMessage(new HttpMethod("GET"), "download/historiques"))
+                using var request = new HttpRequestMessage(new HttpMethod("GET"), "download/historiques");
+                request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
+                request.Headers.TryAddWithoutValidation("priority", "u=0, i");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
+                request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
+                request.Headers.TryAddWithoutValidation("Cookie", "__eoi=ID=ead3dff89a2100c4:T=1762438747:RT=1762438747:S=AA-AfjbTKMaIkfAf3GQjhr2sogKO");
+
+                var resp = await httpClient.SendAsync(request);
+
+                if (!resp.IsSuccessStatusCode)
                 {
-                    request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-                    request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
-                    request.Headers.TryAddWithoutValidation("priority", "u=0, i");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
-                    request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-site", "none");
-                    request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
-                    request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
-                    request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
-                    request.Headers.TryAddWithoutValidation("Cookie", "__eoi=ID=ead3dff89a2100c4:T=1762438747:RT=1762438747:S=AA-AfjbTKMaIkfAf3GQjhr2sogKO");
+                    forbidden = resp.StatusCode == HttpStatusCode.Forbidden;
 
-                    var resp = await httpClient.SendAsync(request);
+                    Debug.WriteLine("Failed initializing ABC Provider HttpClient: " + resp.StatusCode);
+                    Debug.WriteLine(resp.Content.ReadAsStringAsync().Result);
+                    httpClient.Dispose();
+                    httpClient = null;
+                    return false;
+                }
 
-                    if (!resp.IsSuccessStatusCode)
-                    {
-                        Debug.WriteLine("Failed initializing ABC Provider HttpClient: " + resp.StatusCode);
-                        Debug.WriteLine(resp.Content.ReadAsStringAsync().Result);
-                        httpClient.Dispose();
-                        httpClient = null;
-                        return false;
-                    }
+                var verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
+                secrets = new Dictionary<string, string>();
+                secrets["__RequestVerificationToken"] = verifToken;
 
-                    var verifToken = FindToken("RequestVerificationToken", resp.Content.ReadAsStringAsync().Result);
-                    secrets = new Dictionary<string, string>();
-                    secrets["__RequestVerificationToken"] = verifToken;
-
-                    cookies = new Dictionary<string, string>();
-                    foreach (var cookie in cookieContainer.GetCookies(httpClient.BaseAddress).Cast<Cookie>())
-                    {
-                        cookies[cookie.Name] = cookie.Value;
-                    }
+                cookies = new Dictionary<string, string>();
+                foreach (var cookie in cookieContainer.GetCookies(httpClient.BaseAddress).Cast<Cookie>())
+                {
+                    cookies[cookie.Name] = cookie.Value;
                 }
             }
             catch (Exception)
