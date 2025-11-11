@@ -19,6 +19,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         static bool asyncResult = false;
 
+        public static string CacheFolder { get; set; }
+
         public static bool DownloadLabel(string fileName, string market)
         {
             asyncResult = false;
@@ -83,12 +85,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             }
         }
 
-        public static bool DownloadData(string fileName, DateTime dateFrom, DateTime dateTo, string market)
+        public static bool DownloadData(string fileName, DateTime dateFrom, DateTime dateTo, string market, bool useCache)
         {
             asyncResult = false;
             Task.Run(async () =>
             {
-                var data = await DownloadDataAsync(dateFrom, dateTo, market);
+                var data = await DownloadDataAsync(dateFrom, dateTo, market, useCache);
                 if (string.IsNullOrEmpty(data))
                     return;
                 File.WriteAllText(fileName, data);
@@ -97,8 +99,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             return asyncResult;
         }
-        public static async Task<string> DownloadDataAsync(DateTime dateFrom, DateTime dateTo, string market)
+        public static async Task<string> DownloadDataAsync(DateTime dateFrom, DateTime dateTo, string market, bool useCache)
         {
+            if (useCache && !string.IsNullOrEmpty(CacheFolder))
+            {
+                string fileName = Path.Combine(CacheFolder, market + "_" + dateFrom.Year + "_" + dateFrom.Month.ToString("0#") + ".csv");
+                if (File.Exists(fileName))
+                    return File.ReadAllText(fileName);
+            }
             if (httpClient == null)
             {
                 if (!await InitClientAsync())
@@ -138,7 +146,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 response.EnsureSuccessStatusCode();
 
                 // Return the response content as a string
-                return await response.Content.ReadAsStringAsync();
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (useCache && !string.IsNullOrEmpty(CacheFolder))
+                {
+                    string fileName = Path.Combine(CacheFolder, market + "_" + dateFrom.Year + "_" + dateFrom.Month.ToString("0#") + ".csv");
+                    if (File.Exists(fileName))
+                        File.Delete(fileName);
+                    File.WriteAllText(fileName, content);
+                }
+
+                return content;
             }
             catch (Exception ex)
             {

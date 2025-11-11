@@ -12,6 +12,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public string RefSerie { get; set; }
 
+        public string Market { get; set; }
+
         public bool LabelOnly { get; set; }
 
         public string[] Prefixes { get; set; }

@@ -8,7 +8,6 @@ using System.Linq;
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
     [DebuggerDisplay("{Name}-{LastDate.ToString(\"dd/MM/yy\")}")]
-
     public class AbcDownloadHistory
     {
         public string Id { get; set; }

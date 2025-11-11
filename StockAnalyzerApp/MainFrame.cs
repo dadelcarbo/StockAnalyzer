@@ -434,7 +434,6 @@ namespace StockAnalyzerApp
                 }
             }
 
-
             string folderName = Folders.DividendFolder;
             if (!Directory.Exists(folderName))
             {
