@@ -341,7 +341,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             var history = groupDownloadHistory.FirstOrDefault(h => h.Name == groupConfig.AbcGroup);
             if (history == null)
             {
-                groupDownloadHistory.Add(history = new AbcGroupDownloadHistory(groupConfig.AbcGroup, DateTime.MinValue));
+                groupDownloadHistory.Add(history = new AbcGroupDownloadHistory(groupConfig.AbcGroup, new DateTime(DateTime.Today.Year, 1, 1), DateTime.Today));
             }
 
             var startDate = history.LastDownload.Year < ARCHIVE_START_YEAR ? new DateTime(ARCHIVE_START_YEAR, 1, 1) : history.LastDownload.Date;

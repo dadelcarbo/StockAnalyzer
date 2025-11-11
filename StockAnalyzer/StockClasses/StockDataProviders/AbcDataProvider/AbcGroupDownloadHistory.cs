@@ -12,11 +12,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
     {
         public string Name { get; set; }
         public DateTime LastDownload { get; set; }
+        public DateTime NextDownload { get; set; }
 
-        public AbcGroupDownloadHistory(string name, DateTime lastDownload)
+        public AbcGroupDownloadHistory(string name, DateTime lastDownload, DateTime nextDownload)
         {
             Name = name;
             LastDownload = lastDownload;
+            NextDownload = nextDownload;
         }
 
         static public List<AbcGroupDownloadHistory> Load(string fileName)
@@ -27,7 +29,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 return lines.Select(l => l.Split(','))
                     .Select(f => new AbcGroupDownloadHistory(
                         f[0],
-                        DateTime.Parse(f[1])
+                        DateTime.Parse(f[1]),
+                        DateTime.Today.AddDays(1)
                         )).ToList();
             }
             else
@@ -38,7 +41,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         static public void Save(string fileName, List<AbcGroupDownloadHistory> history)
         {
-            File.WriteAllLines(fileName, history.Select(h => $"{h.Name},{h.LastDownload}"));
+            File.WriteAllLines(fileName, history.Select(h => $"{h.Name},{h.LastDownload},{h.NextDownload}"));
         }
     }
 }
