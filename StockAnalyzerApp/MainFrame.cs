@@ -5,7 +5,6 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
@@ -64,7 +63,6 @@ using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions.LookupAndReference;
 using Match = System.Text.RegularExpressions.Match;
 
 namespace StockAnalyzerApp
@@ -458,7 +456,9 @@ namespace StockAnalyzerApp
 
             StockSplashScreen.ProgressText = "Synchronizing One Drive...";
             StockSplashScreen.ProgressVal = 20;
+#if !DEBUG
             OneDriveSync(true);
+#endif
 
             StockSplashScreen.ProgressText = "Initialize stock dictionary...";
             StockSplashScreen.ProgressVal = 30;

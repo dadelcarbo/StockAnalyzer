@@ -30,7 +30,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     .Select(f => new AbcGroupDownloadHistory(
                         f[0],
                         DateTime.Parse(f[1]),
-                        DateTime.Today.AddDays(1)
+                        DateTime.Today
                         )).ToList();
             }
             else

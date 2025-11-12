@@ -10,7 +10,7 @@
              d:DesignHeight="450" d:DesignWidth="1000" Background="AntiqueWhite"
              d:DataContext="{d:DesignInstance Type=local:InstrumentViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>  
         <local:InstrumentViewModel x:Key="ViewModel"/>
     </UserControl.Resources>
     <Grid DataContext="{Binding Source={StaticResource ViewModel}}">
@@ -50,14 +50,14 @@
         </StackPanel>
         <telerik:RadGridView FontSize="9" Name="gridView" Grid.Row="2" Margin="1" ShowGroupPanel="True" RowIndicatorVisibility="Collapsed"
                              ItemsSource="{Binding Lines}" IsReadOnly="True" AutoGenerateColumns="False"
-                             SelectionChanged="RadGridView_SelectionChanged">
+                             SelectionChanged="RadGridView_SelectionChanged" FrozenColumnCount="5">
             <telerik:RadGridView.Columns>
                 <telerik:GridViewDataColumn Header="Excluded" DataMemberBinding="{Binding StockAnalysis.Excluded}"/>
                 <telerik:GridViewDataColumn Header="Intraday" DataMemberBinding="{Binding Intraday}"/>
                 <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding StockGroup}"/>
 
-                <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}"/>
                 <telerik:GridViewDataColumn Header="ISIN" DataMemberBinding="{Binding ISIN}"/>
+                <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}"/>
                 <telerik:GridViewDataColumn Header="Country" DataMemberBinding="{Binding IsinPrefix}"/>
                 <telerik:GridViewDataColumn Header="Symbol" DataMemberBinding="{Binding Symbol}"/>
                 <telerik:GridViewDataColumn Header="ABCName" DataMemberBinding="{Binding ABCName}"/>
@@ -65,9 +65,6 @@
                 <telerik:GridViewDataColumn Header="Ticker" DataMemberBinding="{Binding Ticker}"/>
                 <telerik:GridViewDataColumn Header="SaxoId" DataMemberBinding="{Binding SaxoId}"/>
                 <telerik:GridViewDataColumn Header="Uic" DataMemberBinding="{Binding Uic}"/>
-
-                <telerik:GridViewCheckBoxColumn Header="SRD" DataMemberBinding="{Binding SRD}"/>
-                <telerik:GridViewCheckBoxColumn Header="SRD_LO" DataMemberBinding="{Binding SRD_LO}"/>
 
                 <telerik:GridViewDataColumn Header="SectorId" DataMemberBinding="{Binding SectorId}"/>
                 <telerik:GridViewDataColumn Header="Underlying" DataMemberBinding="{Binding Underlying}"/>

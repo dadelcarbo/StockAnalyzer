@@ -19,6 +19,13 @@ using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
+    public enum Market
+    {
+        EURONEXT,
+        XETRA,
+        NYSE
+    }
+
     public class ABCDataProvider : StockDataProviderBase, IConfigDialog
     {
         private static readonly string ABC_INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\ABC";
@@ -53,6 +60,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         static List<ABCGroup> abcGroupConfig = null;
         static List<string> excludeList = new List<string>();
+
+        static readonly Dictionary<Market, TimeSpan> marketDownloadTimes = new Dictionary<Market, TimeSpan>
+        {
+            { Market.EURONEXT, new TimeSpan(18, 15, 0) },
+            { Market.XETRA, new TimeSpan(18, 30, 0) },
+            { Market.NYSE, new TimeSpan(6, 0, 0) }
+        };
 
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
@@ -106,10 +120,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
 
                 AbcGroupDownloadHistory.Save(groupHistoryFileName, groupDownloadHistory);
-
-                string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                downloadPath = Path.Combine(downloadPath, "Downloads");
-                var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderBy(f => File.GetCreationTime(f));
 
                 LoadDataFromFolder(DataFolder + ABC_TMP_FOLDER);
 
@@ -166,7 +176,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             var splitLines = lines.Select(l => l.Split(';'));
             foreach (var serieData in splitLines.GroupBy(l => l[0]))
             {
-                var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == serieData.Key);
+                var abcId = serieData.Key.Length == 12 ? serieData.Key + 'p' : serieData.Key;
+                var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.AbcId == abcId);
                 if (stockSerie == null)
                     continue;
 
@@ -341,15 +352,32 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             var history = groupDownloadHistory.FirstOrDefault(h => h.Name == groupConfig.AbcGroup);
             if (history == null)
             {
-                groupDownloadHistory.Add(history = new AbcGroupDownloadHistory(groupConfig.AbcGroup, new DateTime(DateTime.Today.Year, 1, 1), DateTime.Today));
+                groupDownloadHistory.Add(history = new AbcGroupDownloadHistory(groupConfig.AbcGroup, new DateTime(ARCHIVE_START_YEAR, 1, 1), DateTime.MinValue));
             }
 
-            var startDate = history.LastDownload.Year < ARCHIVE_START_YEAR ? new DateTime(ARCHIVE_START_YEAR, 1, 1) : history.LastDownload.Date;
-
-            // @@@ TODO is download needed logic.
-            if (DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, groupConfig, false))
+            if (DateTime.Now > history.NextDownload)
             {
-                history.LastDownload = DateTime.Now;
+                var startDate = history.NextDownload == DateTime.MinValue ? new DateTime(ARCHIVE_START_YEAR, 1, 1) : history.LastDownload.Date.AddDays(-3);
+                if (DownloadMonthlyFileFromABC(DataFolder + ABC_TMP_FOLDER, startDate, DateTime.Today, groupConfig, false))
+                {
+                    history.LastDownload = DateTime.Now;
+                    switch (groupConfig.Market)
+                    {
+                        case Market.XETRA:
+                        case Market.EURONEXT:
+                            if (DateTime.Today.TimeOfDay > marketDownloadTimes[groupConfig.Market])
+                                history.NextDownload = DateTime.Today.Add(marketDownloadTimes[groupConfig.Market]);
+                            else
+                                history.NextDownload = DateTime.Today.AddDays(1).Add(marketDownloadTimes[groupConfig.Market]);
+                            break;
+                        case Market.NYSE:
+                            DateTime.Today.AddDays(1).Add(marketDownloadTimes[groupConfig.Market]);
+                            break;
+                        default:
+                            DateTime.Today.AddDays(1).AddHours(6);
+                            break;
+                    }
+                }
             }
         }
 
@@ -368,6 +396,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
 
                 string fileName = destFolder + @"\" + group.AbcGroup + "_" + endDate.Year + "_" + endDate.Month.ToString("0#") + ".csv";
+                if (startDate >= endDate)
+                    return false;
                 if (AbcClient.DownloadData(fileName, startDate, endDate, group.AbcGroup, useCache))
                 {
                 }

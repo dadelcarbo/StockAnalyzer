@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&#xD;&#xA;if not exist &quot;C:\MyApp\SyncTools\&quot; mkdir &quot;C:\ProgramData\UltimateChartist\OneDriveSync&quot;&#xD;&#xA;xcopy /Y /I &quot;$(TargetDir)*.*&quot; &quot;C:\ProgramData\UltimateChartist\OneDriveSync&quot;&#xD;&#xA;" />
+    <Exec Command="&#xD;&#xA;if not exist &quot;C:\ProgramData\UltimateChartist\OneDriveSync&quot; mkdir &quot;C:\ProgramData\UltimateChartist\OneDriveSync&quot;&#xD;&#xA;xcopy /Y /I &quot;$(TargetDir)*.*&quot; &quot;C:\ProgramData\UltimateChartist\OneDriveSync&quot;&#xD;&#xA;" />
   </Target>
 
 </Project>

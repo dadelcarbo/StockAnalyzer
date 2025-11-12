@@ -27,7 +27,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             Task.Run(async () =>
             {
                 var data = await DownloadLabelAsync(market);
-                if (string.IsNullOrEmpty(data))
+                if (string.IsNullOrEmpty(data) || data.StartsWith(" <!DOCTYPE"))
                     return;
                 File.WriteAllText(fileName, data);
                 asyncResult = true;
@@ -71,7 +71,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
                 var response = await httpClient.SendAsync(request);
 
-
                 // Ensure the request was successful
                 response.EnsureSuccessStatusCode();
 
@@ -91,7 +90,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             Task.Run(async () =>
             {
                 var data = await DownloadDataAsync(dateFrom, dateTo, market, useCache);
-                if (string.IsNullOrEmpty(data))
+                if (string.IsNullOrEmpty(data) || data.StartsWith(" <!DOCTYPE"))
                     return;
                 File.WriteAllText(fileName, data);
                 asyncResult = true;
@@ -227,6 +226,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 return null;
             }
         }
+
 
         static bool forbidden = false;
         private static async Task<bool> InitClientAsync()
