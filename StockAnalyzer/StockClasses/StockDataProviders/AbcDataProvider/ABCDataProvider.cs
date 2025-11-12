@@ -116,14 +116,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 // Download groups
                 foreach (var config in abcGroupConfig.Where(c => !c.LabelOnly))
                 {
+                    NotifyProgress($"Downloading data for {config.Group}");
                     this.DownloadGroupFromAbc(config);
+                    AbcGroupDownloadHistory.Save(groupHistoryFileName, groupDownloadHistory);
+
+                    NotifyProgress($"Processing data for {config.Group}");
+                    LoadDataFromFolder(DataFolder + ABC_TMP_FOLDER);
+
+                    AbcDownloadHistory.Save(historyFileName, downloadHistory);
                 }
-
-                AbcGroupDownloadHistory.Save(groupHistoryFileName, groupDownloadHistory);
-
-                LoadDataFromFolder(DataFolder + ABC_TMP_FOLDER);
-
-                AbcDownloadHistory.Save(historyFileName, downloadHistory);
             }
             StockDictionary.Instance["CAC40"].Initialise();
         }
@@ -158,7 +159,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             foreach (var fileGroup in dataFiles)
             {
-                NotifyProgress($"Processing {Path.GetFileNameWithoutExtension(fileGroup.Key)}");
                 var lines = fileGroup.SelectMany(f => File.ReadAllLines(f));
                 LoadDataFromAbcLines(lines);
 
@@ -381,6 +381,31 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             }
         }
 
+        private void DownloadMonthlyFileHistoryFromABC(string destFolder, DateTime startDate, ABCGroup group, bool useCache = true)
+        {
+            var startOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-1);
+            var endOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddDays(-1);
+
+            var success = true;
+            while (success && endOfMonth >= startDate)
+            {
+                NotifyProgress($"Downloading history data for {group.Group} from {startOfMonth.ToShortDateString()}");
+
+                string fileName = destFolder + @"\" + group.AbcGroup + "_" + startOfMonth.Year + "_" + startOfMonth.Month.ToString("0#") + ".csv";
+                if (success = AbcClient.DownloadData(fileName, startOfMonth, endOfMonth, group.AbcGroup, useCache))
+                {
+                    StockLog.Write($"{group.Group} from:{startDate:yy_MM_dd} to:{endOfMonth:yy_MM_dd} success");
+                }
+                else
+                {
+                    StockLog.Write($"{group.Group} from:{startDate:yy_MM_dd} to:{endOfMonth:yy_MM_dd} failed !!!");
+                }
+
+                endOfMonth = startOfMonth.AddDays(-1);
+                startOfMonth = new DateTime(endOfMonth.Year, endOfMonth.Month, 1);
+            }
+        }
+
         private bool DownloadMonthlyFileFromABC(string destFolder, DateTime startDate, DateTime endDate, ABCGroup group, bool useCache = false)
         {
             bool success = true;
@@ -388,18 +413,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             NotifyProgress($"Downloading data for {group.Group} from {startDate.ToShortDateString()}");
             try
             {
-                while (endDate - startDate >= new TimeSpan(31, 0, 0, 0))
+                if (endDate - startDate >= new TimeSpan(31, 0, 0, 0))
                 {
-                    var endOfMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
-                    DownloadMonthlyFileFromABC(destFolder, startDate, endOfMonth, group, true);
-                    startDate = endOfMonth.AddDays(1);
+                    DownloadMonthlyFileHistoryFromABC(destFolder, startDate, group, true);
+                    startDate = new DateTime(endDate.Year, endDate.Month, 1);
                 }
 
                 string fileName = destFolder + @"\" + group.AbcGroup + "_" + endDate.Year + "_" + endDate.Month.ToString("0#") + ".csv";
                 if (startDate >= endDate)
                     return false;
+
                 if (AbcClient.DownloadData(fileName, startDate, endDate, group.AbcGroup, useCache))
                 {
+                    StockLog.Write($"{group.Group} from:{startDate:yy_MM_dd} to:{endDate:yy_MM_dd} success");
+                }
+                else
+                {
+                    StockLog.Write($"{group.Group} from:{startDate:yy_MM_dd} to:{endDate:yy_MM_dd} failed !!!");
                 }
             }
             catch (Exception ex)
