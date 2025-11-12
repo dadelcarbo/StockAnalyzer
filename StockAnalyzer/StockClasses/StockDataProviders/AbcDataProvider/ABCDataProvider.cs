@@ -371,10 +371,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                                 history.NextDownload = DateTime.Today.AddDays(1).Add(marketDownloadTimes[groupConfig.Market]);
                             break;
                         case Market.NYSE:
-                            DateTime.Today.AddDays(1).Add(marketDownloadTimes[groupConfig.Market]);
+                            history.NextDownload = DateTime.Today.AddDays(1).Add(marketDownloadTimes[groupConfig.Market]);
                             break;
                         default:
-                            DateTime.Today.AddDays(1).AddHours(6);
+                            history.NextDownload = DateTime.Today.AddDays(1).AddHours(6);
                             break;
                     }
                 }
