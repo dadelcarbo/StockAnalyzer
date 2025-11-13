@@ -72,8 +72,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
-            download = true;
-
             stockDictionary = dictionary;
             CreateDirectories();
 
