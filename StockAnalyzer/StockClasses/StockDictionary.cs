@@ -117,7 +117,7 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateAdvDeclSerie(StockSerie breadthSerie, string indexName, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -278,7 +278,7 @@ namespace StockAnalyzer.StockClasses
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -384,7 +384,7 @@ namespace StockAnalyzer.StockClasses
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -490,7 +490,7 @@ namespace StockAnalyzer.StockClasses
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -596,7 +596,7 @@ namespace StockAnalyzer.StockClasses
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -702,7 +702,7 @@ namespace StockAnalyzer.StockClasses
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -813,7 +813,7 @@ namespace StockAnalyzer.StockClasses
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Split('_')[1]);
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -922,7 +922,7 @@ namespace StockAnalyzer.StockClasses
         public bool GenerateIndiceEqualWeight(StockSerie breadthSerie, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
         {
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -1031,7 +1031,7 @@ namespace StockAnalyzer.StockClasses
             int nbStocks = 10;
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -1171,7 +1171,7 @@ namespace StockAnalyzer.StockClasses
             int nbStocks = 10;
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
@@ -1479,7 +1479,7 @@ namespace StockAnalyzer.StockClasses
             int period = int.Parse(breadthSerie.StockName.Split('.')[0].Replace("MM", ""));
 
             StockSerie indiceSerie = null;
-            var refSerieName = indexName == "USA" ? "SP500" : "CAC40";
+            var refSerieName = indexName == "USA" ? "S&P 500" : "CAC40";
             if (this.ContainsKey(refSerieName))
             {
                 indiceSerie = this[refSerieName];
