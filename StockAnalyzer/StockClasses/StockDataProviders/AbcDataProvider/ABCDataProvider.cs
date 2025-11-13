@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static StockAnalyzer.StockClasses.StockSerie;
 
@@ -23,7 +24,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
     {
         EURONEXT,
         XETRA,
-        NYSE
+        NYSE,
+        MIXED
     }
 
     public class ABCDataProvider : StockDataProviderBase, IConfigDialog
@@ -365,16 +367,44 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     {
                         case Market.XETRA:
                         case Market.EURONEXT:
-                            if (DateTime.Today.TimeOfDay > marketDownloadTimes[groupConfig.Market])
+                            if (DateTime.Now.TimeOfDay < marketDownloadTimes[groupConfig.Market])
                                 history.NextDownload = DateTime.Today.Add(marketDownloadTimes[groupConfig.Market]);
                             else
                                 history.NextDownload = DateTime.Today.AddDays(1).Add(marketDownloadTimes[groupConfig.Market]);
+
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Saturday)
+                                history.NextDownload = history.NextDownload.AddDays(2);
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Sunday)
+                                history.NextDownload = history.NextDownload.AddDays(1);
+
                             break;
                         case Market.NYSE:
                             history.NextDownload = DateTime.Today.AddDays(1).Add(marketDownloadTimes[groupConfig.Market]);
+
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Saturday)
+                                history.NextDownload = history.NextDownload.AddDays(2);
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Sunday)
+                                history.NextDownload = history.NextDownload.AddDays(1);
                             break;
+                        case Market.MIXED:
+                            if (DateTime.Now.TimeOfDay < marketDownloadTimes[Market.EURONEXT])
+                                history.NextDownload = DateTime.Today.Add(marketDownloadTimes[Market.EURONEXT]);
+                            else
+                                history.NextDownload = DateTime.Today.AddDays(1).Add(marketDownloadTimes[Market.NYSE]);
+
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Saturday)
+                                history.NextDownload = history.NextDownload.AddDays(2);
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Sunday)
+                                history.NextDownload = history.NextDownload.AddDays(1);
+                            break;
+
                         default:
-                            history.NextDownload = DateTime.Today.AddDays(1).AddHours(6);
+                            history.NextDownload = DateTime.Today.AddDays(1).Add(marketDownloadTimes[Market.NYSE]);
+
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Sunday)
+                                history.NextDownload = history.NextDownload.AddDays(2);
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Monday)
+                                history.NextDownload = history.NextDownload.AddDays(1);
                             break;
                     }
                 }
@@ -391,14 +421,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             {
                 NotifyProgress($"Downloading history data for {group.Group} from {startOfMonth.ToShortDateString()}");
 
+
                 string fileName = destFolder + @"\" + group.AbcGroup + "_" + startOfMonth.Year + "_" + startOfMonth.Month.ToString("0#") + ".csv";
                 if (success = AbcClient.DownloadData(fileName, startOfMonth, endOfMonth, group.AbcGroup, useCache))
                 {
-                    StockLog.Write($"{group.Group} from:{startDate:yy_MM_dd} to:{endOfMonth:yy_MM_dd} success");
+                    StockLog.Write($"{group.Group} from:{startOfMonth:yy_MM_dd} to:{endOfMonth:yy_MM_dd} success");
                 }
                 else
                 {
-                    StockLog.Write($"{group.Group} from:{startDate:yy_MM_dd} to:{endOfMonth:yy_MM_dd} failed !!!");
+                    StockLog.Write($"{group.Group} from:{startOfMonth:yy_MM_dd} to:{endOfMonth:yy_MM_dd} failed !!!");
                 }
 
                 endOfMonth = startOfMonth.AddDays(-1);

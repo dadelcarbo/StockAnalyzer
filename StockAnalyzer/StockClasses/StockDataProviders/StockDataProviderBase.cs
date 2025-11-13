@@ -23,7 +23,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         protected bool needDownload = true;
 
+#if DEBUG
+        public const int ARCHIVE_START_YEAR = 2020;
+#else
         public const int ARCHIVE_START_YEAR = 2000;
+#endif
+
         public static int LOAD_START_YEAR => Settings.Default.LoadStartYear;
 
         private static string dataFolder = null;
@@ -306,7 +311,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     new YahooIntradayDataProvider(),
                     new SocGenIntradayDataProvider(),
                     new VontobelIntradayDataProvider(),
-                    new InvestingIntradayDataProvider(), 
+                    new InvestingIntradayDataProvider(),
                     new BnpIntradayDataProvider()
                 };
             }

@@ -111,6 +111,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 if (!await InitClientAsync())
                     return null;
             }
+            if ((DateTime.Today - dateFrom).TotalDays > 100)
+            {
+                var delay = new Random().Next(1, 5) * 1000;
+                await Task.Delay(delay);
+            }
+
             try
             {
                 using var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/historiques");
