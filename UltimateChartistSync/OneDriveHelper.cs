@@ -47,11 +47,15 @@ namespace UltimateChartistSync
                     {
                         authResult = await app.AcquireTokenInteractive(scopes)
                                               .WithAccount(accounts.FirstOrDefault())
-                                              .ExecuteAsync();
+                                              .ExecuteAsync(new CancellationTokenSource(new TimeSpan(0, 5, 0)).Token);
                     }
 
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
                 }
+            }
+            catch (System.OperationCanceledException ex)
+            {
+                throw new OneDriveHelperException("OneDrive authentication time out", ex);
             }
             catch (Exception ex)
             {
