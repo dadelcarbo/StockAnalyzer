@@ -190,6 +190,8 @@ namespace StockAnalyzer.StockClasses
             value /= period * 1000000f;
             return value;
         }
+        public float Exchanged => GetExchanged(5);
+
         #endregion
         #region DATA, EVENTS AND INDICATORS SERIES MANAGEMENT
         public new void Add(DateTime date, StockDailyValue dailyValue)
@@ -709,6 +711,7 @@ namespace StockAnalyzer.StockClasses
             this.HasVolume = this.Values.Any(d => d.VOLUME > 0);
 
             this.ValueSeries = new FloatSerie[Enum.GetValues(typeof(StockDataType)).Length];
+            this.valueArray = null;
         }
 
         public struct EventMatch

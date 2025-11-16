@@ -70,6 +70,7 @@
                 <telerik:GridViewDataColumn Header="Underlying" DataMemberBinding="{Binding Underlying}"/>
                 <telerik:GridViewDataColumn Header="Url" DataMemberBinding="{Binding Url}"/>
 
+                <telerik:GridViewDataColumn Header="Exchanged" DataMemberBinding="{Binding Exchanged}"/>
                 <telerik:GridViewDataColumn Header="Close" DataMemberBinding="{Binding LastValue.CLOSE}"/>
                 <telerik:GridViewDataColumn Header="Last Date" DataMemberBinding="{Binding LastValue.DATE}"/>
                 <telerik:GridViewDataColumn Header="First Date" DataMemberBinding="{Binding FirstValue.DATE}"/>
