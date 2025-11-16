@@ -12,6 +12,8 @@ namespace StockAnalyzer.StockClasses
 
         public StockAlertValue GetAlertValue()
         {
+            var previousBarDuration = StockSerie.BarDuration;
+            StockSerie.BarDuration = AlertDef.BarDuration;
             var values = StockSerie.ValueArray;
             var lastIndex = AlertDef.CompleteBar ? StockSerie.LastCompleteIndex : StockSerie.LastIndex;
             var dailyValue = values.ElementAt(lastIndex);
@@ -42,6 +44,7 @@ namespace StockAnalyzer.StockClasses
                 step = (int)cupHandle.Point2.X - (int)cupHandle.Point1.X;
             }
 
+            StockSerie.BarDuration = previousBarDuration;
             return new StockAlertValue()
             {
                 StockSerie = StockSerie,
@@ -60,6 +63,7 @@ namespace StockAnalyzer.StockClasses
                 Stok = stok,
                 Step = step
             };
+
         }
     }
 }
