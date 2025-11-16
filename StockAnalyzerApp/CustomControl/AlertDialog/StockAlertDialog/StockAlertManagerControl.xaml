@@ -17,7 +17,9 @@
         <TabItem Header="Scanner">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="86*"/>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="59*"/>
+                    <ColumnDefinition Width="20*"/>
                     <ColumnDefinition Width="21*"/>
                     <ColumnDefinition Width="787*"/>
                 </Grid.ColumnDefinitions>
@@ -25,7 +27,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Grid Grid.ColumnSpan="3">
+                <Grid Grid.ColumnSpan="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="109*"/>
                         <ColumnDefinition Width="585*"/>
@@ -81,7 +83,7 @@
                 </Grid>
                 <telerik:RadGridView Grid.Row="1" FontSize="9" Margin="2,2,2,2" ItemsSource="{Binding Alerts}"
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" IsReadOnly="True"
-                        SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="AlertGridView_SelectionChanged" Grid.ColumnSpan="3">
+                        SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="AlertGridView_SelectionChanged" Grid.ColumnSpan="5">
                     <telerik:RadGridView.Columns>
                         <telerik:GridViewDataColumn Header="Alert Id" DataMemberBinding="{Binding AlertDef.Id}"/>
                         <telerik:GridViewDataColumn Header="Alert Title" DataMemberBinding="{Binding AlertDef.Title}"/>
@@ -178,7 +180,7 @@
                             </StackPanel>
                         </StackPanel>
                         <telerik:RadGridView  Grid.Row="1" FontSize="9" ItemsSource="{Binding AlertDefs}"
-                        RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False"
+                        RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" FrozenColumnCount="7"
                         SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="AlertDefGridView_SelectionChanged">
                             <telerik:RadGridView.Columns>
                                 <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Id}" IsReadOnly="True"/>
@@ -186,7 +188,6 @@
                                 <telerik:GridViewDataColumn Header="Rank" DataMemberBinding="{Binding Rank}" />
                                 <telerik:GridViewDataColumn Header="Report" DataMemberBinding="{Binding InReport}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Alert" DataMemberBinding="{Binding InAlert}" IsReadOnly="True"/>
-                                <telerik:GridViewDataColumn Header="CompleteBar" DataMemberBinding="{Binding CompleteBar}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Title" DataMemberBinding="{Binding Title}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding Group}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Theme}" IsReadOnly="True"/>
@@ -194,6 +195,7 @@
                                 <telerik:GridViewDataColumn Header="Speed" DataMemberBinding="{Binding Speed}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Stok" DataMemberBinding="{Binding Stok}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Creation&#x0a;Date" DataMemberBinding="{Binding CreationDate, StringFormat=\{0:d\}}" IsReadOnly="True"/>
+                                <telerik:GridViewDataColumn Header="Complete&#x0a;Bar" DataMemberBinding="{Binding CompleteBar}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Trigger&#x0a;Type" DataMemberBinding="{Binding IndicatorType}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Trigger&#x0a;Name" DataMemberBinding="{Binding IndicatorName}" IsReadOnly="True"/>
                                 <telerik:GridViewDataColumn Header="Trigger&#x0a;Event" DataMemberBinding="{Binding EventName}" IsReadOnly="True"/>
