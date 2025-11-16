@@ -153,13 +153,13 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                     {
                         break;
                     }
-                    //count++;
-                    //if (step == 1 || count % step == 0)
-                    //{
-                    //    this.Progress = count;
+                    count++;
+                    if (step == 1 || count % step == 0)
+                    {
+                        this.Progress = count;
 
-                    //    await Task.Delay(10);
-                    //}
+                        await Task.Delay(5);
+                    }
                     stockSerie.Initialise();
                     stockSerie.BarDuration = BarDuration.Daily;
 
