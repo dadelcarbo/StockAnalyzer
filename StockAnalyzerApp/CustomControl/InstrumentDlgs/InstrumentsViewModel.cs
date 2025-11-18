@@ -1,6 +1,8 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
@@ -111,6 +114,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         public InstrumentViewModel()
         {
             this.Lines = new ObservableCollection<StockSerie>();
+            // this.SaxoUnderlyings = SaxoUnderlying.Load();
 
             ProgressVisibility = Visibility.Collapsed;
         }
@@ -177,6 +181,16 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             ProgressVisibility = Visibility.Collapsed;
             this.RunStatus = "Load";
+        }
+
+        public IEnumerable<SaxoUnderlying> SaxoUnderlyings { get; set; }
+
+        private CommandBase saveCommand;
+        public ICommand SaveCommand => saveCommand ??= new CommandBase(Save);
+
+        private void Save()
+        {
+            SaxoUnderlying.Save(this.SaxoUnderlyings);
         }
     }
 }

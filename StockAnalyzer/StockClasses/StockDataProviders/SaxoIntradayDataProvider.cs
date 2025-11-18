@@ -67,7 +67,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
                     else
                     {
-                        StockLog.Write($"Saxo Underlying {row[1]} not found in stockDictionary");
+                        if (stockDictionary.ContainsKey(row[1].ToUpper()))
+                        {
+                            stockDictionary[row[1].ToUpper()].SaxoId = long.Parse(row[0]);
+                            StockLog.Write($"Saxo Underlying {row[1]} matched in stockDictionary");
+                        }
+                        else
+                            StockLog.Write($"Saxo Underlying {row[1]} not found in stockDictionary");
                     }
                 }
             }
