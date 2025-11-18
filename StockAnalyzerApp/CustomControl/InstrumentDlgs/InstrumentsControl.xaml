@@ -17,14 +17,13 @@
             <TabItem Header="Instruments">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="65*"/>
-                        <ColumnDefinition Width="432*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0,0,0,367" Grid.RowSpan="2">
+                    <StackPanel Orientation="Horizontal">
                         <GroupBox Header="Config">
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Group " Width="50"/>
