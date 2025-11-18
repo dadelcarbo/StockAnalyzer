@@ -1092,6 +1092,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 return false;
             if (today.DayOfWeek == DayOfWeek.Sunday && history.LastDate == today.AddDays(-2))
                 return false;
+            if ((today - history.LastDate).TotalDays > 1)
+                return true;
             var now = DateTime.Now;
             if (now.TimeOfDay < euronextClose)
                 return false;
