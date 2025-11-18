@@ -1080,29 +1080,27 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             return true;
         }
 
-        static TimeSpan euronextClose = new TimeSpan(18, 0, 0);
-        static TimeSpan xetraClose = new TimeSpan(21, 0, 0);
-
         private bool NeedDownload(StockSerie stockSerie, AbcDownloadHistory history)
         {
             var today = DateTime.Today;
+
             if (history.LastDate == today)
                 return false;
-            if (today.DayOfWeek == DayOfWeek.Saturday && history.LastDate == today.AddDays(-1))
+
+            var age = (today - history.LastDate).Days;
+            if (age == 0)
                 return false;
-            if (today.DayOfWeek == DayOfWeek.Sunday && history.LastDate == today.AddDays(-2))
+            if (today.DayOfWeek == DayOfWeek.Saturday && age <= 1)
                 return false;
-            if ((today - history.LastDate).TotalDays > 1)
+            if (today.DayOfWeek == DayOfWeek.Sunday && age <= 2)
+                return false;
+            if (age > 1)
                 return true;
-            var now = DateTime.Now;
-            if (now.TimeOfDay < euronextClose)
-                return false;
-            if (stockSerie.Market == 'p' || stockSerie.Market == 'g' || stockSerie.Market == 'n' || stockSerie.Market == 'l')
+
+            var now = DateTime.Now.TimeOfDay;
+            if (now > marketDownloadTimes[stockSerie.Market])
                 return true;
-            if (now.TimeOfDay < xetraClose)
-                return false;
-            if (stockSerie.Market == 'f' || stockSerie.Market == 'i' || stockSerie.Market == 'm')
-                return true;
+
             return false;
         }
 

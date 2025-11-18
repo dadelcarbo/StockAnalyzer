@@ -84,7 +84,20 @@ namespace StockAnalyzer.StockClasses
         public string ABCName { get; set; }
 
         public StockDataProvider DataProvider { get; private set; }
-        public char Market => AbcId?.Length == 13 ? AbcId[0] : 'p';
+        public char MarketPlace => AbcId?.Length == 13 ? AbcId[0] : 'p';
+        public Market Market => this.MarketPlace switch
+        {
+            'p' => Market.EURONEXT,
+            'g' => Market.EURONEXT,
+            'n' => Market.EURONEXT,
+            'l' => Market.EURONEXT,
+
+            'f' => Market.XETRA,
+            'i' => Market.XETRA,
+            'm' => Market.XETRA,
+
+            _ => Market.NYSE
+        };
         public string IsinPrefix => ISIN?.Substring(0, 2);
         public string AbcId { get; set; }
         public string ISIN { get; set; }
