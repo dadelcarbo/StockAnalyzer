@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzerSettings;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,7 +28,10 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         {
             InitializeComponent();
             this.Form = form;
-            this.DataContext = this.ViewModel = this.Resources["ViewModel"] as InstrumentViewModel;
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                this.DataContext = this.ViewModel = new InstrumentViewModel();
+            }
         }
 
         private async void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
