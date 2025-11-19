@@ -87,7 +87,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public static bool DownloadData(string fileName, DateTime dateFrom, DateTime dateTo, string market, bool useCache)
         {
-            StockLog.Write($"Market: {market} From:{dateFrom:dd/MM:YY} To:{dateTo:dd/MM:YY}");
+            StockLog.Write($"Market: {market} From:{dateFrom:dd/MM/yy} To:{dateTo:dd/MM/yy}");
             asyncResult = false;
             Task.Run(async () =>
             {
@@ -174,7 +174,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public static bool DownloadIsin(string fileName, DateTime dateFrom, DateTime dateTo, string isin)
         {
-            StockLog.Write($"Isin: {isin} From:{dateFrom:dd/MM:YY} To:{dateTo:dd/MM:YY}");
+            StockLog.Write($"Isin: {isin} From:{dateFrom:dd/MM/yy} To:{dateTo:dd/MM/yy}");
             asyncResult = false;
             Task.Run(async () =>
             {
