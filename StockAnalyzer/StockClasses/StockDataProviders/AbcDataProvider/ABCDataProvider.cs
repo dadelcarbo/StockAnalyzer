@@ -66,7 +66,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         static readonly Dictionary<Market, TimeSpan> marketDownloadTimes = new Dictionary<Market, TimeSpan>
         {
             { Market.EURONEXT, new TimeSpan(18, 15, 0) },
-            { Market.XETRA, new TimeSpan(18, 30, 0) },
+            { Market.XETRA, new TimeSpan(21, 00, 0) },
             { Market.NYSE, new TimeSpan(6, 0, 0) }
         };
 
@@ -379,9 +379,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                         case Market.NYSE:
                             history.NextDownload = DateTime.Today.AddDays(1).Add(marketDownloadTimes[groupConfig.Market]);
 
-                            if (history.NextDownload.DayOfWeek == DayOfWeek.Saturday)
-                                history.NextDownload = history.NextDownload.AddDays(2);
                             if (history.NextDownload.DayOfWeek == DayOfWeek.Sunday)
+                                history.NextDownload = history.NextDownload.AddDays(2);
+                            if (history.NextDownload.DayOfWeek == DayOfWeek.Monday)
                                 history.NextDownload = history.NextDownload.AddDays(1);
                             break;
                         case Market.MIXED:
