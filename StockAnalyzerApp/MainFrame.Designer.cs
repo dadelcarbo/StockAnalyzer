@@ -1673,6 +1673,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator18;
         private ToolStripMenuItem saveThemeMenuItem;
         private ToolStripMenuItem newAnalysisMenuItem;
-        private ToolStripComboBox searchCombo;
+        public ToolStripComboBox searchCombo;
     }
 }

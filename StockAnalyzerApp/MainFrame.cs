@@ -4867,28 +4867,6 @@ namespace StockAnalyzerApp
                 }
             }
         }
-
-        internal void OpenInPEAPerf()
-        {
-            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
-                return;
-
-            if (!File.Exists(PEAPerfTemplatePath))
-                return;
-
-            // Find name from PEA Performance
-            StockWebHelper wh = new StockWebHelper();
-            var suggestXML = wh.DownloadHtml("https://www.pea-performance.fr/wp-content/plugins/pea-performance/autocomplete/autocomplete_ajax.php?search=" + this.currentStockSerie.ISIN, null);
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(suggestXML);
-            XmlNodeList parentNode = xmlDoc.GetElementsByTagName("suggest");
-            if (parentNode.Count != 1)
-                return;
-            var symbol = parentNode.Item(0).InnerText.Split('|')[1];
-
-            string url = $"https://www.pea-performance.fr/fiches-societes/{symbol}/";
-            Process.Start(url);
-        }
         internal void OpenInZBMenu()
         {
             if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))

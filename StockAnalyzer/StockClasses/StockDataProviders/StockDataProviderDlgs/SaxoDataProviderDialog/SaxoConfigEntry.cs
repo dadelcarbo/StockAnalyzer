@@ -10,6 +10,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         public SaxoConfigEntry()
         {
         }
+        public string Underlying { get; set; }
         public string ISIN { get; set; }
         public string StockName { get; set; }
 
@@ -30,8 +31,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
                     entries.Add(new SaxoConfigEntry() // 8894,CC,FUT_COM_COCOA,FUTURE
                     {
-                        ISIN = row[0],
-                        StockName = row[1]
+                        Underlying = row[0],
+                        ISIN = row[1],
+                        StockName = row[2]
                     });
                 }
             }
@@ -44,6 +46,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             foreach (var entry in entries.OrderBy(e => e.StockName))
             {
                 sr.WriteLine(
+                    entry.Underlying + "," +
                     entry.ISIN + "," +
                     entry.StockName
                     );

@@ -22,7 +22,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.sellMenu = new System.Windows.Forms.MenuItem();
             this.cancelMenu = new System.Windows.Forms.MenuItem();
             this.agendaMenu = new MenuItem();
-            this.openInPEAPerfMenu = new MenuItem();
             this.openInZBMenu = new MenuItem();
             this.openInTradingViewMenu = new MenuItem();
             this.openInDataProvider = new MenuItem();
@@ -48,7 +47,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInZBMenu,
             this.openInTradingViewMenu,
             this.openInYahoo,
-            this.openInPEAPerfMenu,
             this.openSaxoIntradyConfigDlg});
             // 
             // tradeMenu
@@ -114,12 +112,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openInYahoo.Text = "Open in Yahoo";
             this.openInYahoo.Click += new System.EventHandler(this.openInYahoo_Click);
             // 
-            // openInPEAPerf
-            // 
-            this.openInPEAPerfMenu.Index = index++;
-            this.openInPEAPerfMenu.Text = "Open in PEAPerformance";
-            this.openInPEAPerfMenu.Click += new System.EventHandler(this.openInPEAPerf_Click);
-            // 
             // openInZBMenu
             // 
             this.openInZBMenu.Index = index++;
@@ -154,7 +146,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem separator2;
         private MenuItem separator3;
         private MenuItem agendaMenu;
-        private MenuItem openInPEAPerfMenu;
         private MenuItem openInZBMenu;
         private MenuItem openInTradingViewMenu;
         private MenuItem openInDataProvider;

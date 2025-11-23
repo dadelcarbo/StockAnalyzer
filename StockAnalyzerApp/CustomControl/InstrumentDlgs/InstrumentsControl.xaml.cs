@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzerSettings;
 using System;
 using System.ComponentModel;
@@ -143,6 +144,37 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             StockSplashScreen.CloseForm(true);
             this.Cursor = Cursors.Arrow;
+        }
+
+        private void RadGridView_SelectedCellsChanged(object sender, Telerik.Windows.Controls.GridView.GridViewSelectedCellsChangedEventArgs e)
+        {
+            if (e.AddedCells.Count > 0)
+            {
+                var item = e.AddedCells[0].Item as SaxoUnderlying;
+                if (item == null)
+                    return;
+
+                var serieName = string.IsNullOrEmpty(item.SerieName) ? item.SaxoName : item.SerieName;
+                if (StockDictionary.Instance.ContainsKey(serieName))
+                {
+                    this.Form.TopMost = true;
+                    StockAnalyzerForm.MainFrame.Activate();
+                    this.SelectedStockChanged(serieName, true);
+
+                    this.Form.TopMost = false;
+                }
+                else
+                {
+                    this.Form.TopMost = true;
+                    StockAnalyzerForm.MainFrame.searchCombo.Text = serieName;
+                    StockAnalyzerForm.MainFrame.searchCombo.Focus();
+
+                    this.Form.TopMost = false;
+                }
+
+
+
+            }
         }
     }
 }

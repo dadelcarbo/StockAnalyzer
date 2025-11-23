@@ -2,6 +2,7 @@
 {
     public class SaxoProduct
     {
+        public long Underlying { get; set; }
         public string ISIN { get; set; }
         public string StockName { get; set; }
         public string Type { get; set; }

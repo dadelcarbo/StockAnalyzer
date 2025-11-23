@@ -1943,35 +1943,37 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 return;
             start = Math.Max(StartIndex, start);
             end = Math.Min(EndIndex, end);
-            PointF[] polygonPoints = new PointF[end - start + 1];
-            if (cupHandle.Inverse)
+            if (false)
             {
-                // Calculate lower body low
-                for (int i = start; i < end; i++)
+                PointF[] polygonPoints = new PointF[end - start + 1];
+                if (cupHandle.Inverse)
                 {
-                    polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                    // Calculate lower body low
+                    for (int i = start; i < end; i++)
+                    {
+                        polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                    }
+                }
+                else
+                {
+                    // Calculate upper body high
+                    for (int i = start; i < end; i++)
+                    {
+                        polygonPoints[i - start] = GetScreenPointFromValuePoint(i, closeCurveType.DataSerie[i]);
+                        //polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+                    }
+                }
+                polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);
+                polygonPoints[end - start] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
+                if (cupHandle.Inverse)
+                {
+                    graph.FillPolygon(CupHandleInvBrush, polygonPoints);
+                }
+                else
+                {
+                    graph.FillPolygon(CupHandleBrush, polygonPoints);
                 }
             }
-            else
-            {
-                // Calculate upper body high
-                for (int i = start; i < end; i++)
-                {
-                    polygonPoints[i - start] = GetScreenPointFromValuePoint(i, closeCurveType.DataSerie[i]);
-                    //polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
-                }
-            }
-            polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);
-            polygonPoints[end - start] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
-            if (cupHandle.Inverse)
-            {
-                graph.FillPolygon(CupHandleInvBrush, polygonPoints);
-            }
-            else
-            {
-                graph.FillPolygon(CupHandleBrush, polygonPoints);
-            }
-
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
             if (useTransform)
@@ -2658,10 +2660,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         void agendaMenu_Click(object sender, EventArgs e)
         {
             StockAnalyzerForm.MainFrame.ShowAgenda();
-        }
-        void openInPEAPerf_Click(object sender, EventArgs e)
-        {
-            StockAnalyzerForm.MainFrame.OpenInPEAPerf();
         }
         void openInZBMenu_Click(object sender, EventArgs e)
         {

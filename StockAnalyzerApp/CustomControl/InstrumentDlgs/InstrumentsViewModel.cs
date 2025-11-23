@@ -1,6 +1,8 @@
-﻿using StockAnalyzer;
+﻿using Newtonsoft.Json;
+using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
@@ -115,8 +117,8 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         public InstrumentViewModel()
         {
             this.Lines = new ObservableCollection<StockSerie>();
-            
-            this.SaxoUnderlyings = SaxoUnderlying.Load();
+
+            this.SaxoUnderlyings = new ObservableCollection<SaxoUnderlying>(SaxoUnderlying.Load());
 
             ProgressVisibility = Visibility.Collapsed;
         }
@@ -185,7 +187,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             this.RunStatus = "Load";
         }
 
-        public IEnumerable<SaxoUnderlying> SaxoUnderlyings { get; set; }
+        public ObservableCollection<SaxoUnderlying> SaxoUnderlyings { get; set; }
 
         private CommandBase saveCommand;
         public ICommand SaveCommand => saveCommand ??= new CommandBase(Save);
@@ -193,6 +195,43 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         private void Save()
         {
             SaxoUnderlying.Save(this.SaxoUnderlyings);
+        }
+
+        private CommandBase refreshCommand;
+        public ICommand RefreshCommand => refreshCommand ??= new CommandBase(Refresh);
+
+        private void Refresh()
+        {
+            var jsonData = SaxoHttpClient.HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
+
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                MessageBox.Show("Error retrieving data from Saxo Turbo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            try
+            {
+                var result = JsonConvert.DeserializeObject<UnderlyingRoot>(jsonData);
+                var underlyings = result?.data?.filters?.firstLevel?.underlying?.list?.Values?.ToList();
+
+                foreach (var underlying in underlyings)
+                {
+                    if (this.SaxoUnderlyings.FirstOrDefault(u => u.Id == underlying.value) == null)
+                    {
+                        this.SaxoUnderlyings.Add(new SaxoUnderlying()
+                        {
+                            Id = underlying.value,
+                            SaxoName = underlying.label
+                        });
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error parsing data from Saxo Turbo: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
         }
     }
 }

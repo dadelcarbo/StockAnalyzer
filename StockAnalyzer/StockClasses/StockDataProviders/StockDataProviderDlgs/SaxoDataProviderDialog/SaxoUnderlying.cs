@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
 {
+    [DebuggerDisplay("Id={Id}, SaxoName={SaxoName}, SerieName={SerieName}")]
     public class SaxoUnderlying
     {
         public long Id { get; set; }
         public string SaxoName { get; set; }
         public string SerieName { get; set; }
 
-        public static IEnumerable<SaxoUnderlying> Load()
+        public static IList<SaxoUnderlying> Load()
         {
             return File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).Select(l =>
             {
@@ -24,9 +24,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     SaxoName = parts[1],
                     SerieName = parts.Length > 2 ? parts[2] : string.Empty
                 };
-            });
+            }).ToList();
         }
-
 
         public static void Save(IEnumerable<SaxoUnderlying> underlyings)
         {

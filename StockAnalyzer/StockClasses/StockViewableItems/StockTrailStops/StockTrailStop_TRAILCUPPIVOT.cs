@@ -4,15 +4,15 @@ using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 {
-    public class StockTrailStop_TRAILCUPHL : StockTrailStopBase
+    public class StockTrailStop_TRAILCUPPIVOT : StockTrailStopBase
     {
-        public override string Definition => "Detect Cup and Handle patterns and initiate trailing stop based on DONCHIAN LOW";
+        public override string Definition => "Detect Cup and Handle patterns and initiate trailing stop based on handle low";
 
-        public override string[] ParameterNames => new string[] { "Period", "Right HL", "TrailPeriod" };
+        public override string[] ParameterNames => new string[] { "Period", "Right HL", "InputSmoothing" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 3, true, 12 };
+        public override Object[] ParameterDefaultValues => new Object[] { 3, true, 1 };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(0, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(1, 500) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
@@ -26,8 +26,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             }
             var period = (int)this.parameters[0];
             var rightHigherLow = (bool)this.parameters[1];
-            var trailPeriod = (int)this.parameters[2];
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            var inputSmoothing = (int)this.parameters[2];
+            FloatSerie closeSerie = inputSmoothing > 1 ? stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(inputSmoothing) : stockSerie.GetSerie(StockDataType.CLOSE);
 
             this.series[0] = new FloatSerie(stockSerie.Count, SerieNames[0], float.NaN);
             this.series[0].Name = this.SerieNames[0];
@@ -44,7 +44,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
             bool isBull = false;
             float trailStop = float.NaN;
-            for (int i = Math.Max(period * 2, trailPeriod * 2); i < stockSerie.Count; i++)
+            for (int i = period * 2; i < stockSerie.Count; i++)
             {
                 if (isBull) // Trail Stop
                 {
@@ -55,8 +55,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         continue;
                     }
                     else
-                        trailStop = Math.Max(trailStop, bodyLowSerie.GetMin(i - trailPeriod, i));
+                    {
+                        var cupHandle = closeSerie.DetectCupHandle(i, period, rightHigherLow);
+                        if (cupHandle != null)
+                        {
+                            trailStop = Math.Max(trailStop, cupHandle.RightLow.Y);
 
+                            cupHandle.IsPersistent = false;
+                            stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(cupHandle);
+                        }
+                    }
                     this.series[0][i] = trailStop;
                     bullEvents[i] = true;
                 }

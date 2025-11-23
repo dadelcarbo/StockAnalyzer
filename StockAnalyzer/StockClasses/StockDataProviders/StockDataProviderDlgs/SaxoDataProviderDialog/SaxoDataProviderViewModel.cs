@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -26,7 +27,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             try
             {
                 var stockDico = StockDictionary.Instance;
-                var jsonData = HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
+                var jsonData = SaxoHttpClient.HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
                 // "https://fr-be.structured-products.saxo/page-api/search/*?productsSize=10&underlyingsSize=700&locale=fr_BE");
 
                 if (!string.IsNullOrEmpty(jsonData))
@@ -97,7 +98,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                 var leverStart = minLeverage != 0 ? $"&leverageStart={minLeverage}" : string.Empty;
                 var leverEnd = maxLeverage != 0 ? $"&leverageEnd={maxLeverage}" : string.Empty;
 
-                var jsonData = HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?rowsPerPage=1000&underlying={this.underlying.value}{productTypes}{leverStart}{leverEnd}&locale=fr_BE");
+                var jsonData = SaxoHttpClient.HttpGetFromSaxo($"https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?rowsPerPage=1000&underlying={this.underlying.value}{productTypes}{leverStart}{leverEnd}&locale=fr_BE");
                 if (!string.IsNullOrEmpty(jsonData))
                 {
                     var result = JsonConvert.DeserializeObject<SaxoResult>(jsonData);
@@ -105,6 +106,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     {
                         var product = new SaxoProduct
                         {
+                            Underlying = this.underlying.value,
                             ISIN = p.isin.value,
                             StockName = p.name.value,
                             Type = p.type.value,
@@ -137,43 +139,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
         readonly string configFile;
 
-        #region WebHelper
-
-
-        static private HttpClient httpClient = null;
-        private static string HttpGetFromSaxo(string url)
-        {
-            try
-            {
-                if (httpClient == null)
-                {
-                    var handler = new HttpClientHandler();
-                    handler.AutomaticDecompression = ~DecompressionMethods.None;
-
-                    httpClient = new HttpClient(handler);
-                }
-                using var request = new HttpRequestMessage();
-                request.Method = HttpMethod.Get;
-                request.RequestUri = new Uri(url);
-                var response = httpClient.SendAsync(request).Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    return response.Content.ReadAsStringAsync().Result;
-                }
-                else
-                {
-                    StockLog.Write("StatusCode: " + response.StatusCode + Environment.NewLine + response);
-                }
-            }
-            catch (Exception ex)
-            {
-                StockLog.Write(ex);
-            }
-            return null;
-
-        }
-        #endregion
-
 
 
         private CommandBase addCommand;
@@ -196,7 +161,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                 return;
             var stockName = this.selectedProduct.StockName;
             stockName = stockName.Replace("  ", " ");
-            this.Entries.Insert(0, new SaxoConfigEntry { ISIN = this.selectedProduct.ISIN, StockName = stockName });
+            this.Entries.Insert(0, new SaxoConfigEntry { Underlying = this.selectedProduct.Underlying.ToString(), ISIN = this.selectedProduct.ISIN, StockName = stockName });
         }
 
 
@@ -217,7 +182,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             {
                 System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
                 SaxoConfigEntry.SaveToFile(this.Entries, this.configFile);
-                Task.Delay(250).Wait();
+                Task.Delay(500).Wait();
             }
             catch (Exception ex)
             {

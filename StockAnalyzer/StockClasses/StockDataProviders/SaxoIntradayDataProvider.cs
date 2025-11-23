@@ -61,7 +61,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     var row = line.Split(',');
                     var stockName = row[2];
-                    if (!string.IsNullOrEmpty(stockName) && stockDictionary.ContainsKey(stockName))
+                    if (string.IsNullOrEmpty(stockName))
+                        continue;
+                    if (stockDictionary.ContainsKey(stockName))
                     {
                         stockDictionary[stockName].SaxoId = long.Parse(row[0]);
                     }
@@ -333,15 +335,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (line.StartsWith("$")) break;
 
                     var row = line.Split(',');
-                    if (!stockDictionary.ContainsKey(row[1]))
+                    if (!stockDictionary.ContainsKey(row[2]))
                     {
-                        var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
-                        stockSerie.ISIN = row[0];
-                        stockDictionary.Add(row[1], stockSerie);
-                        if (row.Length == 3)
-                        {
-                            stockSerie.Uic = long.Parse(row[2]);
-                        }
+                        var stockSerie = new StockSerie(row[2], row[1], StockSerie.Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
+                        stockSerie.ISIN = row[1];
+                        stockDictionary.Add(row[2], stockSerie);
+                        stockSerie.Underlying = row[0]; 
 
                         if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
                         {
