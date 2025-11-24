@@ -137,6 +137,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.excludeButton = new System.Windows.Forms.ToolStripButton();
             this.intradayButton = new System.Windows.Forms.ToolStripButton();
+            this.saxoTurboButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.drawToolStrip = new System.Windows.Forms.ToolStrip();
             this.magnetStripBtn = new System.Windows.Forms.ToolStripButton();
@@ -991,6 +992,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator2,
             this.excludeButton,
             this.intradayButton,
+            this.saxoTurboButton,
             this.toolStripSeparator5});
             this.browseToolStrip.Location = new System.Drawing.Point(458, 0);
             this.browseToolStrip.Name = "browseToolStrip";
@@ -1137,6 +1139,16 @@ namespace StockAnalyzerApp
             this.intradayButton.Text = "Intraday";
             this.intradayButton.ToolTipText = "Add or remove from intraday list";
             this.intradayButton.Click += new System.EventHandler(this.intradayButton_Click);
+            // 
+            // saxoTurbo
+            // 
+            this.saxoTurboButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saxoTurboButton.Image = global::StockAnalyzerApp.Properties.Resources.UpDown;
+            this.saxoTurboButton.Name = "saxoTurbo";
+            this.saxoTurboButton.Size = new System.Drawing.Size(23, 20);
+            this.saxoTurboButton.Text = "Exclude";
+            this.saxoTurboButton.ToolTipText = "Exclude value from list";
+            this.saxoTurboButton.Click += new System.EventHandler(this.saxoTurboButton_Click);
             // 
             // toolStripSeparator5
             // 
@@ -1572,6 +1584,7 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton excludeButton;
         private ToolStripButton intradayButton;
+        private ToolStripButton saxoTurboButton;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripMenuItem viewMenuItem;
         private ToolStripMenuItem portfolioMenuItem;

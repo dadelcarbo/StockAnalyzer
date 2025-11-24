@@ -383,9 +383,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var configDlg = new SaxoDataProviderDlg() { StartPosition = FormStartPosition.CenterScreen };
 
             configDlg.ViewModel.Initialize(saxoId);
-            configDlg.ShowDialog();
-
-            return DialogResult.OK;
+            return configDlg.ShowDialog();
         }
 
         public override string DisplayName => "Saxo Turbos";

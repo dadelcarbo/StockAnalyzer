@@ -2205,6 +2205,13 @@ namespace StockAnalyzerApp
                 this.intradayButton.CheckState = CheckState.Checked;
             }
         }
+        private void saxoTurboButton_Click(object sender, EventArgs e)
+        {
+            if (currentStockSerie.SaxoId <= 0)
+                return;
+
+            OpenSaxoIntradyConfigDlg(currentStockSerie.SaxoId);
+        }
         #endregion
 
         #region History Browsing 
