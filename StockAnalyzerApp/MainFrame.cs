@@ -104,7 +104,6 @@ namespace StockAnalyzerApp
         public MainFrameViewModel ViewModel { get; private set; }
         public bool IsClosing { get; set; }
 
-        private const string PEAPerfTemplatePath = @"Resources\PEAPerformanceTemplate.html";
         private const string ReportTemplatePath = @"Resources\ReportTemplate.html";
 
         public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
@@ -432,27 +431,7 @@ namespace StockAnalyzerApp
                 }
             }
 
-            string folderName = Folders.DividendFolder;
-            if (!Directory.Exists(folderName))
-            {
-                Directory.CreateDirectory(folderName);
-            }
-            folderName = Folders.Palmares;
-            if (!Directory.Exists(folderName))
-            {
-                Directory.CreateDirectory(folderName);
-            }
-            folderName = Folders.Tweets;
-            if (!Directory.Exists(folderName))
-            {
-                Directory.CreateDirectory(folderName);
-                //Directory.Delete(folderName, true);
-            }
-            folderName = Folders.Saxo;
-            if (!Directory.Exists(folderName))
-            {
-                Directory.CreateDirectory(folderName);
-            }
+            Folders.CreateDirectories();
 
             StockSplashScreen.ProgressText = "Synchronizing One Drive...";
             StockSplashScreen.ProgressVal = 20;
@@ -594,6 +573,8 @@ namespace StockAnalyzerApp
                 }
             }
 
+            this.GenerateReports();
+
             // Refresh intraday every 5 minutes.
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
             {
@@ -613,6 +594,55 @@ namespace StockAnalyzerApp
             // Ready to start
             StockSplashScreen.CloseForm(true);
             this.Focus();
+        }
+
+        private void GenerateReports()
+        {
+            try
+            {
+                this.Size = new Size(800, 800);
+                foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
+                {
+                    GenerateReportFromTemplate(reportTemplate);
+                }
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+
+            }
+        }
+
+        private void GenerateReportFromTemplate(string templateFile)
+        {
+            var htmlReportTemplate = File.ReadAllText(templateFile);
+            // Find Pattern
+            string pattern = @"§§.*?§§";
+
+            // Instantiate the regular expression object.
+            Regex regex = new Regex(pattern);
+
+            // Match the regular expression pattern against the input string.
+            MatchCollection matches = regex.Matches(htmlReportTemplate);
+
+            foreach (Match match in matches)
+            {
+                var fields = match.Value.Replace("§§", "").Split('|');
+                var stockName = fields[0];
+                var duration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
+                var theme = fields[2];
+                var nbBars = int.Parse(fields[3]);
+                if (!StockDictionary.ContainsKey(stockName))
+                    continue;
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
+                string data = $"\r\n    <h2>{stockName} - {duration}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+
+                htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
+            }
+            var reportFileName = Path.Combine(Folders.Report, Path.GetFileName(templateFile));
+            File.WriteAllText(reportFileName, htmlReportTemplate);
+
+            Process.Start(reportFileName);
         }
 
         string typedSearch = null;
@@ -2087,9 +2117,15 @@ namespace StockAnalyzerApp
             return snapshot;
         }
 
-        public string GetStockSnapshotAsHtml(StockSerie stockSerie, string theme, bool mainGraphOnly, int nbBars = 0)
+        public string GetStockSnapshotAsHtml(StockSerie stockSerie, string theme, bool mainGraphOnly, BarDuration duration, int nbBars = 0)
         {
             this.CurrentStockSerie = stockSerie;
+            var previousDuration = stockSerie.BarDuration;
+
+            this.barDurationChangeFromUI = true;
+            this.ViewModel.BarDuration = duration;
+            this.barDurationChangeFromUI = false;
+
             if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
             {
                 this.CurrentTheme = theme;
@@ -2103,6 +2139,7 @@ namespace StockAnalyzerApp
                 this.ChangeZoom(stockSerie.LastIndex - nbBars, stockSerie.LastIndex);
             }
 
+            stockSerie.BarDuration = previousDuration;
             return SnapshotAsHtml(mainGraphOnly);
         }
 
@@ -2770,11 +2807,7 @@ namespace StockAnalyzerApp
                 StockSerie stockSerie = portfolio.GetStockSerieFromUic(position.Uic);
                 if (stockSerie != null && stockSerie.Initialise() && stockSerie.Values.Count() > 50)
                 {
-                    barDurationChangeFromUI = true;
-                    this.ViewModel.BarDuration = position.BarDuration;
-                    barDurationChangeFromUI = false;
-
-                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme, false);
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, position.Theme, false, position.BarDuration);
 
                     var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockSerie.StockName) + "\r\n";
                     var lastValue = stockSerie.ValueArray.Last();
@@ -2815,8 +2848,8 @@ namespace StockAnalyzerApp
             }
 
             var portfolioSerie = StockDictionary[portfolio.Name];
-            this.ViewModel.BarDuration = BarDuration.Daily;
-            var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio2", false, 350);
+
+            var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio2", false, BarDuration.Daily, 350);
             picturehtml = stockPictureTemplate.Replace("%STOCKNAME%", portfolio.Name).Replace(" - %DURATION%", "").Replace("%IMG%", portfolioSerieBitmapString) + "\r\n" + picturehtml;
 
             reportBody += @" 
@@ -2862,11 +2895,7 @@ namespace StockAnalyzerApp
                 StockSerie stockSerie = portfolio.GetStockSerieFromUic(order.Uic);
                 if (stockSerie != null)
                 {
-                    barDurationChangeFromUI = true;
-                    this.ViewModel.BarDuration = order.BarDuration;
-                    barDurationChangeFromUI = false;
-
-                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, order.Theme, false, 350);
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(stockSerie, order.Theme, false, order.BarDuration, 350);
 
                     var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockSerie.StockName) + "\r\n";
                     var lastValue = stockSerie.LastValue;
@@ -2991,9 +3020,7 @@ namespace StockAnalyzerApp
             {
                 this.Size = new Size(950, 800);
 
-                this.ViewModel.BarDuration = BarDuration.Daily;
-
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary["McClellanSum.EURO_A"], "EUROA_SUM", false, 770);
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary["McClellanSum.EURO_A"], "EUROA_SUM", false, BarDuration.Daily, 770);
                 htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
             }
 
@@ -3005,12 +3032,12 @@ namespace StockAnalyzerApp
                 this.Size = new Size(800, 700);
                 var fields = line.Split('|');
                 var stockName = fields[0];
-                //var duration = fields[1];
+                var barDuration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
                 var theme = fields[2];
                 var nbBars = int.Parse(fields[3]);
                 if (!StockDictionary.ContainsKey(stockName))
                     continue;
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, nbBars);
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, barDuration, nbBars);
                 indiceReport += $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
             }
 
@@ -3020,7 +3047,6 @@ namespace StockAnalyzerApp
             #region Report embedded definitions
 
             // Find Pattern
-
             string pattern = @"§§.*?§§";
 
             // Instantiate the regular expression object.
@@ -3033,12 +3059,12 @@ namespace StockAnalyzerApp
             {
                 var fields = match.Value.Replace("§§", "").Split('|');
                 var stockName = fields[0];
-                //var duration = fields[1];
+                var barDuration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
                 var theme = fields[2];
                 var nbBars = int.Parse(fields[3]);
                 if (!StockDictionary.ContainsKey(stockName))
                     continue;
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, nbBars);
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, barDuration, nbBars);
                 string data = $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                 htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);

@@ -488,6 +488,7 @@
     <Compile Include="CustomControl\PalmaresDlg\PalmaresLine.cs" />
     <Compile Include="CustomControl\PalmaresDlg\PalmaresViewModel.cs" />
     <Compile Include="CustomControl\PropertyAttribute.cs" />
+    <Compile Include="CustomControl\ReportDlg\Report.cs" />
     <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml.cs">
       <DependentUpon>PortfolioSimulationControl.xaml</DependentUpon>
@@ -1119,9 +1120,6 @@
     <None Include="Resources\Options.png" />
     <None Include="Resources\OpenAnalysis.png" />
     <None Include="Resources\Cloud.png" />
-    <Content Include="Resources\PEAPerformanceTemplate.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\RedIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
