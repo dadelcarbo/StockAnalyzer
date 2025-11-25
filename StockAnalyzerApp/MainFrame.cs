@@ -616,7 +616,7 @@ namespace StockAnalyzerApp
         private void GenerateReportFromTemplate(string templateFile)
         {
             var reportFileName = Path.Combine(Folders.Report, Path.GetFileName(templateFile));
-            if (File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today)
+            if (File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(templateFile))
                 return;
 
             var htmlReportTemplate = File.ReadAllText(templateFile);
