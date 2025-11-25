@@ -1440,40 +1440,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today) return;
             }
 
-            string url = $"http://www.abcbourse.com/marches/events.aspx?s={stockSerie.ABCName}";
+            var agendaItems = AbcClient.DownloadAgenda(stockSerie.AbcId);
+            if (agendaItems == null || agendaItems.Length == 0)
+                return;
 
-            StockWebHelper swh = new StockWebHelper();
-            string html = swh.DownloadHtml(url, Encoding.UTF8);
-
-            WebBrowser browser = new WebBrowser();
-            browser.ScriptErrorsSuppressed = true;
-            browser.DocumentText = html;
-            browser.Document.OpenNew(true);
-            browser.Document.Write(html);
-            browser.Refresh();
-
-            HtmlDocument doc = browser.Document;
-
-            HtmlElementCollection tables = doc.GetElementsByTagName("table");
-            List<List<string>> data = new List<List<string>>();
-
-            foreach (HtmlElement tbl in tables)
+            foreach (var item in agendaItems)
             {
-                if (tbl.InnerText.StartsWith("Date"))
-                {
-                    data = getTableData(tbl).Skip(1).ToList();
-                    break;
-                }
-            }
-            //
-            foreach (var row in data)
-            {
-                if (row[0].StartsWith("du")) row[0] = row[0].Substring(row[0].IndexOf("au ") + 3);
-                DateTime date = DateTime.Parse(row[0]);
+                DateTime date = DateTime.Parse(item.Item1);
 
                 if (!stockSerie.Agenda.ContainsKey(date))
                 {
-                    stockSerie.Agenda.Add(date, row[1], row[2]);
+                    stockSerie.Agenda.Add(date, item.Item2, item.Item3);
                 }
             }
             stockSerie.Agenda.DownloadDate = DateTime.Today;
