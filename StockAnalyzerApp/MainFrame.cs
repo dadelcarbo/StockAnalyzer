@@ -600,7 +600,7 @@ namespace StockAnalyzerApp
         {
             try
             {
-                this.Size = new Size(800, 800);
+                this.Size = new Size(600, 600);
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
                     GenerateReportFromTemplate(reportTemplate);
@@ -615,6 +615,10 @@ namespace StockAnalyzerApp
 
         private void GenerateReportFromTemplate(string templateFile)
         {
+            var reportFileName = Path.Combine(Folders.Report, Path.GetFileName(templateFile));
+            if (File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today)
+                return;
+
             var htmlReportTemplate = File.ReadAllText(templateFile);
             // Find Pattern
             string pattern = @"§§.*?§§";
@@ -639,7 +643,8 @@ namespace StockAnalyzerApp
 
                 htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
             }
-            var reportFileName = Path.Combine(Folders.Report, Path.GetFileName(templateFile));
+            htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", Path.GetFileNameWithoutExtension(templateFile));
+
             File.WriteAllText(reportFileName, htmlReportTemplate);
 
             Process.Start(reportFileName);
