@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockHelpers;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 namespace StockAnalyzer.StockClasses
@@ -8,6 +9,7 @@ namespace StockAnalyzer.StockClasses
     public class StockWatchList : IPersistable
     {
         public string Name { get; set; }
+        public bool Report { get; set; }
         public List<string> StockList { get; set; }
 
         public StockWatchList()
@@ -21,16 +23,19 @@ namespace StockAnalyzer.StockClasses
             this.StockList = new List<string>();
         }
 
-        public static List<StockWatchList> Load(string fileName)
+        static public List<StockWatchList> WatchLists { get; private set; }
+
+        public static void Load(string fileName)
         {
             if (!File.Exists(fileName))
-                return new List<StockWatchList>();
-            return JsonSerializer.Deserialize<List<StockWatchList>>(System.IO.File.ReadAllText(fileName));
+                WatchLists = new List<StockWatchList>();
+            else
+                WatchLists = JsonSerializer.Deserialize<List<StockWatchList>>(File.ReadAllText(fileName));
         }
 
-        public static void Save(string fileName, List<StockWatchList> watchLists)
+        public static void Save(string fileName)
         {
-            var jsonData = JsonSerializer.Serialize(watchLists, new JsonSerializerOptions { WriteIndented = true });
+            var jsonData = JsonSerializer.Serialize(WatchLists, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(fileName, jsonData);
         }
 

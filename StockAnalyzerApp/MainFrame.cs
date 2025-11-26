@@ -107,6 +107,7 @@ namespace StockAnalyzerApp
         public bool IsClosing { get; set; }
 
         private const string ReportTemplatePath = @"Resources\ReportTemplate.html";
+        private const string WatchlistReportTemplatePath = @"Resources\WatchlistReportTemplate.html";
 
         public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
@@ -607,6 +608,11 @@ namespace StockAnalyzerApp
                 {
                     GenerateReportFromTemplate(reportTemplate);
                 }
+
+                foreach (var watchlist in StockWatchList.WatchLists.Where(w => w.Report && w.StockList.Count > 0))
+                {
+                    GenerateReportFromWatchList(watchlist);
+                }
             }
             catch (Exception ex)
             {
@@ -652,6 +658,50 @@ namespace StockAnalyzerApp
             Process.Start(reportFileName);
         }
 
+        const string TABLE_ROW_TEMPLATE = @"<tr>
+            <td>%%Weekly%%</td>
+            <td>%%Daily%%</td>
+        </tr>";
+        private void GenerateReportFromWatchList(StockWatchList watchlist)
+        {
+            var reportFileName = Path.Combine(Folders.Report, watchlist.Name + ".html");
+            if (File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(WatchlistReportTemplatePath))
+                return;
+
+            var htmlReport = File.ReadAllText(WatchlistReportTemplatePath);
+
+            var tableRows = string.Empty;
+
+            foreach (string stockName in watchlist.StockList)
+            {
+                if (!StockDictionary.ContainsKey(stockName))
+                    continue;
+
+                var duration = BarDuration.Daily;
+                var theme = "_Empty";
+                var nbBars = 75;
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
+                string data = $"\r\n    <h2>{stockName} - {duration}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+
+                var row = TABLE_ROW_TEMPLATE.Replace("%%Daily%%", data);
+
+                duration = BarDuration.Weekly;
+                theme = "_Empty";
+                nbBars = 75;
+                bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
+                data = $"\r\n    <h2>{stockName} - {duration}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+
+                row = row.Replace("%%Weekly%%", data);
+
+                tableRows += row;
+            }
+            htmlReport = htmlReport.Replace("%%Title%%", watchlist.Name);
+            htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
+
+            File.WriteAllText(reportFileName, htmlReport);
+
+            Process.Start(reportFileName);
+        }
         string typedSearch = null;
         private void SearchCombo_TextChanged(object sender, EventArgs e)
         {
@@ -759,15 +809,15 @@ namespace StockAnalyzerApp
 
         private void InitialiseWatchListComboBox()
         {
-            if (this.WatchLists != null)
+            if (StockWatchList.WatchLists != null)
             {
                 // 
-                ToolStripItem[] watchListMenuItems = new ToolStripItem[this.WatchLists.Count()];
-                ToolStripItem[] addToWatchListMenuItems = new ToolStripItem[this.WatchLists.Count()];
+                ToolStripItem[] watchListMenuItems = new ToolStripItem[StockWatchList.WatchLists.Count()];
+                ToolStripItem[] addToWatchListMenuItems = new ToolStripItem[StockWatchList.WatchLists.Count()];
                 ToolStripMenuItem addToWatchListSubMenuItem;
 
                 int i = 0;
-                foreach (StockWatchList watchList in WatchLists)
+                foreach (StockWatchList watchList in StockWatchList.WatchLists)
                 {
                     // Create add to wath list menu items
                     addToWatchListSubMenuItem = new ToolStripMenuItem(watchList.Name);
@@ -1349,23 +1399,21 @@ namespace StockAnalyzerApp
             this.progressBar.Value++;
         }
 
-        public List<StockWatchList> WatchLists { get; set; }
-
         private void LoadWatchList()
         {
-            string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.xml");
-            this.WatchLists = StockWatchList.Load(watchListsFileName);
+            string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.json");
+            StockWatchList.Load(watchListsFileName);
 
-            if (this.WatchLists.Count == 0)
+            if (StockWatchList.WatchLists.Count == 0)
             {
                 // Create new empty watchlist
-                this.WatchLists.Add(new StockWatchList("New"));
-                StockWatchList.Save(watchListsFileName, this.WatchLists);
+                StockWatchList.WatchLists.Add(new StockWatchList("New"));
+                StockWatchList.Save(watchListsFileName);
             }
             else
             {
                 // Cleanup missing stocks
-                foreach (var watchList in this.WatchLists)
+                foreach (var watchList in StockWatchList.WatchLists)
                 {
                     watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
                 }
@@ -1733,7 +1781,7 @@ namespace StockAnalyzerApp
 
         private void addToWatchListSubMenuItem_Click(object sender, EventArgs e)
         {
-            StockWatchList watchList = this.WatchLists.Find(wl => wl.Name == sender.ToString());
+            StockWatchList watchList = StockWatchList.WatchLists.Find(wl => wl.Name == sender.ToString());
             if (!watchList.StockList.Contains(this.stockNameComboBox.SelectedItem.ToString()))
             {
                 watchList.StockList.Add(this.stockNameComboBox.SelectedItem.ToString());
@@ -2019,19 +2067,15 @@ namespace StockAnalyzerApp
 
         private void SaveWatchList()
         {
-            // Sort all the watchlists
-            if (this.WatchLists != null)
+            string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.json");
+
+            foreach (StockWatchList watchList in StockWatchList.WatchLists)
             {
-                string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.xml");
-
-                foreach (StockWatchList watchList in this.WatchLists)
-                {
-                    watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
-                    watchList.StockList.Sort();
-                }
-
-                StockWatchList.Save(watchListsFileName, this.WatchLists);
+                watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
+                watchList.StockList.Sort();
             }
+
+            StockWatchList.Save(watchListsFileName);
         }
 
         public void SaveAnalysis(string analysisFileName)
@@ -3252,11 +3296,11 @@ namespace StockAnalyzerApp
         WatchListDlg watchlistDlg = null;
         private void manageWatchlistsMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null || this.WatchLists == null) return;
+            if (this.currentStockSerie == null || StockWatchList.WatchLists == null) return;
 
             if (watchlistDlg == null)
             {
-                watchlistDlg = new WatchListDlg(this.WatchLists);
+                watchlistDlg = new WatchListDlg(StockWatchList.WatchLists);
                 watchlistDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
                 watchlistDlg.FormClosed += (a, b) =>
                 {

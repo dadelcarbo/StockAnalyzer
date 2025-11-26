@@ -40,13 +40,14 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             this.deleteStockbtn = new System.Windows.Forms.Button();
             this.okBtn = new System.Windows.Forms.Button();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.reportCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.stockWatchListsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.stockWatchListBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // watchListComboBox
             // 
-            this.watchListComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.watchListComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.watchListComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.watchListComboBox.DataSource = this.stockWatchListsBindingSource;
@@ -88,16 +89,16 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             // 
             // stockListBox
             // 
-            this.stockListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.stockListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.stockListBox.DataSource = this.stockWatchListBindingSource;
             this.stockListBox.DisplayMember = "Name";
             this.stockListBox.FormattingEnabled = true;
-            this.stockListBox.Location = new System.Drawing.Point(12, 42);
+            this.stockListBox.Location = new System.Drawing.Point(12, 68);
             this.stockListBox.Name = "stockListBox";
             this.stockListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.stockListBox.Size = new System.Drawing.Size(229, 316);
+            this.stockListBox.Size = new System.Drawing.Size(229, 290);
             this.stockListBox.TabIndex = 4;
             this.stockListBox.ValueMember = "Name";
             this.stockListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.stockListBox_MouseClick);
@@ -128,7 +129,6 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             this.okBtn.TabIndex = 1;
             this.okBtn.Text = "OK";
             this.okBtn.UseVisualStyleBackColor = true;
-            this.okBtn.Click += OkBtn_Click;
             // 
             // cancelBtn
             // 
@@ -140,7 +140,17 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             this.cancelBtn.TabIndex = 2;
             this.cancelBtn.Text = "Cancel";
             this.cancelBtn.UseVisualStyleBackColor = true;
-            this.cancelBtn.Click += cancelBtn_Click;
+            // 
+            // reportCheckBox
+            // 
+            this.reportCheckBox.AutoSize = true;
+            this.reportCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.stockWatchListBindingSource, "Report", true));
+            this.reportCheckBox.Location = new System.Drawing.Point(12, 40);
+            this.reportCheckBox.Name = "reportCheckBox";
+            this.reportCheckBox.Size = new System.Drawing.Size(109, 17);
+            this.reportCheckBox.TabIndex = 5;
+            this.reportCheckBox.Text = "Auto Daily Report";
+            this.reportCheckBox.UseVisualStyleBackColor = true;
             // 
             // WatchListDlg
             // 
@@ -150,6 +160,7 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             this.CancelButton = this.cancelBtn;
             this.ClientSize = new System.Drawing.Size(312, 374);
             this.ControlBox = false;
+            this.Controls.Add(this.reportCheckBox);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.okBtn);
             this.Controls.Add(this.stockListBox);
@@ -178,5 +189,6 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
         private System.Windows.Forms.Button deleteStockbtn;
         private System.Windows.Forms.Button okBtn;
         private System.Windows.Forms.Button cancelBtn;
+        private System.Windows.Forms.CheckBox reportCheckBox;
     }
 }
