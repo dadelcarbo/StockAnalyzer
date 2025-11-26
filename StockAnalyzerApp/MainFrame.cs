@@ -1,4 +1,5 @@
-﻿using Saxo.OpenAPI.AuthenticationServices;
+﻿using Newtonsoft.Json;
+using Saxo.OpenAPI.AuthenticationServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -45,6 +46,7 @@ using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -1352,32 +1354,21 @@ namespace StockAnalyzerApp
         private void LoadWatchList()
         {
             string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.xml");
+            this.WatchLists = StockWatchList.Load(watchListsFileName);
 
-            // Parse watch lists
-            if (File.Exists(watchListsFileName))
+            if (this.WatchLists.Count == 0)
             {
-                using FileStream fs = new FileStream(watchListsFileName, FileMode.Open);
-                XmlReaderSettings settings = new XmlReaderSettings();
-                settings.IgnoreWhitespace = true;
-                XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
-                this.WatchLists = (List<StockWatchList>)serializer.Deserialize(xmlReader);
-                this.WatchLists = this.WatchLists.OrderBy(wl => wl.Name).ToList();
-
+                // Create new empty watchlist
+                this.WatchLists.Add(new StockWatchList("New"));
+                StockWatchList.Save(watchListsFileName, this.WatchLists);
+            }
+            else
+            {
                 // Cleanup missing stocks
                 foreach (var watchList in this.WatchLists)
                 {
                     watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
                 }
-            }
-            else
-            {
-                this.WatchLists = new List<StockWatchList>();
-            }
-            if (this.WatchLists.Count == 0)
-            {
-                // Create new empty watchlist
-                this.WatchLists.Add(new StockWatchList("Empty"));
             }
         }
 
@@ -2031,25 +2022,15 @@ namespace StockAnalyzerApp
             // Sort all the watchlists
             if (this.WatchLists != null)
             {
+                string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.xml");
+
                 foreach (StockWatchList watchList in this.WatchLists)
                 {
                     watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
                     watchList.StockList.Sort();
                 }
 
-                // Save watch list file
-                string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.xml");
-                XmlWriterSettings settings = new XmlWriterSettings();
-                settings.Indent = true;
-                settings.NewLineOnAttributes = true;
-
-                using FileStream fs = new FileStream(watchListsFileName, FileMode.Create);
-                XmlSerializer serializer = new XmlSerializer(typeof(List<StockWatchList>));
-                XmlTextWriter xmlWriter = new XmlTextWriter(fs, null);
-                xmlWriter.Formatting = System.Xml.Formatting.Indented;
-                xmlWriter.WriteStartDocument();
-                serializer.Serialize(xmlWriter, this.WatchLists);
-                xmlWriter.WriteEndDocument();
+                StockWatchList.Save(watchListsFileName, this.WatchLists);
             }
         }
 
