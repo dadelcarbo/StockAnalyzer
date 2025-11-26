@@ -504,7 +504,7 @@ namespace StockAnalyzerApp
             // showHorseRaceViewMenuItem
             // 
             this.showHorseRaceViewMenuItem.Name = "showHorseRaceViewMenuItem";
-            this.showHorseRaceViewMenuItem.ShortcutKeys = Keys.Control | Keys.R;
+            this.showHorseRaceViewMenuItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.R;
             this.showHorseRaceViewMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showHorseRaceViewMenuItem.Text = "Horse Race View";
             this.showHorseRaceViewMenuItem.Click += showHorseRaceViewMenuItem_Click;
@@ -580,6 +580,7 @@ namespace StockAnalyzerApp
                 this.portfolioSimulationMenuItem,
                 this.toolStripSeparator8,
                 this.showAlertDefDialogMenuItem,
+                this.generateReportMenuItem,
                 this.tweetMenuItem,
                 this.sectorMenuItem,
                 this.bestTrendMenuItem,

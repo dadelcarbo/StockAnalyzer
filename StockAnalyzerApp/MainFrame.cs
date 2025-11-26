@@ -601,28 +601,32 @@ namespace StockAnalyzerApp
 
         private void generateReportMenuItem_Click(object sender, EventArgs e)
         {
-            GenerateReports();
+            GenerateReports(true);
         }
 
-        private void GenerateReports()
+        private void GenerateReports(bool force = false)
         {
+            var currentSize = this.Size;
             try
             {
                 this.Size = new Size(600, 600);
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
-                    GenerateReportFromTemplate(reportTemplate);
+                    GenerateReportFromTemplate(reportTemplate, force);
                 }
 
                 foreach (var watchlist in StockWatchList.WatchLists.Where(w => w.Report && w.StockList.Count > 0))
                 {
-                    GenerateReportFromWatchList(watchlist);
+                    GenerateReportFromWatchList(watchlist, force);
                 }
             }
             catch (Exception ex)
             {
                 StockLog.Write(ex);
-
+            }
+            finally
+            {
+                this.Size = currentSize;
             }
         }
 

@@ -522,7 +522,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 Bitmap snapshot = (Bitmap)this.backgroundBitmap.Clone();
                 Graphics g = Graphics.FromImage(snapshot);
-                g.DrawRectangle(Pens.Black, 0, 0, snapshot.Width - 1, snapshot.Height - 1);
 
                 using (var stream = new MemoryStream())
                 {
