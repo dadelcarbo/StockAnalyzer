@@ -18,7 +18,8 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             InitializeComponent();
             watchLists = wl;
             this.stockWatchListsBindingSource.DataSource = watchLists;
-            this.stockWatchListBindingSource.DataSource = watchLists.First().StockList;
+            this.stockListBindingSource.DataSource = watchLists.First().StockList;
+            this.watchlistBindingSource.DataSource = watchLists.First();
         }
 
 
@@ -40,17 +41,20 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             {
                 if (watchLists.Count != 0)
                 {
-                    this.stockWatchListBindingSource.DataSource = watchLists.First().StockList;
+                    this.stockListBindingSource.DataSource = watchLists.First().StockList;
+                    this.watchlistBindingSource.DataSource = watchLists.First();
                 }
                 else
                 {
-                    this.stockWatchListBindingSource.DataSource = null;
+                    this.stockListBindingSource.DataSource = null;
+                    this.watchlistBindingSource.DataSource = null;
                 }
             }
             else
             {
-                this.stockWatchListBindingSource.DataSource =
-                watchLists.First(wl => wl == this.watchListComboBox.SelectedItem).StockList;
+                var wl = watchLists.First(wl => wl == this.watchListComboBox.SelectedItem);
+                this.stockListBindingSource.DataSource = wl.StockList;
+                this.watchlistBindingSource.DataSource = wl;
             }
         }
         private void deleteWatchlistBtn_Click(object sender, EventArgs e)
@@ -111,8 +115,8 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             {
                 watchList.StockList.Remove(stock);
             }
-            this.stockWatchListBindingSource.DataSource = null;
-            this.stockWatchListBindingSource.DataSource = watchList.StockList;
+            this.stockListBindingSource.DataSource = null;
+            this.stockListBindingSource.DataSource = watchList.StockList;
         }
     }
 }

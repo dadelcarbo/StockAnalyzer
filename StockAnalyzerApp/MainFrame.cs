@@ -599,6 +599,11 @@ namespace StockAnalyzerApp
             this.Focus();
         }
 
+        private void generateReportMenuItem_Click(object sender, EventArgs e)
+        {
+            GenerateReports();
+        }
+
         private void GenerateReports()
         {
             try
@@ -621,10 +626,10 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void GenerateReportFromTemplate(string templateFile)
+        private void GenerateReportFromTemplate(string templateFile, bool force = false)
         {
             var reportFileName = Path.Combine(Folders.Report, Path.GetFileName(templateFile));
-            if (File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(templateFile))
+            if (!force && File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(templateFile))
                 return;
 
             var htmlReportTemplate = File.ReadAllText(templateFile);
@@ -662,10 +667,10 @@ namespace StockAnalyzerApp
             <td>%%Weekly%%</td>
             <td>%%Daily%%</td>
         </tr>";
-        private void GenerateReportFromWatchList(StockWatchList watchlist)
+        private void GenerateReportFromWatchList(StockWatchList watchlist, bool force = false)
         {
             var reportFileName = Path.Combine(Folders.Report, watchlist.Name + ".html");
-            if (File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(WatchlistReportTemplatePath))
+            if (!force && File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(WatchlistReportTemplatePath))
                 return;
 
             var htmlReport = File.ReadAllText(WatchlistReportTemplatePath);

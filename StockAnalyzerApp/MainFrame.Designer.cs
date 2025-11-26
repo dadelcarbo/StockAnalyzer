@@ -71,6 +71,7 @@ namespace StockAnalyzerApp
             this.marketReplayViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.multipleTimeFrameViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showAlertDefDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateReportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.drawingDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -531,6 +532,14 @@ namespace StockAnalyzerApp
             this.showAlertDefDialogMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showAlertDefDialogMenuItem.Text = "Alert Manager";
             this.showAlertDefDialogMenuItem.Click += showAlertDefDialogMenuItem_Click;
+            // 
+            // generateReportMenuItem
+            // 
+            this.generateReportMenuItem.Name = "generateReportMenuItem";
+            this.generateReportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.generateReportMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.generateReportMenuItem.Text = "HTML report";
+            this.generateReportMenuItem.Click += generateReportMenuItem_Click;
             // 
             // drawingDialogMenuItem
             // 
@@ -1626,6 +1635,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem marketReplayViewMenuItem;
         private ToolStripMenuItem multipleTimeFrameViewMenuItem;
         private ToolStripMenuItem showAlertDefDialogMenuItem;
+        private ToolStripMenuItem generateReportMenuItem;
         private ToolStripMenuItem drawingDialogMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;
         private ToolStripSeparator toolStripSeparator10;
