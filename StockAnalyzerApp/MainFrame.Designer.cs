@@ -1102,7 +1102,7 @@ namespace StockAnalyzerApp
             this.divScaleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.divScaleBtn.Name = "divScaleBtn";
             this.divScaleBtn.Size = new System.Drawing.Size(23, 20);
-            this.divScaleBtn.ToolTipText = "div scale CTRL+L";
+            this.divScaleBtn.ToolTipText = "Dividend adjusted CTRL+D";
             this.divScaleBtn.Click += new System.EventHandler(this.divScaleBtn_Click);
             // 
             // showVariationBtn

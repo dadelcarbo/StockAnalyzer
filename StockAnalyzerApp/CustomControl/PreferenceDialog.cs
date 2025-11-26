@@ -30,6 +30,7 @@ namespace StockAnalyzerApp.CustomControl
             this.generateDailyReportCheckBox.Checked = Settings.Default.GenerateDailyReport;
             this.dataFolderTextBox.Text = Folders.DataFolder;
             this.personalFolderTextBox.Text = Folders.PersonalFolder;
+            this.onlinePortofolioCheckBox.Checked = Settings.Default.PortfolioOnline;
             needRestart = false;
         }
 
@@ -53,6 +54,8 @@ namespace StockAnalyzerApp.CustomControl
 
             Folders.DataFolder = this.dataFolderTextBox.Text;
             Folders.PersonalFolder = this.personalFolderTextBox.Text;
+
+            Settings.Default.PortfolioOnline = this.onlinePortofolioCheckBox.Checked;
 
             Settings.Default.Save();
 

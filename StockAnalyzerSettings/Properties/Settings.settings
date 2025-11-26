@@ -14,9 +14,6 @@
     <Setting Name="SelectedGroup" Type="System.String" Scope="User">
       <Value Profile="(Default)">INDICES</Value>
     </Setting>
-    <Setting Name="PortofolioFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">OrderFile.xml</Value>
-    </Setting>
     <Setting Name="ShowSummaryOrders" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -104,9 +101,6 @@
     <Setting Name="StrategyStartDate" Type="System.DateTime" Scope="User">
       <Value Profile="(Default)">2011-01-03</Value>
     </Setting>
-    <Setting Name="PortofolioValue" Type="System.Single" Scope="User">
-      <Value Profile="(Default)">16000</Value>
-    </Setting>
     <Setting Name="RaiseAlerts" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -137,14 +131,14 @@
     <Setting Name="UserSMTP" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="PortfolioValue" Type="System.String" Scope="User">
-      <Value Profile="(Default)">16000</Value>
-    </Setting>
     <Setting Name="PersonalFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="InvestingUrlRoot" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://tvc4.investing.com/f9003a0318d821f2f15a6378237b5c36/1663603016/1/1/8</Value>
+    </Setting>
+    <Setting Name="PortfolioOnline" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

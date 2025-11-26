@@ -12,7 +12,7 @@ namespace StockAnalyzerSettings.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.14.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -49,6 +49,18 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AnalysisFile {
+            get {
+                return ((string)(this["AnalysisFile"]));
+            }
+            set {
+                this["AnalysisFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("INDICES")]
         public string SelectedGroup {
             get {
@@ -56,18 +68,6 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["SelectedGroup"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("OrderFile.xml")]
-        public string PortofolioFile {
-            get {
-                return ((string)(this["PortofolioFile"]));
-            }
-            set {
-                this["PortofolioFile"] = value;
             }
         }
         
@@ -422,18 +422,6 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("16000")]
-        public float PortofolioValue {
-            get {
-                return ((float)(this["PortofolioValue"]));
-            }
-            set {
-                this["PortofolioValue"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool RaiseAlerts {
             get {
@@ -494,6 +482,18 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowBarSmoothing {
+            get {
+                return ((bool)(this["ShowBarSmoothing"]));
+            }
+            set {
+                this["ShowBarSmoothing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DownloadData {
             get {
@@ -542,18 +542,6 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("16000")]
-        public string PortfolioValue {
-            get {
-                return ((string)(this["PortfolioValue"]));
-            }
-            set {
-                this["PortfolioValue"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string PersonalFolder {
             get {
@@ -566,14 +554,22 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://tvc4.investing.com/7efc972e9935356062fc273b5cb820d2/1739976098/1/1/8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://tvc4.investing.com/f9003a0318d821f2f15a6378237b5c36/1663603016/1/1/8")]
         public string InvestingUrlRoot {
             get {
                 return ((string)(this["InvestingUrlRoot"]));
             }
-            set
-            {
-                this["InvestingUrlRoot"] = value;
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PortfolioOnline {
+            get {
+                return ((bool)(this["PortfolioOnline"]));
+            }
+            set {
+                this["PortfolioOnline"] = value;
             }
         }
     }

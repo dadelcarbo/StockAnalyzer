@@ -2667,14 +2667,17 @@ namespace StockAnalyzerApp
         }
         private void portfolioReportMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
+            if (Settings.Default.PortfolioOnline)
             {
-                if (!p.SaxoLogin())
+                foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
                 {
-                    var diagResult = MessageBox.Show($"Portfolio: {p.Name} login failed !!! {Environment.NewLine}Do you want to continue ?", "Login Error", MessageBoxButtons.YesNo);
-                    if (diagResult == DialogResult.No)
+                    if (!p.SaxoLogin())
                     {
-                        return;
+                        var diagResult = MessageBox.Show($"Portfolio: {p.Name} login failed !!! {Environment.NewLine}Do you want to continue ?", "Login Error", MessageBoxButtons.YesNo);
+                        if (diagResult == DialogResult.No)
+                        {
+                            return;
+                        }
                     }
                 }
             }

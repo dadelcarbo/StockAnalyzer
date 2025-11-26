@@ -67,6 +67,8 @@ namespace StockAnalyzerApp.CustomControl
             this.label7 = new System.Windows.Forms.Label();
             this.personalFolderTextBox = new System.Windows.Forms.TextBox();
             this.browsePersonalButton = new System.Windows.Forms.Button();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.onlinePortofolioCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.chartParamGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.barNumberUpDown)).BeginInit();
@@ -75,6 +77,7 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox3.SuspendLayout();
             this.alertGroupBox.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDlg
@@ -187,7 +190,6 @@ namespace StockAnalyzerApp.CustomControl
             resources.ApplyResources(this.showVariationCheckBox, "showVariationCheckBox");
             this.showVariationCheckBox.Name = "showVariationCheckBox";
             this.showVariationCheckBox.UseVisualStyleBackColor = true;
-
             // 
             // barNumberLabel
             // 
@@ -336,12 +338,26 @@ namespace StockAnalyzerApp.CustomControl
             this.browsePersonalButton.UseVisualStyleBackColor = true;
             this.browsePersonalButton.Click += new System.EventHandler(this.browsePersonalButton_Click);
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.onlinePortofolioCheckBox);
+            resources.ApplyResources(this.groupBox5, "groupBox5");
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.TabStop = false;
+            // 
+            // onlinePortofolioCheckBox
+            // 
+            resources.ApplyResources(this.onlinePortofolioCheckBox, "onlinePortofolioCheckBox");
+            this.onlinePortofolioCheckBox.Name = "onlinePortofolioCheckBox";
+            this.onlinePortofolioCheckBox.UseVisualStyleBackColor = true;
+            // 
             // PreferenceDialog
             // 
             this.AcceptButton = this.okBtn;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelBtn;
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.browsePersonalButton);
             this.Controls.Add(this.browseDataButton);
             this.Controls.Add(this.groupBox4);
@@ -376,9 +392,10 @@ namespace StockAnalyzerApp.CustomControl
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.alertGroupBox.ResumeLayout(false);
-            this.alertGroupBox.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -421,5 +438,7 @@ namespace StockAnalyzerApp.CustomControl
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox personalFolderTextBox;
         private System.Windows.Forms.Button browsePersonalButton;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.CheckBox onlinePortofolioCheckBox;
     }
 }

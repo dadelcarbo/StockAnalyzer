@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings.Properties;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -90,7 +91,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
-            this.TradeViewModel.Refresh(true);
+            this.TradeViewModel.Refresh(Settings.Default.PortfolioOnline);
         }
     }
 }

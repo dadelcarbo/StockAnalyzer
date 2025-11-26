@@ -150,7 +150,7 @@ namespace StockAnalyzer.StockPortfolio
                 File.Move(filepath, newFilepath);
             }
         }
-        private static bool archivePortfolioFile = true;
+        private static bool archivePortfolioFile = false;
         public void Serialize()
         {
             using var ml = new MethodLogger(this, true, this.Name);

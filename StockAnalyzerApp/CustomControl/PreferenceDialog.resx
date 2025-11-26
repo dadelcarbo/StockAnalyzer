@@ -304,7 +304,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>16</value>
   </data>
   <data name="userIDTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>55, 14</value>
@@ -325,7 +325,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;userIDTextBox.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>14</value>
   </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 94</value>
@@ -349,7 +349,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>11</value>
   </data>
   <data name="getLicenseButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -376,7 +376,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;getLicenseButton.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="msg1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -410,7 +410,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;msg1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="barNumberUpDown.Location" type="System.Drawing.Point, System.Drawing">
     <value>98, 24</value>
@@ -515,7 +515,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;chartParamGroupBox.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="startYearTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 33</value>
@@ -620,7 +620,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="testButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -773,55 +773,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="alertFrequencyUpDown.Location" type="System.Drawing.Point, System.Drawing">
-    <value>145, 21</value>
-  </data>
-  <data name="alertFrequencyUpDown.Size" type="System.Drawing.Size, System.Drawing">
-    <value>78, 20</value>
-  </data>
-  <data name="alertFrequencyUpDown.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;alertFrequencyUpDown.Name" xml:space="preserve">
-    <value>alertFrequencyUpDown</value>
-  </data>
-  <data name="&gt;&gt;alertFrequencyUpDown.Type" xml:space="preserve">
-    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;alertFrequencyUpDown.Parent" xml:space="preserve">
-    <value>alertGroupBox</value>
-  </data>
-  <data name="&gt;&gt;alertFrequencyUpDown.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="label5.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 23</value>
-  </data>
-  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 13</value>
-  </data>
-  <data name="label5.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>Frequency</value>
-  </data>
-  <data name="&gt;&gt;label5.Name" xml:space="preserve">
-    <value>label5</value>
-  </data>
-  <data name="&gt;&gt;label5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
-    <value>alertGroupBox</value>
-  </data>
-  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>5</value>
   </data>
   <data name="alertActiveCheckBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 18</value>
@@ -845,13 +797,13 @@ Do you want to restart now ?</value>
     <value>alertGroupBox</value>
   </data>
   <data name="&gt;&gt;alertActiveCheckBox.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>0</value>
   </data>
   <data name="alertGroupBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 347</value>
   </data>
   <data name="alertGroupBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>325, 49</value>
+    <value>160, 49</value>
   </data>
   <data name="alertGroupBox.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -869,7 +821,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;alertGroupBox.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="generateDailyReportCheckBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -902,10 +854,10 @@ Do you want to restart now ?</value>
     <value>0</value>
   </data>
   <data name="groupBox4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 402</value>
+    <value>184, 347</value>
   </data>
   <data name="groupBox4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>325, 49</value>
+    <value>156, 49</value>
   </data>
   <data name="groupBox4.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
@@ -923,7 +875,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -953,7 +905,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>15</value>
   </data>
   <data name="dataFolderTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>55, 41</value>
@@ -974,7 +926,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;dataFolderTextBox.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>12</value>
   </data>
   <data name="browseDataButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -998,7 +950,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;browseDataButton.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="label7.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1028,7 +980,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>13</value>
   </data>
   <data name="personalFolderTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>55, 67</value>
@@ -1049,7 +1001,7 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;personalFolderTextBox.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>10</value>
   </data>
   <data name="browsePersonalButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>321, 67</value>
@@ -1070,6 +1022,57 @@ Do you want to restart now ?</value>
     <value>$this</value>
   </data>
   <data name="&gt;&gt;browsePersonalButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="onlinePortofolioCheckBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="onlinePortofolioCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 29</value>
+  </data>
+  <data name="onlinePortofolioCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 17</value>
+  </data>
+  <data name="onlinePortofolioCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="onlinePortofolioCheckBox.Text" xml:space="preserve">
+    <value>Connect Portfolio</value>
+  </data>
+  <data name="&gt;&gt;onlinePortofolioCheckBox.Name" xml:space="preserve">
+    <value>onlinePortofolioCheckBox</value>
+  </data>
+  <data name="&gt;&gt;onlinePortofolioCheckBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;onlinePortofolioCheckBox.Parent" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="&gt;&gt;onlinePortofolioCheckBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="groupBox5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 403</value>
+  </data>
+  <data name="groupBox5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>327, 52</value>
+  </data>
+  <data name="groupBox5.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="groupBox5.Text" xml:space="preserve">
+    <value>Saxo Integration</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Name" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
