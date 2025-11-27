@@ -608,8 +608,13 @@ namespace StockAnalyzerApp
         private void GenerateReports(bool force = false)
         {
             var currentSize = this.Size;
+            var currentState = this.WindowState;
             try
             {
+                if (currentState == FormWindowState.Maximized || currentState == FormWindowState.Minimized)
+                {
+                    this.WindowState = FormWindowState.Normal;
+                }
                 this.Size = new Size(600, 600);
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
@@ -627,7 +632,9 @@ namespace StockAnalyzerApp
             }
             finally
             {
-                this.Size = currentSize;
+                this.WindowState = currentState;
+                if (currentState == FormWindowState.Normal)
+                    this.Size = currentSize;
             }
         }
 
