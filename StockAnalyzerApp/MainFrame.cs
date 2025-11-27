@@ -198,6 +198,7 @@ namespace StockAnalyzerApp
         private static readonly string WORK_THEME = "__NewTheme*";
 
         private static readonly string EMPTY_THEME = "_Empty";
+        private static readonly string REPORT_THEME = "_Report";
 
         #endregion
         #region STARTUP methods
@@ -687,7 +688,7 @@ namespace StockAnalyzerApp
                     continue;
 
                 var duration = BarDuration.Daily;
-                var theme = "_Empty";
+                var theme = REPORT_THEME;
                 var nbBars = 75;
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
                 string data = $"\r\n    <h2>{stockName} - {duration}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
@@ -695,7 +696,7 @@ namespace StockAnalyzerApp
                 var row = TABLE_ROW_TEMPLATE.Replace("%%Daily%%", data);
 
                 duration = BarDuration.Weekly;
-                theme = "_Empty";
+                theme = REPORT_THEME;
                 nbBars = 75;
                 bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
                 data = $"\r\n    <h2>{stockName} - {duration}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
