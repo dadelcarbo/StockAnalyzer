@@ -682,7 +682,7 @@ namespace StockAnalyzerApp
 
                 htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
             }
-            htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", Path.GetFileNameWithoutExtension(templateFile));
+            htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", $"Report - {Path.GetFileNameWithoutExtension(templateFile)}");
 
             File.WriteAllText(reportFileName, htmlReportTemplate);
 

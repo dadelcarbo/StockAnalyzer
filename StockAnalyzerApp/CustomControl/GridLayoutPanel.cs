@@ -28,8 +28,8 @@ namespace StockAnalyzerApp.CustomControl
 
         public void SetRows(IEnumerable<CollapsiblePanel> controls)
         {
-            this.Parent.SuspendLayout();
-            this.Parent.Visible = false;
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel1.Visible = false;
 
             this.tableLayoutPanel1.Controls.Clear();
             this.tableLayoutPanel1.RowStyles.Clear();
@@ -61,8 +61,8 @@ namespace StockAnalyzerApp.CustomControl
                 }
             }
 
-            this.Parent.Visible = true;
-            this.Parent.ResumeLayout();
+            this.tableLayoutPanel1.Visible = true;
+            this.tableLayoutPanel1.ResumeLayout();
         }
     }
 }
