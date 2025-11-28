@@ -728,7 +728,7 @@ namespace StockAnalyzerApp
 
                 tableRows += row;
             }
-            htmlReport = htmlReport.Replace("%%Title%%", watchlist.Name);
+            htmlReport = htmlReport.Replace("%%Title%%", $"Watchlist - {watchlist.Name}");
             htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
 
             File.WriteAllText(reportFileName, htmlReport);
