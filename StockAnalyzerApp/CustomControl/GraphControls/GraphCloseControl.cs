@@ -216,7 +216,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         p1 = GetScreenPointFromValuePoint(this.StartIndex, val);
                         aGraphic.DrawLine(gridPen, GraphRectangle.X, p1.Y, GraphRectangle.X + GraphRectangle.Width, p1.Y);
-                        aGraphic.DrawString(val.ToString("0.##"), axisFont, Brushes.Black, 0, p1.Y - 8);
+                        aGraphic.DrawString(val.ToString("0.##"), axisFont, legendBrush, 0, p1.Y - 8);
                     }
                     val += step;
                 }
@@ -229,9 +229,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 #endregion
             }
-            aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("dd/MM"), axisFont, Brushes.Black,
+            aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("dd/MM"), axisFont, legendBrush,
                GraphRectangle.Right - 3, GraphRectangle.Y + GraphRectangle.Height);
-            aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("yyyy"), axisFont, Brushes.Black,
+            aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("yyyy"), axisFont, legendBrush,
                GraphRectangle.Right - 1, GraphRectangle.Y + GraphRectangle.Height + 8);
 
             #endregion
@@ -601,7 +601,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                             CandleStick candleStick = new CandleStick
                             {
-                                Width = (int)(0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count())
+                                Width = (int)(0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count()) - 1
                             };
                             for (int i = 0; i < tmpPoints.Count(); i++)
                             {
@@ -634,7 +634,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     else
                                     {
                                         using Brush brush = new SolidBrush(color.Value);
-                                        candleStick.Draw(aGraphic, closeCurveType.CurvePen, brush);
+                                        candleStick.Draw(aGraphic, new Pen(color.Value), brush);
                                     }
                                 }
                                 else

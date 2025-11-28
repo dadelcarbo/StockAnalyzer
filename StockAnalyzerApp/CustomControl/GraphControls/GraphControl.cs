@@ -176,12 +176,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Pen entryOrderPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
         static protected Pen stopPen = new Pen(Color.Red, 2.0f);
         static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
-        static protected Brush orderAreaBrush => new SolidBrush(Color.AliceBlue);
+        static protected Brush orderAreaBrush;
         static protected Brush PortfolioAreaBrush => new SolidBrush(Color.FromArgb(128, Color.DarkRed));
 
         protected bool mouseDown = false;
 
         protected Brush backgroundBrush;
+        protected Brush legendBrush;
         private Color backgroundColor;
         public Color BackgroundColor
         {
@@ -190,6 +191,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 this.backgroundBrush?.Dispose();
                 this.backgroundBrush = new SolidBrush(value);
+
+                legendBrush?.Dispose();
+                legendBrush = new SolidBrush(Color.FromArgb(255, 255 - value.R, 255 - value.G, 255 - value.B));
+
+                orderAreaBrush?.Dispose();
+                if (value.B > 128)
+                    orderAreaBrush = new SolidBrush(Color.FromArgb(255, value.R -32, value.G -32, value.B));
+                else
+                    orderAreaBrush = new SolidBrush(Color.FromArgb(255, value.R, value.G, value.B + 32));
                 backgroundColor = value;
             }
         }
@@ -495,7 +505,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 Graphics gr = this.CreateGraphics();
                 gr.Clear(this.backgroundColor);
-                gr.DrawString(this.alternateString, axisFont, Brushes.Black, 10, 20);
+                gr.DrawString(this.alternateString, axisFont, legendBrush, 10, 20);
             }
         }
 
@@ -522,7 +532,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 Bitmap snapshot = (Bitmap)this.backgroundBitmap.Clone();
                 Graphics g = Graphics.FromImage(snapshot);
-                g.DrawRectangle(Pens.Black, 0, 0, snapshot.Width - 1, snapshot.Height - 1);
 
                 using (var stream = new MemoryStream())
                 {
@@ -635,7 +644,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                         lastValueString = lastValue.ToString(stockIndicator.SerieFormats?[i]);
                                     }
 
-                                    aGraphic.DrawString(lastValueString, axisFont, Brushes.Black, GraphRectangle.Right + 1, Math.Max(points.Last().Y - 8, GraphRectangle.Top));
+                                    aGraphic.DrawString(lastValueString, axisFont, legendBrush, GraphRectangle.Right + 1, Math.Max(points.Last().Y - 8, GraphRectangle.Top));
                                 }
                                 if (stockIndicator.SeriePens[i].DashStyle == DashStyle.Custom)
                                 {
@@ -792,7 +801,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), GraphRectangle.Top + 5);
 
-                this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.backgroundBrush, point, true);
+                this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.textBackgroundBrush, point, true);
             }
         }
         protected void PaintHorizontalLines(Graphics g)
@@ -1097,7 +1106,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         valueString = value.ToString("0.##");
                     }
-                    this.DrawString(this.foregroundGraphic, valueString, axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, point2.Y - 8), true);
+                    this.DrawString(this.foregroundGraphic, valueString, axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, point2.Y - 8), true);
                 }
             }
         }
@@ -1256,8 +1265,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         previousYear = this.dateSerie[i].Year;
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, Brushes.Black, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                         aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                     }
@@ -1277,15 +1286,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             previousYear = this.dateSerie[i].Year;
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                                aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, Brushes.Black, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
+                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                             }
                         }
                         else
                         {
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                         }
                     }
@@ -1307,15 +1316,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             previousYear = this.dateSerie[i].Year;
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                                aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, Brushes.Black, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
+                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                             }
                         }
                         else
                         {
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                         }
                     }
@@ -1332,15 +1341,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         previousYear = this.dateSerie[i].Year;
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, Brushes.Black, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                     }
                     else
                     {
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                         }
                     }
                 }
@@ -1356,8 +1365,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                     }
                 }
@@ -1373,8 +1382,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                     }
                     else
@@ -1385,7 +1394,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                         }
                     }
@@ -1403,8 +1412,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                         barCount = 0;
                     }
@@ -1416,7 +1425,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                             barCount = 0;
                         }
@@ -1435,8 +1444,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                     }
                     else
@@ -1446,7 +1455,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, Brushes.Black, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                         }
                     }

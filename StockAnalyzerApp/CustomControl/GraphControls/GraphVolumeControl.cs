@@ -87,7 +87,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 lastValueString += lastValue.ToString("0.##") + "€";
             }
 
-            aGraphic.DrawString(lastValueString, axisFont, Brushes.Black, GraphRectangle.Right + 1, GraphRectangle.Top + 8);
+            aGraphic.DrawString(lastValueString, axisFont, legendBrush, GraphRectangle.Right + 1, GraphRectangle.Top + 8);
 
             float minValue = float.MaxValue, maxValue = float.MinValue;
             CurveList.GetMinMax(StartIndex, EndIndex, ref minValue, ref maxValue, false);
