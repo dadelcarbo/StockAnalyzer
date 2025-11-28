@@ -160,7 +160,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
             }
-            aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height - 1);
+            aGraphic.DrawRectangle(gridPen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height - 1);
         }
         override protected void PaintDailyBox(PointF mousePoint)
         {

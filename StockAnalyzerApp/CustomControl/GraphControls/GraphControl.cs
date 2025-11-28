@@ -197,9 +197,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 orderAreaBrush?.Dispose();
                 if (value.B > 128)
-                    orderAreaBrush = new SolidBrush(Color.FromArgb(255, value.R -32, value.G -32, value.B));
+                    orderAreaBrush = new SolidBrush(Color.FromArgb(255, value.R - 16, value.G - 16, value.B));
                 else
-                    orderAreaBrush = new SolidBrush(Color.FromArgb(255, value.R, value.G, value.B + 32));
+                    orderAreaBrush = new SolidBrush(Color.FromArgb(255, value.R + 16, value.G + 8, value.B));
                 backgroundColor = value;
             }
         }
@@ -229,7 +229,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 gridColor = value;
             }
         }
-        public Pen DrawingPen { get; set; }
+
+        static public Pen DrawingPen { get; set; }
         static public Pen MouseCursorPen => new Pen(Brushes.Black, 2);
 
         public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(32, Color.LightGreen));
@@ -1191,7 +1192,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 "Bars:\t" + ((int)(newValue.X - initialValue.X)).ToString() + Environment.NewLine +
                 "Var:\t" + variation.ToString("P2") + "     " + Environment.NewLine +
                 "Diff:\t" + diffString,
-                toolTipFont, Brushes.Black, this.backgroundBrush, new PointF(x + width + 4, y), true);
+                toolTipFont, legendBrush, this.backgroundBrush, new PointF(x + width + 4, y), true);
 
             // force the value box not to display.
             forceNoValueBoxDisplay = true;

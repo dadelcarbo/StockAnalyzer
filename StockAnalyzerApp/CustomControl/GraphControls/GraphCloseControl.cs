@@ -1524,7 +1524,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             bool drawHorizontalLine = mouseOverThis && mousePoint.Y > GraphRectangle.Top && mousePoint.Y < GraphRectangle.Bottom;
             if ((key & Keys.Control) != 0)
             {
-                DrawMouseValueCross(mouseValuePoint, drawHorizontalLine, false, this.DrawingPen, true);
+                DrawMouseValueCross(mouseValuePoint, drawHorizontalLine, false, DrawingPen, true);
             }
             else
             {
@@ -1784,7 +1784,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 // Draw vertical line
                                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
-                                Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 0.0f, 1.0f, this.DrawingPen);
+                                Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 0.0f, 1.0f, DrawingPen);
                                 drawingItems.Add(newLine);
                                 drawingItems.RefDate = dateSerie[(int)mouseValuePoint.X];
                                 drawingItems.RefDateIndex = (int)mouseValuePoint.X;
@@ -1796,7 +1796,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             else
                             {
                                 // Draw horizontal line
-                                Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 1.0f, 0.0f, this.DrawingPen);
+                                Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 1.0f, 0.0f, DrawingPen);
                                 drawingItems.Add(newLine);
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -1877,12 +1877,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case GraphDrawMode.AddSegment:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        DrawTmpSegment(this.foregroundGraphic, this.DrawingPen, point1, point2, true);
+                        DrawTmpSegment(this.foregroundGraphic, DrawingPen, point1, point2, true);
                     }
                     break;
                 case GraphDrawMode.AddCupHandle:
                     // Detect Cap and Handle
-                    var cupHandle = DetectCupHandle(mouseValuePoint);
+                    var cupHandle = DetectCupHandle((int)Math.Round(mouseValuePoint.X));
                     if (cupHandle != null)
                     {
                         DrawTmpCupHandle(foregroundGraphic, DrawingPen, cupHandle, true);
@@ -1891,7 +1891,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case GraphDrawMode.AddHalfLine:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        DrawTmpHalfLine(this.foregroundGraphic, this.DrawingPen, point1, point2, true);
+                        DrawTmpHalfLine(this.foregroundGraphic, DrawingPen, point1, point2, true);
                     }
                     break;
                 case GraphDrawMode.CopyLine:
@@ -1927,12 +1927,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     break;
             }
         }
-        private CupHandle2D DetectCupHandle(PointF mouseValuePoint)
+        private CupHandle2D DetectCupHandle(int index)
         {
-            return closeCurveType.DataSerie.DetectCupHandle((int)mouseValuePoint.X, 3, false);
-
-            // if (mouseValuePoint.Y > Math.Max(openCurveType.DataSerie[(int)mouseValuePoint.X], closeCurveType.DataSerie[(int)mouseValuePoint.X])) // Upside CupHandle
-            //return new CupHandle2D(startPoint, new PointF(j, pivot.Y), pivot, leftHigh, rightHigh, DrawingPen, true, opened); // Inverse CUP & Handle
+            return closeCurveType.DataSerie.DetectCupHandle(index, 2, false);
         }
         protected void DrawTmpCupHandle(Graphics graph, Pen pen, CupHandle2D cupHandle, bool useTransform)
         {
@@ -1943,37 +1940,37 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 return;
             start = Math.Max(StartIndex, start);
             end = Math.Min(EndIndex, end);
-            if (false)
-            {
-                PointF[] polygonPoints = new PointF[end - start + 1];
-                if (cupHandle.Inverse)
-                {
-                    // Calculate lower body low
-                    for (int i = start; i < end; i++)
-                    {
-                        polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
-                    }
-                }
-                else
-                {
-                    // Calculate upper body high
-                    for (int i = start; i < end; i++)
-                    {
-                        polygonPoints[i - start] = GetScreenPointFromValuePoint(i, closeCurveType.DataSerie[i]);
-                        //polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
-                    }
-                }
-                polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);
-                polygonPoints[end - start] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
-                if (cupHandle.Inverse)
-                {
-                    graph.FillPolygon(CupHandleInvBrush, polygonPoints);
-                }
-                else
-                {
-                    graph.FillPolygon(CupHandleBrush, polygonPoints);
-                }
-            }
+            //if (false)
+            //{
+            //    PointF[] polygonPoints = new PointF[end - start + 1];
+            //    if (cupHandle.Inverse)
+            //    {
+            //        // Calculate lower body low
+            //        for (int i = start; i < end; i++)
+            //        {
+            //            polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Min(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+            //        }
+            //    }
+            //    else
+            //    {
+            //        // Calculate upper body high
+            //        for (int i = start; i < end; i++)
+            //        {
+            //            polygonPoints[i - start] = GetScreenPointFromValuePoint(i, closeCurveType.DataSerie[i]);
+            //            //polygonPoints[i - start] = GetScreenPointFromValuePoint(i, Math.Max(openCurveType.DataSerie[i], closeCurveType.DataSerie[i]));
+            //        }
+            //    }
+            //    polygonPoints[0] = GetScreenPointFromValuePoint(start, cupHandle.Point1.Y);
+            //    polygonPoints[end - start] = GetScreenPointFromValuePoint(end, cupHandle.Point2.Y);
+            //    if (cupHandle.Inverse)
+            //    {
+            //        graph.FillPolygon(CupHandleInvBrush, polygonPoints);
+            //    }
+            //    else
+            //    {
+            //        graph.FillPolygon(CupHandleBrush, polygonPoints);
+            //    }
+            //}
             // Calculate intersection with bounding rectangle
             Rectangle2D rect2D = new Rectangle2D(GraphRectangle);
             if (useTransform)
@@ -2001,7 +1998,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 textPos.Y -= 16;
                 text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
             }
-            this.DrawString(graph, text, axisFont, textBrush, this.backgroundBrush, textPos, false);
+            this.DrawString(graph, text, axisFont, legendBrush, this.backgroundBrush, textPos, false);
 
             // Draw HL and LL
             textPos = GetScreenPointFromValuePoint(cupHandle.LeftLow.X, cupHandle.LeftLow.Y);
@@ -2060,7 +2057,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         case GraphDrawingStep.ItemSelected: // Selecting second point
                             try
                             {
-                                Line2D newLine = new Line2D(point1, point2, this.DrawingPen);
+                                Line2D newLine = new Line2D(point1, point2, DrawingPen);
                                 drawingItems.Add(newLine);
                                 drawingItems.RefDate = dateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
@@ -2163,7 +2160,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         case GraphDrawingStep.ItemSelected: // Selecting second point
                             try
                             {
-                                Segment2D newSegment = new Segment2D(point1, point2, this.DrawingPen);
+                                Segment2D newSegment = new Segment2D(point1, point2, DrawingPen);
                                 drawingItems.Add(newSegment);
                                 drawingItems.RefDate = dateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
@@ -2186,7 +2183,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         case GraphDrawingStep.SelectItem:
                             // Detect Cap and Handle
-                            var cupHandle = DetectCupHandle(mouseValuePoint);
+                            var cupHandle = DetectCupHandle((int)Math.Round(mouseValuePoint.X));
                             if (cupHandle != null)
                             {
                                 drawingItems.Add(cupHandle);
@@ -2213,7 +2210,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         case GraphDrawingStep.ItemSelected: // Selecting second point
                             try
                             {
-                                HalfLine2D newhalfLine = new HalfLine2D(point1, point2, this.DrawingPen);
+                                HalfLine2D newhalfLine = new HalfLine2D(point1, point2, DrawingPen);
                                 drawingItems.Add(newhalfLine);
                                 drawingItems.RefDate = dateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
@@ -2245,7 +2242,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             if (selectedLineIndex != -1)
                             {
                                 Line2D newLine = ((Line2DBase)this.drawingItems[selectedLineIndex]).GetParallelLine(mouseValuePoint);
-                                newLine.Pen = this.DrawingPen;
+                                newLine.Pen = DrawingPen;
                                 drawingItems.Add(newLine);
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;

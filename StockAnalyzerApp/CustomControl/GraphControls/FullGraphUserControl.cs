@@ -37,9 +37,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator1Control.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphVolumeControl.OnZoomChanged);
 
-
             // Fill the control list
-            this.graphCloseControl.DrawingPen = GraphCurveType.PenFromString(Settings.Default.DrawingPen);
+            GraphControl.DrawingPen = GraphCurveType.PenFromString(Settings.Default.DrawingPen);
             this.graphList.Add(this.graphCloseControl);
             this.graphList.Add(this.graphScrollerControl);
             this.graphList.Add(this.graphIndicator1Control);

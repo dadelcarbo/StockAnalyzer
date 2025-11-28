@@ -1744,7 +1744,7 @@ namespace StockAnalyzer.StockMath
 
             return new CupHandle2D()
             {
-                Point1 = new PointF(startIndex, pivot),
+                Point1 = new PointF(startIndex + 1, pivot),
                 Point2 = new PointF(index, pivot),
                 Pivot = new PointF(pivotIndex, pivot),
                 LeftLow = new PointF(leftLowIndex, leftLow),

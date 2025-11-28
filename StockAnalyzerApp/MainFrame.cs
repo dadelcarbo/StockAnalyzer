@@ -248,19 +248,19 @@ namespace StockAnalyzerApp
             this.graphCloseControl.RatioType = RatioType.Ratio;
 
             this.graphIndicator1Control.IsCollapsed = false;
-            this.graphIndicator1Control.SizeRatio = 40;
+            this.graphIndicator1Control.SizeRatio = 50;
             this.graphIndicator1Control.RatioType = RatioType.Absolute;
 
             this.graphIndicator2Control.IsCollapsed = false;
-            this.graphIndicator2Control.SizeRatio = 40;
+            this.graphIndicator2Control.SizeRatio = 50;
             this.graphIndicator2Control.RatioType = RatioType.Absolute;
 
             this.graphIndicator3Control.IsCollapsed = false;
-            this.graphIndicator3Control.SizeRatio = 40;
+            this.graphIndicator3Control.SizeRatio = 50;
             this.graphIndicator3Control.RatioType = RatioType.Absolute;
 
             this.graphVolumeControl.IsCollapsed = false;
-            this.graphVolumeControl.SizeRatio = 40;
+            this.graphVolumeControl.SizeRatio = 50;
             this.graphVolumeControl.RatioType = RatioType.Absolute;
 
             // Fill the control list
@@ -273,10 +273,8 @@ namespace StockAnalyzerApp
 
             indicatorLayoutPanel.SetRows(this.graphList);
 
-            foreach (GraphControl graphControl in this.graphList)
-            {
-                graphControl.DrawingPen = GraphCurveType.PenFromString(Settings.Default.DrawingPen);
-            }
+            GraphControl.DrawingPen = GraphCurveType.PenFromString(Settings.Default.DrawingPen);
+            CupHandle2D.PivotBrush = new SolidBrush(GraphControl.DrawingPen.Color);
 
             this.graphCloseControl.HideIndicators = false;
             this.FormClosing += new FormClosingEventHandler(StockAnalyzerForm_FormClosing);
@@ -1981,10 +1979,9 @@ namespace StockAnalyzerApp
             DrawingStyleForm drawingStyleForm = new DrawingStyleForm(pen);
             if (drawingStyleForm.ShowDialog() == DialogResult.OK)
             {
-                foreach (GraphControl graphControl in this.graphList)
-                {
-                    graphControl.DrawingPen = drawingStyleForm.Pen;
-                }
+                GraphControl.DrawingPen = drawingStyleForm.Pen;
+                CupHandle2D.PivotBrush = new SolidBrush(drawingStyleForm.Pen.Color);
+
                 Settings.Default.DrawingPen = GraphCurveType.PenToString(drawingStyleForm.Pen);
                 Settings.Default.Save();
             }
@@ -4463,6 +4460,8 @@ namespace StockAnalyzerApp
                         var needCollapseReset = !collapsedState1.SequenceEqual(collapsedState2);
                         if (needCollapseReset)
                             indicatorLayoutPanel.SetRows(this.graphList);
+
+                        indicatorLayoutPanel.BackColor = this.graphCloseControl.BackgroundColor;
                     }
 
                     catch (Exception exception)

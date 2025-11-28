@@ -49,6 +49,8 @@ namespace StockAnalyzer.StockDrawing
         #endregion
 
         const int PIVOT_SIZE = 6;
+
+        public static Brush PivotBrush = Brushes.Black;
         public override void Draw(Graphics g, Pen pen, Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
         {
             // Calculate intersection with bounding rectangle
@@ -67,7 +69,7 @@ namespace StockAnalyzer.StockDrawing
                 if (graphRectangle.Contains(transformedPivot))
                 {
                     var offset = Inverse ? 0 : PIVOT_SIZE;
-                    g.FillEllipse(Brushes.Black, transformedPivot.X - (PIVOT_SIZE / 2), transformedPivot.Y - offset, PIVOT_SIZE, PIVOT_SIZE);
+                    g.FillEllipse(PivotBrush, transformedPivot.X - (PIVOT_SIZE / 2), transformedPivot.Y - offset, PIVOT_SIZE, PIVOT_SIZE);
                 }
             }
 
@@ -78,7 +80,7 @@ namespace StockAnalyzer.StockDrawing
                 if (graphRectangle.Contains(transformedPivot))
                 {
                     var offset = Inverse ? PIVOT_SIZE : 0;
-                    g.FillEllipse(Brushes.Black, transformedPivot.X - (PIVOT_SIZE / 2), transformedPivot.Y - offset, PIVOT_SIZE, PIVOT_SIZE);
+                    g.FillEllipse(PivotBrush, transformedPivot.X - (PIVOT_SIZE / 2), transformedPivot.Y - offset, PIVOT_SIZE, PIVOT_SIZE);
                 }
             }
         }

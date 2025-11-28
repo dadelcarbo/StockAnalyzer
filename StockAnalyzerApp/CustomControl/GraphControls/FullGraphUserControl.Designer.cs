@@ -48,7 +48,6 @@
             this.graphCloseControl.CurveList = null;
             this.graphCloseControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphCloseControl.DrawingMode = GraphDrawMode.Normal;
-            this.graphCloseControl.DrawingPen = null;
             this.graphCloseControl.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphCloseControl.EndIndex = 0;
             this.graphCloseControl.GridColor = System.Drawing.Color.Empty;
@@ -75,7 +74,6 @@
             this.graphVolumeControl.CurveList = null;
             this.graphVolumeControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphVolumeControl.DrawingMode = GraphDrawMode.Normal;
-            this.graphVolumeControl.DrawingPen = null;
             this.graphVolumeControl.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphVolumeControl.EndIndex = 0;
             this.graphVolumeControl.GridColor = System.Drawing.Color.Empty;
@@ -132,7 +130,6 @@
             this.graphScrollerControl.CurveList = null;
             this.graphScrollerControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphScrollerControl.DrawingMode = GraphDrawMode.Normal;
-            this.graphScrollerControl.DrawingPen = null;
             this.graphScrollerControl.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphScrollerControl.EndIndex = 0;
             this.graphScrollerControl.GridColor = System.Drawing.Color.Empty;
@@ -155,7 +152,6 @@
             this.graphIndicator1Control.CurveList = null;
             this.graphIndicator1Control.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphIndicator1Control.DrawingMode = GraphDrawMode.Normal;
-            this.graphIndicator1Control.DrawingPen = null;
             this.graphIndicator1Control.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphIndicator1Control.EndIndex = 0;
             this.graphIndicator1Control.GridColor = System.Drawing.Color.Empty;
@@ -180,7 +176,6 @@
             this.graphIndicator2Control.CurveList = null;
             this.graphIndicator2Control.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphIndicator2Control.DrawingMode = GraphDrawMode.Normal;
-            this.graphIndicator2Control.DrawingPen = null;
             this.graphIndicator2Control.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphIndicator2Control.EndIndex = 0;
             this.graphIndicator2Control.GridColor = System.Drawing.Color.Empty;
@@ -205,7 +200,6 @@
             this.graphIndicator3Control.CurveList = null;
             this.graphIndicator3Control.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphIndicator3Control.DrawingMode = GraphDrawMode.Normal;
-            this.graphIndicator3Control.DrawingPen = null;
             this.graphIndicator3Control.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphIndicator3Control.EndIndex = 0;
             this.graphIndicator3Control.GridColor = System.Drawing.Color.Empty;
