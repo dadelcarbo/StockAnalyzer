@@ -54,7 +54,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
     public delegate void OnZoomChangedHandler(int startIndex, int endIndex);
     public delegate void MouseValueChangedHandler(FullGraphUserControl sender, DateTime date, float value, bool crossMode);
 
-    public partial class GraphControl : Panel
+    public partial class GraphControl : CollapsiblePanel
     {
         public event MouseValueChangedHandler OnMouseValueChanged;
 
@@ -306,6 +306,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         protected bool CheckGraphSanity()
         {
+            this.IsCollapsed = false;
             using MethodLogger ml = new MethodLogger(this);
             if (!this.IsInitialized || this.dateSerie == null)
             {
@@ -318,6 +319,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.CurveList == null || this.CurveList.GetNbVisible() == 0)
             {
                 this.Deactivate("No data to display...", false);
+                this.IsCollapsed = true;
                 return false;
             }
             return true;

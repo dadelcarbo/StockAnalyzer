@@ -162,7 +162,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using MethodLogger ml = new MethodLogger(this);
 
-            #region Display Portfolio region
+            #region Display Portfolio
 
             // Draw order management area
             var orderArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, GraphRectangle.Height);
@@ -667,13 +667,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             #region Draw frame, axis and axis values
 
             // Draw main frame
-            aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
-            aGraphic.DrawLine(framePen, orderArea.X, orderArea.Y, orderArea.X, orderArea.Bottom);
+            aGraphic.DrawRectangle(gridPen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
+            aGraphic.DrawLine(gridPen, orderArea.X, orderArea.Y, orderArea.X, orderArea.Bottom);
 
             // Display values and dates
             var lastValue = closeCurveType.DataSerie[EndIndex];
             var lastValuepoint = GetScreenPointFromValuePoint(EndIndex, lastValue);
-            aGraphic.DrawString(lastValue.ToString(), axisFont, Brushes.Black, GraphRectangle.Right + 1, lastValuepoint.Y - 8);
+            aGraphic.DrawString(lastValue.ToString(), axisFont, legendBrush, GraphRectangle.Right + 1, lastValuepoint.Y - 8);
 
             #endregion
 

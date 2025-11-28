@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using StockAnalyzerApp.CustomControl;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace StockAnalyzerApp
 {
@@ -107,7 +109,7 @@ namespace StockAnalyzerApp
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
-            this.indicatorLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.indicatorLayoutPanel = new GridLayoutPanel();
             this.themeToolStrip = new System.Windows.Forms.ToolStrip();
             this.indicatorConfigStripButton = new System.Windows.Forms.ToolStripButton();
             this.candleStripButton = new System.Windows.Forms.ToolStripButton();
@@ -832,20 +834,9 @@ namespace StockAnalyzerApp
             // 
             // indicatorLayoutPanel
             // 
-            this.indicatorLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
-            this.indicatorLayoutPanel.ColumnCount = 1;
-            this.indicatorLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.indicatorLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.indicatorLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.indicatorLayoutPanel.Name = "indicatorLayoutPanel";
-            this.indicatorLayoutPanel.RowCount = 6;
-            this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.5F));
-            this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
-            this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.indicatorLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.5F));
-            this.indicatorLayoutPanel.Size = new System.Drawing.Size(975, 509);
             this.indicatorLayoutPanel.TabIndex = 0;
             // 
             // themeToolStrip
@@ -1651,7 +1642,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem watchlistsMenuItem;
         private ToolStripMenuItem manageWatchlistsMenuItem;
         private ToolStripMenuItem scriptEditorMenuItem;
-        private TableLayoutPanel indicatorLayoutPanel;
+        private GridLayoutPanel indicatorLayoutPanel;
         private ToolStripMenuItem stockFilterMenuItem;
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem bestTrendMenuItem;

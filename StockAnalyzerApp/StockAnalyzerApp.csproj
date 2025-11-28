@@ -318,6 +318,18 @@
       <DependentUpon>AutoTradeDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\AutoTradeDlg\AutoTradeViewModel.cs" />
+    <Compile Include="CustomControl\GraphControls\CollapsiblePanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControl\GraphControls\CollapsiblePanel.Designer.cs">
+      <DependentUpon>CollapsiblePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\GridLayoutPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\GridLayoutPanel.Designer.cs">
+      <DependentUpon>GridLayoutPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\InstrumentDlgs\InstrumentsControl.xaml.cs">
       <DependentUpon>InstrumentsControl.xaml</DependentUpon>
     </Compile>

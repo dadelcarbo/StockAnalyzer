@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Saxo.OpenAPI.AuthenticationServices;
+﻿using Saxo.OpenAPI.AuthenticationServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -46,7 +45,6 @@ using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -241,21 +239,39 @@ namespace StockAnalyzerApp
             this.IsClosing = false;
 
             // Add indicator1Name into the indicators controls layout panel
-            int nbControl = 0;
-            this.indicatorLayoutPanel.Controls.Add(this.graphScrollerControl, nbControl++, 0);
-            this.indicatorLayoutPanel.Controls.Add(this.graphCloseControl, nbControl++, 0);
-            this.indicatorLayoutPanel.Controls.Add(this.graphIndicator1Control, nbControl++, 0);
-            this.indicatorLayoutPanel.Controls.Add(this.graphIndicator2Control, nbControl++, 0);
-            this.indicatorLayoutPanel.Controls.Add(this.graphIndicator3Control, nbControl++, 0);
-            this.indicatorLayoutPanel.Controls.Add(this.graphVolumeControl, nbControl++, 0);
+            this.graphScrollerControl.IsCollapsed = false;
+            this.graphScrollerControl.SizeRatio = 40;
+            this.graphScrollerControl.RatioType = RatioType.Absolute;
+
+            this.graphCloseControl.IsCollapsed = false;
+            this.graphCloseControl.SizeRatio = 5;
+            this.graphCloseControl.RatioType = RatioType.Ratio;
+
+            this.graphIndicator1Control.IsCollapsed = false;
+            this.graphIndicator1Control.SizeRatio = 40;
+            this.graphIndicator1Control.RatioType = RatioType.Absolute;
+
+            this.graphIndicator2Control.IsCollapsed = false;
+            this.graphIndicator2Control.SizeRatio = 40;
+            this.graphIndicator2Control.RatioType = RatioType.Absolute;
+
+            this.graphIndicator3Control.IsCollapsed = false;
+            this.graphIndicator3Control.SizeRatio = 40;
+            this.graphIndicator3Control.RatioType = RatioType.Absolute;
+
+            this.graphVolumeControl.IsCollapsed = false;
+            this.graphVolumeControl.SizeRatio = 40;
+            this.graphVolumeControl.RatioType = RatioType.Absolute;
 
             // Fill the control list
-            this.graphList.Add(this.graphCloseControl);
             this.graphList.Add(this.graphScrollerControl);
+            this.graphList.Add(this.graphCloseControl);
             this.graphList.Add(this.graphIndicator1Control);
             this.graphList.Add(this.graphIndicator2Control);
             this.graphList.Add(this.graphIndicator3Control);
             this.graphList.Add(this.graphVolumeControl);
+
+            indicatorLayoutPanel.SetRows(this.graphList);
 
             foreach (GraphControl graphControl in this.graphList)
             {
@@ -4438,8 +4454,15 @@ namespace StockAnalyzerApp
                             }
                         }
 
+                        var collapsedState1 = this.graphList.Select(g => g.IsCollapsed).ToList();
+
                         // Reinitialise zoom
                         ResetZoom();
+
+                        var collapsedState2 = this.graphList.Select(g => g.IsCollapsed).ToList();
+                        var needCollapseReset = !collapsedState1.SequenceEqual(collapsedState2);
+                        if (needCollapseReset)
+                            indicatorLayoutPanel.SetRows(this.graphList);
                     }
 
                     catch (Exception exception)
