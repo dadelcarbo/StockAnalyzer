@@ -387,6 +387,7 @@
     <Compile Include="StockDrawing\Area.cs" />
     <Compile Include="StockDrawing\Box.cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
+    <Compile Include="StockHelpers\ColorJsonConverter.cs" />
     <Compile Include="StockHelpers\HtmlHelper.cs" />
     <Compile Include="StockHelpers\Persister.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />

@@ -106,6 +106,7 @@ namespace StockAnalyzerApp
 
         private const string ReportTemplatePath = @"Resources\ReportTemplate.html";
         private const string WatchlistReportTemplatePath = @"Resources\WatchlistReportTemplate.html";
+        private const string reportStylePath = @"Resources\style.css";
 
         public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
@@ -624,13 +625,25 @@ namespace StockAnalyzerApp
             var currentSize = this.Size;
             var currentState = this.WindowState;
             GraphControl.GeneratingReport = true;
+
+            bool showOrders = Settings.Default.ShowOrders;
+            bool showPositions = Settings.Default.ShowPositions;
+
+            Settings.Default.ShowOrders = false;
+            Settings.Default.ShowPositions = false;
+
             try
             {
+                var styleFileName = Path.Combine(Folders.Report, "Style.css");
+                if (!File.Exists(styleFileName) || File.GetLastWriteTime(styleFileName) > File.GetLastWriteTime(reportStylePath))
+                    return;
+
+
                 if (currentState == FormWindowState.Maximized || currentState == FormWindowState.Minimized)
                 {
                     this.WindowState = FormWindowState.Normal;
                 }
-                this.Size = new Size(600, 600);
+                this.Size = new Size(600, 450);
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
                     GenerateReportFromTemplate(reportTemplate, force);
@@ -655,6 +668,8 @@ namespace StockAnalyzerApp
                 Cursor.Show();
 
                 GraphControl.GeneratingReport = true;
+                Settings.Default.ShowOrders = showOrders;
+                Settings.Default.ShowPositions = showOrders;
             }
 
         }
@@ -685,7 +700,7 @@ namespace StockAnalyzerApp
                 if (!StockDictionary.ContainsKey(stockName))
                     continue;
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
-                string data = $"\r\n    <h2>{stockName} - {duration}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                 htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
             }
@@ -719,7 +734,7 @@ namespace StockAnalyzerApp
                 var theme = REPORT_THEME;
                 var nbBars = 75;
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
-                string data = $"\r\n    <h2>{stockName} - {duration}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                 var row = TABLE_ROW_TEMPLATE.Replace("%%Daily%%", data);
 
@@ -727,7 +742,7 @@ namespace StockAnalyzerApp
                 theme = REPORT_THEME;
                 nbBars = 75;
                 bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
-                data = $"\r\n    <h2>{stockName} - {duration}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                 row = row.Replace("%%Weekly%%", data);
 
@@ -3108,7 +3123,7 @@ namespace StockAnalyzerApp
                 if (!StockDictionary.ContainsKey(stockName))
                     continue;
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, barDuration, nbBars);
-                indiceReport += $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                indiceReport += $"\r\n    <h3>{stockName}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
             }
 
             htmlReportTemplate = htmlReportTemplate.Replace("%%INDICES_REPORT%%", indiceReport);
@@ -3135,7 +3150,7 @@ namespace StockAnalyzerApp
                 if (!StockDictionary.ContainsKey(stockName))
                     continue;
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, barDuration, nbBars);
-                string data = $"\r\n    <h2>{stockName}</h2>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                string data = $"\r\n    <h3>{stockName}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                 htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
             }
@@ -3195,7 +3210,7 @@ namespace StockAnalyzerApp
 
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
         const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
-        const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h2><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
+        const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h3><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
         private string GenerateAlertTable(StockAlertDef alertDef, int nbStocks)
         {
             return GenerateReportTable(alertDef, nbStocks);

@@ -1,0 +1,23 @@
+﻿
+body {
+    background-color: #2A2A2A;
+    color: #C0C0C0;
+}
+
+table {
+    width: auto;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 5px;
+    text-align: center;
+}
+
+img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+
