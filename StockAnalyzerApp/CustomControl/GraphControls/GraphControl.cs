@@ -1039,8 +1039,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 mouseDownPos = e.Location;
             }
         }
+
+        public static bool GeneratingReport = false;
         virtual protected void Form1_MouseLeave(object sender, EventArgs e)
         {
+            if (GeneratingReport)
+                return;
+
             if (string.IsNullOrEmpty(this.alternateString))
                 Cursor.Show();
             this.PaintForeground();
@@ -1052,6 +1057,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         virtual protected void Form1_MouseEnter(object sender, EventArgs e)
         {
+            if (GeneratingReport)
+                return;
+
             if (string.IsNullOrEmpty(this.alternateString))
                 Cursor.Hide();
             if (mouseDown)
@@ -1521,7 +1529,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left, screenPoint.Y, GraphRectangle.Right, screenPoint.Y);
                 // Print current value
                 if (printValue)
-                    this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
+                    this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
             if (drawVerticalLine)
             {

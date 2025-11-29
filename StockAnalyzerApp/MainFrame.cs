@@ -623,6 +623,7 @@ namespace StockAnalyzerApp
         {
             var currentSize = this.Size;
             var currentState = this.WindowState;
+            GraphControl.GeneratingReport = true;
             try
             {
                 if (currentState == FormWindowState.Maximized || currentState == FormWindowState.Minimized)
@@ -649,7 +650,13 @@ namespace StockAnalyzerApp
                 this.WindowState = currentState;
                 if (currentState == FormWindowState.Normal)
                     this.Size = currentSize;
+
+                this.Cursor = Cursors.Arrow;
+                Cursor.Show();
+
+                GraphControl.GeneratingReport = true;
             }
+
         }
 
         private void GenerateReportFromTemplate(string templateFile, bool force = false)
