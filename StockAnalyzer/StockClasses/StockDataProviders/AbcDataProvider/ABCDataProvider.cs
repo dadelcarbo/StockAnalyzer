@@ -1428,6 +1428,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             return groupList != null && groupList.Contains(stockSerie.StockName);
         }
 
+        static readonly string[] AK_SEPARATOR = new[] { " au " };
         public static void DownloadAgenda(StockSerie stockSerie)
         {
             if (!stockSerie.BelongsToGroup(StockSerie.Groups.CACALL)) return;
@@ -1437,7 +1438,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             }
             else
             {
-                if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today) return;
+                if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today) 
+                    return;
             }
 
             var agendaItems = AbcClient.DownloadAgenda(stockSerie.AbcId);
@@ -1446,7 +1448,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             foreach (var item in agendaItems)
             {
-                DateTime date = DateTime.Parse(item.Item1);
+                DateTime date = DateTime.Parse(item.Item1.Split(AK_SEPARATOR, StringSplitOptions.None).Last());
 
                 if (!stockSerie.Agenda.ContainsKey(date))
                 {

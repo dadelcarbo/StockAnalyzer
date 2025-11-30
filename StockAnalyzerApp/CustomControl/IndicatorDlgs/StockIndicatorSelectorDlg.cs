@@ -474,13 +474,21 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                     {
                                         var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line);
                                         treeNode1 = new CloudNode(stockCloud.Name, this.indicatorMenuStrip, stockCloud);
-                                        for (int i = 0; i < stockCloud.SeriesCount; i++)
+                                        for (int i = 0; i < 2; i++)
                                         {
                                             var fileNode = new FillNode(stockCloud.SerieNames[i], null, stockCloud.SeriePens[i].Color, i, stockCloud.SerieVisibility[i]);
                                             treeNode1.Nodes.Add(fileNode);
 
                                             fileNode.ImageKey = treeNode1.ImageKey;
                                             fileNode.SelectedImageKey = treeNode1.SelectedImageKey;
+                                        }
+                                        for (int i = 2; i < stockCloud.SeriesCount; i++)
+                                        {
+                                            CurveNode curveNode = new CurveNode(stockCloud.SerieNames[i], null, stockCloud.SeriePens[i], true, stockCloud.SerieVisibility[i]);
+                                            treeNode1.Nodes.Add(curveNode);
+
+                                            curveNode.ImageKey = "LINE";
+                                            curveNode.SelectedImageKey = "LINE";
                                         }
                                         treeNode.Nodes.Add(treeNode1);
                                     }
@@ -1050,7 +1058,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             {
                 PaintPreviewWithPaintBars(g, curveNode.CurvePen);
             }
-            else if (parentNode.Type == NodeType.Cloud || (parentNode.Type == NodeType.Graph && parentNode.Text.ToUpper() == "CLOSEGRAPH" && ((GraphNode)parentNode).GraphMode == GraphChartMode.BarChart))
+            else if ((parentNode.Type == NodeType.Cloud && !(((StockNode)this.treeView1.SelectedNode).Type == NodeType.Curve)) ||
+                (parentNode.Type == NodeType.Graph && parentNode.Text.ToUpper() == "CLOSEGRAPH" && ((GraphNode)parentNode).GraphMode == GraphChartMode.BarChart))
             {
                 PaintPreviewWithCloud(g, parentNode);
             }
@@ -1062,7 +1071,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 }
                 else
                 {
-
                     double x, y;
                     PointF[] points = new PointF[(int)Math.Floor(g.VisibleClipBounds.Width)];
                     int i = 0;
