@@ -632,6 +632,10 @@ namespace StockAnalyzerApp
             Settings.Default.ShowOrders = false;
             Settings.Default.ShowPositions = false;
 
+            var currentStockSerie = this.CurrentStockSerie;
+            var currentBarDuration = this.ViewModel.BarDuration;
+            var currentTheme = this.ViewModel.Theme;
+
             try
             {
                 var styleFileName = Path.Combine(Folders.Report, "Style.css");
@@ -667,11 +671,14 @@ namespace StockAnalyzerApp
                 this.Cursor = Cursors.Arrow;
                 Cursor.Show();
 
-                GraphControl.GeneratingReport = true;
+                GraphControl.GeneratingReport = false;
                 Settings.Default.ShowOrders = showOrders;
-                Settings.Default.ShowPositions = showOrders;
-            }
+                Settings.Default.ShowPositions = showPositions;
 
+                this.CurrentStockSerie = currentStockSerie;
+                this.ViewModel.BarDuration = currentBarDuration;
+                this.ViewModel.Theme = currentTheme;
+            }
         }
 
         private void GenerateReportFromTemplate(string templateFile, bool force = false)
