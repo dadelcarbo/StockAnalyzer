@@ -636,8 +636,9 @@ namespace StockAnalyzerApp
             {
                 var styleFileName = Path.Combine(Folders.Report, "Style.css");
                 if (!File.Exists(styleFileName) || File.GetLastWriteTime(styleFileName) > File.GetLastWriteTime(reportStylePath))
-                    return;
-
+                {
+                    File.Copy(reportStylePath, styleFileName);
+                }
 
                 if (currentState == FormWindowState.Maximized || currentState == FormWindowState.Minimized)
                 {
@@ -664,14 +665,10 @@ namespace StockAnalyzerApp
                 if (currentState == FormWindowState.Normal)
                     this.Size = currentSize;
 
-                this.Cursor = Cursors.Arrow;
-                Cursor.Show();
-
-                GraphControl.GeneratingReport = true;
+                GraphControl.GeneratingReport = false;
                 Settings.Default.ShowOrders = showOrders;
                 Settings.Default.ShowPositions = showOrders;
             }
-
         }
 
         private void GenerateReportFromTemplate(string templateFile, bool force = false)
