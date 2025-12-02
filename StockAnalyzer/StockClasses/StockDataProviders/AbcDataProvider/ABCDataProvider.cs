@@ -208,105 +208,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                         stockSerie.Add(dailyValue.DATE, dailyValue);
                         history.LastDate = dailyValue.DATE;
                     }
-                    this.SaveToCSV(stockSerie, false); // Not true need to detect if need to save archive
+                    this.SaveToCSV(stockSerie, true);
                 }
                 stockSerie.IsInitialised = false;
-            }
-        }
-
-
-        private void LoadDataFromCotations()
-        {
-            string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
-            var dataFile = Directory.EnumerateFiles(downloadPath, "Cotations*.csv").OrderByDescending(f => File.GetCreationTime(f)).FirstOrDefault();
-
-            if (string.IsNullOrEmpty(null) || !File.Exists(dataFile))
-                return;
-
-            LoadDataFromCotations(dataFile);
-        }
-        private void LoadDataFromCotations(string dataFile)
-        {
-            var lines = File.ReadAllLines(dataFile).Select(l => l.Split(';'));
-            foreach (var serieData in lines.GroupBy(l => l[0]))
-            {
-                var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == serieData.Key);
-                if (stockSerie == null)
-                    continue;
-
-                var history = downloadHistory.FirstOrDefault(h => h.Id == stockSerie.ISIN);
-                if (history == null)
-                {
-                    this.LoadFromCSV(stockSerie, false);
-
-                    history = new AbcDownloadHistory(stockSerie.ISIN, stockSerie.Count > 0 ? stockSerie.Values.Last().DATE : DateTime.MinValue, stockSerie.StockName, stockSerie.StockGroup.ToString());
-                    downloadHistory.Add(history);
-                }
-
-                var dailyValues = serieData.Where(row => DateTime.Parse(row[1], frenchCulture) > history.LastDate).Select(row => new StockDailyValue(
-                    float.Parse(row[2], CultureInfo.InvariantCulture),
-                    float.Parse(row[3], CultureInfo.InvariantCulture),
-                    float.Parse(row[4], CultureInfo.InvariantCulture),
-                    float.Parse(row[5], CultureInfo.InvariantCulture),
-                    long.Parse(row[6], frenchCulture),
-                    DateTime.Parse(row[1], frenchCulture))).OrderBy(d => d.DATE).ToList();
-
-                if (dailyValues.Count > 0)
-                {
-                    if (stockSerie.Count == 0)
-                        this.LoadFromCSV(stockSerie, false);
-
-                    foreach (var dailyValue in dailyValues)
-                    {
-                        stockSerie.Add(dailyValue.DATE, dailyValue);
-                        history.LastDate = dailyValue.DATE;
-                    }
-                    this.SaveToCSV(stockSerie, false);
-                }
-                stockSerie.IsInitialised = false;
-            }
-
-            File.Delete(dataFile);
-        }
-
-        private void LoadDataFromSeance()
-        {
-            string downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            downloadPath = System.IO.Path.Combine(downloadPath, "Downloads");
-            var dataFiles = Directory.EnumerateFiles(downloadPath, "Seance*.csv").OrderByDescending(f => File.GetCreationTime(f));
-
-            foreach (var dataFile in dataFiles)
-            {
-                var date = File.GetLastWriteTime(dataFile);
-                if (date.Date == DateTime.Today)
-                {
-                    var lines = File.ReadAllLines(dataFile).Select(l => l.Split(';'));
-                    foreach (var row in lines)
-                    {
-                        var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == row[0]);
-                        if (stockSerie == null)
-                            continue;
-
-                        if (stockSerie.Count > 0)
-                            stockSerie.IsInitialised = false;
-
-                        this.LoadFromCSV(stockSerie);
-                        if (stockSerie.Count == 0)
-                            continue;
-
-                        var dailyValue = new StockDailyValue(
-                        float.Parse(row[2], frenchCulture),
-                        float.Parse(row[3], frenchCulture),
-                        float.Parse(row[4], frenchCulture),
-                        float.Parse(row[5], frenchCulture),
-                        long.Parse(row[6], frenchCulture),
-                        date);
-
-                        stockSerie.Add(date, dailyValue);
-                    }
-                }
-                File.Delete(dataFile);
             }
         }
 
@@ -1438,7 +1342,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             }
             else
             {
-                if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today) 
+                if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today)
                     return;
             }
 
@@ -1493,9 +1397,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 return;
             string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
             var lastDate = stockSerie.Keys.Last();
-            var pivotDate = new DateTime(lastDate.Year, lastDate.Month, 1).AddDays(-1);
+            var pivotDate = DateTime.MinValue;
             if (forceArchive || !File.Exists(fileName))
             {
+                pivotDate = new DateTime(lastDate.Year, lastDate.Month, 1).AddDays(-1);
                 if (stockSerie.Values.Any(v => v.DATE <= pivotDate))
                 {
                     using StreamWriter sw = new StreamWriter(fileName);
@@ -1691,6 +1596,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             foreach (var groupHistory in groupDownloadHistory)
             {
                 groupHistory.LastDownload = endDate;
+                groupHistory.NextDownload = endDate;
             }
             AbcGroupDownloadHistory.Save(groupHistoryFileName, groupDownloadHistory);
 
