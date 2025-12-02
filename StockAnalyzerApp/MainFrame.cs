@@ -640,8 +640,9 @@ namespace StockAnalyzerApp
             {
                 var styleFileName = Path.Combine(Folders.Report, "Style.css");
                 if (!File.Exists(styleFileName) || File.GetLastWriteTime(styleFileName) > File.GetLastWriteTime(reportStylePath))
-                    return;
-
+                {
+                    File.Copy(reportStylePath, styleFileName);
+                }
 
                 if (currentState == FormWindowState.Maximized || currentState == FormWindowState.Minimized)
                 {
