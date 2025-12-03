@@ -96,7 +96,7 @@
                     </telerik:RadGridView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Saxo Underlyings">
+            <TabItem Header="Saxo Turbo Underlyings">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -112,6 +112,23 @@
                             <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Id}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Saxo Name" DataMemberBinding="{Binding SaxoName}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Serie Name" DataMemberBinding="{Binding SerieName}" CellStyleSelector="{StaticResource SaxoMappingStyleSelector}"/>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Saxo Instruments">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Grid.Row="0"  Command="{Binding SaveInstrumentsCommand}" HorizontalAlignment="Right"  Margin="4">Save</Button>
+                    </StackPanel>
+                    <telerik:RadGridView FontSize="9" Grid.Row="1" ItemsSource="{Binding Instruments}" Margin="4,4,4,4" RowIndicatorVisibility="Collapsed"
+                             SelectionUnit="Cell" SelectionMode="Single" ShowGroupPanel="False" AutoGenerateColumns="true" SelectedCellsChanged="RadGridView_SelectedCellsChanged">
+                        <telerik:RadGridView.Columns>
+                            <telerik:GridViewDataColumn Header="Isin" DataMemberBinding="{Binding Isin}" CellStyleSelector="{StaticResource SaxoMappingStyleSelector}"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>

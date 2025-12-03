@@ -23,7 +23,7 @@ namespace Saxo.OpenAPI.TradingServices
                 InstrumentCache = new List<Instrument>();
             }
         }
-        private static readonly List<Instrument> InstrumentCache;
+        public static readonly List<Instrument> InstrumentCache;
 
         //static readonly string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
 
@@ -69,7 +69,7 @@ namespace Saxo.OpenAPI.TradingServices
                         }
                     }
 
-                    File.WriteAllText(Folders.SaxoInstruments, JsonConvert.SerializeObject(InstrumentCache, Formatting.Indented));
+                    SaveCache();
                 }
                 return instrument;
             }
@@ -105,8 +105,8 @@ namespace Saxo.OpenAPI.TradingServices
                         };
                     }
                     InstrumentCache.Add(instrument);
-                    // Save Cache
-                    File.WriteAllText(Folders.SaxoInstruments, JsonConvert.SerializeObject(InstrumentCache, Formatting.Indented));
+
+                    SaveCache();
                 }
                 return instrument;
             }
@@ -114,6 +114,12 @@ namespace Saxo.OpenAPI.TradingServices
             {
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
+        }
+
+        public static void SaveCache()
+        {
+            // Save Cache
+            File.WriteAllText(Folders.SaxoInstruments, JsonConvert.SerializeObject(InstrumentCache, Formatting.Indented));
         }
 
         private static readonly SortedDictionary<long, InstrumentDetails> InstrumentDetailsCache = new SortedDictionary<long, InstrumentDetails>();

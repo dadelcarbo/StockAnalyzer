@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses;
+﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
@@ -150,30 +151,44 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         {
             if (e.AddedCells.Count > 0)
             {
-                var item = e.AddedCells[0].Item as SaxoUnderlying;
-                if (item == null)
-                    return;
-
-                var serieName = string.IsNullOrEmpty(item.SerieName) ? item.SaxoName : item.SerieName;
-                if (StockDictionary.Instance.ContainsKey(serieName))
+                if (e.AddedCells[0].Item is SaxoUnderlying)
                 {
+                    var item = e.AddedCells[0].Item as SaxoUnderlying;
+
+                    var serieName = string.IsNullOrEmpty(item.SerieName) ? item.SaxoName : item.SerieName;
+                    if (StockDictionary.Instance.ContainsKey(serieName))
+                    {
+                        this.Form.TopMost = true;
+                        StockAnalyzerForm.MainFrame.Activate();
+                        this.SelectedStockChanged(serieName, true);
+
+                        this.Form.TopMost = false;
+                    }
+                    else
+                    {
+                        this.Form.TopMost = true;
+                        StockAnalyzerForm.MainFrame.searchCombo.Text = serieName;
+                        StockAnalyzerForm.MainFrame.searchCombo.Focus();
+
+                        this.Form.TopMost = false;
+                    }
+                }
+                else if (e.AddedCells[0].Item is Instrument)
+                {
+                    var item = e.AddedCells[0].Item as Instrument;
+                    if (string.IsNullOrEmpty(item.Isin))
+                        return;
+
+                    var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == item.Isin);
+                    if (stockSerie == null)
+                        return;
+
                     this.Form.TopMost = true;
                     StockAnalyzerForm.MainFrame.Activate();
-                    this.SelectedStockChanged(serieName, true);
+                    this.SelectedStockChanged(stockSerie.StockName, true);
 
                     this.Form.TopMost = false;
                 }
-                else
-                {
-                    this.Form.TopMost = true;
-                    StockAnalyzerForm.MainFrame.searchCombo.Text = serieName;
-                    StockAnalyzerForm.MainFrame.searchCombo.Focus();
-
-                    this.Form.TopMost = false;
-                }
-
-
-
             }
         }
     }

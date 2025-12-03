@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -233,5 +234,18 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             }
         }
+
+        #region Instruments
+
+        public List<Instrument> Instruments => InstrumentService.InstrumentCache;
+
+        private CommandBase saveInstrumentsCommand;
+        public ICommand SaveInstrumentsCommand => saveInstrumentsCommand ??= new CommandBase(SaveInstruments);
+
+        private void SaveInstruments()
+        {
+            InstrumentService.SaveCache();
+        }
+        #endregion
     }
 }
