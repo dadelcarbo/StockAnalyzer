@@ -40,7 +40,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         private static readonly string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
         private static readonly string ABC_WEB_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\WebCache";
         private static readonly string ABC_WEB_PROCESSED_FOLDER = ABC_DAILY_FOLDER + @"\Processed";
-        private static readonly string ABC_TMP_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\TmpCache";
 
         public string UserConfigFileName => CONFIG_FILE;
 
@@ -108,24 +107,36 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             if (download)
             {
-                AbcClient.CacheFolder = DataFolder + ABC_WEB_CACHE_FOLDER;
-
-                // Download individual stocks
-                DownloadFromConfigFile(configFileName);
-
-                // Download groups
-                foreach (var config in abcGroupConfig.Where(c => !c.LabelOnly))
+                try
                 {
-                    NotifyProgress($"Downloading data for {config.Group}");
-                    this.DownloadGroupFromAbc(config);
-                    AbcGroupDownloadHistory.Save(groupHistoryFileName, groupDownloadHistory);
+                    AbcClient.CacheFolder = DataFolder + ABC_WEB_CACHE_FOLDER;
 
-                    NotifyProgress($"Processing data for {config.Group}");
-                    LoadDataFromFolder(DataFolder + ABC_TMP_FOLDER);
+                    // Download individual stocks
+                    DownloadFromConfigFile(configFileName);
 
-                    AbcDownloadHistory.Save(historyFileName, downloadHistory);
+                    // Download groups
+                    foreach (var config in abcGroupConfig.Where(c => !c.LabelOnly))
+                    {
+                        NotifyProgress($"Downloading data for {config.Group}");
+                        this.DownloadGroupFromAbc(config);
+                        AbcGroupDownloadHistory.Save(groupHistoryFileName, groupDownloadHistory);
+
+                        NotifyProgress($"Processing data for {config.Group}");
+                        LoadDataFromFolder(DataFolder + ABC_TMP_FOLDER);
+
+                        AbcDownloadHistory.Save(historyFileName, downloadHistory);
+                    }
+                }
+                catch (AggregateException aex)
+                {
+                    MessageBox.Show(aex.InnerExceptions.First().Message, "Download error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Download error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
             StockDictionary.Instance["CAC40"].Initialise();
         }
 
@@ -448,10 +459,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             if (!Directory.Exists(DataFolder + ABC_WEB_PROCESSED_FOLDER))
             {
                 Directory.CreateDirectory(DataFolder + ABC_WEB_PROCESSED_FOLDER);
-            }
-            if (!Directory.Exists(DataFolder + ABC_TMP_CACHE_FOLDER))
-            {
-                Directory.CreateDirectory(DataFolder + ABC_TMP_CACHE_FOLDER);
             }
             if (!Directory.Exists(DataFolder + ABC_TMP_FOLDER))
             {
@@ -885,6 +892,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     fileName = filePattern.Replace("*", year.ToString());
                     if (!AbcClient.DownloadIsinYear(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName), year, isin))
                     {
+                        Task.Delay(500).Wait();
                         break;
                     }
                     nbFile++;
@@ -1348,47 +1356,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     return;
             }
 
-            var agendaItems = AbcClient.DownloadAgenda(stockSerie.AbcId);
-            if (agendaItems == null || agendaItems.Length == 0)
-                return;
-
-            foreach (var item in agendaItems)
+            try
             {
-                DateTime date = DateTime.Parse(item.Item1.Split(AK_SEPARATOR, StringSplitOptions.None).Last());
+                var agendaItems = AbcClient.DownloadAgenda(stockSerie.AbcId);
+                if (agendaItems == null || agendaItems.Length == 0)
+                    return;
 
-                if (!stockSerie.Agenda.ContainsKey(date))
+                foreach (var item in agendaItems)
                 {
-                    stockSerie.Agenda.Add(date, item.Item2, item.Item3);
+                    DateTime date = DateTime.Parse(item.Item1.Split(AK_SEPARATOR, StringSplitOptions.None).Last());
+
+                    if (!stockSerie.Agenda.ContainsKey(date))
+                    {
+                        stockSerie.Agenda.Add(date, item.Item2, item.Item3);
+                    }
                 }
+                stockSerie.Agenda.DownloadDate = DateTime.Today;
+                stockSerie.Agenda.SortDescending();
+                stockSerie.SaveAgenda();
             }
-            stockSerie.Agenda.DownloadDate = DateTime.Today;
-            stockSerie.Agenda.SortDescending();
-            stockSerie.SaveAgenda();
-        }
-
-        static private List<List<string>> getTableData(HtmlElement tbl)
-        {
-            List<List<string>> data = new List<List<string>>();
-
-            HtmlElementCollection rows = tbl.GetElementsByTagName("tr");
-            HtmlElementCollection cols; // = rows.GetElementsByTagName("th");
-            foreach (HtmlElement tr in rows)
+            catch (AggregateException ex)
             {
-                List<string> row = new List<string>();
-                cols = tr.GetElementsByTagName("th");
-                foreach (HtmlElement td in cols)
-                {
-                    row.Add(WebUtility.HtmlDecode(td.InnerText));
-                }
-                cols = tr.GetElementsByTagName("td");
-                foreach (HtmlElement td in cols)
-                {
-                    row.Add(WebUtility.HtmlDecode(td.InnerText));
-                }
-                if (row.Count > 0) data.Add(row);
+                MessageBox.Show(ex.InnerExceptions.First().Message, "ABC Bourse Agenda download error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            return data;
         }
 
         #region Persistency

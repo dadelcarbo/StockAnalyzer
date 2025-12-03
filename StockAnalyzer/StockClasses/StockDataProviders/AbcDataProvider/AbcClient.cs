@@ -8,9 +8,18 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
+
+    public class AbcClientException : Exception
+    {
+        public AbcClientException(string msg) : base($"Too many requests sent to ABC Bourse: {Environment.NewLine}{msg}")
+        {
+        }
+    }
     public static class AbcClient
     {
         static HttpClient httpClient { get; set; }
@@ -72,11 +81,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
                 var response = await httpClient.SendAsync(request);
 
+                if (response.StatusCode == (HttpStatusCode)429)
+                    throw new AbcClientException($"DownloadLabel: {market}");
+
                 // Ensure the request was successful
                 response.EnsureSuccessStatusCode();
 
                 // Return the response content as a string
                 return await response.Content.ReadAsStringAsync();
+            }
+            catch (AbcClientException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -149,6 +165,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
                 var response = await httpClient.SendAsync(request);
 
+                if (response.StatusCode == (HttpStatusCode)429)
+                    throw new AbcClientException($"DownloadData: {market}");
+
                 // Ensure the request was successful
                 response.EnsureSuccessStatusCode();
 
@@ -164,6 +183,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
 
                 return content;
+            }
+            catch (AbcClientException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -255,11 +278,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
                 var response = await httpClient.SendAsync(request);
 
+                if (response.StatusCode == (HttpStatusCode)429)
+                    throw new AbcClientException($"DownloadIsin: {isin}");
+
                 // Ensure the request was successful
                 response.EnsureSuccessStatusCode();
 
                 // Return the response content as a string
                 return await response.Content.ReadAsStringAsync();
+            }
+            catch (AbcClientException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -316,11 +346,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
                 var response = await httpClient.SendAsync(request);
 
+                if (response.StatusCode == (HttpStatusCode)429)
+                    throw new AbcClientException($"DownloadAgenda: {abcId}");
+
                 // Ensure the request was successful
                 response.EnsureSuccessStatusCode();
 
                 // Return the response content as a string
                 return await response.Content.ReadAsStringAsync();
+            }
+            catch (AbcClientException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
