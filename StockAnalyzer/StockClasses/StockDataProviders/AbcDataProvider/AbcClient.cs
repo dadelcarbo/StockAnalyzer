@@ -187,6 +187,38 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             return asyncResult;
         }
+
+        public static bool DownloadIsinYear(string fileName, int year, string isin)
+        {
+            StockLog.Write($"Isin: {isin} for year: {year}");
+            asyncResult = false;
+
+            if (!string.IsNullOrEmpty(CacheFolder))
+            {
+                string cacheFileName = Path.Combine(CacheFolder, isin + "_" + year + ".csv");
+                if (File.Exists(cacheFileName))
+                {
+                    File.Copy(cacheFileName, fileName, true);
+                    return true;
+                }
+            }
+
+            Task.Run(async () =>
+            {
+                var dateFrom = new DateTime(year, 1, 1);
+                var dateTo = new DateTime(year, 12, 31);
+                var data = await DownloadIsinAsync(dateFrom, dateTo, isin);
+                if (string.IsNullOrEmpty(data) || data.StartsWith(" <!DOCTYPE"))
+                    return;
+                string cacheFileName = Path.Combine(CacheFolder, isin + "_" + year + ".csv");
+                File.WriteAllText(cacheFileName, data);
+                File.Copy(cacheFileName, fileName, true);
+                asyncResult = true;
+            }).Wait();
+
+            return asyncResult;
+        }
+
         public static async Task<string> DownloadIsinAsync(DateTime dateFrom, DateTime dateTo, string isin)
         {
             if (!await InitClientAsync())

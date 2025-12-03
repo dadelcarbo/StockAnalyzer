@@ -878,16 +878,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 var isin = stockSerie.ISIN;
                 if (stockSerie.StockGroup == StockSerie.Groups.USA)
                     isin += "u";
-                for (int i = DateTime.Today.Year - 1; i >= ARCHIVE_START_YEAR; i--)
+
+                int year = DateTime.Today.Year;
+                for (year = DateTime.Today.Year - 1; year >= ARCHIVE_START_YEAR; year--)
                 {
-                    fileName = filePattern.Replace("*", i.ToString());
-                    if (!AbcClient.DownloadIsin(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName), new DateTime(i, 1, 1), new DateTime(i, 12, 31), isin))
+                    fileName = filePattern.Replace("*", year.ToString());
+                    if (!AbcClient.DownloadIsinYear(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName), year, isin))
                     {
                         break;
                     }
                     nbFile++;
                 }
-                int year = DateTime.Today.Year;
+                year = DateTime.Today.Year;
                 fileName = filePattern.Replace("*", year.ToString());
                 if (AbcClient.DownloadIsin(Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName), new DateTime(year, 1, 1), DateTime.Today, isin))
                 {
