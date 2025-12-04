@@ -129,7 +129,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
                 catch (AggregateException aex)
                 {
-                    MessageBox.Show(aex.InnerExceptions.First().Message, "Download error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(aex.InnerExceptions.First().Message, "Aggregate Download error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception ex)
                 {

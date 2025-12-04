@@ -3117,26 +3117,6 @@ namespace StockAnalyzerApp
                 htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
             }
 
-            #region Report indices
-            var indiceReport = string.Empty;
-            var lines = File.ReadAllLines(Path.Combine(Folders.PersonalFolder, "ReportIndices.cfg"));
-            foreach (var line in lines)
-            {
-                this.Size = new Size(800, 700);
-                var fields = line.Split('|');
-                var stockName = fields[0];
-                var barDuration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
-                var theme = fields[2];
-                var nbBars = int.Parse(fields[3]);
-                if (!StockDictionary.ContainsKey(stockName))
-                    continue;
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, barDuration, nbBars);
-                indiceReport += $"\r\n    <h3>{stockName}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
-            }
-
-            htmlReportTemplate = htmlReportTemplate.Replace("%%INDICES_REPORT%%", indiceReport);
-            #endregion
-
             #region Report embedded definitions
 
             // Find Pattern
