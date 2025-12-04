@@ -806,8 +806,8 @@ namespace StockAnalyzer.StockClasses
                                     return stockEvent.Events[eventIndex][index];
                                 }
                             }
+                            return true;
                         }
-                        break;
                     case AlertType.Price:
                         if (stockAlert.PriceTrigger != 0 && index > 1)
                         {

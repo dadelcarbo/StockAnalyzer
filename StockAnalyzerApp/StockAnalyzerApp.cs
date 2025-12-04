@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockLogging;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -24,6 +25,7 @@ namespace StockAnalyzerApp
             }
             catch (Exception ex)
             {
+                StockLog.Write(ex);
                 MessageBox.Show(ex.Message, "Internal Software Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 if (ex.InnerException != null)
                 {
