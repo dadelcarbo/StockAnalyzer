@@ -7,13 +7,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
-
     public class AbcClientException : Exception
     {
         public AbcClientException(string msg) : base($"Too many requests sent to ABC Bourse: {Environment.NewLine}{msg}")
@@ -47,11 +47,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         }
         public static async Task<string> DownloadLabelAsync(string market)
         {
-            if (httpClient == null)
-            {
-                if (!await InitClientAsync())
-                    return null;
-            }
+            if (!await InitClientAsync())
+                return null;
+
             try
             {
                 using var request = new HttpRequestMessage(new HttpMethod("POST"), "https://www.abcbourse.com/download/libelles");
@@ -124,11 +122,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 if (File.Exists(fileName))
                     return File.ReadAllText(fileName);
             }
-            if (httpClient == null)
-            {
-                if (!await InitClientAsync())
-                    return null;
-            }
+
+            if (!await InitClientAsync())
+                return null;
+
             if ((DateTime.Today - dateFrom).TotalDays > 100)
             {
                 var delay = new Random().Next(1, 5) * 1000;
@@ -367,15 +364,32 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         }
 
 
-
+        private static List<DateTime> requestTimestamps = new List<DateTime>();
 
         static bool forbidden = false;
         private static async Task<bool> InitClientAsync()
         {
             try
             {
-                if (forbidden || httpClient != null)
+                if (forbidden)
+                    return false;
+                if (httpClient != null)
+                {
+                    var now = DateTime.Now;
+
+                    requestTimestamps.RemoveAll(t => (now - t) > TimeSpan.FromSeconds(20));
+                    if (requestTimestamps.Count < 5)
+                    {
+                        await Task.Delay(500);
+                    }
+                    else
+                    {
+                        await Task.Delay(1500);
+                    }
+                    requestTimestamps.Add(now);
+
                     return true;
+                }
 
                 var handler = new HttpClientHandler();
                 handler.UseCookies = false;
