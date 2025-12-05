@@ -11,6 +11,7 @@ using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -164,6 +165,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+
+
         private int ath1 = 175;
         public int Ath1
         {
@@ -191,6 +194,36 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+
+        private int stok = 35;
+        public int Stok
+        {
+            get { return stok; }
+            set
+            {
+                if (value != stok)
+                {
+                    stok = value;
+                    OnPropertyChanged("Stok");
+                }
+            }
+        }
+        private float stokMin = 35;
+        public float StokMin
+        {
+            get { return stokMin; }
+            set
+            {
+                if (value != stokMin)
+                {
+                    stokMin = value;
+                    OnPropertyChanged("StokMin");
+                }
+            }
+        }
+
+        private Operator stokOperator;
+        public Operator StokOperator { get => stokOperator; set { SetProperty(ref stokOperator, value); } }
 
         private bool bullOnly = true;
         public bool BullOnly
@@ -344,6 +377,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public ObservableCollection<PalmaresLine> Lines { get; set; }
 
         public IEnumerable<string> Themes { get; set; }
+
         public PalmaresViewModel()
         {
             this.Lines = new ObservableCollection<PalmaresLine>();
@@ -485,6 +519,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
                     var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+                    var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
                     var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
 
                     var endIndex = stockSerie.LastIndex;
@@ -505,6 +540,22 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         }
                         if (!athFound)
                             continue;
+                    }
+                    #endregion
+
+                    #region Calculate Stok
+                    float stokValue = 0;
+                    if (stok > 0)
+                    {
+                        float lowest = lowSerie.GetMin(endIndex - stok, endIndex);
+                        float highest = highSerie.GetMin(endIndex - stok, endIndex);
+                        stokValue = 100 * (closeSerie[endIndex] - lowest) / (highest - lowest);
+
+                        if (stokOperator != Operator.No)
+                        {
+                            if (stokOperator == Operator.LT && stokValue > stokMin) continue;
+                            if (stokOperator == Operator.GT && stokValue < stokMin) continue;
+                        }
                     }
                     #endregion
 
@@ -542,7 +593,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         }
                     }
 
-                    int highest = lastBar.VARIATION > 0 ? closeSerie.GetHighestIn(endIndex) : 0;
+                    int highestIn = lastBar.VARIATION > 0 ? closeSerie.GetHighestIn(endIndex) : 0;
 
                     #region Calculate Indicators
                     float stockIndicator1 = float.NaN;
@@ -597,11 +648,12 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         Symbol = stockSerie.Symbol,
                         Name = stockSerie.StockName,
                         Value = lastValue,
-                        Highest = highest,
+                        Highest = highestIn,
                         Volume = lastBar.EXCHANGED / 1000000f,
                         Indicator1 = stockIndicator1,
                         Indicator2 = stockIndicator2,
                         Indicator3 = stockIndicator3,
+                        Stok = stokValue,
                         Stop = stopValue,
                         BarVariation = barVariation,
                         LastDate = lastBar.DATE

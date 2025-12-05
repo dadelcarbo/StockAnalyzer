@@ -6,6 +6,7 @@ using StockAnalyzer.StockScripting;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public PalmaresControl(System.Windows.Forms.Form form)
         {
             InitializeComponent();
+
             this.Form = form;
             this.DataContext = this.ViewModel = this.Resources["ViewModel"] as PalmaresViewModel;
             this.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -372,16 +374,26 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     FilterSettings = filters,
                     Group = this.ViewModel.Group,
                     BarDuration = this.ViewModel.BarDuration,
+
                     Indicator1 = this.ViewModel.Indicator1,
-                    Indicator2 = this.ViewModel.Indicator2,
-                    Indicator3 = this.ViewModel.Indicator3,
                     Indicator1Min = this.ViewModel.Indicator1Min,
+                    Indicator1Operator = this.ViewModel.Indicator1Operator,
+
+                    Indicator2 = this.ViewModel.Indicator2,
                     Indicator2Min = this.ViewModel.Indicator2Min,
+                    Indicator2Operator = this.ViewModel.Indicator2Operator,
+
+                    Indicator3 = this.ViewModel.Indicator3,
                     Indicator3Min = this.ViewModel.Indicator3Min,
+                    Indicator3Operator = this.ViewModel.Indicator3Operator,
 
                     AthOnly = this.ViewModel.AthOnly,
                     Ath1 = this.ViewModel.Ath1,
                     Ath2 = this.ViewModel.Ath2,
+
+                    Stok = this.ViewModel.Stok,
+                    StokMin = this.ViewModel.StokMin,
+                    StokOperator = this.ViewModel.StokOperator,
 
                     Stop = this.ViewModel.Stop,
                     BullOnly = this.ViewModel.BullOnly,
@@ -424,16 +436,26 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                 this.ViewModel.Group = palmaresSettings.Group;
                 this.ViewModel.BarDuration = palmaresSettings.BarDuration;
+
                 this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
-                this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
-                this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
                 this.ViewModel.Indicator1Min = palmaresSettings.Indicator1Min;
+                this.ViewModel.Indicator1Operator = palmaresSettings.Indicator1Operator;
+
+                this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
                 this.ViewModel.Indicator2Min = palmaresSettings.Indicator2Min;
+                this.ViewModel.Indicator2Operator = palmaresSettings.Indicator2Operator;
+
+                this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
                 this.ViewModel.Indicator3Min = palmaresSettings.Indicator3Min;
+                this.ViewModel.Indicator3Operator = palmaresSettings.Indicator3Operator;
 
                 this.ViewModel.AthOnly = palmaresSettings.AthOnly;
                 this.ViewModel.Ath1 = palmaresSettings.Ath1;
                 this.ViewModel.Ath2 = palmaresSettings.Ath2;
+
+                this.ViewModel.Stok = palmaresSettings.Stok;
+                this.ViewModel.StokMin = palmaresSettings.StokMin;
+                this.ViewModel.StokOperator = palmaresSettings.StokOperator;
 
                 this.ViewModel.ScreenerOnly = palmaresSettings.ScreenerOnly;
                 this.ViewModel.Screener = StockScriptManager.Instance.StockScripts?.FirstOrDefault(s => s.Name == palmaresSettings.Screener);

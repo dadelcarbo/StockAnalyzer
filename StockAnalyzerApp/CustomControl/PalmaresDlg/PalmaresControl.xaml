@@ -118,13 +118,52 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="ATH" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal">
-                    <CheckBox Content="ATH Only" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="75" IsChecked="{Binding AthOnly}"/>
-                    <telerik:RadNumericUpDown Value="{Binding Ath1}" Minimum="1" Maximum="1000" NumberDecimalDigits="0" Height="24" Margin="1" VerticalContentAlignment="Center"/>
-                    <Label Content="Lookback" VerticalContentAlignment="Center"/>
-                    <telerik:RadNumericUpDown Value="{Binding Ath2}" Minimum="0" Maximum="1000" NumberDecimalDigits="0" Height="24" Margin="1" VerticalContentAlignment="Center"/>
-                </StackPanel>
+            <GroupBox Header="Stochastik" HorizontalAlignment="Left">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" >Period</Label>
+                    <telerik:RadNumericUpDown  Grid.Row="0" Grid.Column="1" Value="{Binding Stok}" Minimum="1" Maximum="1000" NumberDecimalDigits="0" MinWidth="40" Width="43" Height="24" Margin="1" VerticalContentAlignment="Center"/>
+
+                    <ComboBox  Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding StokOperator}" VerticalContentAlignment="Center">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource OperatorConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBox Grid.Row="1" Grid.Column="1"  Text="{Binding StokMin}" Width="45" Height="24" Margin="1" VerticalContentAlignment="Center"
+              Visibility="{Binding StokOperator, Converter={StaticResource OperatorToVisibilityConverter}}"/>
+
+                </Grid>
+            </GroupBox>
+            <GroupBox HorizontalAlignment="Left">
+                <GroupBox.Header>
+                    <CheckBox Name="athCheckBox" Content="Highest" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="75" IsChecked="{Binding AthOnly}"/>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Period" VerticalContentAlignment="Center"/>
+                    <telerik:RadNumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding Ath1}" Minimum="1" Maximum="1000" NumberDecimalDigits="0" MinWidth="45" Height="24" Margin="1" VerticalContentAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=athCheckBox}"/>
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="Lookback" VerticalContentAlignment="Center"/>
+                    <telerik:RadNumericUpDown  Grid.Row="1" Grid.Column="1" Value="{Binding Ath2}" Minimum="0" Maximum="1000" NumberDecimalDigits="0" MinWidth="45" Height="24" Margin="1" VerticalContentAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=athCheckBox}"/>
+
+                </Grid>
             </GroupBox>
             <GroupBox Header="Execute" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal" Margin="1">

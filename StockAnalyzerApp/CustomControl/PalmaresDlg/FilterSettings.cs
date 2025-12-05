@@ -9,14 +9,23 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public BarDuration BarDuration { get; set; }
         public StockSerie.Groups Group { get; set; }
         public string Indicator1 { get; set; }
-        public string Indicator2 { get; set; }
-        public string Indicator3 { get; set; }
         public float Indicator1Min { get; set; }
+        public Operator Indicator1Operator { get; set; }
+        public string Indicator2 { get; set; }
         public float Indicator2Min { get; set; }
+        public Operator Indicator2Operator { get; set; }
+        public string Indicator3 { get; set; }
         public float Indicator3Min { get; set; }
+        public Operator Indicator3Operator { get; set; }
+
+        public int Stok { get; set; } = 35;
+        public float StokMin { get; set; } = 35;
+        public Operator StokOperator { get; set; }
+
         public bool AthOnly { get; set; }
-        public int Ath1 { get; set; } = 1;
-        public int Ath2 { get; set; }
+        public int Ath1 { get; set; } = 35;
+        public int Ath2 { get; set; } = 35;
+
         public string Stop { get; set; }
         public bool BullOnly { get; set; }
         public bool ScreenerOnly { get; set; }

@@ -19,6 +19,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public float Indicator1 { get; set; }
         public float Indicator2 { get; set; }
         public float Indicator3 { get; set; }
+        public float Stok { get; set; }
         public float Stop { get; set; }
         public DateTime LastDate { get; set; }
     }
