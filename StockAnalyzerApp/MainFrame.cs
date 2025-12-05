@@ -3267,11 +3267,7 @@ namespace StockAnalyzerApp
                 this.CurrentTheme = alertDef.Theme;
                 foreach (var alertValue in alertValues.OrderByDescending(l => l.Speed).Take(nbStocks))
                 {
-                    // Generate Snapshot
-                    this.OnSelectedStockAndDurationChanged(alertValue.StockSerie.StockName, (BarDuration)alertDef.BarDuration, false);
-                    // StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{trailStopIndicatorName}");
-
-                    var bitmapString = this.SnapshotAsHtml(false);
+                    var bitmapString = this.GetStockSnapshotAsHtml(alertValue.StockSerie, alertValue.AlertDef.Theme, false, alertValue.AlertDef.BarDuration, 100);
 
                     var stockName = stockNameTemplate.Replace("%MSG%", alertValue.StockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
                     var stokValue = alertValue.StockSerie.CalculateLastFastOscillator(stokPeriod, InputType.Close);
