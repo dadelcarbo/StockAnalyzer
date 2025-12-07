@@ -712,7 +712,8 @@ namespace StockAnalyzerApp
 
                 htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
             }
-            htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", $"Report - {Path.GetFileNameWithoutExtension(templateFile)} - {DateTime.Now.ToString("dd/MM/yyyy hh:mm")}");
+            htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", $"Report - {Path.GetFileNameWithoutExtension(templateFile)}");
+            htmlReportTemplate = htmlReportTemplate.Replace("%%Date%%", DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
 
             File.WriteAllText(reportFileName, htmlReportTemplate);
 
@@ -756,7 +757,8 @@ namespace StockAnalyzerApp
 
                 tableRows += row;
             }
-            htmlReport = htmlReport.Replace("%%Title%%", $"Watchlist - {watchlist.Name} - {DateTime.Now.ToString("dd/MM/yyyy hh:mm")}");
+            htmlReport = htmlReport.Replace("%%Title%%", $"Watchlist - {watchlist.Name}");
+            htmlReport = htmlReport.Replace("%%Date%%", DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
             htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
 
             File.WriteAllText(reportFileName, htmlReport);
