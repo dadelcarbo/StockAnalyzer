@@ -1996,7 +1996,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 textPos.X -= 15;
                 textPos.Y -= 16;
-                text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+                if (cupHandle.Point1.X == 1)
+                {
+                    text = "ATH - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+                }
+                else
+                {
+                    text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
+                }
             }
             this.DrawString(graph, text, axisFont, legendBrush, this.backgroundBrush, textPos, false);
 
