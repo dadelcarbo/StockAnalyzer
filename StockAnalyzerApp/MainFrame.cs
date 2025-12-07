@@ -648,7 +648,7 @@ namespace StockAnalyzerApp
                 {
                     this.WindowState = FormWindowState.Normal;
                 }
-                this.Size = new Size(600, 450);
+                this.Size = new Size(500, 400);
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
                     GenerateReportFromTemplate(reportTemplate, force);
@@ -712,7 +712,7 @@ namespace StockAnalyzerApp
 
                 htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
             }
-            htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", $"Report - {Path.GetFileNameWithoutExtension(templateFile)}");
+            htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", $"Report - {Path.GetFileNameWithoutExtension(templateFile)} - {DateTime.Now.ToString("dd/MM/yyyy hh:mm")}");
 
             File.WriteAllText(reportFileName, htmlReportTemplate);
 
@@ -756,7 +756,7 @@ namespace StockAnalyzerApp
 
                 tableRows += row;
             }
-            htmlReport = htmlReport.Replace("%%Title%%", $"Watchlist - {watchlist.Name}");
+            htmlReport = htmlReport.Replace("%%Title%%", $"Watchlist - {watchlist.Name} - {DateTime.Now.ToString("dd/MM/yyyy hh:mm")}");
             htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
 
             File.WriteAllText(reportFileName, htmlReport);
