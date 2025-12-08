@@ -572,12 +572,10 @@ namespace StockAnalyzerApp
 
             if (Settings.Default.GenerateDailyReport)
             {
-                var folder = Folders.Report;
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-                // Daily report
+                // Generate Template and watchlist reports
+                this.GenerateReports();
+
+                // Generate report for alerts
                 var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
                 DateTime reportDate = DateTime.MinValue;
                 if (File.Exists(fileName))
@@ -587,12 +585,13 @@ namespace StockAnalyzerApp
                 cac40.BarDuration = BarDuration.Daily;
                 if (reportDate < cac40.LastValue.DATE)
                 {
-                    showAlertDefDialogMenuItem_Click(this, null);
-                    stockAlertManagerViewModel.RunFullAlert();
+                    //showAlertDefDialogMenuItem_Click(this, null);
+                    //stockAlertManagerViewModel.RunFullAlert();
+
+                    GenerateReport(BarDuration.Daily);
+                    GenerateReport(BarDuration.Daily);
                 }
             }
-
-            this.GenerateReports();
 
             // Refresh intraday every 5 minutes.
             if (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday)
@@ -649,6 +648,7 @@ namespace StockAnalyzerApp
                     this.WindowState = FormWindowState.Normal;
                 }
                 this.Size = new Size(500, 400);
+
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
                     GenerateReportFromTemplate(reportTemplate, force);
@@ -684,6 +684,8 @@ namespace StockAnalyzerApp
 
         private void GenerateReportFromTemplate(string templateFile, bool force = false)
         {
+            StockSplashScreen.ProgressText = $"Generating report - {Path.GetFileNameWithoutExtension(templateFile)}";
+
             var reportFileName = Path.Combine(Folders.Report, Path.GetFileName(templateFile));
             if (!force && File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(templateFile))
                 return;
@@ -726,6 +728,8 @@ namespace StockAnalyzerApp
         </tr>";
         private void GenerateReportFromWatchList(StockWatchList watchlist, bool force = false)
         {
+            StockSplashScreen.ProgressText = $"Generating report - {watchlist.Name}";
+
             var reportFileName = Path.Combine(Folders.Report, watchlist.Name + ".html");
             if (!force && File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(WatchlistReportTemplatePath))
                 return;
@@ -3071,6 +3075,8 @@ namespace StockAnalyzerApp
         }
         public void GenerateReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
         {
+            StockSplashScreen.ProgressText = $"Generating alert report - {duration}";
+
             alertDefs ??= StockAlertDef.AlertDefs.Where(a => a.BarDuration == duration && a.InReport).OrderBy(a => a.Rank).ToList();
             if (alertDefs.Count == 0)
                 return;
