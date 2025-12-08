@@ -4038,7 +4038,7 @@ namespace StockAnalyzerApp
         {
             this.candleStripButton.Checked = !this.linechartStripButton.Checked;
             this.barchartStripButton.Checked = !this.linechartStripButton.Checked;
-            this.GraphCloseControl.ChartMode = GraphChartMode.Line;
+            this.GraphCloseControl.ChartMode = GraphChartMode.LineCross;
             this.graphCloseControl.ForceRefresh();
         }
         private void selectDisplayedIndicatorMenuItem_Click(object sender, EventArgs e)
