@@ -37,6 +37,7 @@ namespace StockAnalyzer.StockClasses
             var highest = closeSerie.GetHighestIn(lastIndex);
             var stok = StockSerie.CalculateLastFastOscillator(stokPeriod, StockViewableItems.InputType.Close);
 
+            // @@@@ What about cup handle detection ?
             var cupHandle = highest > 5 ? closeSerie.DetectCupHandle(lastIndex, 5, false) : null;
             int step = 0;
             if (cupHandle != null)

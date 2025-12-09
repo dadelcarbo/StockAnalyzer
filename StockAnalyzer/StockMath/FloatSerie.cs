@@ -1668,8 +1668,91 @@ namespace StockAnalyzer.StockMath
             return trailSerie;
         }
 
-
         public CupHandle2D DetectCupHandle(int index, int period, bool higherRightLow)
+        {
+            if (period < 2 || index < period * 2 || index > LastIndex)
+                return null;
+
+            var todayClose = this[index];
+            var yesterClose = this[index - 1];
+            if (todayClose < yesterClose)
+                return null;
+
+            // For for previous high betwee todayClose and yesterClose
+            int pivotIndex = -1;
+            float pivot = float.MinValue;
+            for (int i = index - 1; i > period; i--)
+            {
+                var close = this[i];
+                if (close > todayClose)
+                    break;
+
+                if (close < yesterClose)
+                    continue;
+
+                if (this[i - 1] <= close && close >= this[i + 1])
+                {
+                    pivotIndex = i;
+                    pivot = close;
+                    break;
+                }
+            }
+            if (pivotIndex == -1) // no pivot found
+                return null;
+            if (index - pivotIndex < period) // not enough space for handle
+                return null;
+
+            // Look for begining of Cup (or begining of data in case of ATH)
+            var startIndex = 0;
+            for (int i = pivotIndex - 2; i > 0; i--)
+            {
+                if (this[i] > pivot)
+                {
+                    startIndex = i;
+                    break;
+                }
+            }
+
+            float leftLow = float.MaxValue;
+            int leftLowIndex = -1;
+            for (int i = startIndex; i < pivotIndex; i++)
+            {
+                if (leftLow > this[i])
+                {
+                    leftLow = this[i];
+                    leftLowIndex = i;
+                }
+            }
+            if (leftLowIndex == -1) // Shouldn't happen
+                return null;
+
+            float rightLow = float.MaxValue;
+            int rightLowIndex = -1;
+            for (int i = pivotIndex + 1; i < index; i++)
+            {
+                if (rightLow > this[i])
+                {
+                    rightLow = this[i];
+                    rightLowIndex = i;
+                }
+            }
+            if (rightLowIndex == -1) // Shouldn't happen
+                return null;
+
+            if (higherRightLow && rightLow < leftLow)
+                return null;
+
+            return new CupHandle2D()
+            {
+                Point1 = new PointF(startIndex + 1, pivot),
+                Point2 = new PointF(index, pivot),
+                Pivot = new PointF(pivotIndex, pivot),
+                LeftLow = new PointF(leftLowIndex, leftLow),
+                RightLow = new PointF(rightLowIndex, rightLow),
+            };
+        }
+
+        public CupHandle2D DetectCupHandle2(int index, int period, bool higherRightLow)
         {
             if (period < 2 || index < period * 2 || index > LastIndex)
                 return null;
