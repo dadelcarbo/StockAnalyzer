@@ -1678,40 +1678,29 @@ namespace StockAnalyzer.StockMath
             if (todayClose < yesterClose)
                 return null;
 
-            // For for previous high betwee todayClose and yesterClose
+            // Search for start of Cup & Handle
+            int startIndex = 0;
             int pivotIndex = -1;
-            float pivot = float.MinValue;
-            for (int i = index - 1; i > period; i--)
+            float pivot = yesterClose;
+            for (int i = index - 2; i > 0; i--)
             {
                 var close = this[i];
                 if (close > todayClose)
-                    break;
-
-                if (close < yesterClose)
-                    continue;
-
-                if (this[i - 1] <= close && close >= this[i + 1])
-                {
-                    pivotIndex = i;
-                    pivot = close;
-                    break;
-                }
-            }
-            if (pivotIndex == -1) // no pivot found
-                return null;
-            if (index - pivotIndex < period) // not enough space for handle
-                return null;
-
-            // Look for begining of Cup (or begining of data in case of ATH)
-            var startIndex = 0;
-            for (int i = pivotIndex - 2; i > 0; i--)
-            {
-                if (this[i] > pivot)
                 {
                     startIndex = i;
                     break;
                 }
+                if (close > pivot && this[i-1] < close && close > this[i+1])
+                {
+                    pivot = close;
+                    pivotIndex = i;
+                }
             }
+            if (pivotIndex == -1) // no pivot found
+                return null;
+
+            if (index - pivotIndex < period) // not enough space for handle
+                return null;
 
             float leftLow = float.MaxValue;
             int leftLowIndex = -1;
