@@ -1249,6 +1249,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         protected void DrawVerticalGridLines(Graphics aGraphic, bool drawDate, int startIndex, int endIndex)
         {
+            var gridHeight = this.ShowGrid ? GraphRectangle.Y : GraphRectangle.Y + GraphRectangle.Height - 6;
+
             TimeSpan duration = this.dateSerie[endIndex] - this.dateSerie[startIndex];
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             Calendar cal = dfi.Calendar;
@@ -1285,13 +1287,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             else if (duration.Days > 100) // greater the 6 months, display Months only 
             {
+                int modulo = Math.Max(1, (int)((duration.Days / 30) / (GraphRectangle.Width / 100)));
                 for (int i = startIndex; i <= endIndex; i++)
                 {
-                    if (this.dateSerie[i].Month != previousMonth)
+                    if (this.dateSerie[i].Year != previousYear || this.dateSerie[i].Month != previousMonth && (this.dateSerie[i].Month - 1) % modulo == 0)
                     {
                         p1 = GetScreenPointFromValuePoint(i, 100);
                         previousMonth = this.dateSerie[i].Month;
-                        aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                        aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (this.dateSerie[i].Year != previousYear)
                         {
                             previousYear = this.dateSerie[i].Year;
@@ -1321,7 +1324,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         p1 = GetScreenPointFromValuePoint(i, 100);
                         previousWeek = currentWeekNumber;
-                        aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                        aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (this.dateSerie[i].Year != previousYear)
                         {
                             previousYear = this.dateSerie[i].Year;
@@ -1346,7 +1349,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 for (int i = startIndex; i <= endIndex; i++)
                 {
                     p1 = GetScreenPointFromValuePoint(i, 100);
-                    aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                    aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                     if (this.dateSerie[i].Year != previousYear)
                     {
                         previousYear = this.dateSerie[i].Year;
@@ -1373,7 +1376,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         previousDay = this.dateSerie[i].DayOfYear;
                         p1 = GetScreenPointFromValuePoint(i, 100);
-                        aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                        aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
                             aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
@@ -1390,7 +1393,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         previousDay = this.dateSerie[i].DayOfYear;
                         p1 = GetScreenPointFromValuePoint(i, 100);
-                        aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                        aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
                             aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
@@ -1402,7 +1405,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (this.dateSerie[i].Minute == 0)
                         {
                             p1 = GetScreenPointFromValuePoint(i, 100);
-                            aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
                                 aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
@@ -1420,7 +1423,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         previousDay = this.dateSerie[i].DayOfYear;
                         p1 = GetScreenPointFromValuePoint(i, 100);
-                        aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                        aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
                             aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
@@ -1433,7 +1436,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (this.dateSerie[i].Minute == 0 && barCount >= 50)
                         {
                             p1 = GetScreenPointFromValuePoint(i, 100);
-                            aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
                                 aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
@@ -1452,7 +1455,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (this.dateSerie[i].DayOfYear != previousDay)
                     {
                         previousDay = this.dateSerie[i].DayOfYear;
-                        aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                        aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
                             aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
@@ -1463,7 +1466,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         if (this.dateSerie[i].Minute % 5 == 0)
                         {
-                            aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
                                 aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);

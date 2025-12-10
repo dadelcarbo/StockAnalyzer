@@ -172,63 +172,62 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             #region Draw Grid
 
             // Draw grid
-            if (this.ShowGrid)
+            var gridWidth = this.ShowGrid ? GraphRectangle.X + GraphRectangle.Width : GraphRectangle.X + 3;
+            #region Draw Horizontal lines
+
+            float step = (float)Math.Pow(10, Math.Floor(Math.Log10((maxValue - minValue))));
+            if ((maxValue - minValue) / step < 3)
             {
-                #region Draw Horizontal lines
-
-                float step = (float)Math.Pow(10, Math.Floor(Math.Log10((maxValue - minValue))));
-                if ((maxValue - minValue) / step < 3)
-                {
-                    step /= 4;
-                }
-                else if ((maxValue - minValue) / step < 6)
-                {
-                    step /= 2;
-                }
-                else
-                {
-                    if ((maxValue - minValue) / step > 13)
-                    {
-                        step *= 4;
-                    }
-                    else if ((maxValue - minValue) / step > 7)
-                    {
-                        step *= 2;
-                    }
-                }
-                float val;
-                if (minValue < 0)
-                {
-                    val = -(float)Math.Pow(10, Math.Ceiling(Math.Log10((Math.Abs(minValue)))));
-                }
-                else
-                {
-                    val = (float)Math.Pow(10, Math.Floor(Math.Log10((minValue))));
-                }
-
-                if (val > 0 && step > val) val = step;
-                if (val < 0 && step > Math.Abs(val)) val = -step;
-
-                PointF p1;
-                while (val < maxValue)
-                {
-                    if (val > minValue)
-                    {
-                        p1 = GetScreenPointFromValuePoint(this.StartIndex, val);
-                        aGraphic.DrawLine(gridPen, GraphRectangle.X, p1.Y, GraphRectangle.X + GraphRectangle.Width, p1.Y);
-                        aGraphic.DrawString(val.ToString("0.##"), axisFont, legendBrush, 0, p1.Y - 8);
-                    }
-                    val += step;
-                }
-
-                #endregion
-
-                #region Draw vertical lines
-
-                DrawVerticalGridLines(aGraphic, true, this.StartIndex, this.EndIndex);
-
-                #endregion
+                step /= 4;
             }
+            else if ((maxValue - minValue) / step < 6)
+            {
+                step /= 2;
+            }
+            else
+            {
+                if ((maxValue - minValue) / step > 13)
+                {
+                    step *= 4;
+                }
+                else if ((maxValue - minValue) / step > 7)
+                {
+                    step *= 2;
+                }
+            }
+            float val;
+            if (minValue < 0)
+            {
+                val = -(float)Math.Pow(10, Math.Ceiling(Math.Log10((Math.Abs(minValue)))));
+            }
+            else
+            {
+                val = (float)Math.Pow(10, Math.Floor(Math.Log10((minValue))));
+            }
+
+            if (val > 0 && step > val) val = step;
+            if (val < 0 && step > Math.Abs(val)) val = -step;
+
+            PointF p1;
+            while (val < maxValue)
+            {
+                if (val > minValue)
+                {
+                    p1 = GetScreenPointFromValuePoint(this.StartIndex, val);
+                    aGraphic.DrawLine(gridPen, GraphRectangle.X - 3, p1.Y, gridWidth, p1.Y);
+                    aGraphic.DrawString(val.ToString("0.##"), axisFont, legendBrush, 0, p1.Y - 8);
+                }
+                val += step;
+            }
+
+            #endregion
+
+            #region Draw vertical lines
+
+            DrawVerticalGridLines(aGraphic, true, this.StartIndex, this.EndIndex);
+
+            #endregion
+
             aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("dd/MM"), axisFont, legendBrush,
                GraphRectangle.Right - 3, GraphRectangle.Y + GraphRectangle.Height);
             aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("yyyy"), axisFont, legendBrush,
