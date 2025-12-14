@@ -530,6 +530,8 @@ namespace StockAnalyzerApp
             this.showIndicatorDivMenuItem.Checked = Settings.Default.ShowIndicatorDiv;
             this.showIndicatorTextMenuItem.Checked = Settings.Default.ShowIndicatorText;
             this.showVariationBtn.CheckState = Settings.Default.ShowVariation ? CheckState.Checked : CheckState.Unchecked;
+            this.showOrdersMenuItem.Checked = Settings.Default.ShowOrders;
+            this.showPositionsMenuItem.Checked = Settings.Default.ShowPositions;
 
             this.StockSerieChanged += new OnStockSerieChangedHandler(StockAnalyzerForm_StockSerieChanged);
             this.ThemeChanged += new OnThemeChangedHandler(StockAnalyzerForm_ThemeChanged);
