@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1238,7 +1239,15 @@ namespace StockAnalyzer.StockMath
             if (index >= period && index < this.Count - period)
             {
                 float value = this[index];
-                return value == GetMax(index - period, index + period);
+                float max = value;
+                for (int i = 1; i <= period; i++)
+                {
+                    if (this[index - i] > max || this[index + i] >= max)
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
             return false;
         }
@@ -1249,6 +1258,15 @@ namespace StockAnalyzer.StockMath
             {
                 float value = this[index];
                 return this[index - 1] >= value && value < this[index + 1];
+            }
+            return false;
+        }
+        public bool IsBottom(int index, int period)
+        {
+            if (index >= period && index < this.Count - period)
+            {
+                float value = this[index];
+                return value == GetMin(index - period, index + period);
             }
             return false;
         }
@@ -1668,6 +1686,24 @@ namespace StockAnalyzer.StockMath
             return trailSerie;
         }
 
+
+        public class Pivot
+        {
+            public Pivot(int index, float value, int lowIndex, float lowValue)
+            {
+                this.Index = index;
+                this.Value = value;
+                this.LowIndex = lowIndex;
+                this.LowValue = lowValue;
+            }
+
+            public int Index { get; set; }
+            public float Value { get; set; }
+
+            public int LowIndex { get; set; } // Indicate the low on the right of the pivot
+            public float LowValue { get; set; }
+        }
+
         public CupHandle2D DetectCupHandle(int index, int period, bool higherRightLow)
         {
             if (period < 2 || index < period * 2 || index > LastIndex)
@@ -1680,147 +1716,55 @@ namespace StockAnalyzer.StockMath
 
             // Search for start of Cup & Handle
             int startIndex = 0;
-            int pivotIndex = -1;
-            float pivot = yesterClose;
+            List<Pivot> pivots = new List<Pivot>();
+            float low = yesterClose;
+            int lowIndex = index - 1;
             for (int i = index - 2; i > 0; i--)
             {
                 var close = this[i];
-                if (close > todayClose)
+                if (close < low)
                 {
-                    startIndex = i;
-                    break;
+                    low = close;
+                    lowIndex = i;
                 }
-                if (close > pivot && this[i-1] < close && close > this[i+1])
+                else
                 {
-                    pivot = close;
-                    pivotIndex = i;
+                    if (close > todayClose)
+                    {
+                        startIndex = i;
+                        break;
+                    }
+                    if (close > yesterClose && this.IsTop(i, period))
+                    {
+                        pivots.Add(new Pivot(i, close, lowIndex, low));
+                    }
                 }
             }
-            if (pivotIndex == -1) // no pivot found
-                return null;
 
-            if (index - pivotIndex < period) // not enough space for handle
-                return null;
-
-            float leftLow = float.MaxValue;
-            int leftLowIndex = -1;
-            for (int i = startIndex; i < pivotIndex; i++)
+            // Filter pivots that are too close to start or end
+            pivots.RemoveAll(p => p.Index - startIndex < period || index - p.Index < period);
+            if (higherRightLow)
             {
-                if (leftLow > this[i])
-                {
-                    leftLow = this[i];
-                    leftLowIndex = i;
-                }
+                pivots.RemoveAll(p => p.Index < lowIndex);
             }
-            if (leftLowIndex == -1) // Shouldn't happen
+
+            if (pivots.Count == 0) // no pivot found
                 return null;
 
-            float rightLow = float.MaxValue;
-            int rightLowIndex = -1;
-            for (int i = pivotIndex + 1; i < index; i++)
-            {
-                if (rightLow > this[i])
-                {
-                    rightLow = this[i];
-                    rightLowIndex = i;
-                }
-            }
-            if (rightLowIndex == -1) // Shouldn't happen
-                return null;
+            // Select highest pivot
+            Pivot pivot = pivots.OrderByDescending(p => p.Value).First();
 
-            if (higherRightLow && rightLow < leftLow)
-                return null;
+            // recalculate startIndex based on pivot value.
+            startIndex = pivot.Index - period + 1;
+            while (--startIndex > 0 && this[startIndex] < pivot.Value) ;
 
             return new CupHandle2D()
             {
-                Point1 = new PointF(startIndex + 1, pivot),
-                Point2 = new PointF(index, pivot),
-                Pivot = new PointF(pivotIndex, pivot),
-                LeftLow = new PointF(leftLowIndex, leftLow),
-                RightLow = new PointF(rightLowIndex, rightLow),
-            };
-        }
-
-        public CupHandle2D DetectCupHandle2(int index, int period, bool higherRightLow)
-        {
-            if (period < 2 || index < period * 2 || index > LastIndex)
-                return null;
-
-            // Check latest is highest in period
-            if (this.Values[index] < this.GetMax(index - period, index - 1))
-                return null;
-
-            // Find pivot (first broken resistance looking backwards)
-            float pivot = float.MinValue;
-            int pivotIndex = -1;
-            float rangeLow = this[index - 1]; //this.GetMin(index - period, index - 1);
-            for (int i = index - period; i > index / 2; i--)
-            {
-                if (this[i] > this[index]) // No pivot found
-                    break;
-                if (this[i] > rangeLow && this[i] > pivot && IsTop(i, period)) // Is local High
-                {
-                    pivot = this[i];
-                    pivotIndex = i;
-                    break;
-                }
-            }
-            if (pivotIndex == -1 || index - pivotIndex < period)
-                return null;
-
-            for (int i = pivotIndex + 1; i < index; i++)
-            {
-                if (this[i] > pivot)
-                    return null;
-            }
-
-            // Find Start of the Cup Handle
-            int startIndex = 0;
-            for (int i = pivotIndex; i > 0; i--)
-            {
-                if (this[i] > pivot)
-                {
-                    startIndex = i; break;
-                }
-            }
-            if (pivotIndex - startIndex < period)
-                return null;
-
-            float leftLow = float.MaxValue;
-            int leftLowIndex = -1;
-            for (int i = startIndex + 1; i < pivotIndex - 1; i++)
-            {
-                if (leftLow > this[i])
-                {
-                    leftLow = this[i];
-                    leftLowIndex = i;
-                }
-            }
-            if (leftLowIndex == -1)
-                return null;
-
-            float rightLow = float.MaxValue;
-            int rightLowIndex = -1;
-            for (int i = pivotIndex + 1; i < index - 1; i++)
-            {
-                if (rightLow > this[i])
-                {
-                    rightLow = this[i];
-                    rightLowIndex = i;
-                }
-            }
-            if (rightLowIndex == -1)
-                return null;
-            if (higherRightLow && rightLow < leftLow)
-                return null;
-
-            return new CupHandle2D()
-            {
-                Point1 = new PointF(startIndex + 1, pivot),
-                Point2 = new PointF(index, pivot),
-                Pivot = new PointF(pivotIndex, pivot),
-                LeftLow = new PointF(leftLowIndex, leftLow),
-                RightLow = new PointF(rightLowIndex, rightLow),
+                Point1 = new PointF(startIndex, pivot.Value),
+                Point2 = new PointF(index, pivot.Value),
+                Pivot = new PointF(pivot.Index, pivot.Value),
+                LeftLow = new PointF(lowIndex, low),
+                RightLow = new PointF(pivot.LowIndex, pivot.LowValue),
             };
         }
 

@@ -1366,9 +1366,8 @@ namespace StockAnalyzer.StockClasses
                         throw new ArgumentOutOfRangeException(nameof(smoothingPeriod), "smoothingPeriod shall be greater than 1");
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(inputType), inputType, "Unexpected enum value in CalculateFastOscillator");
+                    throw new ArgumentOutOfRangeException(nameof(inputType), inputType, "Unexpected enum value in GetHighLowSeries");
             }
-            ;
         }
 
         public void CalculateEMATrailStop(int period, int inputSmoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)

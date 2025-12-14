@@ -1926,9 +1926,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     break;
             }
         }
+        int previousCupIndex = -1;
+        CupHandle2D previousCupHandle = null;
         private CupHandle2D DetectCupHandle(int index)
         {
-            return closeCurveType.DataSerie.DetectCupHandle(index, 2, false);
+            if (index == previousCupIndex)
+                return previousCupHandle;
+            previousCupHandle = closeCurveType.DataSerie.DetectCupHandle(index, 3, true);
+            previousCupIndex = index;
+            return previousCupHandle;
         }
         protected void DrawTmpCupHandle(Graphics graph, Pen pen, CupHandle2D cupHandle, bool useTransform)
         {

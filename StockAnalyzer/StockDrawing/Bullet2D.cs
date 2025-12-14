@@ -9,29 +9,32 @@ namespace StockAnalyzer.StockDrawing
         public PointF Center { get; private set; }
         public float Size { get; private set; }
 
+        public Brush Brush { get; private set; }
+
 
         public Bullet2D(PointF center, float size)
         {
             this.Center = center;
             this.Size = size;
+            this.Brush = Brushes.Black;
             this.Pen = DrawingItem.DefaultPen;
         }
         public Bullet2D(PointF center, float size, Brush brush)
         {
             this.Center = center;
             this.Size = size;
+            this.Brush = brush;
             this.Pen = DrawingItem.DefaultPen;
         }
         public override void Draw(Graphics g, Pen pen, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
         {
-            using Brush brush = new SolidBrush(pen.Color);
             PointF[] points = new PointF[] { this.Center };
 
             this.Transform(matrixValueToScreen, isLog, points);
 
             if (graphRectangle.Contains(points[0]))
             {
-                g.FillEllipse(brush, points[0].X - this.Size, points[0].Y - this.Size, this.Size * 2, this.Size * 2);
+                g.FillEllipse(Brush, points[0].X - this.Size, points[0].Y - this.Size, this.Size * 2, this.Size * 2);
             }
         }
         public override void Draw(Graphics g, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)

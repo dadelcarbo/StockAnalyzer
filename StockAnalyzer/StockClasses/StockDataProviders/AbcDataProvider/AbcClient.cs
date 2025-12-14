@@ -88,8 +88,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 // Return the response content as a string
                 return await response.Content.ReadAsStringAsync();
             }
-            catch (AbcClientException)
+            catch (AbcClientException ex)
             {
+                StockLog.Write(ex);
                 throw;
             }
             catch (Exception ex)
@@ -181,8 +182,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
                 return content;
             }
-            catch (AbcClientException)
+            catch (AbcClientException ex)
             {
+                StockLog.Write(ex);
                 throw;
             }
             catch (Exception ex)
@@ -284,8 +286,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 // Return the response content as a string
                 return await response.Content.ReadAsStringAsync();
             }
-            catch (AbcClientException)
+            catch (AbcClientException ex)
             {
+                StockLog.Write(ex);
                 throw;
             }
             catch (Exception ex)
@@ -352,8 +355,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 // Return the response content as a string
                 return await response.Content.ReadAsStringAsync();
             }
-            catch (AbcClientException)
+            catch (AbcClientException ex)
             {
+                StockLog.Write(ex);
                 throw;
             }
             catch (Exception ex)
@@ -381,12 +385,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     if (requestTimestamps.Count < 5)
                     {
                         StockLog.Write($"ABC Bourse Short Delay");
-                        await Task.Delay(500);
+                        await Task.Delay(1000);
                     }
                     else
                     {
                         StockLog.Write($"ABC Bourse Long Delay");
-                        await Task.Delay(1500);
+                        await Task.Delay(2000);
                     }
                     requestTimestamps.Add(now);
 
