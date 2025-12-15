@@ -2,6 +2,7 @@
 using StockAnalyzer.StockLogging;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -24,9 +25,22 @@ namespace Saxo.OpenAPI.AuthenticationServices
                     var authService = new PkceAuthService();
                     var authUrl = authService.GetAuthenticationRequest(app);
 
-                    //System.Diagnostics.Process.Start(authUrl);
-                    authUrl = authUrl.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = false });
+                    if (Environment.UserName == "r395930")
+                    {
+                        var chromePath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = chromePath,
+                            Arguments = authUrl,
+                            UseShellExecute = false
+                        };
+                        Process.Start(psi);
+                    }
+                    else
+                    {
+                        authUrl = authUrl.Replace("&", "^&");
+                        Process.Start(new ProcessStartInfo("cmd", $"/c start {authUrl}") { CreateNoWindow = false });
+                    }
 
                     var authCode = GetAuthCode(app, listener);
                     if (authCode == null)
