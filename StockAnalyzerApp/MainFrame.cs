@@ -591,7 +591,7 @@ namespace StockAnalyzerApp
                     //stockAlertManagerViewModel.RunFullAlert();
 
                     GenerateReport(BarDuration.Daily);
-                    GenerateReport(BarDuration.Daily);
+                    GenerateReport(BarDuration.Weekly);
                 }
             }
 
