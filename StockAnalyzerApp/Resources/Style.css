@@ -2,55 +2,35 @@
 body {
     background-color: #2A2A2A;
     color: #C0C0C0;
+    font-family: Roboto
 }
-
-table {
-    width: auto;
-    border-collapse: collapse;
-}
-
-td {
-    padding: 5px;
-    text-align: center;
-}
-
-img {
-    width: auto;
-    max-width: 100%;
-    height: auto;
-}
-
 
 table.reportTable {
-    background-color: #ffffe0;
     width: 800px;
     text-align: left;
     border-collapse: collapse;
 }
 
-table.reportTable tbody td {
-    font-size: 12px;
-    border: 1px solid #AAAAAA;
-}
+    table.reportTable tbody td {
+        font-size: 12px;
+        border: 1px solid #AAAAAA;
+    }
 
-table.reportTable thead {
-    background: #948473;
-    background: -moz-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
-    background: -webkit-linear-gradient(top, #afa396 0%, #9e9081 66%, #948473 100%);
-    background: linear-gradient(to bottom, #afa396 0%, #9e9081 66%, #948473 100%);
-}
-
-    table.reportTable thead th {
+    table.reportTable th {
         font-size: 14px;
         font-weight: bold;
-        color: #F0F0F0;
+        background: #80504030;
         text-align: left;
         border: 1px solid #AAAAAA;
     }
 
-table.reportTable tbody tr:nth-child(even) {
-    background: #E0E0C0;
-}
+    table.reportTable tbody tr:nth-child(even) {
+        background: #303030;
+    }
+
+    table.reportTable tbody tr:nth-child(odd) {
+        background: #151515;
+    }
 
 .tooltip {
     text-decoration: none;
@@ -59,16 +39,12 @@ table.reportTable tbody tr:nth-child(even) {
 
     .tooltip span {
         display: none;
-        -moz-border-radius: 6px;
-        -webkit-border-radius: 6px;
-        border-radius: 6px;
         color: black;
         background: white;
     }
 
         .tooltip span img {
             float: right;
-            margin: 0px 8px 8px 0;
         }
 
     .tooltip:hover span {
@@ -78,11 +54,8 @@ table.reportTable tbody tr:nth-child(even) {
         left: 0;
         z-index: 1000;
         width: auto;
-        border: 1px solid black;
+        border: 1px solid gray;
         margin-top: 12px;
-        margin-left: 32px;
+        margin-left: 80px;
         overflow: hidden;
-        padding: 8px;
     }
-
-
