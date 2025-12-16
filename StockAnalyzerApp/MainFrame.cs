@@ -642,7 +642,7 @@ namespace StockAnalyzerApp
                 var styleFileName = Path.Combine(Folders.Report, "Style.css");
                 if (!File.Exists(styleFileName) || File.GetLastWriteTime(styleFileName) > File.GetLastWriteTime(reportStylePath))
                 {
-                    File.Copy(reportStylePath, styleFileName);
+                    File.Copy(reportStylePath, styleFileName, true);
                 }
 
                 if (currentState == FormWindowState.Maximized || currentState == FormWindowState.Minimized)
@@ -3062,7 +3062,7 @@ namespace StockAnalyzerApp
             if (!string.IsNullOrEmpty(report))
             {
                 var htmlReport = reportTemplate.Replace("%HTML_BODY%", report);
-                string fileName = Path.Combine(Folders.Portfolio, $@"Report\{portfolio.Name}.html");
+                string fileName = Path.Combine(Folders.PortfolioReport, $@"{portfolio.Name}.html");
                 using (StreamWriter sw = new StreamWriter(fileName))
                 {
                     sw.Write(htmlReport);

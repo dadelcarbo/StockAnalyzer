@@ -32,6 +32,8 @@ namespace StockAnalyzerSettings
         [AutoCreate]
         public static string Report => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Report");
         [AutoCreate]
+        public static string PortfolioReport => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Report\Portfolio");
+        [AutoCreate]
         public static string AlertLog => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Alerts");
         [AutoCreate]
         public static string Log => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Log");
@@ -61,11 +63,6 @@ namespace StockAnalyzerSettings
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
-                        Console.WriteLine($"Created directory: {path}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Directory already exists: {path}");
                     }
                 }
             }
