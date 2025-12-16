@@ -106,7 +106,7 @@ namespace StockAnalyzerApp
 
         private const string ReportTemplatePath = @"Resources\ReportTemplate.html";
         private const string WatchlistReportTemplatePath = @"Resources\WatchlistReportTemplate.html";
-        private const string reportStylePath = @"Resources\style.css";
+        private const string reportStyleResourcePath = @"Resources\style.css";
 
         public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
@@ -572,6 +572,11 @@ namespace StockAnalyzerApp
                 }
             }
 
+            var styleFileName = Path.Combine(Folders.Report, "Style.css");
+            if (!File.Exists(styleFileName) || File.GetLastWriteTime(styleFileName) < File.GetLastWriteTime(reportStyleResourcePath))
+            {
+                File.Copy(reportStyleResourcePath, styleFileName, true);
+            }
             if (Settings.Default.GenerateDailyReport)
             {
                 // Generate Template and watchlist reports
@@ -639,12 +644,6 @@ namespace StockAnalyzerApp
 
             try
             {
-                var styleFileName = Path.Combine(Folders.Report, "Style.css");
-                if (!File.Exists(styleFileName) || File.GetLastWriteTime(styleFileName) > File.GetLastWriteTime(reportStylePath))
-                {
-                    File.Copy(reportStylePath, styleFileName, true);
-                }
-
                 if (currentState == FormWindowState.Maximized || currentState == FormWindowState.Minimized)
                 {
                     this.WindowState = FormWindowState.Normal;
@@ -3057,11 +3056,13 @@ namespace StockAnalyzerApp
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
             string positionHtml = portfolio.GeneratePositionHtml();
+            positionHtml = string.Empty;
+            var htmlReport = reportTemplate.Replace("%POSITION%", positionHtml);
 
             var report = GeneratePortfolioReportHtml(portfolio);
             if (!string.IsNullOrEmpty(report))
             {
-                var htmlReport = reportTemplate.Replace("%HTML_BODY%", report);
+                htmlReport = htmlReport.Replace("%HTML_BODY%", report);
                 string fileName = Path.Combine(Folders.PortfolioReport, $@"{portfolio.Name}.html");
                 using (StreamWriter sw = new StreamWriter(fileName))
                 {
