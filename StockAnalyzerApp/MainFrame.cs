@@ -592,11 +592,13 @@ namespace StockAnalyzerApp
                 cac40.BarDuration = BarDuration.Daily;
                 if (reportDate < cac40.LastValue.DATE)
                 {
-                    //showAlertDefDialogMenuItem_Click(this, null);
-                    //stockAlertManagerViewModel.RunFullAlert();
+                    showAlertDefDialogMenuItem_Click(this, null);
+                    stockAlertManagerViewModel.RunFullAlert();
 
-                    GenerateReport(BarDuration.Daily);
-                    GenerateReport(BarDuration.Weekly);
+                    //GenerateReport(BarDuration.Daily);
+                    //GenerateReport(BarDuration.Weekly);
+
+                    File.WriteAllText(fileName, cac40.LastValue.DATE.ToString(CultureInfo.InvariantCulture));
                 }
             }
 

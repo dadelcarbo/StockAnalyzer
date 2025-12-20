@@ -1669,6 +1669,15 @@ namespace StockAnalyzer.StockClasses
         {
             using MethodLogger ml = new MethodLogger(this, true, $"AlertDef: {alertDef.Title}");
             sw = Stopwatch.StartNew();
+
+            // Initialize Group
+            StockLog.Write($"Initializing group {alertDef.Group} for alert {alertDef.Title}");
+            foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
+            {
+                stockSerie.Initialise();
+            }
+            StockLog.Write($"Group {alertDef.Group} initialized in {sw.Elapsed}");
+
             var alerts = new List<StockAlert>();
             try
             {
@@ -1678,7 +1687,7 @@ namespace StockAnalyzer.StockClasses
                     {
                         continue;
                     }
-                    if (stockSerie.Initialise())
+                    if (stockSerie.IsInitialised)
                     {
                         var previousBarDuration = stockSerie.BarDuration;
                         try
@@ -1720,7 +1729,8 @@ namespace StockAnalyzer.StockClasses
                 StockLog.Write(ex);
             }
             sw.Stop();
-            StockLog.Write($"MatchAlert Duration: {sw.Elapsed}");
+            StockLog.Write($"MatchAlert Duration: {sw.Elapsed} for {alertDef.BarDuration} {alertDef.Group} {alertDef.Title}");
+
             return alerts;
         }
     }
