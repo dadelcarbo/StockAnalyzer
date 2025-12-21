@@ -13,7 +13,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         readonly StockAlertManagerViewModel ViewModel;
         readonly StockAlertManagerDlg ParentDlg;
 
-        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged;
+        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged; 
 
         public StockAlertManagerControl(StockAlertManagerDlg parent, StockAlertManagerViewModel viewModel)
         {

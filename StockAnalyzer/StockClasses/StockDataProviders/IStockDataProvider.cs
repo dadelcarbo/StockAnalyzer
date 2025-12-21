@@ -4,6 +4,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 {
     public enum StockDataProvider
     {
+        All,
         ABC,
         Yahoo,
         YahooIntraday,
