@@ -81,7 +81,8 @@
                         <Label Content="{Binding CurrentAlert.Group}"/>
                     </StackPanel>
                 </Grid>
-                <telerik:RadGridView Grid.Row="1" FontSize="9" Margin="2,2,2,2" ItemsSource="{Binding Alerts}"
+                <telerik:RadGridView Grid.Row="1" Name="alertGrid" FontSize="9" Margin="2,2,2,2" 
+                                     ItemsSource="{Binding Alerts}"
                         RowIndicatorVisibility="Collapsed" AutoGenerateColumns="False" IsReadOnly="True"
                         SelectionUnit="FullRow" SelectionMode="Single" SelectionChanged="AlertGridView_SelectionChanged" Grid.ColumnSpan="5">
                     <telerik:RadGridView.Columns>
@@ -94,7 +95,7 @@
                         <telerik:GridViewDataColumn Header="Variation" DataMemberBinding="{Binding Variation, StringFormat=\{0:P2\}}"/>
                         <telerik:GridViewDataColumn Header="Exchanged" DataMemberBinding="{Binding Exchanged}"/>
                         <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}"/>
-                        <telerik:GridViewDataColumn Header="Speed" DataMemberBinding="{Binding Speed}"/>
+                        <telerik:GridViewDataColumn Header="Speed" DataMemberBinding="{Binding Speed}" Name="speedColumn"/>
                         <telerik:GridViewDataColumn Header="Stok" DataMemberBinding="{Binding Stok}"/>
                         <telerik:GridViewDataColumn Header="Highest" DataMemberBinding="{Binding Highest}"/>
                         <telerik:GridViewDataColumn Header="Step" DataMemberBinding="{Binding Step}"/>

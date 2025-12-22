@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using System.Windows.Controls;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Data;
 
 namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 {
@@ -12,7 +13,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         readonly StockAlertManagerViewModel ViewModel;
         readonly StockAlertManagerDlg ParentDlg;
 
-        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged;
+        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged; 
 
         public StockAlertManagerControl(StockAlertManagerDlg parent, StockAlertManagerViewModel viewModel)
         {
@@ -22,6 +23,13 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.DataContext = viewModel;
 
             this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
+
+            alertGrid.SortDescriptors.Clear();
+            alertGrid.SortDescriptors.Add(new SortDescriptor
+            {
+                Member = this.speedColumn.DataMemberBinding.Path.Path,
+                SortDirection = System.ComponentModel.ListSortDirection.Descending
+            });
         }
 
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

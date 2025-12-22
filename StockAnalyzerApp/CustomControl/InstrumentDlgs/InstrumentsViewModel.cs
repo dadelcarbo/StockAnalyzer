@@ -126,7 +126,9 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
         private IEnumerable<StockSerie> GetLines()
         {
-            return StockDictionary.Instance.Values.Where(s => s.DataProvider == dataProvider && s.BelongsToGroupFull(this.group));
+            return dataProvider == StockDataProvider.All ?
+                StockDictionary.Instance.Values.Where(s => s.BelongsToGroupFull(this.group)) :
+                StockDictionary.Instance.Values.Where(s => s.DataProvider == dataProvider && s.BelongsToGroupFull(this.group));
         }
 
         private bool canceled = false;

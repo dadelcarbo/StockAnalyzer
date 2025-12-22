@@ -155,7 +155,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                         var viewableSeries = StockViewableItemsManager.GetViewableItem(this.triggerName);
 
                         this.TriggerEvents = (viewableSeries as IStockEvent)?.EventNames;
-                        this.TriggerEvent = this.TriggerEvents?[0];
+                        this.TriggerEvent = this.TriggerEvents?.FirstOrDefault();
                     }
                     else
                     {
@@ -498,10 +498,6 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                 CurrentAlert = null;
                 this.ProgressValue = 0;
                 this.ProgressVisibility = Visibility.Collapsed;
-
-                var cac40 = StockDictionary.Instance["CAC40"];
-                cac40.Initialise();
-                File.WriteAllText(Path.Combine(Folders.Report, "LastGeneration.txt"), cac40.LastValue.DATE.ToString(CultureInfo.InvariantCulture));
             });
         }
         #endregion
