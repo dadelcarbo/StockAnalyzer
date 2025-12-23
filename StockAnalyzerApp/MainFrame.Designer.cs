@@ -1147,8 +1147,7 @@ namespace StockAnalyzerApp
             this.saxoTurboButton.Image = global::StockAnalyzerApp.Properties.Resources.UpDown;
             this.saxoTurboButton.Name = "saxoTurbo";
             this.saxoTurboButton.Size = new System.Drawing.Size(23, 20);
-            this.saxoTurboButton.Text = "Exclude";
-            this.saxoTurboButton.ToolTipText = "Exclude value from list";
+            this.saxoTurboButton.ToolTipText = "Search for Saxo Turbo";
             this.saxoTurboButton.Click += new System.EventHandler(this.saxoTurboButton_Click);
             // 
             // toolStripSeparator5
