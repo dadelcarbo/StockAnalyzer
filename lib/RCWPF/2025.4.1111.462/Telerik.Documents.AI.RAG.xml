@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Documents.AI.RAG</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Documents.AI.RAG.DefaultContextFragmentsManager">
+            <summary>
+            Default implementation of <see cref="T:Telerik.Documents.AI.Core.IContextFragmentsManager"/> that splits text into
+            token sized fragments respecting a maximum token limit per fragment.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultContextFragmentsManager.SplitIntoFragments(System.String,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="T:Telerik.Documents.AI.RAG.DefaultContextRetriever">
+            <summary>
+            Provides a default implementation for retrieving relevant context fragments based on semantic similarity to a
+            given question.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.RAG.DefaultContextRetriever.ContextFragmentsManager">
+            <summary>
+            Gets the manager responsible for handling context fragments within the current instance.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultContextRetriever.#ctor(Telerik.Documents.AI.Core.IContextFragmentsManager,Telerik.Documents.AI.Core.IEmbedder,Telerik.Documents.AI.Core.ISimilarityCalculator,Telerik.Documents.AI.Core.ITokensCounter,Telerik.Documents.AI.Core.IEmbeddingSettings)">
+            <summary>
+            Initializes a new instance of the DefaultContextRetriever class with the specified context fragments
+            manager, embedder, similarity calculator, tokens counter, and embedding settings.
+            </summary>
+            <param name="contextFragmentsManager">The manager responsible for handling context fragments used in retrieval operations. Cannot be null.</param>
+            <param name="embedder">The component used to generate embeddings for context fragments. Cannot be null.</param>
+            <param name="similarityCalculator">The calculator used to determine similarity between embeddings. Cannot be null.</param>
+            <param name="tokensCounter">The service used to count tokens in context fragments and embeddings. Cannot be null.</param>
+            <param name="settings">The settings that configure embedding parameters, such as the maximum number of embeddings, embedding token
+            size, and model input token limit. Cannot be null.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultContextRetriever.GetContextAsync(System.String)">
+            <summary>
+            Gets the text representation of the relevant embeddings for the provided question.
+            </summary>
+            <param name="question">The question text to find relevant context for. Cannot be null.</param>
+            <returns>The text representation of the relevant embeddings.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultContextRetriever.SetContextAsync(System.String,System.Int32)">
+            <summary>
+            Asynchronously splits the specified text into fragments based on the provided embedding token size.
+            </summary>
+            <param name="text">The text to be divided into fragments. Cannot be null.</param>
+            <param name="embeddingTokenSize">The maximum number of tokens allowed in each fragment. Must be a positive integer.</param>
+            <returns>A task that represents the asynchronous operation of fragmenting the text.</returns>
+        </member>
+        <member name="T:Telerik.Documents.AI.RAG.DefaultFragments">
+            <summary>
+            Provides a default implementation of the <see cref="T:Telerik.Documents.AI.Core.IFragments"/> interface that stores a collection of
+            fragments.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultFragments.#ctor(Telerik.Documents.AI.Core.IFragment[])">
+            <summary>
+            Initializes a new instance of the DefaultFragments class with the specified fragments.
+            </summary>
+            <param name="strings">An array of fragments to be used. Cannot be null.</param>
+        </member>
+        <member name="P:Telerik.Documents.AI.RAG.DefaultFragments.Fragments">
+            <summary>
+            Gets the collection of fragments that compose the complete content.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.RAG.DefaultSimilarityCalculator">
+            <summary>
+            Provides a default implementation of the ISimilarityCalculator interface for finding the most similar text
+            fragments to a given question using embeddings.
+            </summary>
+            <remarks>This class uses an IEmbedder to generate embeddings for input text and compares them to
+            provided fragments to determine similarity.</remarks>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultSimilarityCalculator.#ctor(Telerik.Documents.AI.Core.IEmbedder)">
+            <summary>
+            Initializes a new instance of the DefaultSimilarityCalculator class using the specified embedder.
+            </summary>
+            <param name="embedder">The embedder used to generate vector representations for similarity calculations. Cannot be null.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultSimilarityCalculator.CalculateScores(System.String,System.Collections.Generic.IList{Telerik.Documents.AI.Core.Embedding})">
+            <summary>
+            Finds the most similar text fragments to the specified question and returns their similarity scores.
+            </summary>
+            <remarks>The method uses the current embedding model to compute similarity between the
+            question and each fragment. If the specified limit exceeds the number of fragments, all fragments are
+            considered. The results are ordered by descending similarity score.</remarks>
+            <param name="prompt">The input question to compare against the provided fragments. Cannot be null, empty, or whitespace.</param>
+            <param name="embeddings">An array of embeddings representing the text fragments to search. Cannot be null or empty.</param>
+            <returns>An array of similarity scores, each containing a fragment and its similarity to the question. Returns an empty array on error conditions.</returns>
+        </member>
+        <member name="T:Telerik.Documents.AI.RAG.DefaultTokensCounter">
+            <summary>
+            Provides functionality to count tokens in a given input, such as words or other units of text.
+            </summary>
+            <remarks>This class implements the <see cref="T:Telerik.Documents.AI.Core.ITokensCounter"/> interface, allowing for token counting
+            operations. The specific behavior and definition of a "token" depend on the implementation of the
+            interface.</remarks>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultTokensCounter.#ctor(Telerik.Documents.AI.Core.IEmbeddingSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Documents.AI.RAG.DefaultTokensCounter"/> class with the specified embedding settings.
+            </summary>
+            <remarks>The <paramref name="settings"/> parameter is used to configure the tokenizer encoding
+            based on the specified model ID and tokenization encoding. Ensure that the <see cref="T:Telerik.Documents.AI.Core.IEmbeddingSettings"/>
+            object is properly configured before passing it to this constructor.</remarks>
+            <param name="settings">The embedding settings that define the model ID and tokenization encoding to be used.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.DefaultTokensCounter.Count(System.String)">
+            <summary>
+            Counts the number of tokens in the specified input string.
+            </summary>
+            <param name="input">The input string to analyze. Cannot be null.</param>
+            <returns>The total number of tokens found in the input string.</returns>
+        </member>
+        <member name="T:Telerik.Documents.AI.RAG.EmbeddingSimilarityHelper">
+            <summary>
+            Provides helper methods for calculating similarity scores between an already embedded question vector
+            and a collection of fragment <see cref="T:Telerik.Documents.AI.Core.Embedding"/> instances.
+            </summary>
+            <remarks>
+            This helper is intentionally static and independent from any concrete <see cref="T:Telerik.Documents.AI.Core.IEmbedder"/> implementation
+            so that external components (e.g. test applications using different embedding providers such as Ollama)
+            can reuse the core similarity computation logic without duplicating code.
+            </remarks>
+        </member>
+        <member name="M:Telerik.Documents.AI.RAG.EmbeddingSimilarityHelper.FindClosestWithScore(System.Single[],System.Collections.Generic.IList{Telerik.Documents.AI.Core.Embedding})">
+            <summary>
+            Calculates cosine-similarity scores between a question embedding vector and fragment embeddings,
+            returning the top results ordered descending by similarity.
+            </summary>
+            <param name="questionVector">The embedding vector of the question.</param>
+            <param name="embeddings">The fragment embeddings to compare against.</param>
+            <returns>Array of <see cref="T:Telerik.Documents.AI.Core.SimilarityScore`1"/> where T is IFragment.</returns>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,581 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Windows.Documents.Proofing</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Windows.Documents.Proofing.EditCustomDictionaryDialog">
+            <summary>
+            Dialog for editing custom dictionaries.
+            </summary>
+            <summary>
+            EditCustomDictionaryDialog
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.EditCustomDictionaryDialog.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.Proofing.EditCustomDictionaryDialog"/> class.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.EditCustomDictionaryDialog.ShowDialog(Telerik.Windows.Documents.Proofing.ICustomWordDictionary)">
+            <summary>
+            Shows the dialog.
+            </summary>
+            <param name="customWordDictionary">The custom word dictionary to edit.</param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.EditCustomDictionaryDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.RadRichTextBoxSpellChecker">
+            <summary>
+            Provides spell checking functionality for the RadRichTextBox control in the Telerik framework.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RadRichTextBoxSpellChecker.SupportedControlType">
+            <summary>
+            Gets the supported control type for the RadRichTextBoxSpellChecker.
+            </summary>
+            <returns>
+            The supported control type, which indicates the specific control that the spell checker is compatible with.
+            </returns>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RadRichTextBoxSpellChecker.CurrentControl">
+            <summary>
+            Gets the currently active control within the RadRichTextBoxSpellChecker.
+            </summary>
+            <returns>
+            The currently active control of type <see cref="T:System.Windows.Controls.Control"/>.
+            </returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RadRichTextBoxSpellChecker.ChangeCurrentWord(System.String)">
+            <summary>
+            Changes the current word to the specified string in the RadRichTextBoxSpellChecker.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RadRichTextBoxSpellChecker.MoveToNextError">
+            <summary>
+            Moves the cursor to the next spelling or grammar error in the document.
+            </summary>
+            <returns>
+            A boolean value indicating whether the cursor successfully moved to the next error.
+            </returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RadRichTextBoxSpellChecker.ResetFields">
+            <summary>
+            Resets the fields in the RadRichTextBoxSpellChecker, clearing any spell-checking related data.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RadRichTextBoxSpellChecker.GetContentAsDocument">
+            <summary>
+            Retrieves the content of the RadRichTextBox as a document object.
+            </summary>
+            <returns>
+            A document representation of the content in the RadRichTextBox.
+            </returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RadRichTextBoxSpellChecker.SetContentFromDocument(Telerik.Windows.Documents.Model.RadDocument)">
+            <summary>
+            Sets the content of the RadRichTextBoxSpellChecker from the specified RadDocument.
+            </summary>
+            <param name="document">The RadDocument from which the content will be extracted.</param>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.RadRichTextBoxWordInfo">
+            <summary>
+            Represents the information about the Word processing capabilities of the RadRichTextBox.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RadRichTextBoxWordInfo.Word">
+            <summary>
+            Represents the word information in the RadRichTextBox.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RadRichTextBoxWordInfo.WordPosition">
+            <summary>
+            Represents the position of a word within the RadRichTextBox control.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.RichTextBoxSpellChecker">
+            <summary>
+            Provides spell checking functionality for rich text content within a text box.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RichTextBoxSpellChecker.SupportedControlType">
+            <summary>
+            Represents the supported control types for the RichTextBoxSpellChecker.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RichTextBoxSpellChecker.CurrentControl">
+            <summary>
+            Gets or sets the current control that is being checked for spelling.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RichTextBoxSpellChecker.ChangeCurrentWord(System.String)">
+            <summary>
+            Changes the current word being checked by the spell checker to the specified word.
+            </summary>
+            <param name="suggestion">The word to set as the current word for spell checking.</param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RichTextBoxSpellChecker.MoveToNextError">
+            <summary>
+            Moves the cursor to the next spelling or grammar error in the content.
+            </summary>
+            <returns>True if the cursor was successfully moved to the next error; otherwise, false.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RichTextBoxSpellChecker.GetContentAsDocument">
+            <summary>
+            Retrieves the content of the RichTextBox as a document object.
+            </summary>
+            <returns>
+            A <see cref="T:Telerik.Windows.Documents.Model.RadDocument"/> instance representing the current content of the RichTextBox.
+            </returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.RichTextBoxSpellChecker.SetContentFromDocument(Telerik.Windows.Documents.Model.RadDocument)">
+            <summary>
+            Sets the content of the RichTextBoxSpellChecker from a specified RadDocument.
+            </summary>
+            <param name="document">The RadDocument that contains the content to be set in the RichTextBoxSpellChecker.</param>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.RichTextBoxWordInfo">
+            <summary>
+            Represents information about Word elements in a RichTextBox, specifically for proofing in the Telerik UI.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RichTextBoxWordInfo.Word">
+            <summary>
+            Represents the word information in the RichTextBox used for proofing operations.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RichTextBoxWordInfo.TextMapItems">
+            <summary>
+            Gets the text map items associated with the RichTextBoxWordInfo.
+            </summary>
+            <returns>
+            A collection of text map items that represent the content of the RichTextBox.
+            </returns>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RichTextBoxWordInfo.ContainsDigits">
+            <summary>
+            Determines whether the specified text contains any numeric digits.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RichTextBoxWordInfo.IsUppercase">
+            <summary>
+            Gets a value indicating whether the text is in uppercase.
+            </summary>
+            <returns>
+            true if the text is entirely uppercase; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.RichTextBoxWordInfo.ContainsLetters">
+            <summary>
+            Determines whether the RichTextBox contains any letters.
+            </summary>
+            <returns>
+            True if the RichTextBox contains at least one letter; otherwise, false.
+            </returns>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.TextMapItem">
+            <summary>
+            Represents an item in a text map for proofing purposes.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.Run">
+            <summary>
+            Represents a run of text within a text map item. This class encapsulates the formatting 
+            and content of a segment of text, allowing for rich text manipulation and display.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.IndexInRun">
+            <summary>
+            Gets the index of the text map item within its run.
+            </summary> 
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.Length">
+            <summary>
+            Gets the length of the text map item.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.ContainsDigits">
+            <summary>
+            Determines whether the specified text map item contains any digits.
+            </summary> 
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.IsUppercase">
+            <summary>
+            Gets a value indicating whether the text represented by the TextMapItem is in uppercase.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.ContainsOnlySeparators">
+            <summary>
+            Determines whether the current <see cref="T:Telerik.Windows.Documents.Proofing.TextMapItem"/> contains only separator characters.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.IsLastInWord">
+            <summary>
+            Gets a value indicating whether the current text map item is the last item in a word.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.ContainsLetters">
+            <summary>
+            Determines whether the TextMapItem contains any alphabetic letters.
+            </summary> 
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextMapItem.Text">
+            <summary>
+            Gets or sets the text content of the TextMapItem.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.TextMapItem.#ctor(System.Int32,System.Windows.Documents.Run,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.Proofing.TextMapItem"/> class with the specified parameters.
+            </summary>
+            <param name="indexInRun">The zero-based index within the <see cref="P:Telerik.Windows.Documents.Proofing.TextMapItem.Run"/> where this text map item starts.</param>
+            <param name="run">The <see cref="P:Telerik.Windows.Documents.Proofing.TextMapItem.Run"/> object that contains the text segment.</param>
+            <param name="length">The length of the text map item within the run.</param>
+            <param name="containsDigits">A value indicating whether the text map item contains any digits.</param>
+            <param name="isUppercase">A value indicating whether the text map item is in uppercase.</param>
+            <param name="containsOnlySeparators">A value indicating whether the text map item contains only separator characters.</param>
+            <param name="containsLetters">A value indicating whether the item contains letters</param>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow">
+            <summary>
+            SpellCheckAllAtOnceWindow
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.FrameworkElementName">
+            <summary>
+            Gets the name of the framework element associated with the Spell Check All At Once window.
+            </summary>
+            <returns>A string representing the name of the framework element.</returns>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.SpellCheckedDocument">
+            <summary>
+            Represents the document that has been spell checked in the SpellCheckAllAtOnceWindow.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.CustomControl">
+            <summary>
+            Represents a custom control for the SpellCheckAllAtOnceWindow in the Telerik Windows Documents Proofing module.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.IsOkPressed">
+            <summary>
+            Gets a value indicating whether the "OK" button was pressed in the spell check dialog.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.HasErrors">
+            <summary>
+            Gets a value indicating whether there are any errors in the spell check.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.IsAddToDictionaryButtonVisible">
+            <summary>
+            Gets a value indicating whether the "Add to Dictionary" button is visible.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.IsIgnoreAllButtonVisible">
+            <summary>
+            Gets a value indicating whether the "Ignore All" button is visible in the Spell Check All At Once window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.IsEditCustomDictionaryButtonVisible">
+            <summary>
+            Gets a value indicating whether the "Edit Custom Dictionary" button is visible in the Spell Check All At Once window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.WindowWidth">
+            <summary>
+            Gets or sets the width of the Spell Check All At Once window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.WindowHeight">
+            <summary>
+            Gets or sets the height of the Spell Check All At Once window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.SelectedTheme">
+            <summary>
+            Gets or sets the currently selected theme for the SpellCheckAllAtOnceWindow.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.#ctor(Telerik.Windows.Documents.Proofing.IControlSpellChecker)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow"/> class using the specified spell checker manager.
+            </summary>
+            <param name="spellChecker">
+            An implementation of <see cref="T:Telerik.Windows.Documents.Proofing.IControlSpellChecker"/> that manages spell checking operations for the window.
+            </param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.ShowDialog(Telerik.Windows.Documents.Model.RadDocument,System.Boolean)">
+            <summary>
+            Displays the spell-check dialog for the specified RadDocument.
+            </summary>
+            <param name="document">The RadDocument that will be checked for spelling errors.</param>
+            <param name="showAlertIfNoErrors">Specifies whether the dialog should be modal.</param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.SpellCheckAllAtOnceWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.SpellCheckingCompletedEventArgs">
+            <summary>
+            Provides data for the SpellCheckingCompleted event.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckingCompletedEventArgs.Mode">
+            <summary>
+            Represents the mode of spell checking in the SpellCheckingCompletedEventArgs class.
+            </summary>
+            <returns>
+            A value indicating the current spell checking mode.
+            </returns>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckingCompletedEventArgs.IsSpellCheckingCanceled">
+            <summary>
+            Gets a value indicating whether the spell checking process has been canceled.
+            </summary>
+            <value>
+            A boolean value that returns true if the spell checking has been canceled; otherwise, false.
+            </value>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow">
+            <summary>
+            SpellCheckWordByWordWindow
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.IsAddToDictionaryButtonVisible">
+            <summary>
+            Gets a value indicating whether the 'Add to Dictionary' button is visible in the Spell Check Word by Word window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.IsIgnoreAllButtonVisible">
+            <summary>
+            Gets a value indicating whether the "Ignore All" button is visible in the Spell Check Word by Word window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.IsEditCustomDictionaryButtonVisible">
+            <summary>
+            Gets a value indicating whether the "Edit Custom Dictionary" button is visible.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.SpellCheckingManager">
+            <summary>
+            Manages the spell checking process within the SpellCheckWordByWordWindow.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.InitialErrorWord">
+            <summary>
+            Represents the initial error word detected during the spell check process.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.SelectedTheme">
+            <summary>
+            Gets or sets the currently selected theme for the Spell Check Word by Word window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.WindowWidth">
+            <summary>
+            Gets or sets the width of the spell check window, measured in pixels.
+            </summary>
+            <value>
+            A double representing the width of the window.
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.WindowHeight">
+            <summary>
+            Gets or sets the height of the SpellCheckWordByWordWindow.
+            </summary>
+            <value>
+            A double representing the height of the window in pixels.
+            </value>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.SpellCheckWordByWordWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.TextBoxSpellChecker">
+            <summary>
+            Represents a spell checker that can be used to check the spelling of text within a textbox.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextBoxSpellChecker.SupportedControlType">
+            <summary>
+            Gets the type of control supported by the TextBoxSpellChecker.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextBoxSpellChecker.CurrentControl">
+            <summary>
+            Gets or sets the current control that the TextBoxSpellChecker is working with.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.TextBoxSpellChecker.ChangeCurrentWord(System.String)">
+            <summary>
+            Changes the current word to the specified value in the TextBox spell checker.
+            </summary>
+            <param name="suggestion">The new word to set as the current word in the spell checker.</param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.TextBoxSpellChecker.MoveToNextError">
+            <summary>
+            Moves the cursor to the next spelling error in the text box.
+            </summary>
+            <returns>
+            A boolean value indicating whether the cursor was successfully moved to the next error.
+            </returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.TextBoxSpellChecker.GetContentAsDocument">
+            <summary>
+            Gets the content of the TextBox as a document.
+            </summary>
+            <returns>
+            A document representation of the current content in the TextBox.
+            </returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Proofing.TextBoxSpellChecker.SetContentFromDocument(Telerik.Windows.Documents.Model.RadDocument)">
+            <summary>
+            Sets the content of the text box spell checker from the specified document.
+            </summary>
+            <param name="document">The document from which the content is to be set.</param>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.TextBoxWordInfo">
+            <summary>
+            Represents information about a text box in a Word document, including its properties and contents.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextBoxWordInfo.Word">
+            <summary>
+            Gets or sets the word information for the text box in a document.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.TextBoxWordInfo.StartPosition">
+            <summary>
+            Gets the start position of the text box within the document.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Proofing.WindowSettings">
+            <summary>
+            Represents the settings for the proofing window in the Telerik document framework.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.Top">
+            <summary>
+            Gets or sets the top position of the window settings in the proofing module.
+            </summary>
+            <value>
+            A <see cref="T:System.Double"/> representing the top position of the window settings.
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.TopOffset">
+            <summary>
+            Gets or sets the top offset of the proofing window settings.
+            </summary>
+            <value>
+            A <see cref="T:System.Double"/> representing the distance in pixels from the top edge of the screen. 
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.Left">
+            <summary>
+            Gets or sets the left position of the window settings.
+            </summary>
+            <value>
+            A value representing the left position as a double.
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.LeftOffset">
+            <summary>
+            Gets or sets the left offset of the window settings.
+            </summary>
+            <value>
+            A value of type <c>double</c> representing the left offset in pixels. 
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.StartupLocation">
+            <summary>
+            Gets or sets the starting location for the proofing window when it is opened.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.Theme">
+            <summary>
+            Represents the theme settings for the proofing window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.IsAddToDictionaryButtonVisible">
+            <summary>
+            Gets or sets a value indicating whether the "Add to Dictionary" button is visible in the proofing window settings.
+            </summary>
+            <value>
+            A boolean value that determines the visibility of the "Add to Dictionary" button.
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.IsIgnoreAllButtonVisible">
+            <summary>
+            Gets a value indicating whether the "Ignore All" button is visible in the proofing window settings.
+            </summary>
+            <returns>
+            True if the "Ignore All" button is visible; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.IsEditCustomDictionaryButtonVisible">
+            <summary>
+            Gets a value indicating whether the "Edit Custom Dictionary" button is visible in the window settings.
+            </summary>
+            <returns>
+            true if the "Edit Custom Dictionary" button is visible; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.ShowAlertWhenSpellCheckingCompleted">
+            <summary>
+            Gets or sets a value indicating whether an alert is shown when spell checking is completed.
+            </summary>
+            <value>
+            true if an alert should be shown; otherwise, false.
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.SpellCheckingWindowsWidth">
+            <summary>
+            Gets or sets the width of the spell checking windows.
+            </summary>
+            <value>
+            A double representing the width of the spell checking windows in pixels.
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.SpellCheckingWindowsHeight">
+            <summary>
+            Gets or sets the height of the spell checking windows used in the document proofing process.
+            </summary>
+            <value>
+            The height of the spell checking windows, measured in pixels.
+            </value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Proofing.WindowSettings.SpellCheckingWindowsStyle">
+            <summary>
+            Represents the style settings for spell checking windows in the Telerik Windows Documents framework.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Controls.SpellCheckingMode">
+            <summary>
+            Specifies the mode of operation for spell checking.
+            </summary>
+            <remarks>
+            This enumeration defines the strategies for performing spell checking.  Use <see
+            cref="F:Telerik.Windows.Controls.SpellCheckingMode.WordByWord"/> to check each word individually, or <see cref="F:Telerik.Windows.Controls.SpellCheckingMode.AllAtOnce"/>  to check the entire text as a
+            single unit.
+            </remarks>
+        </member>
+        <member name="T:Telerik.Windows.Controls.RadSpellChecker">
+            <summary>
+            Provides functionality for checking spelling in various types of controls. 
+            The class allows for spell checking in two modes: word-by-word and all at once. 
+            It manages the display of custom windows for error correction and handles the 
+            completion of spell checking tasks through events. The spell checker configuration 
+            and window display settings are customizable through the <see cref="P:Telerik.Windows.Controls.RadSpellChecker.WindowSettings"/> 
+            property. It raises the <see cref="E:Telerik.Windows.Controls.RadSpellChecker.SpellCheckingCompleted"/> event to signal 
+            when the spell checking operation is complete, allowing for appropriate responses 
+            or notifications to be triggered once checking is finished.
+            </summary>
+        </member>
+    </members>
+</doc>

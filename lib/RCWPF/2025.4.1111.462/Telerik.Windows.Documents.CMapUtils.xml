@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Windows.Documents.CMapUtils</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Windows.Documents.CMapUtils.PredefinedCMapsProvider">
+            <summary>
+            Provides access to predefined CMap resources for mapping character codes in document text (such as PDF), using Adobe’s public character collections.
+            A list with predefined resources can be found on the following repository - https://github.com/adobe-type-tools/cmap-resources.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.CMapUtils.PredefinedCMapsProvider.#ctor">
+            <summary>
+            Create a provider that supplies embedded Adobe CMap resources for mapping character codes when processing documents.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.CMapUtils.PredefinedCMapsProvider.GetCidCMapData(System.String)">
+            <summary>
+            Retrieves the character code to CID mapping for a predefined CMap resource in document text (such as PDF).
+            </summary>
+            <param name="name">The name of the predefined CMap.</param>
+            <returns>The CMap resource data.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.CMapUtils.PredefinedCMapsProvider.GetUnicodeCMapData(System.String)">
+            <summary>
+            Retrieves the character code to Unicode mapping for a predefined CMap resource in document text (such as PDF).
+            </summary>
+            <param name="name">The name of the predefined CMap.</param>
+            <returns>The CMap resource data.</returns>
+        </member>
+    </members>
+</doc>
