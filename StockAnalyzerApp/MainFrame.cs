@@ -38,7 +38,6 @@ using StockAnalyzerApp.CustomControl.SectorDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.SplitDlg;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
-using StockAnalyzerApp.CustomControl.TweetDlg;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
 using StockAnalyzerApp.StockScripting;
 using StockAnalyzerSettings;
@@ -3813,35 +3812,7 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        #region TWEET
-        TweetDlg2 tweetDlg = null;
-        static int tweetCount = 0;
-        void tweetMenuItem_Click(object sender, EventArgs e)
-        {
-            if (tweetDlg == null)
-            {
-                string fileName = Path.Combine(Folders.Tweets, $"tweet{++tweetCount}.png");
-                var bitmap = this.graphCloseControl.GetSnapshot();
-                bitmap?.Save(fileName, ImageFormat.Png);
 
-                tweetDlg = new TweetDlg2();
-                tweetDlg.Disposed += tweetDialog_Disposed;
-                tweetDlg.Show();
-
-                tweetDlg.ViewModel.Text = $"${this.currentStockSerie.Symbol}" + Environment.NewLine;
-                tweetDlg.ViewModel.FileName = fileName;
-            }
-            else
-            {
-                tweetDlg.Activate();
-            }
-        }
-
-        void tweetDialog_Disposed(object sender, EventArgs e)
-        {
-            this.tweetDlg = null;
-        }
-        #endregion
         #region BEST TRENDS
         BestTrendDlg bestTrendDlg = null;
         void bestTrendViewMenuItem_Click(object sender, EventArgs e)

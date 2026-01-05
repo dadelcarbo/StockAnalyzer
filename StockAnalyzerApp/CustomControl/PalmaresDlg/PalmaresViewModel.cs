@@ -380,6 +380,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         public PalmaresViewModel()
         {
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+                return;
+
             this.Lines = new ObservableCollection<PalmaresLine>();
 
             string path = Folders.Palmares;

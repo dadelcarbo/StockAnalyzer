@@ -249,30 +249,6 @@
       <HintPath>..\lib\RCWPF\2025.4.1111.462\Telerik.Windows.Zip.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tweetinvi, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi.Controllers, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Controllers.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi.Core, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi.Credentials, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Credentials.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi.Logic, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Logic.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi.Security, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi.Streams, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.Streams.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi.WebLogic, Version=5.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.5.0.4\lib\netstandard2.0\Tweetinvi.WebLogic.dll</HintPath>
-    </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase">
@@ -687,22 +663,6 @@
     </Compile>
     <Compile Include="CustomControl\TrendDlgs\BestTrendViewModel.cs" />
     <Compile Include="CustomControl\TrendDlgs\MomentumViewModel.cs" />
-    <Compile Include="CustomControl\TweetDlg\TweetDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\TweetDlg\TweetDlg.Designer.cs">
-      <DependentUpon>TweetDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\TweetDlg\TweetControl.xaml.cs">
-      <DependentUpon>TweetControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\TweetDlg\TweetDlg2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\TweetDlg\TweetDlg2.Designer.cs">
-      <DependentUpon>TweetDlg2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\TweetDlg\TweetViewModel.cs" />
     <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -938,12 +898,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\TrendDlgs\BestTrendDlg.resx">
       <DependentUpon>BestTrendDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\TweetDlg\TweetDlg.resx">
-      <DependentUpon>TweetDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\TweetDlg\TweetDlg2.resx">
-      <DependentUpon>TweetDlg2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\WatchListDlgs\WatchListDlg.resx">
       <DependentUpon>WatchListDlg.cs</DependentUpon>
@@ -1261,10 +1215,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\TweetDlg\TweetControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

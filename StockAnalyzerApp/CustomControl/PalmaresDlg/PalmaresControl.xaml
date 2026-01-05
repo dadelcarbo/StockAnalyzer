@@ -65,17 +65,12 @@
                     </Button>
                 </StackPanel>
             </GroupBox>
-            <StackPanel Orientation="Horizontal" Margin="1">
-                <Label Content="{Binding Items.Count, ElementName=gridView, Mode=OneWay}" VerticalContentAlignment="Center"/>
-                <Label Content="/" VerticalContentAlignment="Center"/>
-                <Label Content="{Binding Lines.Count}" VerticalContentAlignment="Center"/>
-            </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <GroupBox Header="Speed Indicators" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
                     <StackPanel>
-                        <TextBox Text="{Binding Indicator1}" Width="140" Height="24" Margin="1" VerticalContentAlignment="Center"/>
+                        <TextBox Text="{Binding Indicator1}" Width="120" Height="24" Margin="1" VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
                             <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator1Operator}" VerticalContentAlignment="Center">
                                 <ComboBox.ItemTemplate>
@@ -89,7 +84,7 @@
                         </StackPanel>
                     </StackPanel>
                     <StackPanel>
-                        <TextBox Text="{Binding Indicator2}" Width="140" Height="24" Margin="1" VerticalContentAlignment="Center"/>
+                        <TextBox Text="{Binding Indicator2}" Width="120" Height="24" Margin="1" VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
                             <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator2Operator}" VerticalContentAlignment="Center">
                                 <ComboBox.ItemTemplate>
@@ -103,7 +98,7 @@
                         </StackPanel>
                     </StackPanel>
                     <StackPanel>
-                        <TextBox Text="{Binding Indicator3}" Width="140" Height="24" Margin="1" VerticalContentAlignment="Center"/>
+                        <TextBox Text="{Binding Indicator3}" Width="120" Height="24" Margin="1" VerticalContentAlignment="Center"/>
                         <StackPanel Orientation="Horizontal">
                             <ComboBox ItemsSource="{Binding Source={x:Static local:OperatorToStringConverter.All}}" SelectedItem="{Binding Indicator3Operator}" VerticalContentAlignment="Center">
                                 <ComboBox.ItemTemplate>
@@ -166,10 +161,15 @@
                 </Grid>
             </GroupBox>
             <GroupBox Header="Execute" HorizontalAlignment="Right">
-                <StackPanel Orientation="Horizontal" Margin="1">
-                    <Button Content="{Binding RunStatus}" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
-                    <telerik:RadProgressBar Minimum="0" Maximum="{Binding NbStocks}" Value="{Binding Progress}" Width="100" Height="10" Margin="1"
-                    Visibility="{Binding ProgressVisibility, Mode=OneWay}" ></telerik:RadProgressBar>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="1">
+                        <Button Content="{Binding RunStatus}" Click="CalculateBtn_OnClick" Margin="6" VerticalAlignment="Center"/>
+                        <telerik:RadProgressBar Minimum="0" Maximum="{Binding NbStocks}" Value="{Binding Progress}" Width="100" Height="10" Margin="1"
+                    Visibility="{Binding ProgressVisibility, Mode=OneWay}"/>
+                        <Label Content="{Binding Items.Count, ElementName=gridView, Mode=OneWay}" VerticalContentAlignment="Center"/>
+                        <Label Content="/" VerticalContentAlignment="Center"/>
+                        <Label Content="{Binding Lines.Count}" VerticalContentAlignment="Center"/>
+                    </StackPanel>
                     <CheckBox Content="Intraday" VerticalAlignment="Center" IsChecked="{Binding DownloadIntraday}" ToolTip="Download intraday data from ABC Bourse"/>
                 </StackPanel>
             </GroupBox>
