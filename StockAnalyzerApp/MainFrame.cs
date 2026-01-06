@@ -733,7 +733,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = $"Generating report - {watchlist.Name}";
 
             var reportFileName = Path.Combine(Folders.Report, watchlist.Name + ".html");
-            if (!force && File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) < File.GetLastWriteTime(WatchlistReportTemplatePath))
+            if (!force && File.Exists(reportFileName) && File.GetLastWriteTime(reportFileName).Date == DateTime.Today && File.GetLastWriteTime(reportFileName) > File.GetLastWriteTime(WatchlistReportTemplatePath))
                 return;
 
             var htmlReport = File.ReadAllText(WatchlistReportTemplatePath);
