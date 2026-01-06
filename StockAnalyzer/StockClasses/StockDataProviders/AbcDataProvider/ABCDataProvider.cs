@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -38,7 +39,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         private static readonly string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
         private static readonly string CONFIG_FILE = "EuronextDownload.cfg";
         private static readonly string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
-        private static readonly string ABC_WEB_CACHE_FOLDER = ABC_DAILY_FOLDER + @"\WebCache";
+        private static readonly string ABC_WEB_CACHE_FOLDER = @"WebCache\ABC";
         private static readonly string ABC_WEB_PROCESSED_FOLDER = ABC_DAILY_FOLDER + @"\Processed";
 
         public string UserConfigFileName => CONFIG_FILE;
@@ -115,14 +116,22 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     DownloadFromConfigFile(configFileName);
 
                     // Download groups
-                    foreach (var config in abcGroupConfig.Where(c => !c.LabelOnly))
+                    foreach (var groupConfig in abcGroupConfig.Where(c => !c.LabelOnly))
                     {
-                        NotifyProgress($"Downloading data for {config.Group}");
-                        this.DownloadGroupFromAbc(config);
+                        NotifyProgress($"Downloading data for {groupConfig.Group}");
+
+                        var history = groupDownloadHistory.FirstOrDefault(h => h.Name == groupConfig.AbcGroup);
+                        if (history == null)
+                        {
+                            groupDownloadHistory.Add(history = new AbcGroupDownloadHistory(groupConfig.AbcGroup, new DateTime(ARCHIVE_START_YEAR, 1, 1), DateTime.MinValue));
+                        }
+                        bool newMonth = history.LastDownload.Month != DateTime.Today.Month || history.LastDownload.Year != DateTime.Today.Year;
+
+                        this.DownloadGroupFromAbc(groupConfig, history);
                         AbcGroupDownloadHistory.Save(groupHistoryFileName, groupDownloadHistory);
 
-                        NotifyProgress($"Processing data for {config.Group}");
-                        LoadDataFromFolder(DataFolder + ABC_TMP_FOLDER);
+                        NotifyProgress($"Processing data for {groupConfig.Group}");
+                        LoadDataFromFolder(DataFolder + ABC_TMP_FOLDER, newMonth);
 
                         AbcDownloadHistory.Save(historyFileName, downloadHistory);
                     }
@@ -164,14 +173,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             }
         }
 
-        private void LoadDataFromFolder(string downloadPath)
+        private void LoadDataFromFolder(string downloadPath, bool updateArchive)
         {
             var dataFiles = Directory.EnumerateFiles(downloadPath, "*.csv").OrderByDescending(f => File.GetCreationTime(f)).OrderBy(f => f).GroupBy(f => Path.GetFileNameWithoutExtension(f).Split('_')[0]);
 
             foreach (var fileGroup in dataFiles)
             {
                 var lines = fileGroup.SelectMany(f => File.ReadAllLines(f));
-                LoadDataFromAbcLines(lines);
+                LoadDataFromAbcLines(lines, updateArchive);
 
                 foreach (var f in fileGroup)
                 {
@@ -182,7 +191,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
             }
         }
-        private void LoadDataFromAbcLines(IEnumerable<string> lines)
+        private void LoadDataFromAbcLines(IEnumerable<string> lines, bool updateArchive)
         {
             var splitLines = lines.Select(l => l.Split(';'));
             foreach (var serieData in splitLines.GroupBy(l => l[0]))
@@ -195,7 +204,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 var history = downloadHistory.FirstOrDefault(h => h.Id == stockSerie.ISIN);
                 if (history == null)
                 {
-                    this.LoadFromCSV(stockSerie, false);
+                    this.LoadFromCSV(stockSerie, updateArchive);
 
                     history = new AbcDownloadHistory(stockSerie.ISIN, stockSerie.Count > 0 ? stockSerie.Values.Last().DATE : DateTime.MinValue, stockSerie.StockName, stockSerie.StockGroup.ToString());
                     downloadHistory.Add(history);
@@ -212,14 +221,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 if (dailyValues.Count > 0)
                 {
                     if (stockSerie.Count == 0)
-                        this.LoadFromCSV(stockSerie, false);
+                        this.LoadFromCSV(stockSerie, updateArchive);
 
                     foreach (var dailyValue in dailyValues)
                     {
                         stockSerie.Add(dailyValue.DATE, dailyValue);
                         history.LastDate = dailyValue.DATE;
                     }
-                    this.SaveToCSV(stockSerie, true);
+                    this.SaveToCSV(stockSerie, updateArchive);
                 }
                 stockSerie.IsInitialised = false;
             }
@@ -262,14 +271,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             return true;
         }
 
-        private void DownloadGroupFromAbc(ABCGroup groupConfig)
+        private void DownloadGroupFromAbc(ABCGroup groupConfig, AbcGroupDownloadHistory history)
         {
-            var history = groupDownloadHistory.FirstOrDefault(h => h.Name == groupConfig.AbcGroup);
-            if (history == null)
-            {
-                groupDownloadHistory.Add(history = new AbcGroupDownloadHistory(groupConfig.AbcGroup, new DateTime(ARCHIVE_START_YEAR, 1, 1), DateTime.MinValue));
-            }
-
             if (DateTime.Now > history.NextDownload)
             {
                 var startDate = history.NextDownload == DateTime.MinValue ? new DateTime(ARCHIVE_START_YEAR, 1, 1) : history.LastDownload.Date.AddDays(-3);
@@ -357,7 +360,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             NotifyProgress($"Downloading data for {group.Group} from {startDate.ToShortDateString()}");
             try
             {
-                if (endDate - startDate >= new TimeSpan(31, 0, 0, 0))
+                if (startDate.Month != endDate.Month || startDate.Year != endDate.Year)
                 {
                     DownloadMonthlyFileHistoryFromABC(destFolder, startDate, group, true);
                     startDate = new DateTime(endDate.Year, endDate.Month, 1);
