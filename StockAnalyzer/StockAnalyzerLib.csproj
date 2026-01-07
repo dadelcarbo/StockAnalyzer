@@ -331,6 +331,8 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RSN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA3.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPOSC.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ZMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ZSCORE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TTM.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockSRIndicatorBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MMA.cs" />

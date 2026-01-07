@@ -279,6 +279,40 @@ namespace StockAnalyzer.StockMath
             return zScore;
         }
 
+        public float CalculateZScore(int index, int period)
+        {
+            if (index >= this.Count)
+            {
+                throw new ArgumentOutOfRangeException("Index must be lower than sample size");
+            }
+
+            float avg = 0.0f;
+            int count = 0;
+            for (int i = Math.Max(0, index - period + 1); i <= index; i++)
+            {
+                avg += this.Values[i];
+                count++;
+            }
+            avg /= count;
+
+            float sum = 0.0f;
+            float spread = 0.0f;
+
+            count = 0;
+            for (int i = Math.Max(0, index - period + 1); i <= index; i++)
+            {
+                spread = this[i] - avg;
+                sum += spread * spread;
+                count++;
+            }
+            if (sum != 0)
+            {
+                var stdev = (float)Math.Sqrt(sum / count);
+                return spread / stdev;
+            }
+            return 0;
+        }
+
         public class HistogramBucket
         {
             public int Index { get; set; }

@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public static List<string> MaTypes => new List<string> { "EMA", "MA", "XMA", "MID", "WMA" };
 
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override object[] ParameterDefaultValues => new Object[] { 20 };
+        public override object[] ParameterDefaultValues => new Object[] { 35 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
         public override string[] ParameterNames => new string[] { "Period" };
         public override string[] SerieNames => new string[] { $"{this.ShortName}({this.Parameters[0]})" };
@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             get
             {
-                seriePens ??= new Pen[] { new Pen(Color.Blue) };
+                seriePens ??= new Pen[] { new Pen(Color.GreenYellow) };
                 return seriePens;
             }
         }
