@@ -39,7 +39,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         private static readonly string ARCHIVE_FOLDER = DAILY_ARCHIVE_SUBFOLDER + @"\ABC";
         private static readonly string CONFIG_FILE = "EuronextDownload.cfg";
         private static readonly string ABC_TMP_FOLDER = ABC_DAILY_FOLDER + @"\TMP";
-        private static readonly string ABC_WEB_CACHE_FOLDER = @"WebCache\ABC";
+        private static readonly string ABC_WEB_CACHE_FOLDER = @"\WebCache\ABC";
         private static readonly string ABC_WEB_PROCESSED_FOLDER = ABC_DAILY_FOLDER + @"\Processed";
 
         public string UserConfigFileName => CONFIG_FILE;
