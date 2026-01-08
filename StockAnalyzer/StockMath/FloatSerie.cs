@@ -279,6 +279,30 @@ namespace StockAnalyzer.StockMath
             return zScore;
         }
 
+        public float CalculateZScore(float avg, int index, int period)
+        {
+            if (index >= this.Count)
+            {
+                throw new ArgumentOutOfRangeException("Index must be lower than sample size");
+            }
+            float sum = 0.0f;
+            float spread = 0.0f;
+            int count = 0;
+            for (int i = Math.Max(0, index - period + 1); i <= index; i++)
+            {
+                spread = this[i] - avg;
+                sum += spread * spread;
+                count++;
+            }
+
+            if (sum != 0)
+            {
+                var stdev = (float)Math.Sqrt(sum / count);
+                return spread / stdev;
+            }
+            return 0;
+        }
+
         public float CalculateZScore(int index, int period)
         {
             if (index >= this.Count)
@@ -701,7 +725,7 @@ namespace StockAnalyzer.StockMath
                     stdev = (float)Math.Sqrt(squareSum / (double)period);
                 }
                 bbUpSerie.Values[i] = maValue + stdev * BBUpCoef;
-                bbDownSerie.Values[i] = maValue + BBDownCoef;
+                bbDownSerie.Values[i] = maValue + stdev * BBDownCoef;
             }
         }
         public void CalculateBBEX(FloatSerie referenceAverage, int period, float BBUpCoef, float BBDownCoef, ref FloatSerie bbUpSerie, ref FloatSerie bbDownSerie)

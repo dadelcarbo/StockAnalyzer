@@ -32,12 +32,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 for (int i = emaPeriod; i < closeSerie.Count; i++)
                 {
                     // Calculate the standard deviation over the EMA period
-                    var zScore = maSerie.CalculateZScore(i - 1, emaPeriod);
-                    previousMa = maSerie[i] = previousMa + alpha * (float)(Math.Atan(zScore)*2.0/Math.PI) * (closeSerie[i] - previousMa);
+                    var zScore = Math.Abs(closeSerie.CalculateZScore(maSerie[i - 1], i, emaPeriod)) / 1.5f;
+                    previousMa = maSerie[i] = previousMa + alpha * (float)Math.Tanh(zScore * zScore * zScore) * (closeSerie[i] - previousMa);
                 }
                 this.CalculateEvents(stockSerie);
             }
-
         }
     }
 }

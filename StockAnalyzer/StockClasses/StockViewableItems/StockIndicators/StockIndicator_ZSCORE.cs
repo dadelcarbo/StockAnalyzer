@@ -13,15 +13,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[] { $"ZSCORE({parameters[0]},{parameters[1]})" };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Custom } };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.LightGreen)  };
 
-        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
+        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.Gray)) };
 
         public override void ApplyTo(StockSerie stockSerie)
         {
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-            var smoothedSerie = closeSerie.CalculateEMA((int)this.parameters[1]);
+            var smoothedSerie = closeSerie.CalculateMA((int)this.parameters[1]);
             var zScore = smoothedSerie.CalculateZScore((int)this.parameters[0]);
 
             this.series[0] = zScore;
