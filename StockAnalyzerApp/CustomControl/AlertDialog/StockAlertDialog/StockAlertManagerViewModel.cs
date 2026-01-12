@@ -579,7 +579,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private void PerformGenerateReport()
         {
-            StockAnalyzerForm.MainFrame.GenerateReport(this.BarDuration);
+            StockAnalyzerForm.MainFrame.GenerateAlertReport(this.BarDuration);
         }
 
         private int progressMax;

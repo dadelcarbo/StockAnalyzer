@@ -1,6 +1,6 @@
 ﻿
 body {
-    background-color: #2A2A2A;
+    background-color: #101010;
     color: #C0C0C0;
     font-family: Roboto
 }
@@ -25,11 +25,11 @@ table.reportTable {
     }
 
     table.reportTable tbody tr:nth-child(even) {
-        background: #303030;
+        background: #202020;
     }
 
     table.reportTable tbody tr:nth-child(odd) {
-        background: #151515;
+        background: #101010;
     }
 
 .tooltip {

@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
@@ -550,8 +551,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     float stokValue = 0;
                     if (stok > 0)
                     {
-                        float lowest = lowSerie.GetMin(endIndex - stok, endIndex);
-                        float highest = highSerie.GetMin(endIndex - stok, endIndex);
+                        float lowest = 0f;
+                        float highest = 0f;
+                        closeSerie.GetMinMax(endIndex - stok, endIndex, ref lowest, ref highest);
+
                         stokValue = 100 * (closeSerie[endIndex] - lowest) / (highest - lowest);
 
                         if (stokOperator != Operator.No)

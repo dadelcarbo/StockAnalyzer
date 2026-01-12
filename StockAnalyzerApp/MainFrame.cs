@@ -103,9 +103,7 @@ namespace StockAnalyzerApp
         public MainFrameViewModel ViewModel { get; private set; }
         public bool IsClosing { get; set; }
 
-        private const string ReportTemplatePath = @"Resources\ReportTemplate.html";
-        private const string WatchlistReportTemplatePath = @"Resources\WatchlistReportTemplate.html";
-        private const string reportStyleResourcePath = @"Resources\style.css";
+        private const string HTML_RESOURCES_FOLDER = @"Resources\Html";
 
         public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
@@ -451,6 +449,16 @@ namespace StockAnalyzerApp
 
             Folders.CreateDirectories();
 
+            // Copy Html Resources
+            foreach (string file in Directory.GetFiles(HTML_RESOURCES_FOLDER))
+            {
+                string destFile = Path.Combine(Folders.Report, Path.GetFileName(file));
+                if (!File.Exists(destFile) || File.GetLastWriteTime(destFile) < File.GetLastWriteTime(file))
+                {
+                    File.Copy(file, destFile, true); // Overwrite if exists
+                }
+            }
+
             StockSplashScreen.ProgressText = "Synchronizing One Drive...";
             StockSplashScreen.ProgressVal = 20;
 #if !DEBUG
@@ -571,11 +579,6 @@ namespace StockAnalyzerApp
                 }
             }
 
-            var styleFileName = Path.Combine(Folders.Report, "Style.css");
-            if (!File.Exists(styleFileName) || File.GetLastWriteTime(styleFileName) < File.GetLastWriteTime(reportStyleResourcePath))
-            {
-                File.Copy(reportStyleResourcePath, styleFileName, true);
-            }
             if (Settings.Default.GenerateDailyReport)
             {
                 // Generate Template and watchlist reports
@@ -735,10 +738,10 @@ namespace StockAnalyzerApp
 
             var reportFileName = Path.Combine(Folders.Report, watchlist.Name + ".html");
             var reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
-            if (!force && reportDate.Date == DateTime.Today && reportDate > File.GetLastWriteTime(WatchlistReportTemplatePath))
+            if (!force && reportDate.Date == DateTime.Today && reportDate > File.GetLastWriteTime(Folders.WatchlistReportTemplate))
                 return;
 
-            var htmlReport = File.ReadAllText(WatchlistReportTemplatePath);
+            var htmlReport = File.ReadAllText(Folders.WatchlistReportTemplate);
 
             var tableRows = string.Empty;
 
@@ -1009,7 +1012,7 @@ namespace StockAnalyzerApp
 
                 foreach (var duration in barDurations)
                 {
-                    GenerateReport(duration);
+                    GenerateAlertReport(duration);
                 }
             }
             finally { IsReportingIntraday = false; }
@@ -3079,7 +3082,7 @@ namespace StockAnalyzerApp
             this.ViewModel.BarDuration = previousBarDuration;
             this.ViewModel.IsHistoryActive = true;
         }
-        public void GenerateReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
+        public void GenerateAlertReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
         {
             StockSplashScreen.ProgressText = $"Generating alert report - {duration}";
 
@@ -3092,9 +3095,9 @@ namespace StockAnalyzerApp
 
             CleanReportFolder(folderName);
 
-            if (!File.Exists(ReportTemplatePath) || alertDefs.Count(a => a.InReport && a.Type == AlertType.Group) == 0)
+            if (!File.Exists(Folders.ReportTemplate) || alertDefs.Count(a => a.InReport && a.Type == AlertType.Group) == 0)
                 return;
-            var htmlReportTemplate = File.ReadAllText(ReportTemplatePath);
+            var htmlReportTemplate = File.ReadAllText(Folders.ReportTemplate);
 
             StockSerie previousStockSerie = this.CurrentStockSerie;
             string previousTheme = this.CurrentTheme;
@@ -3260,21 +3263,25 @@ namespace StockAnalyzerApp
                 html += $@"
             <table  class=""reportTable"">
                 <thead>
-                <tr>
-                    <th style=""font-size:20px;"" colspan=""2"" >{alertDef.Group}</th>
-                    <th style=""font-size:20px;"" colspan=""7"" scope =""colgroup""> {tableHeader} </th>
-                </tr>
-                <tr>
-                    <th>Stock Name</th>
-                    <th>Group</th>
-                    <th>{rankIndicator}</th>
-                    <th>STOK({stokPeriod})</th>
-                    <th>Trail Stop %</th>
-                    <th>Trail Stop</th>
-                    <th>{alertDef.BarDuration} %</th>
-                    <th>Value</th>
-                    <th>Highest</th>
-                </tr>
+                    <tr>
+                        <th style=""font-size:20px;"" >{alertDef.Group}</th>
+                        <th style=""font-size:20px;"" > {tableHeader} </th>
+                    </tr>
+                </thead>
+            </table>
+            <table  class=""reportTable sortable"">
+                <thead>
+                    <tr>
+                        <th>Stock Name</th>
+                        <th>Group</th>
+                        <th>{rankIndicator}</th>
+                        <th>STOK({stokPeriod})</th>
+                        <th>Trail Stop %</th>
+                        <th>Trail Stop</th>
+                        <th>{alertDef.BarDuration} %</th>
+                        <th>Value</th>
+                        <th>Highest</th>
+                    </tr>
                 </thead>
                 <tbody>";
 

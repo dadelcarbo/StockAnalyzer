@@ -98,7 +98,6 @@
                         <telerik:GridViewDataColumn Header="Speed" DataMemberBinding="{Binding Speed}" Name="speedColumn"/>
                         <telerik:GridViewDataColumn Header="Stok" DataMemberBinding="{Binding Stok}"/>
                         <telerik:GridViewDataColumn Header="Highest" DataMemberBinding="{Binding Highest}"/>
-                        <telerik:GridViewDataColumn Header="Step" DataMemberBinding="{Binding Step}"/>
                         <telerik:GridViewDataColumn Header="Creation&#x0a;Date" DataMemberBinding="{Binding Date, StringFormat=\{0:d\}}"/>
                     </telerik:RadGridView.Columns>
                 </telerik:RadGridView>

@@ -50,6 +50,10 @@ namespace StockAnalyzerSettings
         [AutoCreate]
         public static string AgendaFolder => Path.Combine(DataFolder, "agenda");
 
+        public static string WatchlistReportTemplate = Path.Combine(Report, "WatchlistReportTemplate.html");
+
+        public static string ReportTemplate = Path.Combine(Report, "ReportTemplate.html");
+
         public static void CreateDirectories()
         {
             Type type = typeof(Folders);
