@@ -2,10 +2,12 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace StockAnalyzerApp.CustomControl.SectorDlg
 {
@@ -14,23 +16,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         public SectorViewModel()
         {
             this.BarDuration = BarDuration.Daily;
-            this.Sector = ABCDataProvider.SectorCodes.First();
             this.Period = 100;
-        }
-
-        SectorCode sector;
-        public SectorCode Sector
-        {
-            get { return sector; }
-            set
-            {
-                if (sector != value)
-                {
-                    sector = value;
-                    this.OnPropertyChanged("Sector");
-                    this.OnPropertyChanged("SectorComponents");
-                }
-            }
         }
 
         static public IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
@@ -63,34 +49,38 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             }
         }
 
-        public IEnumerable<StockSerie> SectorComponents => StockDictionary.Instance.Where(s => s.Value.SectorId == this.Sector.Code).Select(s => s.Value);
-
         public void Perform()
         {
             try
             {
                 var sectorSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SECTORS_STOXX));
-                var sectorValues = new List<GraphValue[]>();
+                var sectorDataList = new List<SectorData>();
+
                 // Calculate conversion ratio
                 float min = float.MaxValue;
                 float max = float.MinValue;
                 foreach (var sectorSerie in sectorSeries)
                 {
+                    var sectorData = new SectorData() { Name = sectorSerie.StockName };
+
                     sectorSerie.BarDuration = this.BarDuration;
                     var closeSerie = sectorSerie.GetSerie(StockDataType.CLOSE);
                     float ratio = closeSerie[closeSerie.LastIndex - period] / 100f;
-                    GraphValue[] values = new GraphValue[period];
-                    values[0] = new GraphValue { X = 0, Y = 100f };
+                    SectorPoint[] points = new SectorPoint[period];
+                    points[0] = new SectorPoint { X = 0, Y = 100f };
                     for (int i = 1; i < period; i++)
                     {
                         var val = closeSerie[closeSerie.LastIndex - period + i] / ratio;
-                        values[i] = new GraphValue { X = i, Y = val };
+                        points[i] = new SectorPoint { X = i, Y = val };
                         if (val < min) min = val;
                         if (val > max) max = val;
                     }
-                    sectorValues.Add(values);
+                    sectorData.Points = points;
+                    sectorDataList.Add(sectorData);
                 }
-                this.SectorValues = sectorValues.OrderByDescending(v => v.Last().Y).ToList();
+
+                this.SectorData = sectorDataList.OrderByDescending(d=>d.LastValue).ToArray();
+
                 this.MinVal = ((int)min / 10) * 10f;
                 this.MaxVal = (1 + ((int)max / 10)) * 10f;
             }
@@ -99,19 +89,10 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                 MessageBox.Show(e.Message, e.GetType().Name, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        List<GraphValue[]> sectorValues;
-        public List<GraphValue[]> SectorValues
-        {
-            get { return sectorValues; }
-            set
-            {
-                if (sectorValues != value)
-                {
-                    sectorValues = value;
-                    this.OnPropertyChanged("SectorValues");
-                }
-            }
-        }
+
+        SectorData[] sectorData;
+        public SectorData[] SectorData { get => sectorData; set => SetProperty(ref sectorData, value); }
+
         private float minVal;
         public float MinVal
         {
@@ -138,9 +119,19 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                 }
             }
         }
+
+        private CommandBase performCommand;
+        public ICommand PerformCommand => performCommand ??= new CommandBase(Perform);
+
     }
 
-    public class GraphValue
+    public class SectorData
+    {
+        public string Name { get; set; }
+        public float LastValue => Points == null || Points.Length == 0 ? 0 : Points.Last().Y;
+        public SectorPoint[] Points { get; set; }
+    }
+    public class SectorPoint
     {
         public int X { get; set; }
         public float Y { get; set; }
