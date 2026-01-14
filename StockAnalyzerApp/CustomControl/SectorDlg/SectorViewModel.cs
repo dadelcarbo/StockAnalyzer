@@ -61,7 +61,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                 float max = float.MinValue;
                 foreach (var sectorSerie in sectorSeries)
                 {
-                    var sectorData = new SectorData() { Name = sectorSerie.StockName };
+                    var sectorData = new SectorData() { Name = sectorSerie.StockName, ShortName = sectorSerie.StockName.Replace("STOXX EUROPE 600 ", "") };
 
                     sectorSerie.BarDuration = this.BarDuration;
                     var closeSerie = sectorSerie.GetSerie(StockDataType.CLOSE);
@@ -79,7 +79,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                     sectorDataList.Add(sectorData);
                 }
 
-                this.SectorData = sectorDataList.OrderByDescending(d=>d.LastValue).ToArray();
+                this.SectorData = sectorDataList.OrderByDescending(d => d.LastValue).ToArray();
 
                 this.MinVal = ((int)min / 10) * 10f;
                 this.MaxVal = (1 + ((int)max / 10)) * 10f;
@@ -128,6 +128,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
     public class SectorData
     {
         public string Name { get; set; }
+        public string ShortName { get; set; }
         public float LastValue => Points == null || Points.Length == 0 ? 0 : Points.Last().Y;
         public SectorPoint[] Points { get; set; }
     }

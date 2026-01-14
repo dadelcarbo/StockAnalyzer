@@ -1,9 +1,8 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
-using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.GridView;
+using Telerik.Windows.Controls.ChartView;
 
 namespace StockAnalyzerApp.CustomControl.SectorDlg
 {
@@ -20,6 +19,84 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             InitializeComponent();
 
             this.Form = form;
+
+            this.ViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "SectorData")
+                {
+                    this.sectorChart.Series.Clear();
+                    for (int i = 0; i < this.ViewModel.SectorData.Length; i++)
+                    {
+                        var lineSeries = GetLineSeries(i);
+                        this.sectorChart.Series.Add(lineSeries);
+                    }
+                }
+            };
+
+            this.ViewModel.Perform();
+        }
+
+        private LineSeries GetLineSeries(int index)
+        {
+            // Create the LineSeries
+            var lineSeries = new LineSeries
+            {
+                CategoryBinding = new PropertyNameDataPointBinding("X"),
+                ValueBinding = new PropertyNameDataPointBinding("Y"),
+                ItemsSource = ViewModel.SectorData[index].Points, // Replace with your actual data context
+                IsHitTestVisible = true
+            };
+
+            // Set LegendSettings
+            var legendSettings = new SeriesLegendSettings
+            {
+                Title = ViewModel.SectorData[index].ShortName // Replace with your actual data context
+            };
+            lineSeries.LegendSettings = legendSettings;
+
+            // Create the DataTemplate for TrackBallInfoTemplate
+            var stackPanelFactory = new FrameworkElementFactory(typeof(StackPanel));
+
+            stackPanelFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+
+            // Create the first TextBlock for ShortName
+            var shortNameTextBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+            shortNameTextBlockFactory.SetBinding(
+                TextBlock.TextProperty,
+                new Binding($"DataContext.SectorData[{index}].ShortName")
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor)
+                    {
+                        AncestorType = typeof(SectorUserControl)
+                    }
+                }
+            );
+
+            // Create the second TextBlock for Value
+            var valueTextBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+            valueTextBlockFactory.SetBinding(
+                TextBlock.TextProperty,
+                new Binding("DataPoint.Value")
+                {
+                    StringFormat = "F2"
+                }
+            );
+            valueTextBlockFactory.SetValue(TextBlock.MarginProperty, new Thickness(10, 0, 0, 0));
+
+            // Add TextBlocks to the StackPanel
+            stackPanelFactory.AppendChild(shortNameTextBlockFactory);
+            stackPanelFactory.AppendChild(valueTextBlockFactory);
+
+            // Create the DataTemplate
+            var trackBallInfoTemplate = new DataTemplate
+            {
+                VisualTree = stackPanelFactory
+            };
+
+            // Assign the DataTemplate to TrackBallInfoTemplate
+            lineSeries.TrackBallInfoTemplate = trackBallInfoTemplate;
+
+            return lineSeries;
         }
 
         public SectorViewModel ViewModel => (SectorViewModel)this.DataContext;
@@ -32,57 +109,6 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             this.ViewModel.Perform();
 
             this.Cursor = previousCursor;
-        }
-
-        private void grid_SelectionChanged(object sender, SelectionChangeEventArgs e)
-        {
-            //// Open on the alert stock
-            //string momentum = null;
-
-            //if (momentum == null) return;
-
-            //if (SelectedStockChanged != null)
-            //{
-            //    try
-            //    {
-            //        DrawingItem.CreatePersistent = false;
-            //        momentum.StockSerie.StockAnalysis.DeleteTransientDrawings();
-
-            //        if (!momentum.StockSerie.StockAnalysis.DrawingItems.ContainsKey(momentum.BarDuration))
-            //        {
-            //            momentum.StockSerie.StockAnalysis.DrawingItems.Add(momentum.BarDuration, new StockDrawingItems());
-            //        }
-            //        momentum.StockSerie.StockAnalysis.DrawingItems[momentum.BarDuration].Add(
-            //            new Rectangle2D(
-            //                new PointF(momentum.StartIndex, momentum.StockSerie.GetSerie(StockDataType.LOW)[momentum.StartIndex]),
-            //                new PointF(momentum.EndIndex, momentum.StockSerie.GetSerie(StockDataType.HIGH)[momentum.EndIndex])));
-
-            //        DrawingItem.KeepTransient = true;
-            //        this.SelectedStockChanged(momentum.StockSerie.StockName, Math.Max(0, momentum.StartIndex - 100), Math.Min(momentum.StockSerie.Count - 1, momentum.EndIndex + 100), momentum.BarDuration, true);
-            //        this.Form.TopMost = true;
-            //        this.Form.TopMost = false;
-            //    }
-            //    catch { }
-            //    finally
-            //    {
-            //        DrawingItem.CreatePersistent = true;
-            //        DrawingItem.KeepTransient = false;
-            //    }
-            //}
-        }
-        private void grid_FilterOperatorsLoading(object sender, FilterOperatorsLoadingEventArgs e)
-        {
-            var column = e.Column as GridViewBoundColumnBase;
-            if (column != null && column.DataType == typeof(string))
-            {
-                e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.Contains;
-                e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;
-            }
-            else if (column != null && column.DataType == typeof(DateTime))
-            {
-                e.DefaultOperator1 = Telerik.Windows.Data.FilterOperator.IsGreaterThanOrEqualTo;
-                e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.IsGreaterThanOrEqualTo;
-            }
         }
     }
 }
