@@ -41,6 +41,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float Drawdown => Portfolio.DrawDown;
         [Property(null, "1-General")]
         public float MaxValue => Portfolio.MaxValue;
+        [Property("P2", "1-General")]
+        public float CAGR => Portfolio.CAGR;
 
         [Property(null, "2-Risk")]
         public int MaxPositions { get => Portfolio.MaxPositions; set => Portfolio.MaxPositions = value; }

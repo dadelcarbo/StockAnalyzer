@@ -2875,7 +2875,7 @@ namespace StockAnalyzerApp
                 <thead>
                 <tr>
                     <th style=""font-size:20px;"" rowspan=""1"">{portfolio.Name}<br>{DateTime.Now.ToString()}</th>
-                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€<br>Risk Free: {portfolio.RiskFreeValue}€<br>Cash:{portfolio.Balance}€<br>DrawDown: {portfolio.DrawDown.ToString("P2")}</th>
+                    <th style=""font-size:20px;"" colspan=""8"" scope =""colgroup"">Value: {portfolio.TotalValue}€<br>Risk Free: {portfolio.RiskFreeValue}€<br>Cash:{portfolio.Balance}€<br>DrawDown: {portfolio.DrawDown.ToString("P2")}<br>CAGR: {portfolio.CAGR.ToString("P2")}</th>
                 </tr>
                 <tr>
                     <th>Stock Name</th>

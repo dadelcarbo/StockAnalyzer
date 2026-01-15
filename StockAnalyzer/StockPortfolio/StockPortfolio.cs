@@ -89,13 +89,15 @@ namespace StockAnalyzer.StockPortfolio
         public float TotalValue => this.Balance + this.PositionValue;
         public float RiskFreeValue { get; set; }
 
+        [JsonIgnore]
+        public float CAGR => (float)Math.Pow((TotalValue / InitialBalance), (365.0 / (LastSyncDate - CreationDate).Days)) - 1.0f;
+
         public float DrawDown => (MaxValue - TotalValue) / MaxValue;
         public float MaxValue { get; set; }
 
         public float MaxRisk { get; set; }
         public float MinRisk { get; set; }
         public float MaxDrawDown { get; set; }
-
 
         /// <summary>
         /// Calculate risk based on the current drawdown using linear function.
