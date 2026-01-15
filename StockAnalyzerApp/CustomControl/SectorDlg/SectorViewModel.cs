@@ -15,16 +15,22 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         public SectorViewModel()
         {
             this.BarDuration = BarDuration.Daily;
+            this.group = StockSerie.Groups.SECTORS_STOXX;
         }
 
         BarDuration barDuration;
         public BarDuration BarDuration { get => barDuration; set => SetProperty(ref barDuration, value); }
 
+        StockSerie.Groups group;
+        public StockSerie.Groups Group{ get => group; set => SetProperty(ref group, value); }
+
+        public List<StockSerie.Groups> Groups => StockDictionary.Instance.GetValidGroups();
+
         public void Perform(string param)
         {
             try
             {
-                var sectorSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SECTORS_STOXX));
+                var sectorSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(Group)).Take(20);
                 var refSerie = sectorSeries.FirstOrDefault();
                 #region Sanity checks
                 if (refSerie == null)

@@ -23,7 +23,7 @@
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     Background="#FFDDDDDD"
-                    Padding="1,1" Margin="2">
+                    Padding="1,2" Margin="2">
                             <ContentPresenter
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center" />
@@ -53,9 +53,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
+            
+            <Label Content="Group" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="5"/>
+            <ComboBox Width="130" Height="22" VerticalContentAlignment="Center" SelectedItem="{Binding Group, Mode=TwoWay}" ItemsSource="{Binding Groups}"/>
 
             <Label Content="Duration" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="5"/>
-            <ComboBox Width="80" VerticalContentAlignment="Center"
+            <ComboBox Width="80" VerticalContentAlignment="Center" Height="22" Margin="0,0,20,0"
                 SelectedItem="{Binding BarDuration, Mode=TwoWay}"
                 ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}"/>
 

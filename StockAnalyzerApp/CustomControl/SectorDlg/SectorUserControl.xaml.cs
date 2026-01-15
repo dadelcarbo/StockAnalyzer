@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Controls.ChartView;
 
 namespace StockAnalyzerApp.CustomControl.SectorDlg
@@ -22,9 +24,14 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
 
             this.ViewModel.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == "SectorData")
+                if (e.PropertyName == "Group" || e.PropertyName == "Duration")
+                {
+                    this.ViewModel.Perform(this.ChildrenOfType<RadioButton>().First(b => b.IsChecked == true).Content.ToString());
+                }
+                else if (e.PropertyName == "SectorData")
                 {
                     this.sectorChart.Series.Clear();
+
                     for (int i = 0; i < this.ViewModel.SectorData.Length; i++)
                     {
                         var lineSeries = GetLineSeries(i);
