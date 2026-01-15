@@ -33,7 +33,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                 }
             };
 
-            this.ViewModel.Perform();
+            this.ViewModel.Perform("1M");
         }
 
         private LineSeries GetLineSeries(int index)
@@ -50,7 +50,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             // Set LegendSettings
             var legendSettings = new SeriesLegendSettings
             {
-                Title = ViewModel.SectorData[index].ShortName // Replace with your actual data context
+                Title = ViewModel.SectorData[index].LegendName // Replace with your actual data context
             };
             lineSeries.LegendSettings = legendSettings;
 
@@ -71,6 +71,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                     }
                 }
             );
+            shortNameTextBlockFactory.SetValue(TextBlock.MarginProperty, new Thickness(10, 0, 0, 0));
 
             // Create the second TextBlock for Value
             var valueTextBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
@@ -81,11 +82,10 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                     StringFormat = "F2"
                 }
             );
-            valueTextBlockFactory.SetValue(TextBlock.MarginProperty, new Thickness(10, 0, 0, 0));
 
             // Add TextBlocks to the StackPanel
-            stackPanelFactory.AppendChild(shortNameTextBlockFactory);
             stackPanelFactory.AppendChild(valueTextBlockFactory);
+            stackPanelFactory.AppendChild(shortNameTextBlockFactory);
 
             // Create the DataTemplate
             var trackBallInfoTemplate = new DataTemplate
@@ -106,7 +106,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             Cursor previousCursor = this.Cursor;
             this.Cursor = Cursors.Wait;
 
-            this.ViewModel.Perform();
+            this.ViewModel.Perform("YTD");
 
             this.Cursor = previousCursor;
         }

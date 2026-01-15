@@ -3851,7 +3851,7 @@ namespace StockAnalyzerApp
             {
                 sectorDlg = new SectorDlg(this.selectedGroup.ToString(), this.ViewModel.BarDuration);
                 sectorDlg.Disposed += sectorDialog_Disposed;
-                sectorDlg.bestTrend1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+                sectorDlg.sectorUserControl.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
                 sectorDlg.Show();
             }
             else

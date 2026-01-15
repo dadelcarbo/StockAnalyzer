@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.bestTrend1 = new SectorUserControl(this);
+            this.sectorUserControl = new SectorUserControl(this);
             this.SuspendLayout();
             // 
             // elementHost1
@@ -37,16 +37,16 @@
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(0, 0);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(800, 450);
+            this.elementHost1.Size = new System.Drawing.Size(1200, 500);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.bestTrend1;
+            this.elementHost1.Child = this.sectorUserControl;
             // 
             // SectorDlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1200, 500);
             this.Controls.Add(this.elementHost1);
             this.Name = "SectorDlg";
             this.Text = "Sector View";
@@ -57,6 +57,6 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        public SectorUserControl bestTrend1;
+        public SectorUserControl sectorUserControl;
     }
 }

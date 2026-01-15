@@ -4,24 +4,71 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.SectorDlg"
-             xmlns:abc="clr-namespace:StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;assembly=StockAnalyzer"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
-             xmlns:AgendaDlg="clr-namespace:StockAnalyzerApp.CustomControl.AgendaDlg" x:Class="StockAnalyzerApp.CustomControl.SectorDlg.SectorUserControl"
+             xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
+             x:Class="StockAnalyzerApp.CustomControl.SectorDlg.SectorUserControl"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="450" d:DesignWidth="800" d:Background="White"
              d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False, Type={x:Type local:SectorViewModel}}">
     <UserControl.DataContext>
         <local:SectorViewModel/>
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style TargetType="RadioButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border
+                    Name="border"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Background="#FFDDDDDD"
+                    Padding="1,1" Margin="2">
+                            <ContentPresenter
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFAAAAAA" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter TargetName="border" Property="Background" Value="#FFF3F3F3" />
+                                <Setter TargetName="border" Property="Background" Value="#FFAAAAAA" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFD9D9D9" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
-            <Label Content="Period" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="5"/>
-            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160" Text="{Binding Period}" Padding="5"/>
-            <Button Padding="5" Command="{Binding PerformCommand}" Content="Go"/>
+
+            <Label Content="Duration" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="5"/>
+            <ComboBox Width="80" VerticalContentAlignment="Center"
+                SelectedItem="{Binding BarDuration, Mode=TwoWay}"
+                ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}"/>
+
+            <RadioButton Content="1W" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="1W"/>
+            <RadioButton Content="MTD" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="MTD"/>
+            <RadioButton Content="1M" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="1M" IsChecked="True" />
+            <RadioButton Content="2M" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="2M" />
+            <RadioButton Content="3M" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="3M" />
+            <RadioButton Content="6M" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="6M" />
+            <RadioButton Content="YTD" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="YTD"/>
+            <RadioButton Content="1Y" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="1Y" />
+            <RadioButton Content="2Y" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="2Y" />
+            <RadioButton Content="Max" VerticalAlignment="Center" Command="{Binding PerformCommand}" CommandParameter="Max"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

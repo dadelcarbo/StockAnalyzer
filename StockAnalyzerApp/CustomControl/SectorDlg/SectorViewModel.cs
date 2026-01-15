@@ -1,8 +1,7 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,44 +15,49 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         public SectorViewModel()
         {
             this.BarDuration = BarDuration.Daily;
-            this.Period = 100;
         }
 
-        static public IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
-        private BarDuration barDuration;
-        public BarDuration BarDuration
-        {
-            get { return barDuration; }
-            set
-            {
-                if (barDuration != value)
-                {
-                    barDuration = value;
-                    this.OnPropertyChanged("BarDuration");
-                }
-            }
-        }
+        BarDuration barDuration;
+        public BarDuration BarDuration { get => barDuration; set => SetProperty(ref barDuration, value); }
 
-        private int period;
-        public int Period
-        {
-            get { return period; }
-            set
-            {
-                if (period != value)
-                {
-                    period = value;
-                    this.OnPropertyChanged("Period");
-                    this.Perform();
-                }
-            }
-        }
-
-        public void Perform()
+        public void Perform(string param)
         {
             try
             {
                 var sectorSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(StockSerie.Groups.SECTORS_STOXX));
+                var refSerie = sectorSeries.FirstOrDefault();
+                #region Sanity checks
+                if (refSerie == null)
+                {
+                    MessageBox.Show("No sector series found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (!refSerie.Initialise())
+                {
+                    MessageBox.Show($"Error initialising {refSerie.StockName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                #endregion
+
+                DateTime startDate = DateTime.MinValue;
+                DateTime endDate = refSerie.LastValue.DATE;
+                switch (param)
+                {
+                    case "1W": startDate = endDate.AddDays(-7); break;
+                    case "MTD": startDate = new DateTime(endDate.Year, endDate.Month, 1); break;
+                    case "1M": startDate = endDate.AddMonths(-1); break;
+                    case "2M": startDate = endDate.AddMonths(-2); break;
+                    case "3M": startDate = endDate.AddMonths(-3); break;
+                    case "6M": startDate = endDate.AddMonths(-6); break;
+                    case "YTD": startDate = new DateTime(endDate.Year, 1, 1); break;
+                    case "1Y": startDate = endDate.AddYears(-1); break;
+                    case "2Y": startDate = endDate.AddYears(-2); break;
+                    case "Max": startDate = refSerie.FirstValue.DATE; break;
+                    default:
+                        MessageBox.Show($"Invalid period parameter {param}.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                }
+
                 var sectorDataList = new List<SectorData>();
 
                 // Calculate conversion ratio
@@ -61,17 +65,27 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                 float max = float.MinValue;
                 foreach (var sectorSerie in sectorSeries)
                 {
-                    var sectorData = new SectorData() { Name = sectorSerie.StockName, ShortName = sectorSerie.StockName.Replace("STOXX EUROPE 600 ", "") };
-
-                    sectorSerie.BarDuration = this.BarDuration;
-                    var closeSerie = sectorSerie.GetSerie(StockDataType.CLOSE);
-                    float ratio = closeSerie[closeSerie.LastIndex - period] / 100f;
-                    SectorPoint[] points = new SectorPoint[period];
-                    points[0] = new SectorPoint { X = 0, Y = 100f };
-                    for (int i = 1; i < period; i++)
+                    if (!sectorSerie.Initialise())
                     {
-                        var val = closeSerie[closeSerie.LastIndex - period + i] / ratio;
-                        points[i] = new SectorPoint { X = i, Y = val };
+                        StockLog.Write($"{sectorSerie.StockName}: Initialisation failed !");
+                        continue;
+                    }
+
+
+                    var sectorData = new SectorData() { Name = sectorSerie.StockName, ShortName = sectorSerie.StockName.Replace("STOXX EUROPE 600 ", "") };
+                    sectorSerie.BarDuration = this.BarDuration;
+
+                    var startIndex = sectorSerie.IndexOfFirstGreaterOrEquals(startDate);
+                    if (startIndex < 0)
+                        continue;
+                    var closeSerie = sectorSerie.GetSerie(StockDataType.CLOSE);
+                    float ratio = closeSerie[startIndex] / 100f;
+                    SectorPoint[] points = new SectorPoint[sectorSerie.Count - startIndex];
+                    points[0] = new SectorPoint { X = 0, Y = 100f };
+                    for (int i = startIndex; i <= sectorSerie.LastIndex; i++)
+                    {
+                        var val = closeSerie[i] / ratio;
+                        points[i - startIndex] = new SectorPoint { X = i - startIndex, Y = val, Date = sectorSerie.Keys.ElementAt(i) };
                         if (val < min) min = val;
                         if (val > max) max = val;
                     }
@@ -120,8 +134,8 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
             }
         }
 
-        private CommandBase performCommand;
-        public ICommand PerformCommand => performCommand ??= new CommandBase(Perform);
+        private ParamCommandBase<string> performCommand;
+        public ICommand PerformCommand => performCommand ??= new ParamCommandBase<string>(Perform);
 
     }
 
@@ -129,11 +143,16 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
     {
         public string Name { get; set; }
         public string ShortName { get; set; }
+
+        public string LegendName => $"{LastValue:F2} - {ShortName}";
+
         public float LastValue => Points == null || Points.Length == 0 ? 0 : Points.Last().Y;
         public SectorPoint[] Points { get; set; }
     }
+
     public class SectorPoint
     {
+        public DateTime Date { get; set; }
         public int X { get; set; }
         public float Y { get; set; }
     }

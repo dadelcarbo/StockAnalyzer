@@ -2991,59 +2991,6 @@ namespace StockAnalyzer.StockClasses
             }
             return index;
         }
-        //public int IndexOf(DateTime date)
-        //{
-        //    if (dateArray == null)
-        //    {
-        //        if (this.Count > 0)
-        //        {
-        //            dateArray = this.Keys.ToArray();
-        //        }
-        //        else
-        //        {
-        //            return -1;
-        //        }
-        //    }
-        //    if (date < dateArray[0]) { return -1; }
-        //    if (date > dateArray[dateArray.Length - 1]) { return -1; }
-        //    return IndexOfRec(date, 0, dateArray.Length - 1);
-        //}
-        //private int IndexOfRec(DateTime date, int startIndex, int endIndex)
-        //{
-        //    if (startIndex < endIndex)
-        //    {
-        //        if (dateArray[startIndex] == date)
-        //        {
-        //            return startIndex;
-        //        }
-        //        if (dateArray[endIndex] == date)
-        //        {
-        //            return endIndex;
-        //        }
-        //        int midIndex = (startIndex + endIndex) / 2;
-        //        int comp = date.CompareTo(dateArray[midIndex]);
-        //        if (comp == 0)
-        //        {
-        //            return midIndex;
-        //        }
-        //        else if (comp < 0)
-        //        {// 
-        //            return IndexOfRec(date, startIndex + 1, midIndex - 1);
-        //        }
-        //        else
-        //        {
-        //            return IndexOfRec(date, midIndex + 1, endIndex - 1);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (startIndex == endIndex && dateArray[startIndex] == date)
-        //        {
-        //            return startIndex;
-        //        }
-        //        return -1;
-        //    }
-        //}
         #endregion
         #region IXmlSerializable Members
         public System.Xml.Schema.XmlSchema GetSchema()

@@ -121,6 +121,7 @@ namespace StockAnalyzer.StockClasses
             if (date > keys[size - 1]) { return -1; }
             return IndexOfRec(date, 0, size - 1);
         }
+
         private int IndexOfRec(DateTime date, int startIndex, int endIndex)
         {
             if (startIndex < endIndex)
