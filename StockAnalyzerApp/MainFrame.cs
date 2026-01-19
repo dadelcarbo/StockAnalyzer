@@ -3849,9 +3849,8 @@ namespace StockAnalyzerApp
         {
             if (sectorDlg == null)
             {
-                sectorDlg = new SectorDlg(this.selectedGroup.ToString(), this.ViewModel.BarDuration);
+                sectorDlg = new SectorDlg();
                 sectorDlg.Disposed += sectorDialog_Disposed;
-                sectorDlg.sectorUserControl.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
                 sectorDlg.Show();
             }
             else

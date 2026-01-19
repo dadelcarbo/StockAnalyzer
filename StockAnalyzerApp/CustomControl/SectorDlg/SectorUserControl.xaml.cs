@@ -13,8 +13,6 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
     /// </summary>
     public partial class SectorUserControl : UserControl
     {
-        public event StockAnalyzerForm.SelectedStockAndDurationAndIndexChangedEventHandler SelectedStockChanged;
-
         private System.Windows.Forms.Form Form { get; }
         public SectorUserControl(System.Windows.Forms.Form form)
         {

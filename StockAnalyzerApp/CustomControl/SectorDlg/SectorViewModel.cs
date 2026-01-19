@@ -21,8 +21,10 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         BarDuration barDuration;
         public BarDuration BarDuration { get => barDuration; set => SetProperty(ref barDuration, value); }
 
+        public List<BarDuration> BarDurations => new List<BarDuration>() { BarDuration.Daily, BarDuration.Weekly };
+
         StockSerie.Groups group;
-        public StockSerie.Groups Group{ get => group; set => SetProperty(ref group, value); }
+        public StockSerie.Groups Group { get => group; set => SetProperty(ref group, value); }
 
         public List<StockSerie.Groups> Groups => StockDictionary.Instance.GetValidGroups();
 
