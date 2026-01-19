@@ -90,7 +90,7 @@ namespace StockAnalyzer.StockPortfolio
         public float RiskFreeValue { get; set; }
 
         [JsonIgnore]
-        public float CAGR => (float)Math.Pow((TotalValue / InitialBalance), (365.0 / (LastSyncDate - CreationDate).Days)) - 1.0f;
+        public float CAGR => (float)Math.Pow(TotalValue / InitialBalance, 365.0/ (LastSyncDate - CreationDate).Days) - 1.0f;
 
         public float DrawDown => (MaxValue - TotalValue) / MaxValue;
         public float MaxValue { get; set; }
