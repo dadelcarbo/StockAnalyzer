@@ -43,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool LoadData(StockSerie stockSerie)
         {
-            var archiveFileName = Path.Combine(DataFolder, ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
+            var archiveFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
             if (File.Exists(archiveFileName))
             {
                 stockSerie.ReadFromCSVFile(archiveFileName);
@@ -147,7 +147,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     }
 
                     var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
-                    var archiveFileName = Path.Combine(DataFolder, ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
+                    var archiveFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
 
                     stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, stockSerie.Keys.Last().Date);
 
@@ -254,7 +254,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             if (!stockSerie.Initialise())
                 return;
 
-            var archiveFileName = Path.Combine(DataFolder, ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
+            var archiveFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
             stockSerie.SaveToCSVFromDateToDate(archiveFileName, date, stockSerie.LastValue.DATE);
 
             stockSerie.IsInitialised = false;
