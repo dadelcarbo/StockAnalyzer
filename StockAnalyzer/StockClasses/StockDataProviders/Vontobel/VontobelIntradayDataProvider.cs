@@ -59,9 +59,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
         /// 
         /// </summary>
         /// <param name="ticker"></param>
-        /// <param name="period">1D - 1 minute bars from begining of the current day<br/>
-        /// 2D - 5 minutes bars from the last 24 Hours<br/>
-        /// 1W - 1 hour bar for 1 week period</param>
+        /// <param name="period">
+        /// 0 - 1D 5 Minutes Bars<br/>
+        /// 1 - 2D 5 Minutes Bars<br/>
+        /// 2 - 1W 5 Minutes Bars<br/>
+        /// 3 - 1M 1 Hour Bars<br/>
         /// <returns></returns>
         public string FormatIntradayURL(string ticker, string period)
         {
