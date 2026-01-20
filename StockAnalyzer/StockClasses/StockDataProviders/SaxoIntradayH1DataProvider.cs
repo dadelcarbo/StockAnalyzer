@@ -188,7 +188,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         stockSerie.Add(date, newBar);
                     }
 
-                    var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                    var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-3).AddDays(-lastDate.Day + 1).Date;
                     //var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
                     var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ISIN + "_" + stockSerie.StockGroup.ToString() + ".txt";
 
@@ -266,7 +266,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                     if (nbNewBars > 0)
                     {
-                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-3).AddDays(-lastDate.Day + 1).Date;
                         //var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.Symbol.Replace(':', '_') + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".txt";
                         var archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + stockSerie.ISIN + "_" + stockSerie.StockGroup.ToString() + ".txt";
 

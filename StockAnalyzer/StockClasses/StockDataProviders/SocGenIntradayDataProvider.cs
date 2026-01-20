@@ -146,7 +146,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         stockSerie.Add(newBar.DATE, newBar);
                     }
 
-                    var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                    var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-3).AddDays(-lastDate.Day + 1).Date;
                     var archiveFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
 
                     stockSerie.SaveToCSVFromDateToDate(archiveFileName, firstArchiveDate, stockSerie.Keys.Last().Date);

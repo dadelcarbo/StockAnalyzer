@@ -151,7 +151,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider
 
                     if (update)
                     {
-                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-3).AddDays(-lastDate.Day + 1).Date;
 
                         var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().AddMinutes(-15);
 
@@ -264,7 +264,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider
 
                     if (nbNewBars > 0)
                     {
-                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-2).AddDays(-lastDate.Day + 1).Date;
+                        var firstArchiveDate = stockSerie.Keys.Last().AddMonths(-3).AddDays(-lastDate.Day + 1).Date;
                         var lastArchiveDate = stockSerie.Keys.Last().Date < DateTime.Today || DateTime.Now.TimeOfDay > new TimeSpan(22, 0, 0) ? stockSerie.Keys.Last() : stockSerie.Keys.Last().AddMinutes(-15);
 
                         var archiveFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
