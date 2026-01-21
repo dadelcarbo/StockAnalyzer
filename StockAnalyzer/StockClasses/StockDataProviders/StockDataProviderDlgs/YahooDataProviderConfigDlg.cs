@@ -8,7 +8,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
 {
     public partial class YahooDataProviderConfigDlg : Form
     {
-        readonly YahooDataProvider dataProvider = null;
         readonly StockDictionary stockDictionary = null;
 
         bool needRestart = false;
@@ -18,7 +17,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
         {
             InitializeComponent();
 
-            this.dataProvider = new YahooDataProvider();
             this.stockDictionary = stockDico;
 
             this.step1GroupBox.Enabled = true;

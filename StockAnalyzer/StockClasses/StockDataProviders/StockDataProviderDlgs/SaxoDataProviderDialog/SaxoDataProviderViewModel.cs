@@ -167,7 +167,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
         private CommandBase saveCommand;
 
-        public ICommand SaveCommand
+        public ICommand SaveAndCloseCommand
         {
             get
             {
@@ -176,7 +176,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
             }
         }
 
-        private void Save()
+        public void Save()
         {
             try
             {

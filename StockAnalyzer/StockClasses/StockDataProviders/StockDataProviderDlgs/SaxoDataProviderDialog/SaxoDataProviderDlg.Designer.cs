@@ -30,7 +30,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.saxoDataProviderControl1 = new StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog.SaxoDataProviderControl();
+            this.saxoDataProviderControl1 = new SaxoDataProviderControl(this);
             this.SuspendLayout();
             // 
             // elementHost1

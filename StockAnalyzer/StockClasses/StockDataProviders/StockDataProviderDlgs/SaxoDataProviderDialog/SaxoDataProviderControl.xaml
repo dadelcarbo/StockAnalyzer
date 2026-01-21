@@ -37,7 +37,8 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Command="{Binding AddCommand}" Margin="4" >Add</Button>
-            <Button Command="{Binding SaveCommand}" Margin="4" >Save</Button>
+            <Button Name="saveBtn" Margin="4" ToolTip="Save and exit" Click="saveBtn_Click">Close</Button>
+            <Button Name="cancelBtn"  Margin="4" ToolTip="Cancel and exit" Click="cancelBtn_Click">Cancel</Button>
         </StackPanel>
         <telerik:RadGridView FontSize="9" Grid.Row="1"  Margin="4" ShowGroupPanel="True" ItemsSource="{Binding Products}" IsReadOnly="True"
                              AutoGenerateColumns="False" SelectedItem="{Binding SelectedProduct}" SelectionUnit="FullRow" SelectionMode="Single"
