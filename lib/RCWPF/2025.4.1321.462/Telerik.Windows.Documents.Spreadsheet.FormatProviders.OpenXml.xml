@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider">
+            <summary>
+            Imports and exports workbooks in Excel Macro-Enabled Workbook (.xlsm) format, preserving VBA macros and scripts.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider" /> class.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.Name">
+            <summary>
+            Identifier for this format provider, used for discovery and registration.
+            </summary>
+            <value>The name of the provider.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.FilesDescription">
+            <summary>
+            Human-readable description of supported files (e.g., "Excel Macro-Enabled Workbook").
+            </summary>
+            <value>The files description.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.SupportedExtensions">
+            <summary>
+            File extensions recognized by this provider (e.g., ".xlsm").
+            </summary>
+            <value>The supported extensions.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.CanImport">
+            <summary>
+            Indicates whether this provider supports importing .xlsm files into workbook instances.
+            </summary>
+            <value>The value indicating whether can import.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.CanExport">
+            <summary>
+            Indicates whether this provider supports exporting workbooks to .xlsm format.
+            </summary>
+            <value>The value indicating whether can export.</value>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.ImportOverride(System.IO.Stream)">
+            <summary>
+            Reads an .xlsm file from the stream and constructs a Workbook instance, preserving VBA macros if present.
+            </summary>
+            <param name="input">The input.</param>
+            <returns>The imported workbook.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.ImportOverride(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Reads an .xlsm file from the stream with cancellation support, constructing a Workbook instance while preserving VBA macros.
+            </summary>
+            <param name="input">The input.</param>
+            <param name="cancellationToken">The cancellation token used to cancel the operation.</param>
+            <returns>The imported workbook.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.ExportOverride(Telerik.Windows.Documents.Spreadsheet.Model.Workbook,System.IO.Stream)">
+            <summary>
+            Writes the workbook to the stream in .xlsm format, preserving any VBA macros or scripts present.
+            </summary>
+            <param name="workbook">The workbook.</param>
+            <param name="output">The output.</param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsm.XlsmFormatProvider.ExportOverride(Telerik.Windows.Documents.Spreadsheet.Model.Workbook,System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Writes the workbook to the stream in .xlsm format with cancellation support, preserving any VBA macros or scripts present.
+            </summary>
+            <param name="workbook">The workbook.</param>
+            <param name="output">The output.</param>
+            <param name="cancellationToken">The cancellation token used to cancel the operation.</param>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.Contexts.NoteBase.Text">
+            <summary>
+            Gets or sets the text.
+            </summary>
+            <value>The text value.</value>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.Contexts.GradientInfoType">
+            <summary>
+            Defines gradient info types.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.Contexts.XlsxWorksheetImportContext.ImportShapesSizes">
+            <summary>
+            Imports the shapes sizes from the from cell and to cell.
+            Used in case the shape size is not indicated in the TransformElement.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.Export.XlsxExportSettings">
+            <summary>
+            Configures export options for XLSX format; inherits OpenXML export settings.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.Export.XlsxExportSettings.#ctor">
+            <summary>
+            Initializes a new instance of the XlsxExportSettings class.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.Import.XlsxImportSettings">
+            <summary>
+            Configures import options for XLSX format; inherits OpenXML import settings.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.Import.XlsxImportSettings.#ctor">
+            <summary>
+            Initializes a new instance of the XlsxImportSettings class.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider">
+            <summary>
+            Imports and exports workbooks in XLSX (Office Open XML) format, supporting full-fidelity roundtrip of spreadsheet data.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider" /> class.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.Name">
+            <summary>
+            Identifies this format provider as "XlsxFormatProvider" for registration and lookup.
+            </summary>
+            <value>The name of the provider.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.FilesDescription">
+            <summary>
+            Describes the file type as "Excel Workbook" for display in UI contexts.
+            </summary>
+            <value>The files description.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.SupportedExtensions">
+            <summary>
+            Specifies that this provider handles files with .xlsx extension.
+            </summary>
+            <value>The supported extensions.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.CanImport">
+            <summary>
+            Indicates that this provider supports importing XLSX files into workbooks.
+            </summary>
+            <value>The value indicating whether can import.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.CanExport">
+            <summary>
+            Indicates that this provider supports exporting workbooks to XLSX format.
+            </summary>
+            <value>The value indicating whether can export.</value>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.ExportSettings">
+            <summary>
+            Configures XLSX-specific export options; reserved for future extensibility.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.ImportSettings">
+            <summary>
+            Configures XLSX-specific import options; reserved for future extensibility.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.ImportOverride(System.IO.Stream)">
+            <summary>
+            Imports the specified input.
+            </summary>
+            <param name="input">The input.</param>
+            <returns>The imported workbook.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.ImportOverride(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Reads XLSX data from the stream and constructs a workbook with optimized formula caching enabled during import.
+            </summary>
+            <param name="input">The input.</param>
+            <param name="cancellationToken">The cancellation token used to cancel the operation.</param>
+            <returns>The imported workbook.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.ExportOverride(Telerik.Windows.Documents.Spreadsheet.Model.Workbook,System.IO.Stream)">
+            <summary>
+            Exports the specified workbook.
+            </summary>
+            <param name="workbook">The workbook.</param>
+            <param name="output">The output.</param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider.ExportOverride(Telerik.Windows.Documents.Spreadsheet.Model.Workbook,System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Writes the workbook to the stream in XLSX format with license validation.
+            </summary>
+            <param name="workbook">The workbook.</param>
+            <param name="output">The output.</param>
+            <param name="cancellationToken">The cancellation token used to cancel the operation.</param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,298 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Windows.Documents.AIConnector</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Windows.Documents.AIConnector.AIProcessorBase">
+            <summary>
+            Abstract base for AI processors that run Q&amp;A and summarization over document text (such as PDF), providing shared configuration and an IDisposable lifecycle for derived processors.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.AIProcessorBase.#ctor(Microsoft.Extensions.AI.IChatClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.AIConnector.AIProcessorBase"/> class.
+            </summary>
+            <param name="chatClient">The chat client to be used by the AI processor.</param>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.AIProcessorBase.ChatClient">
+            <summary>
+            Gets the chat client used by the AI processor.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.AIProcessorBase.Dispose">
+            <summary>
+            Releases resources held by the processor, including the underlying chat client.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.AIProcessorBase.CallChatClient(System.String,System.String)">
+            <summary>
+            Calls the chat client with the specified system prompt and user message.
+            </summary>
+            <param name="systemPrompt">The system prompt to be sent to the chat client.</param>
+            <param name="message">The user message to be sent to the chat client.</param>
+            <returns>A task that represents the asynchronous operation. The task result contains the response message text.</returns>
+        </member>
+        <member name="T:Telerik.Windows.Documents.AIConnector.CompleteContextProcessorSettings">
+            <summary>
+            Settings for full-context processing over document text (such as PDF), configuring token limits, encoding, and model selection.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.CompleteContextProcessorSettings.ModelMaxInputTokenLimit">
+            <summary>
+            Gets the maximum input token limit for prompts sent to the model, bounding full-context requests.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.CompleteContextProcessorSettings.TokenizationEncoding">
+            <summary>
+            Gets the tokenization encoding used to measure and split text when preparing prompts.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.CompleteContextProcessorSettings.ModelId">
+            <summary>
+            Gets the model identifier used for AI requests.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.CompleteContextProcessorSettings.ProduceJsonFormattedContext">
+            <summary>
+            Determines whether the context sent to the model is in JSON or plain text format, if json format is applicable.
+            </summary>
+            <remarks>Plain text might consume more tokens but should lead to better results when asking the LLM.</remarks>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.CompleteContextProcessorSettings.#ctor(System.Int32,System.String,System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.AIConnector.CompleteContextProcessorSettings"/> class with the specified maximum input token limit.
+            </summary>
+            <param name="modelMaxInputTokenLimit">The maximum input token limit for the model.</param>
+            <param name="modelId">The model identifier.</param>
+            <param name="tokenizationEncoding">The tokenization encoding the model uses.</param>
+            <param name="produceJsonFormattedContext">Determines whether the context sent to the model will be formatted as json when applicable.</param>
+        </member>
+        <member name="T:Telerik.Windows.Documents.AIConnector.EmbeddingSettingsFactory">
+            <summary>
+            Provides factory methods for creating and configuring embedding settings used in processing text and spread
+            documents with customizable model and tokenization parameters.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.EmbeddingSettingsFactory.CreateSettingsForTextDocuments(System.Int32,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Creates and configures settings for processing text documents with specified model and
+            tokenization parameters.
+            </summary>
+            <param name="modelMaxInputTokenLimit">The maximum number of input tokens that the model can accept. Must be a positive integer.</param>
+            <param name="modelId">The identifier of the language model which will be used to process the question. If null, the default model is selected.</param>
+            <param name="tokenizationEncoding">The tokenization encoding scheme used by the model to apply to the text documents. If null, the default encoding is used.</param>
+            <param name="maxNumberOfEmbeddingsIncludedInContext">The maximum number of embeddings to include in the context. If null, no limit is applied.</param>
+            <param name="embeddingTokenSize">The size, in tokens, of each embedding. If null, the default size is used.</param>
+            <returns>An instance of <see cref="T:Telerik.Documents.AI.Core.IEmbeddingSettings"/> configured with the specified parameters for text document
+            processing.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.EmbeddingSettingsFactory.CreateSettingsForSpreadDocuments(System.Int32,System.String,System.String,System.Nullable{System.Int32},System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Creates settings configured for processing spread documents with partial context in JSON format.
+            </summary>
+            <param name="modelMaxInputTokenLimit">The maximum number of input tokens supported by the model which will answer the question. Must be a positive integer.</param>
+            <param name="modelId">The identifier of the model which will answer the question. If null, the default model is selected.</param>
+            <param name="tokenizationEncoding">The tokenization encoding scheme to apply when processing input text. If null, the default encoding is used.</param>
+            <param name="embeddingTokenSize">The size, in tokens, of each embedding chunk. If null, the default chunk size is applied.</param>
+            <param name="produceJsonFormattedContext">Specifies whether the context should be formatted as JSON. Set to <see langword="true"/> to produce
+            JSON-formatted context; otherwise, <see langword="false"/> which will produce natural language.</param>
+            <param name="totalContextTokenLimit">The total token limit for the context which will be sent to the answering model. If null, a percentage of the modelMaxInputTokenLimit will be used.</param>
+            <returns>An <see cref="T:Telerik.Documents.AI.Core.IEmbeddingSettings"/> instance configured for spread document processing with the specified
+            parameters.</returns>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.JsonSpreadRag.JsonModels.Spread.WorkbookJsonModel.ActiveSheetName">
+            <summary>
+            The name of the active sheet.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.JsonSpreadRag.JsonSpreadContextRetriever.#ctor(Telerik.Windows.Documents.AIConnector.JsonSpreadRag.JsonSpreadContextFragmentsManager,Telerik.Documents.AI.Core.IEmbedder,Telerik.Documents.AI.Core.ISimilarityCalculator,Telerik.Documents.AI.Core.ITokensCounter,Telerik.Documents.AI.Core.IEmbeddingSettings)">
+            <summary>
+            Initializes a new instance of the DefaultContextRetriever class with the specified context fragments
+            manager, embedder, similarity calculator, tokens counter, and embedding settings.
+            </summary>
+            <param name="contextFragmentsManager">The manager responsible for handling context fragments used in retrieval operations. Cannot be null.</param>
+            <param name="embedder">The component used to generate embeddings for context fragments. Cannot be null.</param>
+            <param name="similarityCalculator">The calculator used to determine similarity between embeddings. Cannot be null.</param>
+            <param name="tokensCounter">The service used to count tokens in context fragments and embeddings. Cannot be null.</param>
+            <param name="settings">The settings that configure embedding parameters, such as the maximum number of embeddings, embedding token
+            size, and model input token limit. Cannot be null.</param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.JsonSpreadRag.JsonSpreadContextRetriever.GetContextAsync(System.String)">
+            <summary>
+            Gets the text representation of the relevant embeddings for the provided question.
+            </summary>
+            <param name="question">The question text to find relevant context for. Cannot be null.</param>
+            <returns>The text representation of the relevant embeddings.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.JsonSpreadRag.JsonSpreadContextRetriever.SetContextAsync(System.String,System.Int32)">
+            <summary>
+            Asynchronously splits the specified text into fragments based on the provided embedding token size.
+            </summary>
+            <param name="text">The text to be divided into fragments. Cannot be null.</param>
+            <param name="embeddingTokenSize">The maximum number of tokens allowed in each fragment. Must be a positive integer.</param>
+            <returns>A task that represents the asynchronous operation of fragmenting the text.</returns>
+        </member>
+        <member name="T:Telerik.Windows.Documents.AIConnector.PartialContextProcessorSettings">
+            <summary>
+            Settings for retrieval-augmented (partial context) Q&amp;A over document text (such as PDF), controlling chunking and how many results are sent.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.PartialContextProcessorSettings.MaxNumberOfEmbeddingsIncludedInContext">
+            <summary>
+            Gets how many retrieved chunks are included with the prompt when answering a question, controlling recall and cost.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.PartialContextProcessorSettings.EmbeddingTokenSize">
+            <summary>
+            Gets the token length of each embedding chunk used during retrieval, affecting granularity and relevance.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.AIConnector.SummarizationProcessorSettings">
+            <summary>
+            Settings for AI summarization over document text (such as PDF), configuring token limits and prompt customization.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.SummarizationProcessorSettings.PromptAddition">
+            <summary>
+            Gets optional prompt text appended to summarization requests, used for guidance or constraints.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.SummarizationProcessorSettings.#ctor(System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.AIConnector.SummarizationProcessorSettings"/> class.
+            </summary>
+            <param name="modelMaxInputTokenLimit">The maximum input token limit the model allows.</param>
+            <param name="promptAddition">An addition to the system prompt.</param>
+            <param name="modelId">The model identifier.</param>
+            <param name="tokenizationEncoding">The tokenization encoding the model uses.</param>
+        </member>
+        <member name="T:Telerik.Windows.Documents.AIConnector.CompleteContextQuestionProcessor">
+            <summary>
+            Single-shot Q&amp;A that sends the entire document text to the model; use when the document fits within the model’s input token limit.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.CompleteContextQuestionProcessor.#ctor(Microsoft.Extensions.AI.IChatClient,Telerik.Windows.Documents.AIConnector.CompleteContextProcessorSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.AIConnector.CompleteContextQuestionProcessor"/> class.
+            </summary>
+            <param name="chatClient">The chat client to be used for communication with the AI model.</param>
+            <param name="settings">The settings that configure full-context Q&amp;A behavior.</param>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.CompleteContextQuestionProcessor.Settings">
+            <summary>
+            Gets the settings that configure full-context Q&amp;A behavior, including token limits and encoding.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.CompleteContextQuestionProcessor.AnswerQuestion(Telerik.Windows.Documents.TextRepresentation.SimpleTextDocument,System.String)">
+            <summary>
+            Generates an answer by prompting the model with the entire document text and the question, up to the configured input token limit.
+            </summary>
+            <param name="document">The document.</param>
+            <param name="question">The question.</param>
+            <returns>The answer to the question.</returns>
+        </member>
+        <member name="T:Telerik.Windows.Documents.AIConnector.PartialContextQuestionProcessor">
+            <summary>
+            Retrieval-augmented Q&amp;A that indexes the document into embeddings and fetches the most similar chunks before prompting; use when the document exceeds the model’s input window.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.PartialContextQuestionProcessor.Settings">
+            <summary>
+            Gets the settings that control retrieval-augmented behavior, including chunk size and the number of chunks sent.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.PartialContextQuestionProcessor.#ctor(Microsoft.Extensions.AI.IChatClient,Telerik.Documents.AI.Core.IEmbedder,Telerik.Documents.AI.Core.IEmbeddingSettings,Telerik.Windows.Documents.TextRepresentation.SimpleTextDocument)">
+            <summary>
+            Initializes a new instance of the PartialContextQuestionProcessor class with the specified chat client,
+            embedder, settings, and document.
+            </summary>
+            <param name="chatClient">The chat client used to communicate with the AI model.</param>
+            <param name="embedder">The embedder responsible for generating vector representations of text fragments for similarity
+            calculations.</param>
+            <param name="settings">The settings that configure partial context processing behavior, such as token limits and retrieval options.</param>
+            <param name="document">The document containing the text to be processed for context retrieval. Cannot be null.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the settings parameter is null.</exception>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.PartialContextQuestionProcessor.#ctor(Microsoft.Extensions.AI.IChatClient,Telerik.Documents.AI.Core.IContextRetriever,Telerik.Documents.AI.Core.IEmbeddingSettings,Telerik.Windows.Documents.TextRepresentation.SimpleTextDocument)">
+            <summary>
+            Initializes a new instance of the PartialContextQuestionProcessor class with the specified chat client,
+            context retriever, context fragments manager, processor settings, and document.
+            </summary>
+            <param name="chatClient">The chat client used to send and receive chat messages within the processing context.</param>
+            <param name="contextRetriever">The context retriever responsible for obtaining relevant context information for question processing.</param>
+            <param name="settings">The settings that configure the behavior of the partial context processor. Cannot be null.</param>
+            <param name="document">The text document that provides the source content for context extraction and processing.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the settings parameter is null.</exception>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.PartialContextQuestionProcessor.AnswerQuestion(System.String)">
+            <summary>
+            Generates an answer by retrieving the most relevant embedded chunks for the question and prompting the model.
+            </summary>
+            <param name="question">The question to answer.</param>
+            <returns>A task that represents the asynchronous operation. The task result contains the answer to the question.</returns>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.PartialContextQuestionProcessor.Dispose">
+            <summary>
+            Disposes the resources used by the <see cref="T:Telerik.Windows.Documents.AIConnector.PartialContextQuestionProcessor"/> class.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.AIConnector.SummarizationProcessor">
+            <summary>
+            Generates a concise summary of a document’s text (such as PDF) using full-context prompting up to the configured input token limit.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.SummarizationProcessor.Settings">
+            <summary>
+            Gets the settings that control summarization behavior, including token limits and prompt customization.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.SummarizationProcessor.#ctor(Microsoft.Extensions.AI.IChatClient,Telerik.Windows.Documents.AIConnector.SummarizationProcessorSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Windows.Documents.AIConnector.SummarizationProcessor"/> class.
+            </summary>
+            <param name="chatClient">The chat client used for communication with the AI service.</param>
+            <param name="settings">The settings of the processor.</param>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.SummarizationProcessor.Summarize(Telerik.Windows.Documents.TextRepresentation.SimpleTextDocument)">
+            <summary>
+            Produces a summary of the provided document’s text (such as PDF) using full-context AI prompting, up to the configured input token limit.
+            </summary>
+            <param name="document">The document to be summarized.</param>
+            <returns>A task that represents the asynchronous operation. The task result contains the summarized text.</returns>
+            <exception cref="T:System.OperationCanceledException">Thrown when the summarization operation is cancelled.</exception>
+        </member>
+        <member name="E:Telerik.Windows.Documents.AIConnector.SummarizationProcessor.SummaryResourcesCalculated">
+            <summary>
+            Raised when the number of tokens and calls required for summarization have been calculated; provides resource usage details and allows cancellation.
+            </summary>
+        </member>
+        <member name="T:Telerik.Windows.Documents.AIConnector.SummaryResourcesCalculatedEventArgs">
+            <summary>
+            Carries resource estimates for summarizing document text (such as PDF), including call count and token usage, and enables flow control.
+            </summary>
+        </member>
+        <member name="M:Telerik.Windows.Documents.AIConnector.SummaryResourcesCalculatedEventArgs.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates event data with estimated calls and token counts for summarization over document text (such as PDF).
+            </summary>
+            <param name="estimatedCallsRequired">The estimated number of calls required.</param>
+            <param name="estimatedTokensRequired">The estimated number of tokens required.</param>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.SummaryResourcesCalculatedEventArgs.EstimatedCallsRequired">
+            <summary>
+            Gets the estimated number of model calls needed for summarization, impacting latency and cost.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.SummaryResourcesCalculatedEventArgs.EstimatedTokensRequired">
+            <summary>
+            Gets the estimated input token count for summarization, bounded by the model’s input token limit.
+            </summary>
+        </member>
+        <member name="P:Telerik.Windows.Documents.AIConnector.SummaryResourcesCalculatedEventArgs.ShouldContinueExecution">
+            <summary>
+            Gets or sets whether summarization should proceed based on the resource estimates.
+            </summary>
+        </member>
+    </members>
+</doc>

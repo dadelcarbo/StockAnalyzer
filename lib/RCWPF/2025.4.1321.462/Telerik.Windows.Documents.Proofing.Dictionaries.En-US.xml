@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Windows.Documents.Proofing.Dictionaries.En-US</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Windows.Documents.Proofing.RadEn_USDictionary">
+            <summary>
+            Represents the English (United States) dictionary used for spell checking and proofreading.
+            </summary>
+        </member>
+    </members>
+</doc>
