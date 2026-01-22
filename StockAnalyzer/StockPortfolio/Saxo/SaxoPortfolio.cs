@@ -229,7 +229,7 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             {
                 return accountService?.GetPositions(account);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -242,7 +242,7 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             {
                 return orderService?.GetOpenedOrders(account, uic);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -254,7 +254,7 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             {
                 return orderService?.GetOrderActivities(account, orderId)?.Data;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -271,7 +271,7 @@ namespace StockAnalyzer.StockPortfolio.Saxo
 
                 return accountService?.GetPositions(account).FirstOrDefault(p => p.PositionBase.Uic == instrument.Identifier);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -283,7 +283,7 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             {
                 return accountService?.GetPositionById(account, positionId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }

@@ -806,7 +806,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 return accountService?.GetPositions(account);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -819,7 +819,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 return orderService?.GetOpenedOrders(account, uic);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -831,7 +831,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 return orderService?.GetOrderActivities(account, orderId)?.Data;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -848,7 +848,7 @@ namespace StockAnalyzer.StockPortfolio
 
                 return accountService?.GetPositions(account).FirstOrDefault(p => p.PositionBase.Uic == instrument.Identifier);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -860,7 +860,7 @@ namespace StockAnalyzer.StockPortfolio
             {
                 return accountService?.GetPositionById(account, positionId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
