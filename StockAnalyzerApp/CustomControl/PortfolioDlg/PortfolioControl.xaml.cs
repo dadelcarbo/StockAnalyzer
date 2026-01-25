@@ -61,7 +61,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                         {
                             var item = row.Item as StockTradeOperation;
 
-                            var stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            if (!StockDictionary.Instance.TryGetValue(item.StockName, out var stockSerie))
+                            {
+                                stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            }
                             if (stockSerie == null) return;
                             SelectionChanged(stockSerie.StockName, stockSerie.ISIN);
                         }
@@ -70,7 +73,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                         {
                             var item = row.Item as StockPositionBaseViewModel;
 
-                            var stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            if (!StockDictionary.Instance.TryGetValue(item.StockName, out var stockSerie))
+                            {
+                                stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            }
                             if (stockSerie == null) return;
                             SelectionChanged(stockSerie.StockName, stockSerie.ISIN, item.BarDuration, item.Theme);
                         }
@@ -79,7 +85,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                         {
                             var item = row.Item as StockOpenedOrder;
 
-                            var stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            if (!StockDictionary.Instance.TryGetValue(item.StockName, out var stockSerie))
+                            {
+                                stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            }
+
                             if (stockSerie == null) return;
                             SelectionChanged(stockSerie.StockName, stockSerie.ISIN, item.BarDuration, item.Theme);
                         }
@@ -88,7 +98,10 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                         {
                             var item = row.Item as OrderViewModel;
 
-                            var stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            if (!StockDictionary.Instance.TryGetValue(item.StockName, out var stockSerie))
+                            {
+                                stockSerie = viewModel.Portfolio.GetStockSerieFromUic(item.Uic);
+                            }
                             if (stockSerie == null) return;
                             SelectionChanged(stockSerie.StockName, null);
                         }

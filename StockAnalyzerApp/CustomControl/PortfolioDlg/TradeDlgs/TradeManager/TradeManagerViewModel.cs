@@ -2,10 +2,12 @@
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -96,7 +98,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                             this.qty = (int)Math.Floor(this.PortfolioRiskEuro / (this.bid - this.entryStop));
                         }
                         this.EntryMaxStop = this.bid - this.PortfolioRiskEuro / this.MaxQty;
-                        this.EntryMinStop = 0;
+                        this.EntryMinStop = this.EntryMaxStop * 0.5f;
                         this.RaiseOrdersChanged();
                     }
 
@@ -129,6 +131,18 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         {
             if (!CanBuy())
                 return;
+
+            // Perform Buy Logic Here
+            var orderId = this.Portfolio.Portfolio.SaxoBuyOrder(this.StockSerie, OrderType.Market, this.Qty, this.EntryStop); 
+            if (orderId != 0)
+            {
+                MessageBox.Show($"Buy Order Placed: Order ID = {orderId}", "Order Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Buy Order Failed", "Order Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                StockLog.Write("orderId=0");
+            }
         }
 
         private bool CanBuy()
