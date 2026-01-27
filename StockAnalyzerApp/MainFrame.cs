@@ -656,13 +656,31 @@ namespace StockAnalyzerApp
 
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
-                    GenerateReportFromTemplate(reportTemplate, force);
+                    // GenerateReportFromTemplate(reportTemplate, force);
                 }
 
+                var reportFileName = Path.Combine(Folders.Report, "Watchlist.html");
+                var reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
+                if (!force && reportDate.Date == DateTime.Today &&
+                    reportDate > File.GetLastWriteTime(Folders.WatchlistReportTemplate) &&
+                    reportDate > File.GetLastWriteTime(Folders.WatchlistItemTemplate))
+                    return;
+
+                string watchlistItems = string.Empty;
                 foreach (var watchlist in StockWatchList.WatchLists.Where(w => w.Report && w.StockList.Count > 0))
                 {
-                    GenerateReportFromWatchList(watchlist, force);
+                    StockSplashScreen.ProgressText = $"Generating report - {watchlist.Name}";
+
+                    watchlistItems += GenerateReportFromWatchList(watchlist);
                 }
+
+                var htmlReport = File.ReadAllText(Folders.WatchlistReportTemplate);
+                htmlReport = htmlReport.Replace("%%Title%%", $"Watchlists Report {DateTime.Today}");
+
+                htmlReport = htmlReport.Replace("%%WATCHLIST_ITEMS%%", watchlistItems);
+                File.WriteAllText(reportFileName, htmlReport);
+
+                Process.Start(reportFileName);
             }
             catch (Exception ex)
             {
@@ -732,16 +750,11 @@ namespace StockAnalyzerApp
             <td>%%Weekly%%</td>
             <td>%%Daily%%</td>
         </tr>";
-        private void GenerateReportFromWatchList(StockWatchList watchlist, bool force = false)
+        private string GenerateReportFromWatchList(StockWatchList watchlist)
         {
             StockSplashScreen.ProgressText = $"Generating report - {watchlist.Name}";
 
-            var reportFileName = Path.Combine(Folders.Report, watchlist.Name + ".html");
-            var reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
-            if (!force && reportDate.Date == DateTime.Today && reportDate > File.GetLastWriteTime(Folders.WatchlistReportTemplate))
-                return;
-
-            var htmlReport = File.ReadAllText(Folders.WatchlistReportTemplate);
+            var htmlReport = File.ReadAllText(Folders.WatchlistItemTemplate);
 
             var tableRows = string.Empty;
 
@@ -769,12 +782,9 @@ namespace StockAnalyzerApp
                 tableRows += row;
             }
             htmlReport = htmlReport.Replace("%%Title%%", $"Watchlist - {watchlist.Name}");
-            htmlReport = htmlReport.Replace("%%Date%%", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
             htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
 
-            File.WriteAllText(reportFileName, htmlReport);
-
-            Process.Start(reportFileName);
+            return htmlReport;
         }
         string typedSearch = null;
         private void SearchCombo_TextChanged(object sender, EventArgs e)
