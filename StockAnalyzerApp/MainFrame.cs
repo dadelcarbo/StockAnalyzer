@@ -656,7 +656,7 @@ namespace StockAnalyzerApp
 
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
-                    // GenerateReportFromTemplate(reportTemplate, force);
+                    GenerateReportFromTemplate(reportTemplate, force);
                 }
 
                 var reportFileName = Path.Combine(Folders.Report, "Watchlist.html");
