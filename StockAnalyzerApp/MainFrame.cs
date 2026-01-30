@@ -675,7 +675,7 @@ namespace StockAnalyzerApp
                 }
 
                 var htmlReport = File.ReadAllText(Folders.WatchlistReportTemplate);
-                htmlReport = htmlReport.Replace("%%Title%%", $"Watchlists Report {DateTime.Now}");
+                htmlReport = htmlReport.Replace("%%Title%%", $"Watchlists {DateTime.Now}");
 
                 htmlReport = htmlReport.Replace("%%WATCHLIST_ITEMS%%", watchlistItems);
                 File.WriteAllText(reportFileName, htmlReport);
@@ -781,7 +781,7 @@ namespace StockAnalyzerApp
 
                 tableRows += row;
             }
-            htmlReport = htmlReport.Replace("%%Title%%", $"Watchlist - {watchlist.Name}");
+            htmlReport = htmlReport.Replace("%%Title%%", $"{watchlist.Name}");
             htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
 
             return htmlReport;
