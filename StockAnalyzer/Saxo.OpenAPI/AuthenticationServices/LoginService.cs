@@ -165,6 +165,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
                     };
                     if (!session.HasTokenExpired())
                     {
+                        StockLog.Write($"ClientId:{clientId} Token is still valid");
                         Sessions.Add(session);
                         CurrentSession = session;
                         return session;
@@ -175,9 +176,11 @@ namespace Saxo.OpenAPI.AuthenticationServices
                     }
                     if (!session.HasRefreshTokenExpired())
                     {
+                        StockLog.Write($"ClientId:{clientId} Refreshing token");
                         var refreshToken = LoginHelpers.RefreshToken(session);
                         if (refreshToken != null)
                         {
+                            StockLog.Write($"ClientId:{clientId} token refreshed");
                             refreshToken.Serialize(clientId);
                             session.Token = refreshToken;
                             Sessions.Add(session);

@@ -19,6 +19,18 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 {
                     Directory.CreateDirectory(Folders.Portfolio);
                 }
+                else
+                {
+                    // Copy Saxo App Id files.
+                    foreach(var file in Directory.GetFiles(Folders.Portfolio, "app*.json"))
+                    {
+                        var destFile = Path.Combine(Folders.Saxo, Path.GetFileName(file));
+                        if (!File.Exists(destFile) || File.GetLastWriteTime(destFile) < File.GetLastWriteTime(file))
+                        {
+                            File.Copy(file, destFile);
+                        }
+                    }
+                }
                 if (!Directory.Exists(Folders.AutoTrade))
                 {
                     Directory.CreateDirectory(Folders.AutoTrade);

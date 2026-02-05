@@ -486,7 +486,10 @@ namespace StockAnalyzer.StockPortfolio
             }
             var saxoSession = LoginService.SilentLogin(this.SaxoClientId, Folders.Portfolio, this.IsSaxoSimu);
             if (saxoSession == null)
+            { 
+                StockLog.Write($"Silent login failed for portfolio: {this.Name}");
                 return false;
+            }
 
             StockLog.Write($"Silent login success for portfolio: {this.Name}");
             if (account == null)

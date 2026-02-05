@@ -122,7 +122,7 @@ namespace Saxo.OpenAPI.AuthenticationServices
             HttpListenerContext httpContext = null;
             try
             {
-                int timeout = 45000; // 45 Seconds
+                int timeout = 60000; // Milliseconds
                 var task = listener.GetContextAsync();
                 if (Task.WhenAny(task, Task.Delay(timeout)).Result == task)
                 {
