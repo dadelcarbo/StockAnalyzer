@@ -19,13 +19,13 @@ public class Logger : IDisposable
 
     private Logger()
     {
-        var logFolder = Path.Combine(Directory.GetCurrentDirectory(), "Log");
+        var logFolder = @"C:\ProgramData\UltimateChartist\Log";
 
-        _logFilePath = Path.Combine(logFolder, $"{DateTime.Now:yyyy-MM-dd_HH_mm_ss}.log");
+        _logFilePath = Path.Combine(logFolder, $"OneDriveSync_{DateTime.Now:yyyy-MM-dd_HH_mm_ss}.log");
 
         // Ensure the directory exists
         var directory = Path.GetDirectoryName(logFolder);
-        CleanupOldLogs(logFolder);
+        CleanupOldLogs(logFolder, 2);
 
         _writer = new StreamWriter(_logFilePath) { AutoFlush = true };
         _writer.Flush();

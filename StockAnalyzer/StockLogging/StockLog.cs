@@ -82,6 +82,8 @@ namespace StockAnalyzer.StockLogging
 
         private readonly StockLogStream sw;
 
+        public static string LogFilePrefix { get; set; } = $"UltimateChartist";
+
         private StockLog()
         {
             isEnabled = Settings.Default.LoggingEnabled;
@@ -111,7 +113,7 @@ namespace StockAnalyzer.StockLogging
                     {
                         Directory.CreateDirectory(logFolder);
                     }
-                    string fileName = logFolder + @"\log_" + DateTime.Now.ToString("yyyMMdd_hhmmss") + ".log";
+                    string fileName = Path.Combine(logFolder, LogFilePrefix + "_" + DateTime.Now.ToString("yyyMMdd_hhmmss") + ".log");
                     sw = new StockLogStream(new StreamWriter(fileName, false) { AutoFlush = true });
                 }
                 else

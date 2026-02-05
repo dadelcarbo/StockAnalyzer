@@ -37,6 +37,7 @@ namespace SaxoTokenRefresh
             _timer.Start();
 
             Settings.Default.LoggingEnabled = true;
+            StockLog.LogFilePrefix = "SaxoTokenRefresh";
             StockLog.Write($"Service Started at {DateTime.Now.ToLongTimeString()}{Environment.NewLine}", true);
         }
 
