@@ -189,30 +189,29 @@ namespace StockAnalyzer.StockMath
             return variance;
         }
 
-        public FloatSerie CalculateAutoCovariance(int period, int lag)
+        public FloatSerie CalculateSharpeRatio(int period, float riskFreeRate = 0.0f)
         {
-            FloatSerie ma1 = this.CalculateMA(period);
-            FloatSerie variance = new FloatSerie(this.Count, "AUTOCOVAR");
-            float avg1, avg2;
-            float sum;
-            float spread1, spread2;
-            int count;
-            for (int i = period + lag; i < this.Count; i++)
+            var variation = new FloatSerie(this.Count);
+            var negativeVariation = new FloatSerie(this.Count);
+            for (int i = 1; i < this.Count; i++)
             {
-                count = 0;
-                sum = 0.0f;
-                avg1 = ma1[i];
-                avg2 = ma1[i - lag];
-                for (int j = i - period; j <= i; j++)
-                {
-                    count++;
-                    spread1 = this.Values[j] - avg1;
-                    spread2 = this.Values[j - lag] - avg2;
-                    sum += spread1 * spread2;
-                }
-                variance[i] = sum / (float)count;
+                variation[i] = (this[i] - this[i - 1]) / this[i - 1];
             }
-            return variance;
+            FloatSerie ma = variation.CalculateMA(period);
+            FloatSerie stdev = variation.CalculateStdev(period) * (float)Math.Sqrt(period);
+            FloatSerie sharpeRatio = new FloatSerie(this.Count, "SHARPE");
+            for (int i = 0; i < period; i++)
+            {
+                sharpeRatio[i] = 0.0f;
+            }
+            for (int i = period; i < this.Count; i++)
+            {
+                if (stdev[i] != 0)
+                {
+                    sharpeRatio[i] = (ma[i] * 255 - riskFreeRate) / stdev[i];
+                }
+            }
+            return sharpeRatio;
         }
 
         public FloatSerie CalculateStdev(int period)

@@ -1281,7 +1281,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
-                        aGraphic.DrawLine(gridPen, p1.X, GraphRectangle.Y, p1.X, GraphRectangle.Y + GraphRectangle.Height);
+                        aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                     }
                 }
             }

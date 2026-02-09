@@ -5,6 +5,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_XMA : StockIndicatorMovingAvgBase
     {
+        public override string Definition => "XMA: applies ema coef only if the close if out of ATR band of 1.5 width";
         public override void ApplyTo(StockSerie stockSerie)
         {
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);

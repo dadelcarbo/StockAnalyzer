@@ -64,7 +64,6 @@ namespace StockAnalyzer.StockClasses
             COMMODITY,
             FOREX,
             FUND,
-            RATIO,
             BREADTH,
             PTF,
             BOND,
