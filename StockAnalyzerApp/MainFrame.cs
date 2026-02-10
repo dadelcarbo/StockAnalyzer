@@ -204,6 +204,7 @@ namespace StockAnalyzerApp
         {
             InitializeComponent();
 
+
             this.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.Controls.Clear();
 
@@ -224,6 +225,8 @@ namespace StockAnalyzerApp
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.browseToolStrip);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.drawToolStrip);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.themeToolStrip);
+
+            this.darkModeStripButton.Checked = Settings.Default.DarkMode;
 
             //this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 
@@ -550,6 +553,8 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator1Control.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphVolumeControl.OnZoomChanged);
             StockSplashScreen.ProgressText = "Loading " + this.CurrentStockSerie.StockName + " data...";
+
+            GraphControl.IsStarted = true;
 
             SetDurationForStockGroup(this.CurrentStockSerie.StockGroup);
             this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
@@ -2214,10 +2219,9 @@ namespace StockAnalyzerApp
             {
                 snapshot = new Bitmap(width, height);
                 Graphics g = Graphics.FromImage(snapshot);
-                using (Brush bb = new SolidBrush(this.graphCloseControl.BackgroundColor))
-                {
-                    g.FillRectangle(bb, g.VisibleClipBounds);
-                }
+
+                var bb = ColorManager.GetBrush("Graph.Background", Settings.Default.DarkMode);
+                g.FillRectangle(bb, g.VisibleClipBounds);
 
                 height = 0;
                 foreach (Bitmap bmp in bitmaps)
@@ -2279,10 +2283,9 @@ namespace StockAnalyzerApp
             {
                 Bitmap snapshot = new Bitmap(width, height);
                 Graphics g = Graphics.FromImage(snapshot);
-                using (Brush bb = new SolidBrush(this.graphCloseControl.BackgroundColor))
-                {
-                    g.FillRectangle(bb, g.VisibleClipBounds);
-                }
+
+                var bb = ColorManager.GetBrush("Graph.Background", Settings.Default.DarkMode);
+                g.FillRectangle(bb, g.VisibleClipBounds);
 
                 height = 0;
                 foreach (Bitmap bmp in bitmaps)
@@ -4036,6 +4039,15 @@ namespace StockAnalyzerApp
             this.GraphCloseControl.ChartMode = GraphChartMode.LineCross;
             this.graphCloseControl.ForceRefresh();
         }
+
+
+        private void darkModeStripButton_CheckedChanged(object sender, System.EventArgs e)
+        {
+            Settings.Default.DarkMode = darkModeStripButton.Checked;
+
+            this.ApplyTheme();
+        }
+
         private void selectDisplayedIndicatorMenuItem_Click(object sender, EventArgs e)
         {
             using (new MethodLogger(this))
@@ -4136,6 +4148,8 @@ namespace StockAnalyzerApp
         private bool repaintSuspended = false;
         public void ApplyTheme()
         {
+            if (this.currentStockSerie == null || !GraphControl.IsStarted)
+                return;
             using (new MethodLogger(this, showTimerDebug))
             {
                 using (new StockSerieLocker(this.currentStockSerie))
@@ -4255,7 +4269,7 @@ namespace StockAnalyzerApp
                                         {
                                             case "GRAPH":
                                                 string[] colorItem = fields[1].Split(':');
-                                                graphControl.BackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+                                                graphControl.BackgroundColor = ColorManager.GetColor("Graph.Background", Settings.Default.DarkMode);
                                                 colorItem = fields[2].Split(':');
                                                 graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                                 graphControl.ShowGrid = bool.Parse(fields[3]);
@@ -4264,14 +4278,6 @@ namespace StockAnalyzerApp
 
                                                 if (entry.ToUpper() == "CLOSEGRAPH")
                                                 {
-                                                    if (fields.Length >= 7)
-                                                    {
-                                                        this.graphCloseControl.SecondaryPen = GraphCurveType.PenFromString(fields[6]);
-                                                    }
-                                                    else
-                                                    {
-                                                        this.graphCloseControl.SecondaryPen = new Pen(Color.DarkGoldenrod, 1);
-                                                    }
                                                     graphControl.ChartMode = (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
                                                     // Set buttons
                                                     switch (graphControl.ChartMode)
@@ -4788,16 +4794,29 @@ namespace StockAnalyzerApp
 
         #endregion
 
+
+        PaletteManagerDlg paletteManagerDlg;
         void aboutMenuItem_Click(object sender, EventArgs e)
         {
-            var dlg = new PaletteManagerDlg();
-            dlg.ShowDialog(this);
-
+            if (paletteManagerDlg == null)
+            {
+                paletteManagerDlg = new PaletteManagerDlg() { StartPosition = FormStartPosition.CenterScreen };
+                paletteManagerDlg.FormClosed += PaletteManagerDlg_FormClosed;
+                paletteManagerDlg.Show(this);
+            }
+            else
+            {
+                paletteManagerDlg.BringToFront();
+            }
             return;
-
 
             AboutBox aboutBox = new AboutBox();
             aboutBox.ShowDialog(this);
+        }
+
+        private void PaletteManagerDlg_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            paletteManagerDlg = null;
         }
 
         #region FILE MENU HANDLERS

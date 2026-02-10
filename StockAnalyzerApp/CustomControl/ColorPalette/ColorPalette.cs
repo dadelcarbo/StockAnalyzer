@@ -29,12 +29,30 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
     }
     public class ColorManager
     {
-        static SortedDictionary<string, Pen> penCache = new SortedDictionary<string, Pen>();
 
+        public static Color GetColor(string name, bool darkMode)
+        {
+            return GetColor(name, darkMode ? ColorScheme.Dark : ColorScheme.Light);
+        }
+
+        public static Color GetColor(string name, ColorScheme scheme)
+        {
+            if (!Palette.PaletteItems.ContainsKey(name))
+                Palette.PaletteItems.Add(name, new PaletteItem { Dark = "#FFFF43D8", Light = "#FFFF43D8" }); // Default to pink if not defined
+
+            var colorHex = scheme == ColorScheme.Dark ? palette.PaletteItems[name].Dark : palette.PaletteItems[name].Light;
+            return FromHex(colorHex);
+        }
+
+        static SortedDictionary<string, Pen> penCache = new SortedDictionary<string, Pen>();
+        public static Pen GetPen(string name, bool darkMode, float width = 1.0f, DashStyle dashStyle = DashStyle.Solid)
+        {
+            return GetPen(name, darkMode ? ColorScheme.Dark : ColorScheme.Light, width, dashStyle);
+        }
         public static Pen GetPen(string name, ColorScheme scheme, float width = 1.0f, DashStyle dashStyle = DashStyle.Solid)
         {
-            if (!palette.PaletteItems.ContainsKey(name))
-                throw new ArgumentException($"Color '{name}' is not defined in the palette.");
+            if (!Palette.PaletteItems.ContainsKey(name))
+                Palette.PaletteItems.Add(name, new PaletteItem { Dark = "#FFFF43D8", Light = "#FFFF43D8" }); // Default to pink if not defined
 
             string penName = $"{name}_{scheme}_{width}_{dashStyle}";
             if (!penCache.ContainsKey(penName))
@@ -47,10 +65,17 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
         }
 
         static SortedDictionary<string, Brush> brushCache = new SortedDictionary<string, Brush>();
+
+
+        public static Brush GetBrush(string name, bool darkMode)
+        {
+            return GetBrush(name, darkMode ? ColorScheme.Dark : ColorScheme.Light);
+        }
+
         public static Brush GetBrush(string name, ColorScheme scheme)
         {
-            if (!palette.PaletteItems.ContainsKey(name))
-                throw new ArgumentException($"Color '{name}' is not defined in the palette.");
+            if (!Palette.PaletteItems.ContainsKey(name))
+                Palette.PaletteItems.Add(name, new PaletteItem { Dark = "#FFFF43D8", Light = "#FFFF43D8" }); // Default to pink if not defined
             string brushName = $"{name}_{scheme}";
             if (!brushCache.ContainsKey(brushName))
             {
@@ -90,6 +115,10 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
             {
                 var jsonData = JsonSerializer.Serialize(palette, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(Folders.ColorPalette, jsonData);
+
+                // Clear caches to ensure new colors are used
+                penCache.Clear();
+                brushCache.Clear();
             }
             catch (Exception ex)
             {

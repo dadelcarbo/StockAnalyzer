@@ -118,7 +118,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 Graphics gr = this.CreateGraphics();
                 gr.Clear(SystemColors.ControlDark);
-                gr.DrawString(this.alternateString, axisFont, Brushes.Black, 10, 10);
+                gr.DrawString(this.alternateString, axisFont, SystemBrushes.ControlText, 10, 10);
             }
         }
 

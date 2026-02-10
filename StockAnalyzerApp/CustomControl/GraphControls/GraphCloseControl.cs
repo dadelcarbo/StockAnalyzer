@@ -8,6 +8,7 @@ using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
+using StockAnalyzerApp.CustomControl.ColorPalette;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager;
 using StockAnalyzerSettings.Properties;
@@ -92,11 +93,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         // Secondary serie management
         protected Matrix matrixSecondaryScreenToValue;
         protected Matrix matrixSecondaryValueToScreen;
-        public Pen SecondaryPen { get; set; }
+        public Pen SecondaryPen => ColorManager.GetPen("Graph.Secondary", Settings.Default.DarkMode);
         public bool IsBuying { get; private set; } = false;
         public bool IsSelling { get; private set; } = false;
 
         #endregion
+
+        static protected Brush orderAreaBrush => ColorManager.GetBrush("Graph.OrderArea", Settings.Default.DarkMode);
 
         public delegate void PointPickEventHandler(int index, DateTime date);
         public event PointPickEventHandler PointPick;
@@ -1196,7 +1199,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.SecondaryFloatSerie != null)
             {
                 graphTitle = this.SecondaryFloatSerie.Name;
-                using Brush textBrush = new SolidBrush(SecondaryPen.Color);
+                Brush textBrush = ColorManager.GetBrush("Graph.Secondary", Settings.Default.DarkMode);
                 this.DrawString(gr, graphTitle, this.axisFont, textBrush, this.backgroundBrush, new PointF(right + 16, 1), true);
             }
         }
@@ -1274,9 +1277,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             DrawTmpItem(graphic, winRatio, true);
         }
 
-        static readonly SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
-        static readonly SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
-
         private void PaintPositions(Graphics graphic)
         {
             if (this.Portfolio == null)
@@ -1326,12 +1326,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (position.EntryValue < position.ExitValue.Value)
                     {
                         graphic.FillRectangle(GreenBrush, entryPoint.X, exitPoint.Y, exitPoint.X - entryPoint.X, entryPoint.Y - exitPoint.Y);
-                        graphic.DrawRectangle(greenPen, entryPoint.X, exitPoint.Y, exitPoint.X - entryPoint.X, entryPoint.Y - exitPoint.Y);
+                        graphic.DrawRectangle(GreenPen, entryPoint.X, exitPoint.Y, exitPoint.X - entryPoint.X, entryPoint.Y - exitPoint.Y);
                     }
                     else
                     {
                         graphic.FillRectangle(RedBrush, entryPoint.X, entryPoint.Y, exitPoint.X - entryPoint.X, exitPoint.Y - entryPoint.Y);
-                        graphic.DrawRectangle(redPen, entryPoint.X, entryPoint.Y, exitPoint.X - entryPoint.X, exitPoint.Y - entryPoint.Y);
+                        graphic.DrawRectangle(RedPen, entryPoint.X, entryPoint.Y, exitPoint.X - entryPoint.X, exitPoint.Y - entryPoint.Y);
                     }
                 }
             }

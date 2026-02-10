@@ -70,7 +70,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Canvas Background="{Binding BackgroundItem.DarkBrush, Source={StaticResource ViewModel}}" Width="80" Height="40">
-                                    <Line X1="10" X2="70" Y1="10" Y2="30" Stroke="{Binding DarkBrush}"/>
+                                    <Ellipse Margin="10" Width="60" Height="20" Stroke="{Binding DarkBrush}"/>
                                 </Canvas>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -89,7 +89,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Canvas Background="{Binding BackgroundItem.LightBrush, Source={StaticResource ViewModel}}" Width="80" Height="40">
-                                    <Line X1="10" X2="70" Y1="10" Y2="30" Stroke="{Binding LightBrush}"/>
+                                    <Ellipse Margin="10" Width="60" Height="20" Stroke="{Binding LightBrush}"/>
                                 </Canvas>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

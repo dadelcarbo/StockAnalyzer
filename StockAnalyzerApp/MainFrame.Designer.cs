@@ -111,6 +111,7 @@ namespace StockAnalyzerApp
             this.indicatorLayoutPanel = new GridLayoutPanel();
             this.themeToolStrip = new System.Windows.Forms.ToolStrip();
             this.indicatorConfigStripButton = new System.Windows.Forms.ToolStripButton();
+            this.darkModeStripButton = new System.Windows.Forms.ToolStripButton();
             this.candleStripButton = new System.Windows.Forms.ToolStripButton();
             this.barchartStripButton = new System.Windows.Forms.ToolStripButton();
             this.linechartStripButton = new System.Windows.Forms.ToolStripButton();
@@ -834,6 +835,7 @@ namespace StockAnalyzerApp
             // 
             this.themeToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.themeToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.darkModeStripButton,
             this.indicatorConfigStripButton,
             this.candleStripButton,
             this.barchartStripButton,
@@ -860,6 +862,17 @@ namespace StockAnalyzerApp
             this.indicatorConfigStripButton.Size = new System.Drawing.Size(23, 22);
             this.indicatorConfigStripButton.Text = "Configure displayed indicator";
             this.indicatorConfigStripButton.Click += new System.EventHandler(this.selectDisplayedIndicatorMenuItem_Click);
+            // 
+            // darkModeStripButton
+            // 
+            this.darkModeStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.darkModeStripButton.Image = global::StockAnalyzerApp.Properties.Resources.DarkMode;
+            this.darkModeStripButton.CheckOnClick = true;
+            this.darkModeStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.darkModeStripButton.Name = "darkModeStripButton";
+            this.darkModeStripButton.Size = new System.Drawing.Size(23, 22);
+            this.darkModeStripButton.ToolTipText = "Toggle Light/Dark Mode";
+            this.darkModeStripButton.CheckedChanged += darkModeStripButton_CheckedChanged; ;
             // 
             // candleStripButton
             // 
@@ -1335,7 +1348,6 @@ namespace StockAnalyzerApp
             // graphCloseControl
             // 
             this.graphCloseControl.Agenda = null;
-            this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
             this.graphCloseControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;
@@ -1352,7 +1364,6 @@ namespace StockAnalyzerApp
             this.graphCloseControl.Name = "graphCloseControl";
             this.graphCloseControl.ScaleInvisible = false;
             this.graphCloseControl.SecondaryFloatSerie = null;
-            this.graphCloseControl.SecondaryPen = null;
             this.graphCloseControl.ShowGrid = false;
             this.graphCloseControl.Size = new System.Drawing.Size(975, 583);
             this.graphCloseControl.StartIndex = 0;
@@ -1363,7 +1374,6 @@ namespace StockAnalyzerApp
             // graphScrollerControl
             // 
             this.graphScrollerControl.AutoSize = true;
-            this.graphScrollerControl.BackgroundColor = System.Drawing.Color.White;
             this.graphScrollerControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphScrollerControl.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.graphScrollerControl.CurveList = null;
@@ -1387,7 +1397,6 @@ namespace StockAnalyzerApp
             // graphIndicator1Control
             // 
             this.graphIndicator1Control.AutoSize = true;
-            this.graphIndicator1Control.BackgroundColor = System.Drawing.Color.White;
             this.graphIndicator1Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator1Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator1Control.CurveList = null;
@@ -1413,7 +1422,6 @@ namespace StockAnalyzerApp
             // graphIndicator2Control
             // 
             this.graphIndicator2Control.AutoSize = true;
-            this.graphIndicator2Control.BackgroundColor = System.Drawing.Color.White;
             this.graphIndicator2Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator2Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator2Control.CurveList = null;
@@ -1439,7 +1447,6 @@ namespace StockAnalyzerApp
             // graphIndicator3Control
             // 
             this.graphIndicator3Control.AutoSize = true;
-            this.graphIndicator3Control.BackgroundColor = System.Drawing.Color.White;
             this.graphIndicator3Control.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphIndicator3Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator3Control.CurveList = null;
@@ -1465,7 +1472,6 @@ namespace StockAnalyzerApp
             // graphVolumeControl
             // 
             this.graphVolumeControl.AutoSize = true;
-            this.graphVolumeControl.BackgroundColor = System.Drawing.Color.White;
             this.graphVolumeControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphVolumeControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphVolumeControl.CurveList = null;
@@ -1645,6 +1651,7 @@ namespace StockAnalyzerApp
         private ToolStripButton deleteThemeStripButton;
         private ToolStripButton saveThemeStripButton;
         private ToolStripButton indicatorConfigStripButton;
+        private ToolStripButton darkModeStripButton;
         private ToolStripButton candleStripButton;
         private ToolStripButton barchartStripButton;
         private ToolStripButton linechartStripButton;

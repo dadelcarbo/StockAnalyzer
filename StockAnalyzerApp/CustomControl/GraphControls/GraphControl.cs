@@ -5,6 +5,8 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using StockAnalyzerApp.CustomControl.ColorPalette;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -112,8 +114,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 graphBackgroundDirty = value;
                 if (this.graphBackgroundDirty)
                 {
-                    PaintGraph();
-                    this.ForegroundDirty = true;
+                    if (IsStarted)
+                    {
+                        PaintGraph();
+                        this.ForegroundDirty = true;
+                    }
                 }
             }
         }
@@ -165,24 +170,26 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected Pen HigherHighPen;
         protected Pen LowerLowPen;
 
-        static protected Pen selectedLinePen = new Pen(Color.Turquoise, 2.0f);
-        static protected Pen redPen = new Pen(Color.Red, 1.0f);
-        static protected Pen greenPen = new Pen(Color.Green, 1.0f);
-        static protected Brush greenBrush = new SolidBrush(Color.FromArgb(30, Color.Green));
-        static protected Brush redBrush = new SolidBrush(Color.FromArgb(30, Color.Red));
+        static protected Pen selectedLinePen => ColorManager.GetPen("Graph.Selected", Settings.Default.DarkMode);
+
+        static protected Pen RedPen => ColorManager.GetPen("Graph.Red", Settings.Default.DarkMode);
+        static protected Pen GreenPen => ColorManager.GetPen("Graph.Green", Settings.Default.DarkMode);
+
+        static protected Brush RedBrush => ColorManager.GetBrush("Graph.Red", Settings.Default.DarkMode);
+        static protected Brush GreenBrush => ColorManager.GetBrush("Graph.Green", Settings.Default.DarkMode);
+
         static protected Brush textBrush = Brushes.Black;
 
         static protected Pen entryPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Solid, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
         static protected Pen entryOrderPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
         static protected Pen stopPen = new Pen(Color.Red, 2.0f);
         static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
-        static protected Brush orderAreaBrush;
         static protected Brush PortfolioAreaBrush => new SolidBrush(Color.FromArgb(128, Color.DarkRed));
 
         protected bool mouseDown = false;
 
         protected Brush backgroundBrush;
-        protected Brush legendBrush;
+        protected Brush legendBrush => ColorManager.GetBrush("Graph.Legend", Settings.Default.DarkMode);
         private Color backgroundColor;
         public Color BackgroundColor
         {
@@ -192,14 +199,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.backgroundBrush?.Dispose();
                 this.backgroundBrush = new SolidBrush(value);
 
-                legendBrush?.Dispose();
-                legendBrush = new SolidBrush(Color.FromArgb(255, 255 - value.R, 255 - value.G, 255 - value.B));
-
-                orderAreaBrush?.Dispose();
-                if (value.B > 128)
-                    orderAreaBrush = new SolidBrush(Color.FromArgb(255, value.R - 16, value.G - 16, value.B));
-                else
-                    orderAreaBrush = new SolidBrush(Color.FromArgb(255, value.R + 16, value.G + 8, value.B));
                 backgroundColor = value;
             }
         }
@@ -236,6 +235,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(32, Color.LightGreen));
         public static Brush CupHandleInvBrush => new SolidBrush(Color.FromArgb(32, Color.LightCoral));
 
+        public static bool IsStarted { get; set; } = false;
+
         // Transformation Matrix
         protected Matrix matrixScreenToValue;
         protected Matrix matrixValueToScreen;
@@ -264,7 +265,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             mousePen = new Pen(Color.Black, 1.0f);
             HigherHighPen = new Pen(Color.Green, 1.0f);
             LowerLowPen = new Pen(Color.Red, 1.0f);
-            this.BackgroundColor = Color.White;
             SetFrameMargin();
         }
         public void Initialize(GraphCurveTypeList curveList, List<HLine> horizontallines, DateTime[] dateSerie, StockSerie serie, StockDrawingItems drawingItems, int startIndex, int endIndex)
@@ -471,6 +471,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected virtual void PaintGraph()
         {
             using MethodLogger ml = new MethodLogger(this);
+            if (!IsStarted)
+                return;
             if (this.IsInitialized && this.graphic != null)
             {
                 try
@@ -507,8 +509,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             else // Draw alternate text.
             {
                 Graphics gr = this.CreateGraphics();
-                gr.Clear(this.backgroundColor);
-                gr.DrawString(this.alternateString, axisFont, legendBrush, 10, 20);
+                gr.Clear(SystemColors.ControlDark);
+                gr.DrawString(this.alternateString, axisFont, SystemBrushes.ControlText, 10, 10);
             }
         }
 
@@ -1145,8 +1147,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (e.Location.Y < mouseDownPos.Y)
             {
                 // Draw selection zone
-                this.foregroundGraphic.FillRectangle(greenBrush, x, y, width, height);
-                this.foregroundGraphic.DrawRectangle(greenPen, x, y, width, height);
+                this.foregroundGraphic.FillRectangle(GreenBrush, x, y, width, height);
+                this.foregroundGraphic.DrawRectangle(GreenPen, x, y, width, height);
 
                 // Draw Fibonacci
                 if (height >= 30)
@@ -1158,20 +1160,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         this.DrawString(foregroundGraphic, fiboString, axisFont, Brushes.Green, x - 36, fiboY - 5, false);
                         if (fibo == 0.5f)
                         {
-                            greenPen.Width = 2;
+                            GreenPen.Width = 2;
                         }
                         else
                         {
-                            greenPen.Width = 1;
+                            GreenPen.Width = 1;
                         }
-                        this.foregroundGraphic.DrawLine(greenPen, x, fiboY, x + width, fiboY);
+                        this.foregroundGraphic.DrawLine(GreenPen, x, fiboY, x + width, fiboY);
                     }
                 }
             }
             else
             {
-                this.foregroundGraphic.FillRectangle(redBrush, x, y, width, height);
-                this.foregroundGraphic.DrawRectangle(redPen, x, y, width, height);
+                this.foregroundGraphic.FillRectangle(RedBrush, x, y, width, height);
+                this.foregroundGraphic.DrawRectangle(RedPen, x, y, width, height);
 
                 // Draw Fibonacci
                 if (height >= 30)
@@ -1183,13 +1185,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         this.foregroundGraphic.DrawString(fiboString, axisFont, Brushes.Red, x - 36, fiboY - 5);
                         if (fibo == 0.5f)
                         {
-                            redPen.Width = 2;
+                            RedPen.Width = 2;
                         }
                         else
                         {
-                            redPen.Width = 1;
+                            RedPen.Width = 1;
                         }
-                        this.foregroundGraphic.DrawLine(redPen, x, fiboY, x + width, fiboY);
+                        this.foregroundGraphic.DrawLine(RedPen, x, fiboY, x + width, fiboY);
                     }
                 }
             }

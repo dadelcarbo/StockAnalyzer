@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockLogging;
 using System;
 using System.Collections;
 using System.Collections.Generic;

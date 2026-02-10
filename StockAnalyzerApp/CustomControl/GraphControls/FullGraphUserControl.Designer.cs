@@ -59,7 +59,6 @@
             this.graphCloseControl.Name = "graphCloseControl";
             this.graphCloseControl.ScaleInvisible = false;
             this.graphCloseControl.SecondaryFloatSerie = null;
-            this.graphCloseControl.SecondaryPen = null;
             this.graphCloseControl.ShowGrid = false;
             this.graphCloseControl.Size = new System.Drawing.Size(590, 136);
             this.graphCloseControl.StartIndex = 0;

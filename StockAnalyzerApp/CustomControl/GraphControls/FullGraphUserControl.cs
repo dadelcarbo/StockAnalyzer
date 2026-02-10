@@ -271,18 +271,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                         graphControl.ChartMode =
                                             (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
-                                        if (entry.ToUpper() == "CLOSEGRAPH")
-                                        {
-                                            if (fields.Length >= 7)
-                                            {
-                                                this.graphCloseControl.SecondaryPen =
-                                                    GraphCurveType.PenFromString(fields[6]);
-                                            }
-                                            else
-                                            {
-                                                this.graphCloseControl.SecondaryPen = new Pen(Color.DarkGoldenrod, 1);
-                                            }
-                                        }
                                         break;
                                     case "SECONDARY":
                                         if (currentStockSerie.SecondarySerie != null)
