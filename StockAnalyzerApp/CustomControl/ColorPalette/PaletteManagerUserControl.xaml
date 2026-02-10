@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.ColorPalette.PaletteManagerUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.ColorPalette"
+             d:DataContext="{d:DesignInstance Type=local:ColorPaletteViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:ColorPaletteViewModel x:Key="ViewModel" />
+        <telerik:ColorToBrushConverter x:Key="colorToBrushConverter" />
+    </UserControl.Resources>
+    <Grid DataContext="{StaticResource ViewModel}">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
+
+                <telerik:RadColorEditor Margin="0,0,10,0" Width="300" ColorMode="RGB" >
+                    <telerik:RadColorEditor.Style>
+                        <Style TargetType="telerik:RadColorEditor">
+                            <Setter Property="SelectedColor" Value="{Binding CurrentItem.LightColor, Mode=TwoWay}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UseDark}" Value="True">
+                                    <Setter Property="SelectedColor" Value="{Binding CurrentItem.DarkColor, Mode=TwoWay}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </telerik:RadColorEditor.Style>
+                </telerik:RadColorEditor>
+                
+                <telerik:RadColorSelector Margin="0,0,10,0" StandardPalette="{Binding SelectedPreset}" HeaderPalette="{Binding SelectedPreset}" MainPalette="{Binding SelectedPreset}">
+                    <telerik:RadColorSelector.Style>
+                        <Style TargetType="telerik:RadColorSelector">
+                            <Setter Property="SelectedColor" Value="{Binding CurrentItem.LightColor, Mode=TwoWay}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UseDark}" Value="True">
+                                    <Setter Property="SelectedColor" Value="{Binding CurrentItem.DarkColor, Mode=TwoWay}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </telerik:RadColorSelector.Style>
+                </telerik:RadColorSelector>
+
+                <StackPanel>
+                    <telerik:Label Content="Palette" Margin="0 0 0 2" Padding="0 5"/>
+                    <telerik:RadComboBox x:Name="headerPalettesCombo" Padding="8 3 3 3" Width="80"
+                                         SelectedItem="{Binding SelectedPreset}"
+                                         ItemsSource="{Binding OfficeColorPalettes}"/>
+                    
+                    <Button Content="Save" Margin="10,40,10,10" Command="{Binding SaveCommand}" Padding="5"/>
+                    <Button Content="Reload" Margin="10" Command="{Binding ReloadCommand}" Padding="5"/>
+                </StackPanel>
+            </StackPanel>
+
+            <DataGrid ItemsSource="{Binding Palette}" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="Auto"  />
+
+                    <DataGridTemplateColumn Header="Dark" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Rectangle Fill="{Binding DarkColor, Converter={StaticResource colorToBrushConverter}}" Width="80" Height="40"
+                                           MouseDown="DarkColor_MouseDown" ToolTip="{Binding DarkColor}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Dark Preview">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Canvas Background="{Binding BackgroundItem.DarkBrush, Source={StaticResource ViewModel}}" Width="80" Height="40">
+                                    <Line X1="10" X2="70" Y1="10" Y2="30" Stroke="{Binding DarkBrush}"/>
+                                </Canvas>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Light">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Rectangle Fill="{Binding LightColor, Converter={StaticResource colorToBrushConverter}}" Width="80" Height="40"
+                                       MouseDown="LightColor_MouseDown" ToolTip="{Binding LightColor}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Light Preview">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Canvas Background="{Binding BackgroundItem.LightBrush, Source={StaticResource ViewModel}}" Width="80" Height="40">
+                                    <Line X1="10" X2="70" Y1="10" Y2="30" Stroke="{Binding LightBrush}"/>
+                                </Canvas>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Grid>
+</UserControl>

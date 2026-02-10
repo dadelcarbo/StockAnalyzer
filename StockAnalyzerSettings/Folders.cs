@@ -55,6 +55,8 @@ namespace StockAnalyzerSettings
 
         public static string ReportTemplate = Path.Combine(Report, "ReportTemplate.html");
 
+        public static string ColorPalette = Path.Combine(Settings.Default.PersonalFolder, "ColorPalette.json");
+
         public static void CreateDirectories()
         {
             Type type = typeof(Folders);

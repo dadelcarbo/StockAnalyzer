@@ -24,6 +24,7 @@ using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 using StockAnalyzerApp.CustomControl.AutoTradeDlg;
+using StockAnalyzerApp.CustomControl.ColorPalette;
 using StockAnalyzerApp.CustomControl.DrawingDlg;
 using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
@@ -246,19 +247,19 @@ namespace StockAnalyzerApp
             this.graphCloseControl.RatioType = RatioType.Ratio;
 
             this.graphIndicator1Control.IsCollapsed = false;
-            this.graphIndicator1Control.SizeRatio = 50;
+            this.graphIndicator1Control.SizeRatio = 60;
             this.graphIndicator1Control.RatioType = RatioType.Absolute;
 
             this.graphIndicator2Control.IsCollapsed = false;
-            this.graphIndicator2Control.SizeRatio = 50;
+            this.graphIndicator2Control.SizeRatio = 60;
             this.graphIndicator2Control.RatioType = RatioType.Absolute;
 
             this.graphIndicator3Control.IsCollapsed = false;
-            this.graphIndicator3Control.SizeRatio = 50;
+            this.graphIndicator3Control.SizeRatio = 60;
             this.graphIndicator3Control.RatioType = RatioType.Absolute;
 
             this.graphVolumeControl.IsCollapsed = false;
-            this.graphVolumeControl.SizeRatio = 50;
+            this.graphVolumeControl.SizeRatio = 60;
             this.graphVolumeControl.RatioType = RatioType.Absolute;
 
             // Fill the control list
@@ -4789,6 +4790,12 @@ namespace StockAnalyzerApp
 
         void aboutMenuItem_Click(object sender, EventArgs e)
         {
+            var dlg = new PaletteManagerDlg();
+            dlg.ShowDialog(this);
+
+            return;
+
+
             AboutBox aboutBox = new AboutBox();
             aboutBox.ShowDialog(this);
         }
