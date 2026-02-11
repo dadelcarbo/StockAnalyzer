@@ -22,7 +22,7 @@ namespace StockAnalyzer.StockDrawing
             this.Pen = DefaultPen;
         }
 
-        public static Pen DefaultPen = new Pen(Color.Black);
+        public static Pen DefaultPen { get; set; }
         [XmlIgnore]
         public Pen Pen { get; set; }
 

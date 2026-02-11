@@ -316,7 +316,6 @@
       <DependentUpon>AutoTradeDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\AutoTradeDlg\AutoTradeViewModel.cs" />
-    <Compile Include="CustomControl\ColorPalette\ColorPalette.cs" />
     <Compile Include="CustomControl\ColorPalette\ColorPaletteViewModel.cs" />
     <Compile Include="CustomControl\ColorPalette\PaletteManagerDlg.cs">
       <SubType>Form</SubType>

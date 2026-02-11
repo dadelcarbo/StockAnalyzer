@@ -11,6 +11,7 @@ using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.ColorPalette;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager;
+using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 {
     public partial class GraphCloseControl : GraphControl
     {
+        static Pen entryPen => ColorManager.GetPen("Order.Entry", 2.0f); // new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Solid, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
+        static Brush entryBrush => ColorManager.GetBrush("Order.Entry"); // new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Solid, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
+
+        static Pen entryOrderPen => ColorManager.GetPen("Order.Open", 2.0f); //new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
+        static Pen stopPen => ColorManager.GetPen("Order.Stop", 2.0f); // new Pen(Color.Red, 2.0f);
+        static Pen trailStopPen => ColorManager.GetPen("Order.TrailStop", 2.0f); // new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
+        static Brush PortfolioAreaBrush => new SolidBrush(Color.FromArgb(128, Color.DarkRed));
+
+
         #region DRAWING MEMBERS AND TYPES
 
         GraphDrawMode drawingMode = GraphDrawMode.Normal;
@@ -93,13 +103,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         // Secondary serie management
         protected Matrix matrixSecondaryScreenToValue;
         protected Matrix matrixSecondaryValueToScreen;
-        public Pen SecondaryPen => ColorManager.GetPen("Graph.Secondary", Settings.Default.DarkMode);
+        public Pen SecondaryPen => ColorManager.GetPen("Graph.Secondary");
         public bool IsBuying { get; private set; } = false;
         public bool IsSelling { get; private set; } = false;
 
         #endregion
 
-        static protected Brush orderAreaBrush => ColorManager.GetBrush("Graph.OrderArea", Settings.Default.DarkMode);
+        static protected Brush orderAreaBrush => ColorManager.GetBrush("Graph.OrderArea");
 
         public delegate void PointPickEventHandler(int index, DateTime date);
         public event PointPickEventHandler PointPick;
@@ -1199,7 +1209,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.SecondaryFloatSerie != null)
             {
                 graphTitle = this.SecondaryFloatSerie.Name;
-                Brush textBrush = ColorManager.GetBrush("Graph.Secondary", Settings.Default.DarkMode);
+                Brush textBrush = ColorManager.GetBrush("Graph.Secondary");
                 this.DrawString(gr, graphTitle, this.axisFont, textBrush, this.backgroundBrush, new PointF(right + 16, 1), true);
             }
         }
@@ -1255,7 +1265,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             int entryIndex = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
             entryIndex = Math.Max(this.StartIndex, entryIndex);
 
-            this.DrawEntry(graphic, entryPen, entryIndex, position.EntryValue, true);
+            this.DrawEntry(graphic, entryIndex, position.EntryValue, true);
 
             if (position.Stop != 0)
             {
@@ -2385,13 +2395,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
         }
-        protected void DrawEntry(Graphics graph, Pen pen, float index, float stop, bool showText)
+        protected void DrawEntry(Graphics graph, float index, float stop, bool showText)
         {
             var p1 = this.GetScreenPointFromValuePoint(index, stop);
             var p2 = new PointF(GraphRectangle.Right, p1.Y);
-            graph.DrawLine(pen, p1, p2);
+            graph.DrawLine(entryPen, p1, p2);
             var points = GetEntryMarqueePoints(stop);
-            graph.FillPolygon(new SolidBrush(pen.Color), points);
+            graph.FillPolygon(entryBrush, points);
             if (showText)
                 this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }

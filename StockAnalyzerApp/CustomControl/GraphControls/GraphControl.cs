@@ -6,6 +6,7 @@ using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzerApp.CustomControl.ColorPalette;
+using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
@@ -170,26 +171,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected Pen HigherHighPen;
         protected Pen LowerLowPen;
 
-        static protected Pen selectedLinePen => ColorManager.GetPen("Graph.Selected", Settings.Default.DarkMode);
+        static protected Pen selectedLinePen => ColorManager.GetPen("Graph.Selected");
 
-        static protected Pen RedPen => ColorManager.GetPen("Graph.Red", Settings.Default.DarkMode);
-        static protected Pen GreenPen => ColorManager.GetPen("Graph.Green", Settings.Default.DarkMode);
+        static protected Pen RedPen => ColorManager.GetPen("Graph.Red");
+        static protected Pen GreenPen => ColorManager.GetPen("Graph.Green");
 
-        static protected Brush RedBrush => ColorManager.GetBrush("Graph.Red", Settings.Default.DarkMode);
-        static protected Brush GreenBrush => ColorManager.GetBrush("Graph.Green", Settings.Default.DarkMode);
+        static protected Brush RedBrush => ColorManager.GetBrush("Graph.Red");
+        static protected Brush GreenBrush => ColorManager.GetBrush("Graph.Green");
 
         static protected Brush textBrush = Brushes.Black;
-
-        static protected Pen entryPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Solid, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
-        static protected Pen entryOrderPen = new Pen(Color.Black, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
-        static protected Pen stopPen = new Pen(Color.Red, 2.0f);
-        static protected Pen trailStopPen = new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
-        static protected Brush PortfolioAreaBrush => new SolidBrush(Color.FromArgb(128, Color.DarkRed));
 
         protected bool mouseDown = false;
 
         protected Brush backgroundBrush;
-        protected Brush legendBrush => ColorManager.GetBrush("Graph.Legend", Settings.Default.DarkMode);
+        protected Brush legendBrush => ColorManager.GetBrush("Graph.Legend");
         private Color backgroundColor;
         public Color BackgroundColor
         {
@@ -509,8 +504,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             else // Draw alternate text.
             {
                 Graphics gr = this.CreateGraphics();
-                gr.Clear(SystemColors.ControlDark);
-                gr.DrawString(this.alternateString, axisFont, SystemBrushes.ControlText, 10, 10);
+                gr.Clear(backgroundColor);
+                gr.DrawString(this.alternateString, axisFont, legendBrush, 10, 10);
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -28,6 +30,10 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
 
     public class ColorPaletteViewModel : NotifyPropertyChangedBase
     {
+        public delegate void ColorPaletteChangedEventHandler(object sender, PropertyChangedEventArgs e);
+
+        public event ColorPaletteChangedEventHandler ColorPaletteChanged;
+
         public ColorPaletteViewModel()
         {
             this.Reload();
@@ -59,6 +65,8 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
                 ColorManager.Palette.PaletteItems.Add(item.Name, new PaletteItem() { Dark = ToHex(item.DarkColor), Light = ToHex(item.LightColor) });
             }
             ColorManager.Save();
+
+            this.ColorPaletteChanged?.Invoke(this, new PropertyChangedEventArgs("Palette"));
         }
         #endregion
 

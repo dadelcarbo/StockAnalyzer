@@ -2220,7 +2220,7 @@ namespace StockAnalyzerApp
                 snapshot = new Bitmap(width, height);
                 Graphics g = Graphics.FromImage(snapshot);
 
-                var bb = ColorManager.GetBrush("Graph.Background", Settings.Default.DarkMode);
+                var bb = ColorManager.GetBrush("Graph.Background");
                 g.FillRectangle(bb, g.VisibleClipBounds);
 
                 height = 0;
@@ -2284,7 +2284,7 @@ namespace StockAnalyzerApp
                 Bitmap snapshot = new Bitmap(width, height);
                 Graphics g = Graphics.FromImage(snapshot);
 
-                var bb = ColorManager.GetBrush("Graph.Background", Settings.Default.DarkMode);
+                var bb = ColorManager.GetBrush("Graph.Background");
                 g.FillRectangle(bb, g.VisibleClipBounds);
 
                 height = 0;
@@ -4040,10 +4040,11 @@ namespace StockAnalyzerApp
             this.graphCloseControl.ForceRefresh();
         }
 
-
         private void darkModeStripButton_CheckedChanged(object sender, System.EventArgs e)
         {
             Settings.Default.DarkMode = darkModeStripButton.Checked;
+
+            DrawingItem.DefaultPen = ColorManager.GetPen("Graph.Drawing", 1);
 
             this.ApplyTheme();
         }
@@ -4269,7 +4270,7 @@ namespace StockAnalyzerApp
                                         {
                                             case "GRAPH":
                                                 string[] colorItem = fields[1].Split(':');
-                                                graphControl.BackgroundColor = ColorManager.GetColor("Graph.Background", Settings.Default.DarkMode);
+                                                graphControl.BackgroundColor = ColorManager.GetColor("Graph.Background");
                                                 colorItem = fields[2].Split(':');
                                                 graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                                 graphControl.ShowGrid = bool.Parse(fields[3]);
@@ -4803,6 +4804,11 @@ namespace StockAnalyzerApp
                 paletteManagerDlg = new PaletteManagerDlg() { StartPosition = FormStartPosition.CenterScreen };
                 paletteManagerDlg.FormClosed += PaletteManagerDlg_FormClosed;
                 paletteManagerDlg.Show(this);
+
+                paletteManagerDlg.ViewModel.ColorPaletteChanged += (s, e) =>
+                {
+                    ApplyTheme();
+                };
             }
             else
             {

@@ -1,15 +1,12 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
-using StockAnalyzerSettings;
+﻿using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
-using System.Security.Policy;
 using System.Text.Json;
-using System.Windows.Forms;
 
-namespace StockAnalyzerApp.CustomControl.ColorPalette
+namespace StockAnalyzerSettings
 {
     public class PaletteItem
     {
@@ -30,9 +27,9 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
     public class ColorManager
     {
 
-        public static Color GetColor(string name, bool darkMode)
+        public static Color GetColor(string name)
         {
-            return GetColor(name, darkMode ? ColorScheme.Dark : ColorScheme.Light);
+            return GetColor(name, Settings.Default.DarkMode ? ColorScheme.Dark : ColorScheme.Light);
         }
 
         public static Color GetColor(string name, ColorScheme scheme)
@@ -45,9 +42,9 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
         }
 
         static SortedDictionary<string, Pen> penCache = new SortedDictionary<string, Pen>();
-        public static Pen GetPen(string name, bool darkMode, float width = 1.0f, DashStyle dashStyle = DashStyle.Solid)
+        public static Pen GetPen(string name, float width = 1.0f, DashStyle dashStyle = DashStyle.Solid)
         {
-            return GetPen(name, darkMode ? ColorScheme.Dark : ColorScheme.Light, width, dashStyle);
+            return GetPen(name, Settings.Default.DarkMode ? ColorScheme.Dark : ColorScheme.Light, width, dashStyle);
         }
         public static Pen GetPen(string name, ColorScheme scheme, float width = 1.0f, DashStyle dashStyle = DashStyle.Solid)
         {
@@ -67,9 +64,9 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
         static SortedDictionary<string, Brush> brushCache = new SortedDictionary<string, Brush>();
 
 
-        public static Brush GetBrush(string name, bool darkMode)
+        public static Brush GetBrush(string name)
         {
-            return GetBrush(name, darkMode ? ColorScheme.Dark : ColorScheme.Light);
+            return GetBrush(name, Settings.Default.DarkMode ? ColorScheme.Dark : ColorScheme.Light);
         }
 
         public static Brush GetBrush(string name, ColorScheme scheme)
@@ -120,9 +117,8 @@ namespace StockAnalyzerApp.CustomControl.ColorPalette
                 penCache.Clear();
                 brushCache.Clear();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show(ex.Message, "Palette saving error");
             }
         }
 
