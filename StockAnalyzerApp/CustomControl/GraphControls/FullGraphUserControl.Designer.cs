@@ -50,7 +50,6 @@
             this.graphCloseControl.DrawingMode = GraphDrawMode.Normal;
             this.graphCloseControl.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphCloseControl.EndIndex = 0;
-            this.graphCloseControl.GridColor = System.Drawing.Color.Empty;
             this.graphCloseControl.HideIndicators = false;
             this.graphCloseControl.horizontalLines = null;
             this.graphCloseControl.IsLogScale = false;
@@ -75,7 +74,6 @@
             this.graphVolumeControl.DrawingMode = GraphDrawMode.Normal;
             this.graphVolumeControl.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphVolumeControl.EndIndex = 0;
-            this.graphVolumeControl.GridColor = System.Drawing.Color.Empty;
             this.graphVolumeControl.horizontalLines = null;
             this.graphVolumeControl.IsLogScale = false;
             this.graphVolumeControl.Location = new System.Drawing.Point(0, 0);
@@ -131,7 +129,6 @@
             this.graphScrollerControl.DrawingMode = GraphDrawMode.Normal;
             this.graphScrollerControl.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphScrollerControl.EndIndex = 0;
-            this.graphScrollerControl.GridColor = System.Drawing.Color.Empty;
             this.graphScrollerControl.horizontalLines = null;
             this.graphScrollerControl.IsLogScale = false;
             this.graphScrollerControl.Location = new System.Drawing.Point(5, 29);
@@ -153,7 +150,6 @@
             this.graphIndicator1Control.DrawingMode = GraphDrawMode.Normal;
             this.graphIndicator1Control.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphIndicator1Control.EndIndex = 0;
-            this.graphIndicator1Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator1Control.horizontalLines = null;
             this.graphIndicator1Control.IsLogScale = false;
             this.graphIndicator1Control.Location = new System.Drawing.Point(5, 236);
@@ -177,7 +173,6 @@
             this.graphIndicator2Control.DrawingMode = GraphDrawMode.Normal;
             this.graphIndicator2Control.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphIndicator2Control.EndIndex = 0;
-            this.graphIndicator2Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator2Control.horizontalLines = null;
             this.graphIndicator2Control.IsLogScale = false;
             this.graphIndicator2Control.Location = new System.Drawing.Point(5, 258);
@@ -201,7 +196,6 @@
             this.graphIndicator3Control.DrawingMode = GraphDrawMode.Normal;
             this.graphIndicator3Control.DrawingStep = GraphDrawingStep.SelectItem;
             this.graphIndicator3Control.EndIndex = 0;
-            this.graphIndicator3Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator3Control.horizontalLines = null;
             this.graphIndicator3Control.IsLogScale = false;
             this.graphIndicator3Control.Location = new System.Drawing.Point(5, 280);

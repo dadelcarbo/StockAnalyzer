@@ -267,10 +267,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                         graphControl.ShowGrid = bool.Parse(fields[3]);
                                         colorItem = fields[4].Split(':');
-                                        graphControl.GridColor = Color.FromArgb(int.Parse(colorItem[0]),
-                                            int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                        graphControl.ChartMode =
-                                            (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
+                                        graphControl.ChartMode = (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
                                         break;
                                     case "SECONDARY":
                                         if (currentStockSerie.SecondarySerie != null)

@@ -211,19 +211,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
         }
 
-        protected Pen gridPen;
-        private Color gridColor;
-        public Color GridColor
-        {
-            get { return gridColor; }
-            set
-            {
-                gridPen?.Dispose();
-                gridPen = new Pen(value);
-                gridColor = value;
-            }
-        }
-
+        protected Pen gridPen => ColorManager.GetPen("Graph.Grid");
+        private Color gridColor => ColorManager.GetColor("Graph.Grid");
         static public Pen DrawingPen { get; set; }
         static public Pen MouseCursorPen => new Pen(Brushes.Black, 2);
 
@@ -252,7 +241,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Pens
             framePen = new Pen(Color.Black, 1.0f);
             textFramePen = new Pen(Color.Black, 1.0f);
-            gridPen = new Pen(Color.LightGray, 1.0f);
             axisPen = new Pen(Color.Black, 1.0f);
             axisDashPen = new Pen(Color.FromArgb(0x60, 0x60, 0x60), 1.0f) { DashStyle = DashStyle.Dash };
             axisFont = new Font(FontFamily.GenericSansSerif, 7);

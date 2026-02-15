@@ -4275,7 +4275,6 @@ namespace StockAnalyzerApp
                                                 graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                                 graphControl.ShowGrid = bool.Parse(fields[3]);
                                                 colorItem = fields[4].Split(':');
-                                                graphControl.GridColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
 
                                                 if (entry.ToUpper() == "CLOSEGRAPH")
                                                 {

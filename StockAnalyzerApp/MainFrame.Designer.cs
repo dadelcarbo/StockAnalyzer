@@ -1355,7 +1355,6 @@ namespace StockAnalyzerApp
             this.graphCloseControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphCloseControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphCloseControl.EndIndex = 0;
-            this.graphCloseControl.GridColor = System.Drawing.Color.Empty;
             this.graphCloseControl.HideIndicators = false;
             this.graphCloseControl.horizontalLines = null;
             this.graphCloseControl.IsLogScale = false;
@@ -1381,7 +1380,6 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphScrollerControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphScrollerControl.EndIndex = 0;
-            this.graphScrollerControl.GridColor = System.Drawing.Color.Empty;
             this.graphScrollerControl.horizontalLines = null;
             this.graphScrollerControl.IsLogScale = false;
             this.graphScrollerControl.Location = new System.Drawing.Point(0, 24);
@@ -1404,7 +1402,6 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator1Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator1Control.EndIndex = 0;
-            this.graphIndicator1Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator1Control.horizontalLines = null;
             this.graphIndicator1Control.IsLogScale = false;
             this.graphIndicator1Control.Location = new System.Drawing.Point(0, 24);
@@ -1429,7 +1426,6 @@ namespace StockAnalyzerApp
             this.graphIndicator2Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator2Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator2Control.EndIndex = 0;
-            this.graphIndicator2Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator2Control.horizontalLines = null;
             this.graphIndicator2Control.IsLogScale = false;
             this.graphIndicator2Control.Location = new System.Drawing.Point(0, 24);
@@ -1454,7 +1450,6 @@ namespace StockAnalyzerApp
             this.graphIndicator3Control.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphIndicator3Control.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphIndicator3Control.EndIndex = 0;
-            this.graphIndicator3Control.GridColor = System.Drawing.Color.Empty;
             this.graphIndicator3Control.horizontalLines = null;
             this.graphIndicator3Control.IsLogScale = false;
             this.graphIndicator3Control.Location = new System.Drawing.Point(0, 24);
@@ -1479,7 +1474,6 @@ namespace StockAnalyzerApp
             this.graphVolumeControl.DrawingMode = CustomControl.GraphControls.GraphDrawMode.Normal;
             this.graphVolumeControl.DrawingStep = CustomControl.GraphControls.GraphDrawingStep.SelectItem;
             this.graphVolumeControl.EndIndex = 0;
-            this.graphVolumeControl.GridColor = System.Drawing.Color.Empty;
             this.graphVolumeControl.horizontalLines = null;
             this.graphVolumeControl.IsLogScale = false;
             this.graphVolumeControl.Location = new System.Drawing.Point(0, 24);
