@@ -43,13 +43,20 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         public float MaxValue => Portfolio.MaxValue;
         [Property("P2", "1-General")]
         public float CAGR => Portfolio.CAGR;
+        [Property(null, "1-General")]
+        public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
 
-        [Property(null, "2-Risk")]
-        public int MaxPositions { get => Portfolio.MaxPositions; set => Portfolio.MaxPositions = value; }
         [Property("P2", "2-Risk")]
         public float MaxRisk { get => Portfolio.MaxRisk; set => Portfolio.MaxRisk = value; }
         [Property("P2", "2-Risk")]
         public float MinRisk { get => Portfolio.MinRisk; set => Portfolio.MinRisk = value; }
+
+        [Property("P2", "2-Risk")]
+        public float DynamicRisk { get => Portfolio.DynamicRisk; }
+
+        [Property("F2", "2-Risk")]
+        public float TradeRisk { get => Portfolio.DynamicRisk * Portfolio.RiskFreeValue; }
+
         [Property("P2", "2-Risk")]
         public float MaxPositionSize { get => Portfolio.MaxPositionSize; set => Portfolio.MaxPositionSize = value; }
         [Property("P2", "2-Risk")]
@@ -67,9 +74,20 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         [Property(null, "3-Saxo")]
         public DateTime SyncDate => Portfolio.LastSyncDate;
 
-        [Property(null, "4-Extra")]
-        public bool IsSimu { get => Portfolio.IsSimu; set => Portfolio.IsSimu = value; }
+        [Property(null, "4-Stats")]
+        public int NbWinTrade => Portfolio.ClosedPositions.Count(p => p.ExitValue > p.EntryValue);
+        [Property(null, "4-Stats")]
+        public int NbLostTrade => Portfolio.ClosedPositions.Count(p => p.ExitValue <= p.EntryValue);
+        [Property("P2", "4-Stats")]
+        public float WinRate => NbWinTrade / (float)Portfolio.ClosedPositions.Count();
 
+        [Property("P2", "4-Stats")]
+        public double AvgGain => Portfolio.ClosedPositions.Where(p => p.ExitValue > p.EntryValue).Average(p => (double)(p.ExitValue - p.EntryValue) / p.EntryValue);
+        [Property("P2", "4-Stats")]
+        public double AvgLoss => Portfolio.ClosedPositions.Where(p => p.ExitValue <= p.EntryValue).Average(p => (double)(p.ExitValue - p.EntryValue) / p.EntryValue);
+
+        [Property("P2", "4-Stats")]
+        public double Expectancy => Portfolio.ClosedPositions.Average(p => (double)(p.ExitValue - p.EntryValue) / p.EntryValue);
 
         public IEnumerable<OrderActivity> SaxoOrderActivity => Portfolio.SaxoOrderActivity.OrderByDescending(o => o.ActivityTime);
         public IEnumerable<StockOpenedOrder> OpenedOrders => Portfolio.GetActiveOrders().OrderByDescending(o => o.CreationDate);

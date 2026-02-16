@@ -70,6 +70,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
                 {
                     if (stockSerie.Initialise())
                     {
+                        var previousBarDuration = stockSerie.BarDuration;
                         stockSerie.BarDuration = this.barDuration;
                         if (stockSerie.Count <= period) continue;
                         var indicatorSerie = stockSerie.GetIndicator($"ROR({this.period})").Series[0];
@@ -86,6 +87,8 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
                             StartDate = stockSerie.Keys.ElementAt(minIndex),
                             Value = indicatorSerie[maxIndex]
                         });
+
+                        stockSerie.BarDuration = previousBarDuration;
                     }
                 }
             }

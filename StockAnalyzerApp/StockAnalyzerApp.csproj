@@ -1166,16 +1166,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj">
-      <Project>{D7BE95C8-BCE9-4E66-B305-C85D07936F73}</Project>
-      <Name>StockAnalyzerSettings</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\StockAnalyzer\StockAnalyzerLib.csproj">
-      <Project>{723891D8-B467-4277-BFC7-9D4E71DEF426}</Project>
-      <Name>StockAnalyzerLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="CustomControl\AgendaDlg\StockAgendaUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1265,7 +1255,16 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\StockAnalyzerSettings\StockAnalyzerSettings.csproj">
+      <Project>{d7be95c8-bce9-4e66-b305-c85d07936f73}</Project>
+      <Name>StockAnalyzerSettings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StockAnalyzer\StockAnalyzerLib.csproj">
+      <Project>{723891d8-b467-4277-bfc7-9d4e71def426}</Project>
+      <Name>StockAnalyzerLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

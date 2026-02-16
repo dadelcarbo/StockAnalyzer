@@ -296,7 +296,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                             rpt += engine.BestAgent.GetParameterValues();
 
                             // Update Simu Portfolio
-                            StockPortfolio.SimulationPortfolio.MaxPositions = StockDictionary.Instance.Values.Count(x => x.BelongsToGroup(this.Group));
                             StockPortfolio.SimulationPortfolio.InitPositionFromTradeSummary(this.TradeSummary.Trades);
                             StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.SimulationPortfolio;
 

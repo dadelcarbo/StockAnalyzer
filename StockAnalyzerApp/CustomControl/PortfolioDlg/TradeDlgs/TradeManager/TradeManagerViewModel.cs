@@ -91,7 +91,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                     {
                         if (Qty == 0)
                         {
-                            this.qty = (int)(this.Portfolio.AccountValue / this.Portfolio.Portfolio.MaxPositions / this.bid);
+                            this.qty = (int)(this.Portfolio.AccountValue / 10.0 / this.bid);
                         }
                         else
                         {
@@ -109,6 +109,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                 }
             }
         }
+
+
         #endregion
 
         #region Buy/Sell Commands

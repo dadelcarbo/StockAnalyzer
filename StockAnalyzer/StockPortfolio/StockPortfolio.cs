@@ -228,8 +228,6 @@ namespace StockAnalyzer.StockPortfolio
         }
         #endregion
 
-        public int MaxPositions { get; set; } = 10;
-
         #region OPERATION MANAGEMENT
         public long GetNextOperationId()
         {
