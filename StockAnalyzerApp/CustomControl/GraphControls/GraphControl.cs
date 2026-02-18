@@ -93,7 +93,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public bool IsLogScale { get; set; }
         public bool IsInverse { get; set; }
         public bool ScaleInvisible { get; set; }
-        public bool ShowGrid { get; set; }
+        public bool ShowGrid => Settings.Default.ShowGrid;
         protected List<GraphAction> GraphActions { get; set; }
         protected int currentActionIndex;
 
@@ -234,7 +234,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.IsLogScale = false;
             this.IsInitialized = false;
             this.ScaleInvisible = false;
-            this.ShowGrid = false;
             this.graphBackgroundDirty = true;
             this.graphBackgroundDirty = true;
 

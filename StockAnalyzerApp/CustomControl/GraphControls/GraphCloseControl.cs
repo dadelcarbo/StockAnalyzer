@@ -574,9 +574,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             Pen barPen;
                             for (int i = 0; i < tmpPoints.Count(); i++)
                             {
-                                barPen = this.closeCurveType.CurvePen;
+                                bar.X = tmpPoints[i].X;
+                                bar.Close = tmpPoints[i].Y;
+                                bar.High = tmpHighPoints[i].Y;
+                                bar.Open = tmpOpenPoints[i].Y;
+                                bar.Low = tmpLowPoints[i].Y;
+
                                 if (!this.HideIndicators && this.CurveList.PaintBar != null)
                                 {
+                                    barPen = this.closeCurveType.CurvePen;
                                     // Get pen from paintBar
                                     IStockPaintBar pb = this.CurveList.PaintBar;
                                     if (pb.Events[0].Count == this.dateSerie.Length)
@@ -590,14 +596,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             }
                                         }
                                     }
+                                    bar.Draw(aGraphic, barPen);
                                 }
-                                bar.X = tmpPoints[i].X;
-                                bar.Close = tmpPoints[i].Y;
-                                bar.High = tmpHighPoints[i].Y;
-                                bar.Open = tmpOpenPoints[i].Y;
-                                bar.Low = tmpLowPoints[i].Y;
+                                else
+                                {
+                                    bar.Draw(aGraphic);
+                                }
 
-                                bar.Draw(aGraphic, barPen);
                             }
                         }
                         break;
@@ -651,7 +656,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 }
                                 else
                                 {
-                                    candleStick.Draw(aGraphic, closeCurveType.CurvePen, null);
+                                    candleStick.Draw(aGraphic);
                                 }
                             }
                         }

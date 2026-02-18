@@ -130,19 +130,37 @@ namespace StockAnalyzerSettings.Properties {
                 this["ShowDrawings"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowEventMarquee {
-            get {
+        public bool ShowEventMarquee
+        {
+            get
+            {
                 return ((bool)(this["ShowEventMarquee"]));
             }
-            set {
+            set
+            {
                 this["ShowEventMarquee"] = value;
             }
         }
-        
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowGrid
+        {
+            get
+            {
+                return ((bool)(this["ShowGrid"]));
+            }
+            set
+            {
+                this["ShowGrid"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]

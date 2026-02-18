@@ -64,6 +64,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEventMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showGridMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showCommentMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDividendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorDivMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -376,6 +377,7 @@ namespace StockAnalyzerApp
             this.showCommentMarqueeMenuItem,
             this.showIndicatorDivMenuItem,
             this.showIndicatorTextMenuItem,
+            this.showGridMenuItem,
             this.toolStripSeparator16,
             this.marketReplayViewMenuItem,
             this.showHorseRaceViewMenuItem,
@@ -456,6 +458,17 @@ namespace StockAnalyzerApp
             this.showEventMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showEventMarqueeMenuItem.Text = "Show Event Marquees";
             this.showEventMarqueeMenuItem.Click += new System.EventHandler(this.showEventMarqueeMenuItem_Click);
+            // 
+            // showGridMenuItem
+            // 
+            this.showGridMenuItem.Checked = true;
+            this.showGridMenuItem.CheckOnClick = true;
+            this.showGridMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showGridMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+            this.showGridMenuItem.Name = "showGridMenuItem";
+            this.showGridMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.showGridMenuItem.Text = "Show Grid";
+            this.showGridMenuItem.Click += new System.EventHandler(this.showGridMenuItem_Click);
             // 
             // showCommentMarqueeMenuItem
             // 
@@ -1363,7 +1376,6 @@ namespace StockAnalyzerApp
             this.graphCloseControl.Name = "graphCloseControl";
             this.graphCloseControl.ScaleInvisible = false;
             this.graphCloseControl.SecondaryFloatSerie = null;
-            this.graphCloseControl.ShowGrid = false;
             this.graphCloseControl.Size = new System.Drawing.Size(975, 583);
             this.graphCloseControl.StartIndex = 0;
             this.graphCloseControl.TabIndex = 0;
@@ -1385,7 +1397,6 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.Location = new System.Drawing.Point(0, 24);
             this.graphScrollerControl.Name = "graphScrollerControl";
             this.graphScrollerControl.ScaleInvisible = false;
-            this.graphScrollerControl.ShowGrid = false;
             this.graphScrollerControl.Size = new System.Drawing.Size(975, 583);
             this.graphScrollerControl.StartIndex = 0;
             this.graphScrollerControl.TabIndex = 2;
@@ -1409,7 +1420,6 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.RangeMax = 0F;
             this.graphIndicator1Control.RangeMin = 0F;
             this.graphIndicator1Control.ScaleInvisible = false;
-            this.graphIndicator1Control.ShowGrid = false;
             this.graphIndicator1Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator1Control.StartIndex = 0;
             this.graphIndicator1Control.TabIndex = 2;
@@ -1433,7 +1443,6 @@ namespace StockAnalyzerApp
             this.graphIndicator2Control.RangeMax = 0F;
             this.graphIndicator2Control.RangeMin = 0F;
             this.graphIndicator2Control.ScaleInvisible = false;
-            this.graphIndicator2Control.ShowGrid = false;
             this.graphIndicator2Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator2Control.StartIndex = 0;
             this.graphIndicator2Control.TabIndex = 1;
@@ -1457,7 +1466,6 @@ namespace StockAnalyzerApp
             this.graphIndicator3Control.RangeMax = 0F;
             this.graphIndicator3Control.RangeMin = 0F;
             this.graphIndicator3Control.ScaleInvisible = false;
-            this.graphIndicator3Control.ShowGrid = false;
             this.graphIndicator3Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator3Control.StartIndex = 0;
             this.graphIndicator3Control.TabIndex = 1;
@@ -1479,7 +1487,6 @@ namespace StockAnalyzerApp
             this.graphVolumeControl.Location = new System.Drawing.Point(0, 24);
             this.graphVolumeControl.Name = "graphVolumeControl";
             this.graphVolumeControl.ScaleInvisible = false;
-            this.graphVolumeControl.ShowGrid = false;
             this.graphVolumeControl.Size = new System.Drawing.Size(975, 583);
             this.graphVolumeControl.StartIndex = 0;
             this.graphVolumeControl.TabIndex = 2;
@@ -1584,6 +1591,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showPositionsMenuItem;
         private ToolStripMenuItem showDrawingsMenuItem;
         private ToolStripMenuItem showEventMarqueeMenuItem;
+        private ToolStripMenuItem showGridMenuItem;
         private ToolStripMenuItem showCommentMarqueeMenuItem;
         private ToolStripMenuItem showDividendMenuItem;
         private ToolStripMenuItem showIndicatorDivMenuItem;

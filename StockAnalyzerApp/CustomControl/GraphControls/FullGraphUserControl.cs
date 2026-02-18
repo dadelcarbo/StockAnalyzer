@@ -265,7 +265,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                         colorItem = fields[2].Split(':');
                                         graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]),
                                             int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                        graphControl.ShowGrid = bool.Parse(fields[3]);
+                                        //graphControl.ShowGrid = bool.Parse(fields[3]);
                                         colorItem = fields[4].Split(':');
                                         graphControl.ChartMode = (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
                                         break;

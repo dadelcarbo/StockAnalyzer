@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using StockAnalyzerSettings;
+using System.Drawing;
 
 namespace StockAnalyzer.StockDrawing
 {
@@ -23,6 +24,41 @@ namespace StockAnalyzer.StockDrawing
             Low = (int)low;
             Close = (int)close;
         }
+
+        public void Draw(Graphics graphic)
+        {
+            Pen penDown = ColorManager.GetPen("Graph.CandleWick.Down");
+
+
+            if (Close == Open)
+            {
+                Pen pen = ColorManager.GetPen("Graph.CandleWick.Up");
+                graphic.DrawLine(pen, X, Low, X, High);
+                graphic.DrawLine(pen, X - Width, Close, X + Width, Close);
+            }
+            else
+            {
+                if (Close > Open)
+                {
+                    Pen pen = ColorManager.GetPen("Graph.CandleWick.Up");
+                    var candleBrush = ColorManager.GetBrush("Graph.Candle.Up");
+
+                    graphic.DrawLine(pen, X, Low, X, High);
+                    graphic.FillRectangle(candleBrush, X - Width, Open, 2 * Width, Close - Open);
+                    graphic.DrawRectangle(pen, X - Width, Open, 2 * Width, Close - Open);
+                }
+                else
+                {
+                    Pen pen = ColorManager.GetPen("Graph.CandleWick.Down");
+                    var candleBrush = ColorManager.GetBrush("Graph.Candle.Down");
+
+                    graphic.DrawLine(pen, X, Low, X, High);
+                    graphic.FillRectangle(candleBrush, X - Width, Close, 2 * Width, Open - Close);
+                    graphic.DrawRectangle(pen, X - Width, Close, 2 * Width, Open - Close);
+                }
+            }
+        }
+
         public void Draw(Graphics graphic, Pen pen, Brush paintBrush)
         {
             Brush candleBrush;

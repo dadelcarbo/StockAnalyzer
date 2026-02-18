@@ -538,6 +538,7 @@ namespace StockAnalyzerApp
             this.statusStrip1.Visible = Settings.Default.ShowStatusBar;
             this.showDrawingsMenuItem.Checked = Settings.Default.ShowDrawings;
             this.showEventMarqueeMenuItem.Checked = Settings.Default.ShowEventMarquee;
+            this.showGridMenuItem.Checked = Settings.Default.ShowGrid;
             this.showIndicatorDivMenuItem.Checked = Settings.Default.ShowIndicatorDiv;
             this.showIndicatorTextMenuItem.Checked = Settings.Default.ShowIndicatorText;
             this.showVariationBtn.CheckState = Settings.Default.ShowVariation ? CheckState.Checked : CheckState.Unchecked;
@@ -2688,6 +2689,14 @@ namespace StockAnalyzerApp
             OnNeedReinitialise(false);
         }
 
+        private void showGridMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings.Default.ShowGrid = this.showGridMenuItem.Checked;
+            Settings.Default.Save();
+            // Refresh the graphs
+            OnNeedReinitialise(false);
+        }
+
         private void showCommentMarqueeMenuItem_Click(object sender, EventArgs e)
         {
             Settings.Default.ShowCommentMarquee = this.showCommentMarqueeMenuItem.Checked;
@@ -3492,10 +3501,6 @@ namespace StockAnalyzerApp
                         this.showDrawingsMenuItem.Checked = !this.showDrawingsMenuItem.Checked;
                         showDrawingsMenuItem_Click(null, null);
                         break;
-                    case Keys.Control | Keys.M:
-                        this.showEventMarqueeMenuItem.Checked = !this.showEventMarqueeMenuItem.Checked;
-                        showEventMarqueeMenuItem_Click(null, null);
-                        break;
                     case Keys.M:
                         this.magnetStripBtn.Checked = !this.magnetStripBtn.Checked;
                         magnetStripBtn_Click(null, null);
@@ -4273,7 +4278,7 @@ namespace StockAnalyzerApp
                                                 graphControl.BackgroundColor = ColorManager.GetColor("Graph.Background");
                                                 colorItem = fields[2].Split(':');
                                                 graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                                graphControl.ShowGrid = bool.Parse(fields[3]);
+                                                // graphControl.ShowGrid = bool.Parse(fields[3]);
                                                 colorItem = fields[4].Split(':');
 
                                                 if (entry.ToUpper() == "CLOSEGRAPH")

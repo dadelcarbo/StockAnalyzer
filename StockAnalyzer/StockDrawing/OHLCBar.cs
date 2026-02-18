@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using StockAnalyzerSettings;
+using System.Drawing;
 
 namespace StockAnalyzer.StockDrawing
 {
@@ -27,6 +28,15 @@ namespace StockAnalyzer.StockDrawing
             this.High = high;
             this.Low = low;
             this.Close = close;
+        }
+
+        public void Draw(Graphics graphic)
+        {
+            var pen = Close > Open ? ColorManager.GetPen("Graph.CandleWick.Up") : ColorManager.GetPen("Graph.CandleWick.Down");
+
+            graphic.DrawLine(pen, X - Width, Open, X, Open);
+            graphic.DrawLine(pen, X, Low, X, High);
+            graphic.DrawLine(pen, X, Close, X + Width, Close);
         }
         public void Draw(Graphics graphic, Pen pen)
         {
