@@ -454,8 +454,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                         else if (stockIndicator.Events[indexOfEoT][index])
                                         {
                                             // End of trend detected
-                                            this.DrawString(aGraphic, "End", axisFont, srBrush, srPoint.X - textOffset,
-                                               yPos, false);
+                                            this.DrawString(aGraphic, "End", axisFont, srBrush, srPoint.X - textOffset, yPos, false);
                                         }
                                         else
                                         {
@@ -684,8 +683,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             #region Draw frame, axis and axis values
 
             // Draw main frame
-            aGraphic.DrawRectangle(gridPen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
-            aGraphic.DrawLine(gridPen, orderArea.X, orderArea.Y, orderArea.X, orderArea.Bottom);
+            aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
+            aGraphic.DrawLine(framePen, orderArea.X, orderArea.Y, orderArea.X, orderArea.Bottom);
 
             // Display values and dates
             var lastValue = closeCurveType.DataSerie[EndIndex];
@@ -1005,8 +1004,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (line.IsHorizontal)
                         {
                             PointF textLocation = GetScreenPointFromValuePoint(new PointF(StartIndex, line.Point1.Y));
-                            this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, legendBrush, BackgroundBrush,
-                               new PointF(1, textLocation.Y - 8), true);
+                            this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, legendBrush, BackgroundBrush, new PointF(1, textLocation.Y - 8), true);
                         }
                     }
                 }
@@ -1647,7 +1645,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     mousePoint.X -= 100.0f;
                 }
-                this.DrawString(this.foregroundGraphic, eventTypeString, axisFont, Brushes.Black, mousePoint.X, mousePoint.Y, true);
+                this.DrawString(this.foregroundGraphic, eventTypeString, axisFont, TextForegroundBrush, TextBackgroundBrush, mousePoint, true);
             }
             #endregion
             #region Display Agenda Text
@@ -1664,7 +1662,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     string eventText = agendaEntry.Event.Replace("\n", " ") + Environment.NewLine;
                     eventText += "Date : " + agendaEntry.Date.ToShortDateString();
                     Size size = TextRenderer.MeasureText(eventText, axisFont);
-                    this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                    this.DrawString(this.foregroundGraphic, eventText, axisFont, TextForegroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                 }
             }
             #endregion
@@ -1688,7 +1686,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
 
                     Size size = TextRenderer.MeasureText(eventText, axisFont);
-                    this.DrawString(this.foregroundGraphic, eventText, axisFont, Brushes.Black, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
+                    this.DrawString(this.foregroundGraphic, eventText, axisFont, TextForegroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
                 }
             }
             #endregion
@@ -1719,7 +1717,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 var text = ptfs.Select(p => p.Name).Aggregate((i, j) => i + Environment.NewLine + j);
 
                 Size size = TextRenderer.MeasureText(text, axisFont);
-                this.DrawString(this.foregroundGraphic, text, axisFont, Brushes.Black, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y, true);
+                this.DrawString(this.foregroundGraphic, text, axisFont, TextForegroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y, true);
 
                 this.PaintForeground();
                 return;
@@ -2345,11 +2343,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 PointF point2 = GetScreenPointFromValuePoint(new PointF(mouseIndex, currentClose));
                 if (currentClose >= previousClose)
                 {
-                    this.DrawString(this.foregroundGraphic, "+" + variation, axisFont, Brushes.Green, TextBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
+                    this.DrawString(this.foregroundGraphic, "+" + variation, axisFont, TextForegroundBrush, TextBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
                 }
                 else
                 {
-                    this.DrawString(this.foregroundGraphic, variation, axisFont, Brushes.Red, TextBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
+                    this.DrawString(this.foregroundGraphic, variation, axisFont, TextForegroundBrush, TextBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
                 }
             }
         }
@@ -2408,7 +2406,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var points = GetEntryMarqueePoints(stop);
             graph.FillPolygon(entryBrush, points);
             if (showText)
-                this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, this.TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
+                this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
         protected void DrawStop(Graphics graph, Pen pen, float index, float stop, bool showText)
         {

@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,14 +17,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] ParameterNames => new string[] { "Period" };
         public override string[] SerieNames => new string[] { $"{this.ShortName}({this.Parameters[0]})" };
 
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.GreenYellow) };
-                return seriePens;
-            }
-        }
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.MA") };
+
         public override Area[] Areas => areas ??= new Area[]
             {
                 new Area {Name="Bull", Color = Color.FromArgb(20, Color.Green), Visibility = false },

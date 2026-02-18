@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -15,14 +16,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "RSI(" + this.Parameters[0].ToString() + ")" };
 
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Black) };
-                return seriePens;
-            }
-        }
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main") };
+
         public override HLine[] HorizontalLines
         {
             get

@@ -211,7 +211,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.graphBackgroundDirty = true;
 
             // Pens
-            framePen = new Pen(Color.Black, 1.0f);
+            framePen = ColorManager.GetPen("Graph.Frame");
             textFramePen = new Pen(Color.Black, 1.0f);
             axisPen = new Pen(Color.Black, 1.0f);
             axisDashPen = new Pen(Color.FromArgb(0x60, 0x60, 0x60), 1.0f) { DashStyle = DashStyle.Dash };
@@ -371,7 +371,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using MethodLogger ml = new MethodLogger(this);
             this.XMargin = WIDTH_MARGIN_SIZE;
-            this.YMargin = 0;
+            this.YMargin = 1;
         }
 
         protected override void OnSizeChanged(EventArgs e)
@@ -699,6 +699,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
             #endregion
+
+            aGraphic.DrawRectangle(framePen, GraphRectangle.X, GraphRectangle.Y, GraphRectangle.Width, GraphRectangle.Height);
         }
         protected virtual void PaintGraphTitle(Graphics aGraphic)
         {
@@ -1439,12 +1441,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         /// <param name="aGraphic"></param>
         /// <param name="text"></param>
         /// <param name="font"></param>
-        /// <param name="brush"></param>
+        /// <param name="foregroundBrush"></param>
         /// <param name="backgroundBrush"></param>
         /// <param name="location"></param>
         /// <param name="drawFrame"></param>
         /// <returns></returns>
-        protected float DrawString(Graphics aGraphic, string text, Font font, Brush brush, Brush backgroundBrush, PointF location, bool drawFrame, Pen pen = null)
+        protected float DrawString(Graphics aGraphic, string text, Font font, Brush foregroundBrush, Brush backgroundBrush, PointF location, bool drawFrame, Pen pen = null)
         {
             string trimmedText = text.Trim();
             Size size = TextRenderer.MeasureText(trimmedText, font);
@@ -1456,7 +1458,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 aGraphic.FillRectangle(backgroundBrush, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
                 aGraphic.DrawRectangle(pen, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
             }
-            aGraphic.DrawString(trimmedText, font, brush, rect);
+            aGraphic.DrawString(trimmedText, font, foregroundBrush, rect);
             return location.X + size.Width - 26;
         }
         protected float DrawString(Graphics aGraphic, string text, Font font, Brush brush, float x, float y, bool drawFrame)

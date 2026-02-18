@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.Properties;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -144,7 +145,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     points = GetScreenPoints(0, dateSerie.Length - 1, currentCurveType.DataSerie);
                     if (points != null && points.Count() > 1)
                     {
-                        aGraphic.DrawLines(currentCurveType.CurvePen, points);
+                        aGraphic.DrawLines(ColorManager.GetPen("Graph.Close"), points);
                     }
                 }
                 i++;
