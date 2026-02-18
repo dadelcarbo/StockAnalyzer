@@ -199,7 +199,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), GraphRectangle.Top + 5);
 
-                this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.backgroundBrush, point, true);
+                this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.BackgroundBrush, point, true);
             }
         }
 

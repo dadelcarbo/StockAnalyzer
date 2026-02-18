@@ -42,7 +42,6 @@
             // graphCloseControl
             // 
             this.graphCloseControl.Agenda = null;
-            this.graphCloseControl.BackgroundColor = System.Drawing.Color.White;
             this.graphCloseControl.ChartMode = GraphChartMode.Line;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;
@@ -61,11 +60,9 @@
             this.graphCloseControl.Size = new System.Drawing.Size(590, 136);
             this.graphCloseControl.StartIndex = 0;
             this.graphCloseControl.TabIndex = 0;
-            this.graphCloseControl.TextBackgroundColor = System.Drawing.Color.Empty;
             // 
             // graphVolumeControl
             // 
-            this.graphVolumeControl.BackgroundColor = System.Drawing.Color.White;
             this.graphVolumeControl.ChartMode = GraphChartMode.Line;
             this.graphVolumeControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphVolumeControl.CurveList = null;
@@ -81,7 +78,6 @@
             this.graphVolumeControl.Size = new System.Drawing.Size(590, 32);
             this.graphVolumeControl.StartIndex = 0;
             this.graphVolumeControl.TabIndex = 0;
-            this.graphVolumeControl.TextBackgroundColor = System.Drawing.Color.Empty;
             // 
             // tableLayoutPanel1
             // 
@@ -119,7 +115,6 @@
             // 
             // graphScrollerControl
             // 
-            this.graphScrollerControl.BackgroundColor = System.Drawing.Color.White;
             this.graphScrollerControl.ChartMode = GraphChartMode.Line;
             this.graphScrollerControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphScrollerControl.CurveList = null;
@@ -135,11 +130,9 @@
             this.graphScrollerControl.Size = new System.Drawing.Size(590, 19);
             this.graphScrollerControl.StartIndex = 0;
             this.graphScrollerControl.TabIndex = 1;
-            this.graphScrollerControl.TextBackgroundColor = System.Drawing.Color.Empty;
             // 
             // graphIndicator1Control
             // 
-            this.graphIndicator1Control.BackgroundColor = System.Drawing.Color.White;
             this.graphIndicator1Control.ChartMode = GraphChartMode.Line;
             this.graphIndicator1Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator1Control.CurveList = null;
@@ -157,11 +150,9 @@
             this.graphIndicator1Control.Size = new System.Drawing.Size(200, 14);
             this.graphIndicator1Control.StartIndex = 0;
             this.graphIndicator1Control.TabIndex = 3;
-            this.graphIndicator1Control.TextBackgroundColor = System.Drawing.Color.Empty;
             // 
             // graphIndicator2Control
             // 
-            this.graphIndicator2Control.BackgroundColor = System.Drawing.Color.White;
             this.graphIndicator2Control.ChartMode = GraphChartMode.Line;
             this.graphIndicator2Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator2Control.CurveList = null;
@@ -179,11 +170,9 @@
             this.graphIndicator2Control.Size = new System.Drawing.Size(200, 14);
             this.graphIndicator2Control.StartIndex = 0;
             this.graphIndicator2Control.TabIndex = 4;
-            this.graphIndicator2Control.TextBackgroundColor = System.Drawing.Color.Empty;
             // 
             // graphIndicator3Control
             // 
-            this.graphIndicator3Control.BackgroundColor = System.Drawing.Color.White;
             this.graphIndicator3Control.ChartMode = GraphChartMode.Line;
             this.graphIndicator3Control.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphIndicator3Control.CurveList = null;
@@ -201,7 +190,6 @@
             this.graphIndicator3Control.Size = new System.Drawing.Size(200, 15);
             this.graphIndicator3Control.StartIndex = 0;
             this.graphIndicator3Control.TabIndex = 5;
-            this.graphIndicator3Control.TextBackgroundColor = System.Drawing.Color.Empty;
             // 
             // FullGraphUserControl
             // 

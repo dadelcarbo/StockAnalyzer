@@ -179,45 +179,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Brush RedBrush => ColorManager.GetBrush("Graph.Red");
         static protected Brush GreenBrush => ColorManager.GetBrush("Graph.Green");
 
-        static protected Brush textBrush = Brushes.Black;
-
         protected bool mouseDown = false;
 
-        protected Brush backgroundBrush;
         protected Brush legendBrush => ColorManager.GetBrush("Graph.Legend");
-        private Color backgroundColor;
-        public Color BackgroundColor
-        {
-            get { return backgroundColor; }
-            set
-            {
-                this.backgroundBrush?.Dispose();
-                this.backgroundBrush = new SolidBrush(value);
+        public Color BackgroundColor => ColorManager.GetColor("Graph.Background");
+        protected Brush BackgroundBrush => ColorManager.GetBrush("Graph.Background");
 
-                backgroundColor = value;
-            }
-        }
-
-        protected Brush textBackgroundBrush;
-        private Color textBackgroundColor;
-        public Color TextBackgroundColor
-        {
-            get { return textBackgroundColor; }
-            set
-            {
-                this.textBackgroundBrush?.Dispose();
-                this.textBackgroundBrush = new SolidBrush(value);
-                textBackgroundColor = value;
-            }
-        }
+        protected Brush TextBackgroundBrush => ColorManager.GetBrush("Graph.TextBackground");
+        protected Brush TextForegroundBrush => ColorManager.GetBrush("Graph.TextForeground");
 
         protected Pen gridPen => ColorManager.GetPen("Graph.Grid");
-        private Color gridColor => ColorManager.GetColor("Graph.Grid");
         static public Pen DrawingPen { get; set; }
         static public Pen MouseCursorPen => new Pen(Brushes.Black, 2);
-
-        public static Brush CupHandleBrush => new SolidBrush(Color.FromArgb(32, Color.LightGreen));
-        public static Brush CupHandleInvBrush => new SolidBrush(Color.FromArgb(32, Color.LightCoral));
 
         public static bool IsStarted { get; set; } = false;
 
@@ -466,7 +439,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         backgroundBitmap = new Bitmap((int)this.graphic.VisibleClipBounds.Width, (int)this.graphic.VisibleClipBounds.Height, this.graphic);
                         Graphics tmpGraph = Graphics.FromImage(backgroundBitmap);
 
-                        tmpGraph.Clear(this.backgroundColor);
+                        tmpGraph.Clear(this.BackgroundColor);
                         PaintTmpGraph(tmpGraph);
                         PaintGraphTitle(tmpGraph);
                         PaintCopyright(tmpGraph);
@@ -491,7 +464,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             else // Draw alternate text.
             {
                 Graphics gr = this.CreateGraphics();
-                gr.Clear(backgroundColor);
+                gr.Clear(BackgroundColor);
                 gr.DrawString(this.alternateString, axisFont, legendBrush, 10, 10);
             }
         }
@@ -752,7 +725,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 graphTitle += "  " + stockIndicator.Name;
             }
-            this.DrawString(aGraphic, graphTitle, this.axisFont, Brushes.Black, this.textBackgroundBrush, new PointF(1, 1), true);
+            this.DrawString(aGraphic, graphTitle, this.axisFont, TextForegroundBrush, this.TextBackgroundBrush, new PointF(1, 1), true);
         }
         protected virtual void PaintDailyBox(PointF mousePoint)
         {
@@ -788,7 +761,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), GraphRectangle.Top + 5);
 
-                this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.textBackgroundBrush, point, true);
+                this.DrawString(this.foregroundGraphic, value, font, this.TextForegroundBrush, this.TextBackgroundBrush, point, true);
             }
         }
         protected void PaintHorizontalLines(Graphics g)
@@ -1101,7 +1074,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     {
                         valueString = value.ToString("0.##");
                     }
-                    this.DrawString(this.foregroundGraphic, valueString, axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, point2.Y - 8), true);
+                    this.DrawString(this.foregroundGraphic, valueString, axisFont, this.TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, point2.Y - 8), true);
                 }
             }
         }
@@ -1184,7 +1157,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 "Bars:\t" + ((int)(newValue.X - initialValue.X)).ToString() + Environment.NewLine +
                 "Var:\t" + variation.ToString("P2") + "     " + Environment.NewLine +
                 "Diff:\t" + diffString,
-                toolTipFont, legendBrush, this.backgroundBrush, new PointF(x + width + 4, y), true);
+                toolTipFont, legendBrush, this.BackgroundBrush, new PointF(x + width + 4, y), true);
 
             // force the value box not to display.
             forceNoValueBoxDisplay = true;
@@ -1494,7 +1467,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             RectangleF rect = new RectangleF(x, y, size.Width, size.Height);
             if (drawFrame)
             {
-                aGraphic.FillRectangle(textBackgroundBrush, x - 1, y - 1, size.Width - 6, size.Height + 1);
+                aGraphic.FillRectangle(TextBackgroundBrush, x - 1, y - 1, size.Width - 6, size.Height + 1);
                 aGraphic.DrawRectangle(textFramePen, x - 1, y - 1, size.Width - 6, size.Height + 1);
             }
             aGraphic.DrawString(trimmedText, font, brush, rect);
@@ -1504,7 +1477,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left, y, GraphRectangle.Right, y);
             // Print current value
-            this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, backgroundBrush, new PointF(GraphRectangle.Right + 2, y - 8), true);
+            this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, this.TextForegroundBrush, BackgroundBrush, new PointF(GraphRectangle.Right + 2, y - 8), true);
 
         }
         protected void DrawMouseValueCross(PointF mouseValuePoint, bool drawHorizontalLine, bool drawVerticalLine, Pen pen, bool printValue)
@@ -1516,7 +1489,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.foregroundGraphic.DrawLine(pen, GraphRectangle.Left, screenPoint.Y, GraphRectangle.Right, screenPoint.Y);
                 // Print current value
                 if (printValue)
-                    this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
+                    this.DrawString(this.foregroundGraphic, mouseValuePoint.Y.ToString("0.####"), axisFont, this.TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
             if (drawVerticalLine)
             {

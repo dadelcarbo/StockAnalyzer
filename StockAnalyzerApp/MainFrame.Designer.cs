@@ -1379,7 +1379,6 @@ namespace StockAnalyzerApp
             this.graphCloseControl.Size = new System.Drawing.Size(975, 583);
             this.graphCloseControl.StartIndex = 0;
             this.graphCloseControl.TabIndex = 0;
-            this.graphCloseControl.TextBackgroundColor = System.Drawing.Color.Empty;
             this.graphCloseControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
             // 
             // graphScrollerControl
@@ -1400,7 +1399,6 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.Size = new System.Drawing.Size(975, 583);
             this.graphScrollerControl.StartIndex = 0;
             this.graphScrollerControl.TabIndex = 2;
-            this.graphScrollerControl.TextBackgroundColor = System.Drawing.Color.Empty;
             this.graphScrollerControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
             // 
             // graphIndicator1Control
@@ -1423,7 +1421,6 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator1Control.StartIndex = 0;
             this.graphIndicator1Control.TabIndex = 2;
-            this.graphIndicator1Control.TextBackgroundColor = System.Drawing.Color.Empty;
             this.graphIndicator1Control.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
             // 
             // graphIndicator2Control
@@ -1446,7 +1443,6 @@ namespace StockAnalyzerApp
             this.graphIndicator2Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator2Control.StartIndex = 0;
             this.graphIndicator2Control.TabIndex = 1;
-            this.graphIndicator2Control.TextBackgroundColor = System.Drawing.Color.Empty;
             this.graphIndicator2Control.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
             // 
             // graphIndicator3Control
@@ -1469,7 +1465,6 @@ namespace StockAnalyzerApp
             this.graphIndicator3Control.Size = new System.Drawing.Size(975, 583);
             this.graphIndicator3Control.StartIndex = 0;
             this.graphIndicator3Control.TabIndex = 1;
-            this.graphIndicator3Control.TextBackgroundColor = System.Drawing.Color.Empty;
             this.graphIndicator3Control.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
             // 
             // graphVolumeControl
@@ -1490,7 +1485,6 @@ namespace StockAnalyzerApp
             this.graphVolumeControl.Size = new System.Drawing.Size(975, 583);
             this.graphVolumeControl.StartIndex = 0;
             this.graphVolumeControl.TabIndex = 2;
-            this.graphVolumeControl.TextBackgroundColor = System.Drawing.Color.Empty;
             this.graphVolumeControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveOverGraphControl);
             // 
             // toolStripSeparator11

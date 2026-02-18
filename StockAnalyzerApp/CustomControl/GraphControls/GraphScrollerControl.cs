@@ -159,7 +159,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using MethodLogger ml = new MethodLogger(this);
             string graphTitle = "PREVIEW ";
-            this.DrawString(aGraphic, graphTitle, this.axisFont, Brushes.Black, this.textBackgroundBrush, new PointF(1, 1), true);
+            this.DrawString(aGraphic, graphTitle, this.axisFont, Brushes.Black, this.TextBackgroundBrush, new PointF(1, 1), true);
         }
         private void DrawSliders(Graphics aGraphic)
         {

@@ -45,7 +45,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.label10 = new System.Windows.Forms.Label();
             this.secondaryThicknessComboBox = new System.Windows.Forms.ComboBox();
             this.secondaryColorPanel = new System.Windows.Forms.Panel();
-            this.textBackgroundColorPanel = new System.Windows.Forms.Panel();
             this.backgroundColorPanel = new System.Windows.Forms.Panel();
             this.label8 = new System.Windows.Forms.Label();
             this.previewLabel = new System.Windows.Forms.Label();
@@ -53,7 +52,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.chartModeComboBox = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.applyToAllButton = new System.Windows.Forms.Button();
             this.lineConfigBox = new System.Windows.Forms.GroupBox();
             this.lineColorPanel = new System.Windows.Forms.Panel();
             this.lineValueTextBox = new System.Windows.Forms.TextBox();
@@ -84,7 +82,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.applyButton = new System.Windows.Forms.Button();
-            this.someTextLabel = new System.Windows.Forms.Label();
             this.copyStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indicatorConfigBox.SuspendLayout();
             this.graphConfigBox.SuspendLayout();
@@ -152,7 +149,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             // graphConfigBox
             // 
             this.graphConfigBox.Controls.Add(this.secondarySerieGroupBox);
-            this.graphConfigBox.Controls.Add(this.textBackgroundColorPanel);
             this.graphConfigBox.Controls.Add(this.backgroundColorPanel);
             this.graphConfigBox.Controls.Add(this.label8);
             this.graphConfigBox.Controls.Add(this.previewLabel);
@@ -201,13 +197,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.secondaryColorPanel.Name = "secondaryColorPanel";
             this.secondaryColorPanel.Click += new System.EventHandler(this.secondaryColorPanel_Click);
             // 
-            // textBackgroundColorPanel
-            // 
-            this.textBackgroundColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            resources.ApplyResources(this.textBackgroundColorPanel, "textBackgroundColorPanel");
-            this.textBackgroundColorPanel.Name = "textBackgroundColorPanel";
-            this.textBackgroundColorPanel.Click += new System.EventHandler(this.textBackgroundColorPanel_Click);
-            // 
             // backgroundColorPanel
             // 
             this.backgroundColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -248,13 +237,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             // 
             resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            // 
-            // applyToAllButton
-            // 
-            resources.ApplyResources(this.applyToAllButton, "applyToAllButton");
-            this.applyToAllButton.Name = "applyToAllButton";
-            this.applyToAllButton.UseVisualStyleBackColor = true;
-            this.applyToAllButton.Click += new System.EventHandler(this.applyToAllButton_Click);
             // 
             // lineConfigBox
             // 
@@ -469,11 +451,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.applyButton.UseVisualStyleBackColor = true;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
-            // someTextLabel
-            // 
-            resources.ApplyResources(this.someTextLabel, "someTextLabel");
-            this.someTextLabel.Name = "someTextLabel";
-            // 
             // copyStripMenuItem
             // 
             this.copyStripMenuItem.Name = "copyStripMenuItem";
@@ -486,8 +463,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.graphConfigBox);
             this.Controls.Add(this.curveConfigBox);
-            this.Controls.Add(this.someTextLabel);
-            this.Controls.Add(this.applyToAllButton);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.cancelButton);
@@ -549,7 +524,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button applyButton;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button applyToAllButton;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label previewLabel;
         private System.Windows.Forms.Panel graphPreviewPanel;
@@ -559,7 +533,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.TextBox lineValueTextBox;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Panel lineColorPanel;
-        private System.Windows.Forms.Panel textBackgroundColorPanel;
         private System.Windows.Forms.Panel backgroundColorPanel;
         private System.Windows.Forms.ToolStripMenuItem addPaintBarsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addAutoDrawingsToolStripMenuItem;
@@ -571,7 +544,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private Label label11;
         private Label label10;
         private ComboBox secondaryThicknessComboBox;
-        private Label someTextLabel;
         private ToolStripMenuItem copyStripMenuItem;
     }
 }

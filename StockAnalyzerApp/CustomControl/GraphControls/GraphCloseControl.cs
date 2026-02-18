@@ -646,7 +646,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     }
                                     if (color == null)
                                     {
-                                        candleStick.Draw(aGraphic, closeCurveType.CurvePen, backgroundBrush);
+                                        candleStick.Draw(aGraphic, closeCurveType.CurvePen, BackgroundBrush);
                                     }
                                     else
                                     {
@@ -1005,7 +1005,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (line.IsHorizontal)
                         {
                             PointF textLocation = GetScreenPointFromValuePoint(new PointF(StartIndex, line.Point1.Y));
-                            this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, legendBrush, backgroundBrush,
+                            this.DrawString(aGraphic, line.Point1.Y.ToString("0.##"), axisFont, legendBrush, BackgroundBrush,
                                new PointF(1, textLocation.Y - 8), true);
                         }
                     }
@@ -1182,7 +1182,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             Size size = TextRenderer.MeasureText(value, toolTipFont);
             PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), Math.Min(mousePoint.Y + 10, GraphRectangle.Bottom - size.Height));
 
-            this.DrawString(this.foregroundGraphic, value, toolTipFont, Brushes.Black, this.textBackgroundBrush, point, true);
+            this.DrawString(this.foregroundGraphic, value, toolTipFont, this.TextForegroundBrush, this.TextBackgroundBrush, point, true);
         }
 
         protected override void PaintGraphTitle(Graphics gr)
@@ -1210,12 +1210,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 graphTitle += " " + (this.CurveList.AutoDrawing.Name);
             }
-            float right = this.DrawString(gr, graphTitle, this.axisFont, Brushes.Black, this.textBackgroundBrush, new PointF(1, 1), true);
+            float right = this.DrawString(gr, graphTitle, this.axisFont, this.TextForegroundBrush, this.TextBackgroundBrush, new PointF(1, 1), true);
             if (this.SecondaryFloatSerie != null)
             {
                 graphTitle = this.SecondaryFloatSerie.Name;
                 Brush textBrush = ColorManager.GetBrush("Graph.Secondary");
-                this.DrawString(gr, graphTitle, this.axisFont, textBrush, this.backgroundBrush, new PointF(right + 16, 1), true);
+                this.DrawString(gr, graphTitle, this.axisFont, textBrush, this.BackgroundBrush, new PointF(right + 16, 1), true);
             }
         }
         private void PaintExecutedOrders(Graphics graphic)
@@ -2025,7 +2025,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     text = ((int)cupHandle.Pivot.X - cupHandle.Point1.X).ToString() + " - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
                 }
             }
-            this.DrawString(graph, text, axisFont, legendBrush, this.backgroundBrush, textPos, false);
+            this.DrawString(graph, text, axisFont, legendBrush, this.BackgroundBrush, textPos, false);
 
             // Draw HL and LL
             textPos = GetScreenPointFromValuePoint(cupHandle.LeftLow.X, cupHandle.LeftLow.Y);
@@ -2041,7 +2041,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 textPos.Y += 5;
                 text = cupHandle.LeftLow.Y < cupHandle.RightLow.Y ? "LL" : "HL";
             }
-            this.DrawString(graph, text, axisFont, legendBrush, this.backgroundBrush, textPos, false);
+            this.DrawString(graph, text, axisFont, legendBrush, this.BackgroundBrush, textPos, false);
 
             textPos = GetScreenPointFromValuePoint(cupHandle.RightLow.X, cupHandle.RightLow.Y);
             if (cupHandle.Inverse)
@@ -2056,7 +2056,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 textPos.Y += 5;
                 text = cupHandle.LeftLow.Y > cupHandle.RightLow.Y ? "LL" : "HL";
             }
-            this.DrawString(graph, text, axisFont, legendBrush, this.backgroundBrush, textPos, false);
+            this.DrawString(graph, text, axisFont, legendBrush, this.BackgroundBrush, textPos, false);
         }
 
         WinRatio newWinRatio = null;
@@ -2345,11 +2345,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 PointF point2 = GetScreenPointFromValuePoint(new PointF(mouseIndex, currentClose));
                 if (currentClose >= previousClose)
                 {
-                    this.DrawString(this.foregroundGraphic, "+" + variation, axisFont, Brushes.Green, textBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
+                    this.DrawString(this.foregroundGraphic, "+" + variation, axisFont, Brushes.Green, TextBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
                 }
                 else
                 {
-                    this.DrawString(this.foregroundGraphic, variation, axisFont, Brushes.Red, textBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
+                    this.DrawString(this.foregroundGraphic, variation, axisFont, Brushes.Red, TextBackgroundBrush, new PointF(point2.X + 10, point2.Y - 20), true);
                 }
             }
         }
@@ -2396,8 +2396,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
 
                 PointF dateLocation = new PointF((int)screenPoint.X - 50, (int)GraphRectangle.Bottom + 2);
-                this.DrawString(this.foregroundGraphic, dateString, axisFont, Brushes.Black, textBackgroundBrush, dateLocation, true);
-                this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
+                this.DrawString(this.foregroundGraphic, dateString, axisFont, this.TextForegroundBrush, TextBackgroundBrush, dateLocation, true);
+                this.DrawString(this.foregroundGraphic, value.ToString("0.####"), axisFont, this.TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, screenPoint.Y - 8), true);
             }
         }
         protected void DrawEntry(Graphics graph, float index, float stop, bool showText)
@@ -2408,7 +2408,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var points = GetEntryMarqueePoints(stop);
             graph.FillPolygon(entryBrush, points);
             if (showText)
-                this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
+                this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, this.TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
         protected void DrawStop(Graphics graph, Pen pen, float index, float stop, bool showText)
         {
@@ -2418,7 +2418,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var points = GetStopMarqueePoints(stop);
             graph.FillPolygon(new SolidBrush(pen.Color), points);
             if (showText)
-                this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
+                this.DrawString(graph, stop.ToString("0.####") + " ", axisFont, this.TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
         protected void DrawOpenedOrder(Graphics graph, Pen pen, float index, float value, bool showText)
         {
@@ -2428,7 +2428,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var points = GetStopMarqueePoints(value);
             graph.FillPolygon(new SolidBrush(pen.Color), points);
             if (showText)
-                this.DrawString(graph, value.ToString("0.####") + " ", axisFont, textBrush, textBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
+                this.DrawString(graph, value.ToString("0.####") + " ", axisFont, this.TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, p1.Y - 8), true);
         }
         #endregion
         #region Geometric Functions

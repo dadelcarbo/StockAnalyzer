@@ -4274,12 +4274,12 @@ namespace StockAnalyzerApp
                                         switch (fields[0].ToUpper())
                                         {
                                             case "GRAPH":
-                                                string[] colorItem = fields[1].Split(':');
-                                                graphControl.BackgroundColor = ColorManager.GetColor("Graph.Background");
-                                                colorItem = fields[2].Split(':');
-                                                graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                                // graphControl.ShowGrid = bool.Parse(fields[3]);
-                                                colorItem = fields[4].Split(':');
+                                                //string[] colorItem = fields[1].Split(':');
+                                                //graphControl.BackgroundColor = ColorManager.GetColor("Graph.Background");
+                                                //colorItem = fields[2].Split(':');
+                                                ////graphControl.TextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
+                                                //// graphControl.ShowGrid = bool.Parse(fields[3]);
+                                                //colorItem = fields[4].Split(':');
 
                                                 if (entry.ToUpper() == "CLOSEGRAPH")
                                                 {
@@ -4481,7 +4481,7 @@ namespace StockAnalyzerApp
                         if (needCollapseReset)
                             indicatorLayoutPanel.SetRows(this.graphList);
 
-                        indicatorLayoutPanel.BackColor = this.graphCloseControl.BackgroundColor;
+                        indicatorLayoutPanel.BackColor = ColorManager.GetColor("Graph.Background");
                     }
 
                     catch (Exception exception)
