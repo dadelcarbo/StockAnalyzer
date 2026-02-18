@@ -348,27 +348,6 @@
   <data name="&gt;&gt;secondarySerieGroupBox.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="gridColorPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>119, 70</value>
-  </data>
-  <data name="gridColorPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 20</value>
-  </data>
-  <data name="gridColorPanel.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;gridColorPanel.Name" xml:space="preserve">
-    <value>gridColorPanel</value>
-  </data>
-  <data name="&gt;&gt;gridColorPanel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;gridColorPanel.Parent" xml:space="preserve">
-    <value>graphConfigBox</value>
-  </data>
-  <data name="&gt;&gt;gridColorPanel.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="textBackgroundColorPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>119, 45</value>
   </data>
@@ -482,33 +461,6 @@
   </data>
   <data name="&gt;&gt;graphPreviewPanel.ZOrder" xml:space="preserve">
     <value>6</value>
-  </data>
-  <data name="showGridCheckBox.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="showGridCheckBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 73</value>
-  </data>
-  <data name="showGridCheckBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 17</value>
-  </data>
-  <data name="showGridCheckBox.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
-  <data name="showGridCheckBox.Text" xml:space="preserve">
-    <value>Show Grid</value>
-  </data>
-  <data name="&gt;&gt;showGridCheckBox.Name" xml:space="preserve">
-    <value>showGridCheckBox</value>
-  </data>
-  <data name="&gt;&gt;showGridCheckBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;showGridCheckBox.Parent" xml:space="preserve">
-    <value>graphConfigBox</value>
-  </data>
-  <data name="&gt;&gt;showGridCheckBox.ZOrder" xml:space="preserve">
-    <value>7</value>
   </data>
   <data name="chartModeComboBox.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>

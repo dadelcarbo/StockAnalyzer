@@ -45,13 +45,11 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.label10 = new System.Windows.Forms.Label();
             this.secondaryThicknessComboBox = new System.Windows.Forms.ComboBox();
             this.secondaryColorPanel = new System.Windows.Forms.Panel();
-            this.gridColorPanel = new System.Windows.Forms.Panel();
             this.textBackgroundColorPanel = new System.Windows.Forms.Panel();
             this.backgroundColorPanel = new System.Windows.Forms.Panel();
             this.label8 = new System.Windows.Forms.Label();
             this.previewLabel = new System.Windows.Forms.Label();
             this.graphPreviewPanel = new System.Windows.Forms.Panel();
-            this.showGridCheckBox = new System.Windows.Forms.CheckBox();
             this.chartModeComboBox = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -154,13 +152,11 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             // graphConfigBox
             // 
             this.graphConfigBox.Controls.Add(this.secondarySerieGroupBox);
-            this.graphConfigBox.Controls.Add(this.gridColorPanel);
             this.graphConfigBox.Controls.Add(this.textBackgroundColorPanel);
             this.graphConfigBox.Controls.Add(this.backgroundColorPanel);
             this.graphConfigBox.Controls.Add(this.label8);
             this.graphConfigBox.Controls.Add(this.previewLabel);
             this.graphConfigBox.Controls.Add(this.graphPreviewPanel);
-            this.graphConfigBox.Controls.Add(this.showGridCheckBox);
             this.graphConfigBox.Controls.Add(this.chartModeComboBox);
             this.graphConfigBox.Controls.Add(this.label6);
             this.graphConfigBox.Controls.Add(this.label5);
@@ -205,13 +201,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.secondaryColorPanel.Name = "secondaryColorPanel";
             this.secondaryColorPanel.Click += new System.EventHandler(this.secondaryColorPanel_Click);
             // 
-            // gridColorPanel
-            // 
-            this.gridColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            resources.ApplyResources(this.gridColorPanel, "gridColorPanel");
-            this.gridColorPanel.Name = "gridColorPanel";
-            this.gridColorPanel.Click += new System.EventHandler(this.gridColorPanel_Click);
-            // 
             // textBackgroundColorPanel
             // 
             this.textBackgroundColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -241,13 +230,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             resources.ApplyResources(this.graphPreviewPanel, "graphPreviewPanel");
             this.graphPreviewPanel.Name = "graphPreviewPanel";
             this.graphPreviewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.graphPreviewPanel_Paint);
-            // 
-            // showGridCheckBox
-            // 
-            resources.ApplyResources(this.showGridCheckBox, "showGridCheckBox");
-            this.showGridCheckBox.Name = "showGridCheckBox";
-            this.showGridCheckBox.UseVisualStyleBackColor = true;
-            this.showGridCheckBox.CheckedChanged += new System.EventHandler(this.showGridCheckBox_CheckedChanged);
             // 
             // chartModeComboBox
             // 
@@ -569,7 +551,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button applyToAllButton;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox showGridCheckBox;
         private System.Windows.Forms.Label previewLabel;
         private System.Windows.Forms.Panel graphPreviewPanel;
         private System.Windows.Forms.Label label8;
@@ -580,7 +561,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.Panel lineColorPanel;
         private System.Windows.Forms.Panel textBackgroundColorPanel;
         private System.Windows.Forms.Panel backgroundColorPanel;
-        private System.Windows.Forms.Panel gridColorPanel;
         private System.Windows.Forms.ToolStripMenuItem addPaintBarsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addAutoDrawingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addTrailStopsToolStripMenuItem;

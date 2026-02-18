@@ -182,12 +182,6 @@
   <data name="graphPreviewPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>424, 184</value>
   </data>
-  <data name="showGridCheckBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>97, 17</value>
-  </data>
-  <data name="showGridCheckBox.Text" xml:space="preserve">
-    <value>Afficher la grille</value>
-  </data>
   <data name="chartModeComboBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>328, 16</value>
   </data>

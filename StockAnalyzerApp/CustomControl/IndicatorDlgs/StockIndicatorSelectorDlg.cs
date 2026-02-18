@@ -65,7 +65,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         {
             public Color GraphBackgroundColor { get; set; }
             public Color GraphTextBackgroundColor { get; set; }
-            public bool GraphShowGrid { get; set; }
             public Color GraphGridColor { get; set; }
             public GraphChartMode GraphMode { get; set; }
             public Pen SecondaryPen { get; set; }
@@ -73,7 +72,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             public GraphNode(string name, ContextMenuStrip menuStrip,
                 Color graphBackgroundColor,
                 Color graphTextBackgroundColor,
-                bool showGrid,
                 Color graphGridColor,
                 GraphChartMode mode)
                 : base(name, NodeType.Graph, menuStrip)
@@ -81,7 +79,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 this.GraphBackgroundColor = graphBackgroundColor;
                 this.GraphTextBackgroundColor = graphTextBackgroundColor;
                 this.Type = NodeType.Graph;
-                this.GraphShowGrid = showGrid;
                 this.GraphGridColor = graphGridColor;
                 this.GraphMode = mode;
                 this.ImageKey = "CHART";
@@ -94,7 +91,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 string themeString = "GRAPH|" +
                     this.GraphBackgroundColor.A.ToString() + ":" + this.GraphBackgroundColor.R.ToString() + ":" + this.GraphBackgroundColor.G.ToString() + ":" + this.GraphBackgroundColor.B.ToString() + "|" +
                     this.GraphTextBackgroundColor.A.ToString() + ":" + this.GraphTextBackgroundColor.R.ToString() + ":" + this.GraphTextBackgroundColor.G.ToString() + ":" + this.GraphTextBackgroundColor.B.ToString() + "|" +
-                    this.GraphShowGrid.ToString() + "|" +
+                    "false" + "|" + // ShowGrid
                     this.GraphGridColor.A.ToString() + ":" + this.GraphGridColor.R.ToString() + ":" + this.GraphGridColor.G.ToString() + ":" + this.GraphGridColor.B.ToString() + "|" +
                     this.GraphMode.ToString();
                 if (this.SecondaryPen != null)
@@ -381,7 +378,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             {
                 if (entry.ToUpper().EndsWith("GRAPH"))
                 {
-                    GraphNode treeNode = new GraphNode(entry, this.graphMenuStrip, Color.White, Color.LightGray, true, Color.LightGray, GraphChartMode.BarChart);
+                    GraphNode treeNode = new GraphNode(entry, this.graphMenuStrip, Color.White, Color.LightGray, Color.LightGray, GraphChartMode.BarChart);
                     if (entry.ToUpper().Contains("VOLUME"))
                     {
                         treeNode.ImageKey = "VH";
@@ -401,7 +398,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                                     treeNode.GraphBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                     colorItem = fields[2].Split(':');
                                     treeNode.GraphTextBackgroundColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
-                                    treeNode.GraphShowGrid = bool.Parse(fields[3]);
                                     colorItem = fields[4].Split(':');
                                     treeNode.GraphGridColor = Color.FromArgb(int.Parse(colorItem[0]), int.Parse(colorItem[1]), int.Parse(colorItem[2]), int.Parse(colorItem[3]));
                                     treeNode.GraphMode = (GraphChartMode)Enum.Parse(typeof(GraphChartMode), fields[5]);
@@ -1946,22 +1942,11 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
             this.backgroundColorPanel.BackColor = graphNode.GraphBackgroundColor;
             this.textBackgroundColorPanel.BackColor = graphNode.GraphTextBackgroundColor;
-            this.gridColorPanel.BackColor = graphNode.GraphGridColor;
-            this.showGridCheckBox.Checked = graphNode.GraphShowGrid;
 
             //this.opacityTrackBar.Visible = false;
 
             this.suspendPreview = false;
             this.graphPreviewPanel.Refresh();
-        }
-        private void showGridCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            GraphNode graphNode = (GraphNode)this.treeView1.SelectedNode;
-            if (graphNode != null)
-            {
-                graphNode.GraphShowGrid = this.showGridCheckBox.Checked;
-            }
-            this.graphPreviewPanel.Invalidate();
         }
         private void chartModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1981,7 +1966,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 {
                     ((GraphNode)treeNode).GraphBackgroundColor = graphNode.GraphBackgroundColor;
                     ((GraphNode)treeNode).GraphTextBackgroundColor = graphNode.GraphTextBackgroundColor;
-                    ((GraphNode)treeNode).GraphShowGrid = graphNode.GraphShowGrid;
                     ((GraphNode)treeNode).GraphGridColor = graphNode.GraphGridColor;
                 }
             }
@@ -2001,9 +1985,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             g.DrawRectangle(Pens.Black, 0, 0, g.VisibleClipBounds.Width - 1, g.VisibleClipBounds.Height - 1);
 
             using Pen gridPen = new Pen(graphNode.GraphGridColor);
-            if (graphNode.GraphShowGrid)
+            if (Settings.Default.ShowGrid)
             {
-
                 for (int xx = 0; xx < g.VisibleClipBounds.Width; xx += 33)
                 {
                     g.DrawLine(gridPen, xx, g.VisibleClipBounds.Bottom, xx, g.VisibleClipBounds.Top);
@@ -2013,7 +1996,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     g.DrawLine(gridPen, g.VisibleClipBounds.Left, yy, g.VisibleClipBounds.Right, yy);
                 }
             }
-
 
             if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.BarChart)
             {
@@ -2074,17 +2056,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             {
                 ((GraphNode)this.treeView1.SelectedNode).GraphTextBackgroundColor = colorDlg.Color;
                 this.textBackgroundColorPanel.BackColor = colorDlg.Color;
-
-                this.SaveCustomColors(this.colorDlg.CustomColors);
-            }
-        }
-        private void gridColorPanel_Click(object sender, EventArgs e)
-        {
-            colorDlg.Color = ((GraphNode)this.treeView1.SelectedNode).GraphGridColor;
-            if (colorDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                ((GraphNode)this.treeView1.SelectedNode).GraphGridColor = colorDlg.Color;
-                this.gridColorPanel.BackColor = colorDlg.Color;
 
                 this.SaveCustomColors(this.colorDlg.CustomColors);
             }
