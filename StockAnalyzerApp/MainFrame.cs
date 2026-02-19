@@ -4811,7 +4811,7 @@ namespace StockAnalyzerApp
 
                 paletteManagerDlg.ViewModel.ColorPaletteChanged += (s, e) =>
                 {
-                    ApplyTheme();
+                    OnNeedReinitialise(false);
                 };
             }
             else

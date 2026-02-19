@@ -32,6 +32,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static Pen trailStopPen => ColorManager.GetPen("Order.TrailStop", 2.0f); // new Pen(Color.Red, 2.0f) { DashStyle = DashStyle.Dot, EndCap = LineCap.DiamondAnchor, StartCap = LineCap.RoundAnchor };
         static Brush PortfolioAreaBrush => new SolidBrush(Color.FromArgb(128, Color.DarkRed));
 
+        static Pen CurvePen => ColorManager.GetPen("Graph.Curve");
+
 
         #region DRAWING MEMBERS AND TYPES
 
@@ -541,18 +543,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 switch (this.ChartMode)
                 {
                     case GraphChartMode.Line:
-                        aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
+                        aGraphic.DrawLines(CurvePen, tmpPoints);
                         break;
                     case GraphChartMode.LineCross:
-                        aGraphic.DrawLines(closeCurveType.CurvePen, tmpPoints);
+                        aGraphic.DrawLines(CurvePen, tmpPoints);
 
                         if (EndIndex - StartIndex < GraphRectangle.Width / 3)
                         {
                             for (int i = 0; i < tmpPoints.Length; i++)
                             {
                                 var p = tmpPoints[i];
-                                aGraphic.DrawLine(closeCurveType.CurvePen, p.X - 3, p.Y, p.X + 3, p.Y);
-                                aGraphic.DrawLine(closeCurveType.CurvePen, p.X, p.Y - 3, p.X, p.Y + 3);
+                                aGraphic.DrawLine(CurvePen, p.X - 3, p.Y, p.X + 3, p.Y);
+                                aGraphic.DrawLine(CurvePen, p.X, p.Y - 3, p.X, p.Y + 3);
                             }
                         }
                         break;
@@ -570,7 +572,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 Width = 0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count()
                             };
-                            Pen barPen;
                             for (int i = 0; i < tmpPoints.Count(); i++)
                             {
                                 bar.X = tmpPoints[i].X;
@@ -581,7 +582,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                                 if (!this.HideIndicators && this.CurveList.PaintBar != null)
                                 {
-                                    barPen = this.closeCurveType.CurvePen;
+                                    Pen barPen = null;
                                     // Get pen from paintBar
                                     IStockPaintBar pb = this.CurveList.PaintBar;
                                     if (pb.Events[0].Count == this.dateSerie.Length)
@@ -645,7 +646,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     }
                                     if (color == null)
                                     {
-                                        candleStick.Draw(aGraphic, closeCurveType.CurvePen, BackgroundBrush);
+                                        candleStick.Draw(aGraphic);
                                     }
                                     else
                                     {

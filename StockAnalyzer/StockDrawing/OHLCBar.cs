@@ -30,16 +30,11 @@ namespace StockAnalyzer.StockDrawing
             this.Close = close;
         }
 
-        public void Draw(Graphics graphic)
+        public void Draw(Graphics graphic, Pen pen = null)
         {
-            var pen = Close > Open ? ColorManager.GetPen("Graph.CandleWick.Up") : ColorManager.GetPen("Graph.CandleWick.Down");
+            if (pen == null)
+                 pen = Close < Open ? ColorManager.GetPen("Graph.CandleWick.Up") : ColorManager.GetPen("Graph.CandleWick.Down");
 
-            graphic.DrawLine(pen, X - Width, Open, X, Open);
-            graphic.DrawLine(pen, X, Low, X, High);
-            graphic.DrawLine(pen, X, Close, X + Width, Close);
-        }
-        public void Draw(Graphics graphic, Pen pen)
-        {
             graphic.DrawLine(pen, X - Width, Open, X, Open);
             graphic.DrawLine(pen, X, Low, X, High);
             graphic.DrawLine(pen, X, Close, X + Width, Close);

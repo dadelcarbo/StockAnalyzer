@@ -27,9 +27,6 @@ namespace StockAnalyzer.StockDrawing
 
         public void Draw(Graphics graphic)
         {
-            Pen penDown = ColorManager.GetPen("Graph.CandleWick.Down");
-
-
             if (Close == Open)
             {
                 Pen pen = ColorManager.GetPen("Graph.CandleWick.Up");
@@ -40,8 +37,8 @@ namespace StockAnalyzer.StockDrawing
             {
                 if (Close > Open)
                 {
-                    Pen pen = ColorManager.GetPen("Graph.CandleWick.Up");
-                    var candleBrush = ColorManager.GetBrush("Graph.Candle.Up");
+                    Pen pen = ColorManager.GetPen("Graph.CandleWick.Down"); // Upside down in pixel coordinates
+                    var candleBrush = ColorManager.GetBrush("Graph.Candle.Down");
 
                     graphic.DrawLine(pen, X, Low, X, High);
                     graphic.FillRectangle(candleBrush, X - Width, Open, 2 * Width, Close - Open);
@@ -49,8 +46,8 @@ namespace StockAnalyzer.StockDrawing
                 }
                 else
                 {
-                    Pen pen = ColorManager.GetPen("Graph.CandleWick.Down");
-                    var candleBrush = ColorManager.GetBrush("Graph.Candle.Down");
+                    Pen pen = ColorManager.GetPen("Graph.CandleWick.Up"); // Upside down in pixel coordinates
+                    var candleBrush = ColorManager.GetBrush("Graph.Candle.Up");
 
                     graphic.DrawLine(pen, X, Low, X, High);
                     graphic.FillRectangle(candleBrush, X - Width, Close, 2 * Width, Open - Close);
