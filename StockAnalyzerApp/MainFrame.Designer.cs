@@ -738,7 +738,7 @@ namespace StockAnalyzerApp
             this.saxoPortfolioMenuItem.Name = "saxoPortfolioMenuItem";
             this.saxoPortfolioMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F2));
             this.saxoPortfolioMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.saxoPortfolioMenuItem.Text = "Show Current Portfolio";
+            this.saxoPortfolioMenuItem.Text = "Show Saxo Portfolio";
             this.saxoPortfolioMenuItem.Click += new System.EventHandler(this.saxoPortfolioMenuItem_Click);
             // 
             // portfolioReportMenuItem

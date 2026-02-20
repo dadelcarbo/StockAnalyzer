@@ -13,10 +13,6 @@
         <telerik:ColorToBrushConverter x:Key="colorToBrushConverter" />
     </UserControl.Resources>
     <Grid DataContext="{StaticResource ViewModel}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
