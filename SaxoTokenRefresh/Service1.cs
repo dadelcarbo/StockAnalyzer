@@ -58,6 +58,7 @@ namespace SaxoTokenRefresh
                         return;
                     }
 
+                    LoginService.Sessions.Clear();
                     foreach (var file in Directory.GetFiles(saxoPath, "1*.json"))
                     {
                         var clientId = Path.GetFileNameWithoutExtension(file);
