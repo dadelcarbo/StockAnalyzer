@@ -1069,7 +1069,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 //value += BuildTabbedString("ADR", mouseBar.ADR.ToString("0.####"), 12) + "\r\n";
                 value += BuildTabbedString("NADR", mouseBar.NADR.ToString("P2"), 12) + "\r\n";
                 //value += BuildTabbedString("ATR", mouseBar.ATR.ToString("0.####"), 12) + "\r\n";
-                value += BuildTabbedString("NATR", mouseBar.NATR.ToString("P2"), 12) + "\r\n" + "\r\n";
+                //value += BuildTabbedString("NATR", mouseBar.NATR.ToString("P2"), 12) + "\r\n" + "\r\n";
             }
             // Add indicators
             foreach (IStockIndicator stockIndicator in CurveList.Indicators)
