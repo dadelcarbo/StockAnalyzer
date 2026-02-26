@@ -855,7 +855,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private readonly bool showTimerDebug = false;
+        private readonly bool showTimerDebug = true;
 
         private void goToStock(object sender, EventArgs e)
         {
@@ -934,11 +934,12 @@ namespace StockAnalyzerApp
         {
             using var ml = new MethodLogger(this, showTimerDebug);
 
+            refreshing = true;
+
             LoginService.RefreshSessions();
 
-            if (refreshing)
-                return;
-            refreshing = true;
+            refreshing = false;
+
             return; // §§§§
 
             using (new MethodLogger(this, showTimerDebug))
