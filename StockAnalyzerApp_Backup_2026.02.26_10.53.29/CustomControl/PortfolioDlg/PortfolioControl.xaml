@@ -1,0 +1,185 @@
+﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.PortfolioDlg.PortfolioControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.PortfolioDlg"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d"
+             Background="AntiqueWhite"
+             d:DataContext="{d:DesignInstance Type=local:ViewModel, IsDesignTimeCreatable=False}" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:StockDateToStringConverter x:Key="StockDateConverter"/>
+        <local:StockRedGreenStyleSelector x:Key="styleSelector" >
+            <local:StockRedGreenStyleSelector.GreenCellStyle>
+                <Style  TargetType="telerik:GridViewCell">
+                    <Setter Property="Background" Value="LightGreen" />
+                    <Setter Property="Foreground" Value="DarkGreen" />
+                </Style>
+            </local:StockRedGreenStyleSelector.GreenCellStyle>
+            <local:StockRedGreenStyleSelector.RedCellStyle>
+                <Style  TargetType="telerik:GridViewCell">
+                    <Setter Property="Background" Value="LightPink" />
+                    <Setter Property="Foreground" Value="DarkRed" />
+                </Style>
+            </local:StockRedGreenStyleSelector.RedCellStyle>
+        </local:StockRedGreenStyleSelector>
+    </UserControl.Resources>
+    <Grid HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+            <Label>Portfolio</Label>
+            <ComboBox Width="160" DisplayMemberPath="Name" ItemsSource="{Binding Portfolios}" SelectedItem="{Binding Portfolio, Mode=TwoWay}"></ComboBox>
+            <Label>Cash:</Label>
+            <TextBlock Text="{Binding Portfolio.Balance}" VerticalAlignment="Center"/>
+            <Label>Value:</Label>
+            <TextBlock Text="{Binding PortfolioViewModel.Value}" VerticalAlignment="Center"/>
+            <Label>Risk free value:</Label>
+            <TextBlock Text="{Binding Portfolio.RiskFreeValue}" VerticalAlignment="Center"/>
+            <Label>Drawdown:</Label>
+            <TextBlock Text="{Binding Portfolio.DrawDown, StringFormat=\{0:P\}}" VerticalAlignment="Center"/>
+            <Label>Max Risk:</Label>
+            <TextBox Text="{Binding Portfolio.MaxRisk, Mode=TwoWay, StringFormat=\{0:P\}}" IsReadOnly="True" VerticalAlignment="Center" Width="50"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
+            <Label VerticalAlignment="Center">Sync Date:</Label>
+            <TextBox x:Name="lastSyncTextBox" Text="{Binding Portfolio.LastSyncDate, Mode =OneWay,Converter={StaticResource StockDateConverter}}" IsReadOnly="True" VerticalAlignment="Center" Margin="2"/>
+            <Button x:Name="refreshButton" Height="24" Width="24" Click="refreshButton_Click" Margin="2" VerticalAlignment="Top">
+                <Image Source="../../Resources/Reload.png"/>
+            </Button>
+            <Button x:Name="reportButton" Height="24" Width="24" Click="reportButton_Click" Margin="2" VerticalAlignment="Top">
+                <Image Source="../../Resources/email.png"/>
+            </Button>
+            <Button x:Name="savePortfolioButton" Height="24" Width="24" Click="savePortfolioButton_Click" Margin="2" VerticalAlignment="Top" >
+                <Image Source="../../Resources/SaveAnalysis.png"/>
+            </Button>
+        </StackPanel>
+        <TabControl Grid.Row="1" HorizontalAlignment="Stretch">
+            <TabItem Header="Portfolio">                
+                <telerik:RadPropertyGrid x:Name="propertyGrid" Item="{Binding PortfolioViewModel}" FontSize="9"
+                                         AutoGeneratingPropertyDefinition="RadPropertyGrid_AutoGeneratingPropertyDefinition"
+                                         DescriptionPanelVisibility="Collapsed" SearchBoxVisibility="Collapsed" FieldIndicatorVisibility="Collapsed"
+                                         SortAndGroupButtonsVisibility="Collapsed" IsGrouped="True"></telerik:RadPropertyGrid>
+            </TabItem>
+            <TabItem Header="Opened Positions" IsSelected="True">
+                <telerik:RadGridView FontSize="9" Name="mixedOpenedPositionGridView" ItemsSource="{Binding PortfolioViewModel.OpenedPositions}"
+                                     SelectionMode="Single" SelectionUnit="Mixed" ClipboardCopyMode="Cells"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="False" LeftFrozenColumnCount="1" IsFilteringAllowed="False">
+                    <telerik:RadGridView.ColumnGroups>
+                        <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
+                        <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry"/>
+                        <telerik:GridViewColumnGroup Name="Risk" Header="Risk Management" />
+                        <telerik:GridViewColumnGroup Name="Current" Header="Current"/>
+                        <telerik:GridViewColumnGroup Name="Technical" Header="Technical" />
+                    </telerik:RadGridView.ColumnGroups>
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" ColumnGroupName="Trade" IsReadOnly="True" MinWidth="120"/>
+                        <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewComboBoxColumn Header="Theme" DataMemberBinding="{Binding Theme}" ItemsSource="{Binding Themes}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewDataColumn Header="Entry&#x0a;Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding EntryQty}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding EntryCost, StringFormat=F2}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}" ColumnGroupName="Risk"/>
+                        <telerik:GridViewDataColumn Header="TrailStop" DataMemberBinding="{Binding TrailStop}" ColumnGroupName="Risk" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Trade&#x0a;Risk" DataMemberBinding="{Binding TradeRisk, StringFormat=P2}"  CellStyleSelector="{StaticResource styleSelector}" ColumnGroupName="Risk" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Portfolio&#x0a;Risk" DataMemberBinding="{Binding PortfolioRisk, StringFormat=P2}"  CellStyleSelector="{StaticResource styleSelector}" ColumnGroupName="Risk" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Last&#x0a;Value" DataMemberBinding="{Binding LastValue}" ColumnGroupName="Current" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Return" DataMemberBinding="{Binding Variation, StringFormat=P2}" CellStyleSelector="{StaticResource styleSelector}" ColumnGroupName="Current" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Portfolio&#x0a;Return" DataMemberBinding="{Binding PortfolioVariation, StringFormat=P2}"  CellStyleSelector="{StaticResource styleSelector}" ColumnGroupName="Current" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Risk/Reward&#x0a;Ratio" DataMemberBinding="{Binding RiskRewardRatio, StringFormat=\{0:F\}}"  CellStyleSelector="{StaticResource styleSelector}" ColumnGroupName="Current" IsReadOnly="True"/>
+
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
+            <TabItem Header="Opened Orders">
+                <telerik:RadGridView FontSize="9" Name="openedOrdersGridView" ItemsSource="{Binding PortfolioViewModel.OpenedOrders}"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="False"
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Direction" DataMemberBinding="{Binding BuySell}"  IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding OrderType}"  IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding Qty}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding Amount}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Status" DataMemberBinding="{Binding Status}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Date" DataMemberBinding="{Binding CreationDate, Converter={StaticResource StockDateConverter}}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding StopValue}" IsReadOnly="True"/>
+                        <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewComboBoxColumn Header="Theme" DataMemberBinding="{Binding Theme}" ItemsSource="{Binding Themes}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" />
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
+            <TabItem Header="Closed Positions">
+                <telerik:RadGridView FontSize="9" Name="closedPositionGridView" ItemsSource="{Binding PortfolioViewModel.ClosedPositions}"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells, Header"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="false"
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
+                    <telerik:RadGridView.ColumnGroups>
+                        <telerik:GridViewColumnGroup Name="Trade" Header="Trade" />
+                        <telerik:GridViewColumnGroup Name="Entry" Header="Trade Entry"/>
+                        <telerik:GridViewColumnGroup Name="Risk" Header="Risk Management" />
+                        <telerik:GridViewColumnGroup Name="Current" Header="Current"/>
+                        <telerik:GridViewColumnGroup Name="Technical" Header="Technical" />
+                        <telerik:GridViewColumnGroup Name="Exit" Header="Trade Exit" />
+                    </telerik:RadGridView.ColumnGroups>
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" ColumnGroupName="Trade" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Entry&#x0a;Date" DataMemberBinding="{Binding EntryDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding EntryQty}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding EntryValue}" ColumnGroupName="Entry" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding Stop}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="TrailStop" DataMemberBinding="{Binding TrailStop}" ColumnGroupName="Entry"/>
+                        <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" ColumnGroupName="Entry"/>
+
+                        <telerik:GridViewDataColumn Header="Exit&#x0a;Date" DataMemberBinding="{Binding ExitDate, Converter={StaticResource StockDateConverter}}" ColumnGroupName="Exit" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Exit&#x0a;Value" DataMemberBinding="{Binding ExitValue, StringFormat=F3}" ColumnGroupName="Exit" IsReadOnly="True"/>
+
+                        <telerik:GridViewDataColumn Header="Return" DataMemberBinding="{Binding Return, StringFormat=P2}" CellStyleSelector="{StaticResource styleSelector}" ColumnGroupName="Exit" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Risk/Reward&#x0a;Ratio" DataMemberBinding="{Binding RiskRewardRatio, StringFormat=\{0:F\}}" CellStyleSelector="{StaticResource styleSelector}" ColumnGroupName="Exit" IsReadOnly="True"/>
+                        <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewComboBoxColumn Header="Theme" DataMemberBinding="{Binding Theme}" ItemsSource="{Binding Themes}" ColumnGroupName="Technical"/>
+
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
+            <TabItem Header="Orders">
+                <telerik:RadGridView FontSize="9" Name="ordersGridView" ItemsSource="{Binding PortfolioViewModel.Orders}"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="False"
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
+                    <telerik:RadGridView.Columns>
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockName}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Direction" DataMemberBinding="{Binding BuySell}"  IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Type" DataMemberBinding="{Binding OrderType}"  IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Qty" DataMemberBinding="{Binding Qty}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Amount" DataMemberBinding="{Binding Amount}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Status" DataMemberBinding="{Binding Status}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Date" DataMemberBinding="{Binding CreationDate, Converter={StaticResource StockDateConverter}}" IsReadOnly="True"/>
+                        <telerik:GridViewDataColumn Header="Stop" DataMemberBinding="{Binding StopValue}" IsReadOnly="True"/>
+                        <telerik:GridViewComboBoxColumn Header="Duration" DataMemberBinding="{Binding BarDuration}" ItemsSource="{Binding BarDurations}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewComboBoxColumn Header="Theme" DataMemberBinding="{Binding Theme}" ItemsSource="{Binding Themes}" ColumnGroupName="Technical"/>
+                        <telerik:GridViewDataColumn Header="Comment" DataMemberBinding="{Binding EntryComment}" />
+                    </telerik:RadGridView.Columns>
+                </telerik:RadGridView>
+            </TabItem>
+            <TabItem Header="Activity">
+                <telerik:RadGridView FontSize="9" ItemsSource="{Binding PortfolioViewModel.SaxoOrderActivity}"
+                                     SelectionMode="Single" SelectionUnit="FullRow" ClipboardCopyMode="Cells"
+                                     FilterOperatorsLoading="FilterOperatorsLoading" AutoGenerateColumns="True"
+                                     RowIndicatorVisibility="Collapsed" ShowGroupPanel="True" LeftFrozenColumnCount="1">
+                </telerik:RadGridView>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

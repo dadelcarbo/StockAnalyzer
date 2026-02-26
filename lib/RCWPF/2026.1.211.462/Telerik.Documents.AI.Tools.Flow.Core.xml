@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Documents.AI.Tools.Flow.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Documents.AI.Tools.Flow.Core.IFlowDocumentRepository">
+            <summary>
+            Provides a unified interface for managing spreadsheet workbooks.
+            Extends IDocumentProvider with spreadsheet-specific creation capabilities.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository">
+            <summary>
+            Repository for multi-document orchestration scenarios.
+            Manages multiple flow documents in memory with support for creation and import.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.#ctor(System.Nullable{System.TimeSpan})">
+            <summary>
+            Initializes a new instance with no documents.
+            </summary>
+            <param name="importTimeout">Timeout for import operations, or null to allow unlimited time.</param>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.DocumentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.DefaultFormat">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.DefaultNewDocumentBaseName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.CreateDocument(System.String,System.String[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.Export(System.String,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.IO.Stream)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.Import(System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.ExportToPdf(System.String,System.IO.Stream)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Flow.Core.InMemoryFlowDocumentRepository.MergeAndExport(System.String[],System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Flow.Core.ServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for registering Flow document agent tools with an <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Flow.Core.ServiceCollectionExtensions.AddFlowAgentTools(Microsoft.Extensions.DependencyInjection.IServiceCollection,Telerik.Documents.AI.Tools.Core.DocumentProcessingOptions)">
+            <summary>
+            Adds Flow document agent tools to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="options">Configuration options for document processing.</param>
+        </member>
+    </members>
+</doc>

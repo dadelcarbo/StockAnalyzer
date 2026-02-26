@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="StockAnalyzerApp.CustomControl.ExpectedValueDlg.StatisticsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
+             xmlns:expectedvaluedlg="clr-namespace:StockAnalyzerApp.CustomControl.ExpectedValueDlg" 
+             d:DataContext="{d:DesignInstance Type=expectedvaluedlg:StatisticsViewModel}"
+             mc:Ignorable="d" Width="638" Height="349">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
+            <ComboBox SelectedItem="{Binding IndicatorType}"  ItemsSource="{Binding IndicatorTypes}"  Width="80"/>
+            <TextBox Text="{Binding Indicator}" Width="200" Margin="2" />
+            <Label Content="Group " Width="56"/>
+            <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
+            <Label Content="Nb Days " Width="75"/>
+            <TextBox Text="{Binding NbBars}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></TextBox>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="2">
+            <Label Content="Event" Width="80"/>
+            <ComboBox SelectedItem="{Binding Event, Mode=TwoWay}" ItemsSource="{Binding Events}" Width="200" Margin="2"/>
+            <Label Content="Duration" Width="56"/>
+            <ComboBox ItemsSource="{Binding BarDurations}" SelectedValue="{Binding BarDuration}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></ComboBox>
+            <Label Content="Smoothing " Width="75"/>
+            <TextBox Text="{Binding Smoothing}" Width="100" VerticalAlignment="Center" IsEnabled="{Binding ControlEnabled}"></TextBox>
+        </StackPanel>
+        <TabControl Grid.Row="2">
+            <TabItem Header="List">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Row="0" Margin="2" ItemsSource="{Binding Results}" CanUserAddRows="False" IsReadOnly="True" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"/>
+                    <DataGrid Grid.Row="1" Margin="2" ItemsSource="{Binding SummaryResults}" CanUserAddRows="False" IsReadOnly="True" AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Histogram">
+                <telerik:RadCartesianChart x:Name="chart1" Palette="Windows8" ClipToBounds="False" Grid.Row="0">
+                    <telerik:RadCartesianChart.TooltipTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Path Data="M-1236,-441 L-1208,-441 L-1208,-424 L-1228,-424 L-1230.5,-420 L-1233,-424 L-1236,-424 z"
+                                        Stretch="Fill" Fill="#FFFFFFFF" Stroke="#FF767676" StrokeThickness="1" />
+                                <TextBlock Margin="6,4,6,10" FontSize="11" Text="{Binding Y, StringFormat=\{0:N2\}}" />
+                            </Grid>
+                        </DataTemplate>
+                    </telerik:RadCartesianChart.TooltipTemplate>
+
+                    <telerik:RadCartesianChart.Series>
+                        <telerik:LineSeries CategoryBinding="Value" ValueBinding="Y" ItemsSource="{Binding Histogram}"/>
+                        <telerik:LineSeries CategoryBinding="Value" ValueBinding="Y" ItemsSource="{Binding Histogram2}"/>
+                    </telerik:RadCartesianChart.Series>
+                    <telerik:RadCartesianChart.VerticalAxis>
+                        <telerik:LinearAxis Title="Equity Curve"
+                                              ElementBrush="{Binding ElementName=chart, Path=Palette.GlobalEntries[1].Fill}" 
+                                              HorizontalLocation="Right" />
+                    </telerik:RadCartesianChart.VerticalAxis>
+
+                    <telerik:RadCartesianChart.HorizontalAxis>
+                        <telerik:CategoricalAxis LabelInterval="5" />
+                    </telerik:RadCartesianChart.HorizontalAxis>
+
+                    <telerik:RadCartesianChart.Grid>
+                        <telerik:CartesianChartGrid MajorLinesVisibility="XY" />
+                    </telerik:RadCartesianChart.Grid>
+                </telerik:RadCartesianChart>
+
+            </TabItem>
+        </TabControl>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="2">
+            <Button Content="Calculate" Click="CalculateBtn_OnClick"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

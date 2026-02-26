@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Documents.AI.AgentTools.Spreadsheet</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository">
+            <summary>
+            Provider for single-document analysis scenarios.
+            Wraps an existing Workbook instance and does not support document creation.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository.#ctor(Telerik.Windows.Documents.Spreadsheet.Model.Workbook,System.String)">
+            <summary>
+            Initializes a new instance wrapping an existing workbook.
+            </summary>
+            <param name="workbook">The workbook to wrap.</param>
+            <param name="documentName">Optional display name for the document.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when workbook is null.</exception>
+        </member>
+        <member name="P:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository.SupportsCreation">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository.SupportsMultipleDocuments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository.GetDocument(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository.ListDocuments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository.CreateDocument(System.String,System.String[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository.Export(System.String,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.IO.Stream)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Spreadsheet.SingleWorkbookRepository.Import(System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Spreadsheet.SpreadProcessingAgentToolsBase">
+            <summary>
+            Base class for spreadsheet agent tools that provides workbook access via a provider.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.AgentTools.Spreadsheet.SpreadProcessingAgentToolsBase.Repository">
+            <summary>
+            Gets the workbook repository.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Spreadsheet.SpreadProcessingAgentToolsBase.#ctor(Telerik.Documents.AI.Tools.Spreadsheet.Core.IWorkbookRepository)">
+            <summary>
+            Initializes a new instance with the specified workbook repository.
+            </summary>
+            <param name="repository">The workbook repository for document access.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when repository is null.</exception>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Spreadsheet.SpreadProcessingFileManagementAgentTools">
+            <summary>
+            Provides document lifecycle management tools for creating, listing, and exporting workbooks.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Spreadsheet.SpreadProcessingFormulaAgentTools">
+            <summary>
+            Provides formula and calculation agent tools for spreadsheets.
+            These tools allow formula evaluation and discovery without modifying the document.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Spreadsheet.SpreadProcessingReadAgentTools">
+            <summary>
+            Provides read-only agent tools for querying and analyzing spreadsheet data without modification.
+            These tools are safe for analysis-only scenarios.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Spreadsheet.SpreadProcessingWorksheetAgentTools">
+            <summary>
+            Provides worksheet management agent tools for creating, deleting, and organizing worksheets.
+            These tools modify the workbook structure but not cell content.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Spreadsheet.SpreadProcessingWriteAgentTools">
+            <summary>
+            Provides document editing agent tools for writing data, applying styles, and formatting spreadsheets.
+            These tools modify cell content and formatting in the workbook.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,1036 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Documents.AI.Tools.Fixed.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentContentTools">
+            <summary>
+            Provides static tools for creating and manipulating PDF document content.
+            These tools handle content segments including text, images, tables, and document structure.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentFormTools">
+            <summary>
+            Provides static tools for working with PDF form fields.
+            These tools handle form field reading and filling operations.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentFormUtilities">
+            <summary>
+            Utility class for PDF form-related operations including field information extraction,
+            form filling, and summary generation for interactive PDF forms.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentFormUtilities.GetFormFieldInfo(Telerik.Windows.Documents.Fixed.Model.InteractiveForms.FormField)">
+            <summary>
+            Gets comprehensive information about a single form field and its properties.
+            Extracts type-specific information for text fields, checkboxes, combo boxes, 
+            list boxes, radio buttons, and other interactive form elements.
+            </summary>
+            <param name="formField">The form field to extract information from.</param>
+            <returns>A <see cref="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo"/> object containing detailed information about the form field including its type, properties, and current values.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentFormUtilities.GenerateFormSummary(System.Collections.Generic.List{Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo})">
+            <summary>
+            Generates a comprehensive summary of form fields including counts, field types,
+            and structural information about the PDF form.
+            </summary>
+            <param name="formFields">List of form field information objects to summarize.</param>
+            <returns>A formatted string containing statistics about the form fields including total count, required fields, read-only fields, and breakdown by field type.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentFormUtilities.FillFormFieldsWithProvidedValues(Telerik.Windows.Documents.Fixed.Model.RadFixedDocument,System.Collections.Generic.Dictionary{System.String,Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValue})">
+            <summary>
+            Fills form fields in a PDF document with provided values and returns a detailed summary of the operations.
+            Supports partial form filling, skips read-only fields, and provides comprehensive error reporting.
+            Field matching is performed by both field name and display name for flexibility.
+            </summary>
+            <param name="document">The PDF document containing interactive form fields to fill.</param>
+            <param name="fieldValues">Dictionary mapping field names to their corresponding values. Keys should match form field names or display names.</param>
+            <returns>A tuple containing:
+            - fieldsFilledCount: Number of fields successfully filled
+            - fieldsSummary: List of summary messages describing successful operations and skipped fields
+            - fieldErrors: List of error messages for fields that could not be filled
+            </returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentFormUtilities.GetUserFriendlyFieldName(Telerik.Windows.Documents.Fixed.Model.InteractiveForms.FormField)">
+            <summary>
+            Gets the user-friendly display name for a form field, preferring UserInterfaceName over Name.
+            This method provides a fallback mechanism to ensure a meaningful name is always returned.
+            </summary>
+            <param name="formField">The form field to get the display name for.</param>
+            <returns>The UserInterfaceName if available and not empty, otherwise returns the Name property. Returns null if both are null.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentFormUtilities.GetFormFieldType(Telerik.Windows.Documents.Fixed.Model.InteractiveForms.FormField)">
+            <summary>
+            Gets the human-readable string representation of the form field type.
+            Provides specific type names for different field variants (e.g., distinguishes between
+            regular text fields, password fields, and multi-line text fields).
+            </summary>
+            <param name="formField">The form field to determine the type for.</param>
+            <returns>A descriptive string representing the field type. Returns the class name as fallback for unknown types.</returns>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities">
+            <summary>
+            Comprehensive utility class for PDF document operations including content segment processing,
+            text formatting, image insertion, table creation, and document structure management.
+            Provides methods for converting various content types into PDF elements using Telerik RadPdfProcessing.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.ConvertStringToPaperType(System.String)">
+            <summary>
+            Converts a string representation of page size to PaperTypes enum.
+            </summary>
+            <param name="pageSize">The page size string (case-insensitive). Supported values: 'A4', 'Letter', 'Legal', 'A3', 'A5'.</param>
+            <returns>The corresponding PaperTypes enum value, defaults to A4 for unrecognized values.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.RemoveTrailingPageBreaks(Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ContentSegment[])">
+            <summary>
+            Removes trailing PageBreak segments from content segments array to prevent empty pages
+            when the segments are processed by a PDF document editor.
+            </summary>
+            <param name="contentSegments">Array of content segments to process.</param>
+            <returns>A new array of content segments with any trailing PageBreak segments removed.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown when no valid content segments remain after removing all trailing PageBreak segments.</exception>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.ProcessContentSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ContentSegment)">
+            <summary>
+            Processes a content segment by calling the appropriate handler based on segment type.
+            Supports text runs, lines, paragraph breaks, page breaks, section breaks, images, and tables.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor instance used to insert content into the PDF document.</param>
+            <param name="segment">The content segment to process. The segment type determines which processing method is called.</param>
+            <exception cref="T:System.NotSupportedException">Thrown when the segment type is not supported.</exception>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.ProcessTextSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment,System.Boolean)">
+            <summary>
+            Processes a formatted text segment, applying all text formatting properties including font,
+            color, decorations, and baseline alignment before inserting the text into the document.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for text insertion.</param>
+            <param name="segment">The formatted text segment containing text content and formatting properties.</param>
+            <param name="addLineBreak">If true, inserts text as a line (with line break); if false, inserts as a run (inline).</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.ProcessParagraphBreakSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment)">
+            <summary>
+            Processes a paragraph break segment, applying paragraph formatting properties such as spacing,
+            indentation, alignment, and background color before inserting a paragraph break.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for paragraph insertion.</param>
+            <param name="segment">The paragraph break segment containing paragraph formatting properties.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.ProcessSectionBreakSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.SectionBreakSegment)">
+            <summary>
+            Processes a section break segment, configuring new section properties including page size
+            and rotation before inserting a section break that starts a new section in the document.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for section break insertion.</param>
+            <param name="segment">The section break segment containing page size and rotation settings.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.ProcessImageSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment)">
+            <summary>
+            Processes an image segment by loading the image file and inserting it into the document
+            with the specified dimensions and aspect ratio settings.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for image insertion.</param>
+            <param name="segment">The image segment containing file path and sizing information.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.ProcessTableSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment)">
+            <summary>
+            Processes a table segment by creating a formatted table with the specified data, headers,
+            borders, and styling options, then inserting it into the document.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for table insertion.</param>
+            <param name="segment">The table segment containing table data, headers, and formatting options.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.SetFontProperties(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Sets font properties for the document editor, selecting appropriate font from the FontsRepository
+            based on family name and style requirements. Falls back to Helvetica if font selection fails.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to configure.</param>
+            <param name="fontFamily">Font family name. Supported: "Arial", "Helvetica", "Times", "Times New Roman", "Courier", "Courier New".</param>
+            <param name="bold">Whether text should be bold (uses bold font variant).</param>
+            <param name="italic">Whether text should be italic (uses italic/oblique font variant).</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.SetTextColors(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String,System.String)">
+            <summary>
+            Sets text foreground and highlight background colors for the document editor.
+            Text color defaults to black if not provided or invalid.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to configure.</param>
+            <param name="textColor">Text foreground color in hex format (e.g., "#FF0000"). If null/empty/invalid, defaults to black.</param>
+            <param name="highlightColor">Text highlight background color in hex format (e.g., "#FFFF00"). If null/empty/invalid, no highlight is applied.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.SetTextDecorations(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String,System.String)">
+            <summary>
+            Sets text decoration patterns (underline and strikethrough) for the document editor.
+            Both decorations default to "None" if not specified or unrecognized.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to configure.</param>
+            <param name="underline">Underline style. Supported values: "Single", "None". Case-insensitive.</param>
+            <param name="strikethrough">Strikethrough style. Supported values: "Single", "None". Case-insensitive.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.SetBaselineAlignment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String)">
+            <summary>
+            Sets baseline alignment for the document editor to control vertical text positioning
+            relative to the baseline (normal, subscript, or superscript).
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to configure.</param>
+            <param name="baselineAlignment">Baseline alignment setting. Supported values: "Baseline", "Subscript", "Superscript". Case-insensitive. Defaults to "Baseline".</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.ParseColor(System.String)">
+            <summary>
+            Parses a color string in hex format into a Telerik RgbColor object for use in PDF documents.
+            </summary>
+            <param name="color">Color string in hex format (e.g., "#FF0000", "#ffffff").</param>
+            <returns>RgbColor object if parsing succeeds, null if color is null/empty or parsing fails.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.CalculateImageSize(Telerik.Windows.Documents.Fixed.Model.Resources.ImageSource,System.Nullable{System.Double},System.Nullable{System.Double},System.Boolean)">
+            <summary>
+            Calculates the final size for an image based on the provided width, height, and aspect ratio settings.
+            When maintaining aspect ratio, chooses the scaling constraint that results in the smaller scaling factor
+            to ensure the image fits within both specified dimensions.
+            </summary>
+            <param name="imageSource">The image source containing original dimensions.</param>
+            <param name="width">Desired width in points. If null, original width is used unless height is specified with aspect ratio maintenance.</param>
+            <param name="height">Desired height in points. If null, original height is used unless width is specified with aspect ratio maintenance.</param>
+            <param name="maintainAspectRatio">If true, preserves original aspect ratio by scaling proportionally. If false, uses exact specified dimensions.</param>
+            <returns>A Size object representing the calculated final dimensions for the image.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.LoadAndInsertImageIntoEditor(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String,System.Nullable{System.Double},System.Nullable{System.Double},System.Boolean)">
+            <summary>
+            Loads an image from the specified file path and inserts it inline into the PDF document at the current position.
+            Calculates final dimensions based on size constraints and aspect ratio settings before insertion.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to insert the image into.</param>
+            <param name="imagePath">The absolute or relative path to the image file.</param>
+            <param name="width">Optional width constraint in points. If null, uses original width or calculated width based on height and aspect ratio.</param>
+            <param name="height">Optional height constraint in points. If null, uses original height or calculated height based on width and aspect ratio.</param>
+            <param name="maintainAspectRatio">If true, maintains original aspect ratio when scaling. If false, uses exact specified dimensions.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.FixedDocumentUtilities.CreateAndInsertTable(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String[][],System.String[],System.Boolean,System.String,System.String,System.Double,System.Double)">
+            <summary>
+            Creates and inserts a formatted table into the PDF document using the RadFixedDocumentEditor.
+            Implements proper table creation patterns based on official Telerik SDK guidelines,
+            including optional headers, borders, and comprehensive styling options.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to insert the table into.</param>
+            <param name="rows">Array of table data rows, where each row is an array of cell values.</param>
+            <param name="headers">Optional array of header cell values. If provided, creates a styled header row. Can be null to skip headers.</param>
+            <param name="showBorders">If true, applies black borders to the table and all cells with small padding. If false, creates a borderless table.</param>
+            <param name="headerBackgroundColor">Background color for header cells in hex format (e.g., "#F0F0F0"). Only applied if headers are provided. Can be null or empty.</param>
+            <param name="headerTextColor">Text color for header cells in hex format (e.g., "#000000"). Only applied if headers are provided. Can be null or empty.</param>
+            <param name="headerFontSize">Font size in points for header text.</param>
+            <param name="fontSize">Font size in points for regular table cell text.</param>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.IFixedDocumentRepository">
+            <summary>
+            Provides a unified interface for managing PDF (Fixed) documents.
+            Extends IDocumentRepository with PDF-specific capabilities.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository">
+            <summary>
+            Repository for multi-document orchestration scenarios.
+            Manages multiple PDF documents in memory with support for creation and import.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.#ctor(System.Nullable{System.TimeSpan})">
+            <summary>
+            Initializes a new instance with no documents.
+            </summary>
+            <param name="importTimeout">Timeout for import operations, or null to allow unlimited time.</param>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.DocumentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.DefaultFormat">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.DefaultNewDocumentBaseName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.CreateDocument(System.String,System.String[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.Export(System.String,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.IO.Stream)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.Import(System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.MergeAndExport(System.String[],System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.InMemoryFixedDocumentRepository.AddDocument(System.String,Telerik.Windows.Documents.Fixed.Model.RadFixedDocument)">
+            <summary>
+            Adds an existing document to the repository.
+            </summary>
+            <param name="documentId">The identifier for the document.</param>
+            <param name="document">The document to add.</param>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ContentSegment">
+            <summary>
+            Base class for all content segments that can be added to PDF documents
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ContentSegment.SegmentType">
+            <summary>
+            The type of content segment
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment">
+            <summary>
+            Base class for text-based segments with formatting properties
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.Text">
+            <summary>
+            The text content to add
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.FontSize">
+            <summary>
+            Font size in points. Default is 12.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.FontFamily">
+            <summary>
+            Font family name. Supported: 'Arial', 'Helvetica', 'Times', 'Times New Roman', 'Courier', 'Courier New'. Default is 'Arial'.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.TextColor">
+            <summary>
+            Text color in hex format (e.g., '#FF0000' for red). Default is black.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.HighlightColor">
+            <summary>
+            Highlight color in hex format (e.g., '#FFFF00' for yellow). Leave empty for no highlight.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.Bold">
+            <summary>
+            Whether the text should be bold. Default is false.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.Italic">
+            <summary>
+            Whether the text should be italic. Default is false.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.Underline">
+            <summary>
+            Underline style: 'None' or 'Single'. Default is 'None'.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.Strikethrough">
+            <summary>
+            Strikethrough style: 'None' or 'Single'. Default is 'None'.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment.BaselineAlignment">
+            <summary>
+            Baseline alignment: 'Baseline', 'Subscript', or 'Superscript'. Default is 'Baseline'.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment">
+            <summary>
+            Segment that inserts an image into the PDF document
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment.SegmentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment.ImagePath">
+            <summary>
+            The path to the image file to insert. Supports common formats: JPEG, PNG, BMP, TIFF, GIF. Must be an absolute path or relative to the current working directory.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment.Width">
+            <summary>
+            The width of the image in points. If not specified, the original image width will be used. Must be a positive number.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment.Height">
+            <summary>
+            The height of the image in points. If not specified, the original image height will be used. Must be a positive number.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment.MaintainAspectRatio">
+            <summary>
+            Whether to maintain the original aspect ratio when width or height is specified. If true, the image will be scaled proportionally. Default is true.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.LineSegment">
+            <summary>
+            Text segment that inserts formatted text followed by a line break
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.LineSegment.SegmentType">
+            <inheritdoc/>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.PageBreakSegment">
+            <summary>
+            Segment that forces content to start on a new page
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.PageBreakSegment.SegmentType">
+            <inheritdoc/>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment">
+            <summary>
+            Segment that starts a new paragraph with configurable paragraph properties
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment.SegmentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment.SpacingBefore">
+            <summary>
+            Spacing before the paragraph in points. Default is 0.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment.SpacingAfter">
+            <summary>
+            Spacing after the paragraph in points. Default is 0.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment.LeftIndent">
+            <summary>
+            Left indent in points. Default is 0.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment.RightIndent">
+            <summary>
+            Right indent in points. Default is 0.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment.FirstLineIndent">
+            <summary>
+            First line indent in points. Default is 0.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment.HorizontalAlignment">
+            <summary>
+            Horizontal alignment: 'Left', 'Center', 'Right'. Default is 'Left'.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment.BackgroundColor">
+            <summary>
+            Background color for the paragraph in hex format (e.g., '#FFFFFF'). Leave empty for no background.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.RunSegment">
+            <summary>
+            Text segment that inserts inline formatted text without line breaks
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.RunSegment.SegmentType">
+            <inheritdoc/>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.SectionBreakSegment">
+            <summary>
+            Segment that starts a new section with different page properties
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.SectionBreakSegment.SegmentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.SectionBreakSegment.PageSize">
+            <summary>
+            Page size for the new section: 'A4', 'Letter', 'Legal', 'A3', 'A5'. Default is 'A4'.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.SectionBreakSegment.PageRotation">
+            <summary>
+            Page rotation: 'Rotate0', 'Rotate90', 'Rotate180', 'Rotate270'. Default is 'Rotate0'.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment">
+            <summary>
+            Segment that inserts a table into the PDF document
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment.SegmentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment.Rows">
+            <summary>
+            Array of table rows. Each row is an array of cell data (strings).
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment.Headers">
+            <summary>
+            Optional array of header cells for the table. If provided, will be formatted differently from regular rows.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment.ShowBorders">
+            <summary>
+            Whether the table should have borders. Default is true.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment.HeaderBackgroundColor">
+            <summary>
+            Background color for header row in hex format (e.g., '#F0F0F0'). Only applied if headers are provided.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment.HeaderTextColor">
+            <summary>
+            Text color for header row in hex format (e.g., '#000000'). Only applied if headers are provided.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment.HeaderFontSize">
+            <summary>
+            Font size for header text in points. Default is 12.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment.FontSize">
+            <summary>
+            Font size for table text in points. Default is 10.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.CheckBoxInfo">
+            <summary>
+            Detailed information about checkbox field properties
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.CheckBoxInfo.IsChecked">
+            <summary>
+            Whether the checkbox is currently checked
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.CheckBoxInfo.ExportValue">
+            <summary>
+            The export value when the checkbox is checked
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.ComboBoxInfo">
+            <summary>
+            Detailed information about combo box field properties
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.ComboBoxInfo.Options">
+            <summary>
+            Array of available options in the combo box
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.ComboBoxInfo.SelectedValue">
+            <summary>
+            Currently selected value
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.ListBoxInfo">
+            <summary>
+            Detailed information about list box field properties
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.ListBoxInfo.Options">
+            <summary>
+            Array of available options in the list box
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.ListBoxInfo.SelectedValues">
+            <summary>
+            Array of currently selected values
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.ListBoxInfo.AllowMultiSelection">
+            <summary>
+            Whether the list box allows multiple selections
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo">
+            <summary>
+            Detailed information about a PDF form field
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.Name">
+            <summary>
+            The internal name/identifier of the form field
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.UserInterfaceName">
+            <summary>
+            The user-friendly interface name of the form field
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.DisplayName">
+            <summary>
+            The best display name for the field (UserInterfaceName if available, otherwise Name)
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.FieldType">
+            <summary>
+            The type of form field (e.g., 'Text Field', 'Checkbox Field', 'Combo Box Field')
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.IsRequired">
+            <summary>
+            Whether this field is required to be filled
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.IsReadOnly">
+            <summary>
+            Whether this field is read-only and cannot be modified
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.TextFieldInfo">
+            <summary>
+            Detailed information for text fields (null for other field types)
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.CheckBoxInfo">
+            <summary>
+            Detailed information for checkbox fields (null for other field types)
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.ComboBoxInfo">
+            <summary>
+            Detailed information for combo box fields (null for other field types)
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.ListBoxInfo">
+            <summary>
+            Detailed information for list box fields (null for other field types)
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo.RadioButtonInfo">
+            <summary>
+            Detailed information for radio button fields (null for other field types)
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValue">
+            <summary>
+            Value to be set for a specific form field
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValue.FieldName">
+            <summary>
+            The name/identifier of the form field
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValue.TextValue">
+            <summary>
+            The value to set for text fields, combo boxes, and comb text fields
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValue.BooleanValue">
+            <summary>
+            The checked state for checkbox fields
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValue.ArrayValue">
+            <summary>
+            Array of selected values for list box and radio button fields
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValues">
+            <summary>
+            Container for form field values to be filled into a PDF form
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValues.FieldValues">
+            <summary>
+            Dictionary of field name to field value mappings
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormResult">
+            <summary>
+            Result of getting PDF form fields information
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormResult.HasFormFields">
+            <summary>
+            Whether the PDF contains interactive form fields
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormResult.TotalFieldCount">
+            <summary>
+            Total number of form fields found
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormResult.FormFields">
+            <summary>
+            Array of detailed information about each form field
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormResult.Summary">
+            <summary>
+            Summary description of the form analysis results
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.RadioButtonInfo">
+            <summary>
+            Detailed information about radio button field properties
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.RadioButtonInfo.Options">
+            <summary>
+            Array of available radio button options
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.RadioButtonInfo.SelectedValue">
+            <summary>
+            Currently selected option
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.TextFieldInfo">
+            <summary>
+            Detailed information about text field properties
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.TextFieldInfo.Value">
+            <summary>
+            Current text value of the field
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.TextFieldInfo.MaxLength">
+            <summary>
+            Maximum number of characters allowed (0 means no limit)
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.TextFieldInfo.IsMultiline">
+            <summary>
+            Whether the field supports multiple lines of text
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.TextFieldInfo.IsPassword">
+            <summary>
+            Whether the field is a password field (text is masked)
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.TextFieldInfo.IsComb">
+            <summary>
+            Whether the field uses comb formatting (fixed-width character cells)
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.PdfFormUtilities">
+            <summary>
+            Utility class for PDF form-related operations including field information extraction,
+            form filling, and summary generation for interactive PDF forms.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfFormUtilities.GetFormFieldInfo(Telerik.Windows.Documents.Fixed.Model.InteractiveForms.FormField)">
+            <summary>
+            Gets comprehensive information about a single form field and its properties.
+            Extracts type-specific information for text fields, checkboxes, combo boxes, 
+            list boxes, radio buttons, and other interactive form elements.
+            </summary>
+            <param name="formField">The form field to extract information from.</param>
+            <returns>A <see cref="T:Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo"/> object containing detailed information about the form field including its type, properties, and current values.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfFormUtilities.GenerateFormSummary(System.Collections.Generic.List{Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldInfo})">
+            <summary>
+            Generates a comprehensive summary of form fields including counts, field types,
+            and structural information about the PDF form.
+            </summary>
+            <param name="formFields">List of form field information objects to summarize.</param>
+            <returns>A formatted string containing statistics about the form fields including total count, required fields, read-only fields, and breakdown by field type.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfFormUtilities.FillFormFieldsWithProvidedValues(Telerik.Windows.Documents.Fixed.Model.RadFixedDocument,System.Collections.Generic.Dictionary{System.String,Telerik.Documents.AI.Tools.Fixed.Core.Models.Forms.PdfFormFieldValue})">
+            <summary>
+            Fills form fields in a PDF document with provided values and returns a detailed summary of the operations.
+            Supports partial form filling, skips read-only fields, and provides comprehensive error reporting.
+            Field matching is performed by both field name and display name for flexibility.
+            </summary>
+            <param name="document">The PDF document containing interactive form fields to fill.</param>
+            <param name="fieldValues">Dictionary mapping field names to their corresponding values. Keys should match form field names or display names.</param>
+            <returns>A tuple containing:
+            - fieldsFilledCount: Number of fields successfully filled
+            - fieldsSummary: List of summary messages describing successful operations and skipped fields
+            - fieldErrors: List of error messages for fields that could not be filled
+            </returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfFormUtilities.GetUserFriendlyFieldName(Telerik.Windows.Documents.Fixed.Model.InteractiveForms.FormField)">
+            <summary>
+            Gets the user-friendly display name for a form field, preferring UserInterfaceName over Name.
+            This method provides a fallback mechanism to ensure a meaningful name is always returned.
+            </summary>
+            <param name="formField">The form field to get the display name for.</param>
+            <returns>The UserInterfaceName if available and not empty, otherwise returns the Name property. Returns null if both are null.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfFormUtilities.GetFormFieldType(Telerik.Windows.Documents.Fixed.Model.InteractiveForms.FormField)">
+            <summary>
+            Gets the human-readable string representation of the form field type.
+            Provides specific type names for different field variants (e.g., distinguishes between
+            regular text fields, password fields, and multi-line text fields).
+            </summary>
+            <param name="formField">The form field to determine the type for.</param>
+            <returns>A descriptive string representing the field type. Returns the class name as fallback for unknown types.</returns>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities">
+            <summary>
+            Comprehensive utility class for PDF document operations including content segment processing,
+            text formatting, image insertion, table creation, and document structure management.
+            Provides methods for converting various content types into PDF elements using Telerik RadPdfProcessing.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.ConvertStringToPaperType(System.String)">
+            <summary>
+            Converts a string representation of page size to PaperTypes enum.
+            </summary>
+            <param name="pageSize">The page size string (case-insensitive). Supported values: 'A4', 'Letter', 'Legal', 'A3', 'A5'.</param>
+            <returns>The corresponding PaperTypes enum value, defaults to A4 for unrecognized values.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.RemoveTrailingPageBreaks(Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ContentSegment[])">
+            <summary>
+            Removes trailing PageBreak segments from content segments array to prevent empty pages
+            when the segments are processed by a PDF document editor.
+            </summary>
+            <param name="contentSegments">Array of content segments to process.</param>
+            <returns>A new array of content segments with any trailing PageBreak segments removed.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.ProcessContentSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ContentSegment)">
+            <summary>
+            Processes a content segment by calling the appropriate handler based on segment type.
+            Supports text runs, lines, paragraph breaks, page breaks, section breaks, images, and tables.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor instance used to insert content into the PDF document.</param>
+            <param name="segment">The content segment to process. The segment type determines which processing method is called.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.ProcessTextSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.FormattedTextSegment,System.Boolean)">
+            <summary>
+            Processes a formatted text segment, applying all text formatting properties including font,
+            color, decorations, and baseline alignment before inserting the text into the document.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for text insertion.</param>
+            <param name="segment">The formatted text segment containing text content and formatting properties.</param>
+            <param name="addLineBreak">If true, inserts text as a line (with line break); if false, inserts as a run (inline).</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.ProcessParagraphBreakSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment)">
+            <summary>
+            Processes a paragraph break segment, applying paragraph formatting properties such as spacing,
+            indentation, alignment, and background color before inserting a paragraph break.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for paragraph insertion.</param>
+            <param name="segment">The paragraph break segment containing paragraph formatting properties.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.ProcessSectionBreakSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.SectionBreakSegment)">
+            <summary>
+            Processes a section break segment, configuring new section properties including page size
+            and rotation before inserting a section break that starts a new section in the document.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for section break insertion.</param>
+            <param name="segment">The section break segment containing page size and rotation settings.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.ProcessImageSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment)">
+            <summary>
+            Processes an image segment by loading the image file and inserting it into the document
+            with the specified dimensions and aspect ratio settings.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for image insertion.</param>
+            <param name="segment">The image segment containing file path and sizing information.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.ProcessTableSegment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment)">
+            <summary>
+            Processes a table segment by creating a formatted table with the specified data, headers,
+            borders, and styling options, then inserting it into the document.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to use for table insertion.</param>
+            <param name="segment">The table segment containing table data, headers, and formatting options.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.SetFontProperties(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Sets font properties for the document editor, selecting appropriate font from the FontsRepository
+            based on family name and style requirements. Falls back to Helvetica if font selection fails.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to configure.</param>
+            <param name="fontFamily">Font family name. Supported: "Arial", "Helvetica", "Times", "Times New Roman", "Courier", "Courier New".</param>
+            <param name="bold">Whether text should be bold (uses bold font variant).</param>
+            <param name="italic">Whether text should be italic (uses italic/oblique font variant).</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.SetTextColors(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String,System.String)">
+            <summary>
+            Sets text foreground and highlight background colors for the document editor.
+            Text color defaults to black if not provided or invalid.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to configure.</param>
+            <param name="textColor">Text foreground color in hex format (e.g., "#FF0000"). If null/empty/invalid, defaults to black.</param>
+            <param name="highlightColor">Text highlight background color in hex format (e.g., "#FFFF00"). If null/empty/invalid, no highlight is applied.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.SetTextDecorations(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String,System.String)">
+            <summary>
+            Sets text decoration patterns (underline and strikethrough) for the document editor.
+            Both decorations default to "None" if not specified or unrecognized.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to configure.</param>
+            <param name="underline">Underline style. Supported values: "Single", "None". Case-insensitive.</param>
+            <param name="strikethrough">Strikethrough style. Supported values: "Single", "None". Case-insensitive.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.SetBaselineAlignment(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String)">
+            <summary>
+            Sets baseline alignment for the document editor to control vertical text positioning
+            relative to the baseline (normal, subscript, or superscript).
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to configure.</param>
+            <param name="baselineAlignment">Baseline alignment setting. Supported values: "Baseline", "Subscript", "Superscript". Case-insensitive. Defaults to "Baseline".</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.ParseColor(System.String)">
+            <summary>
+            Parses a color string in hex format into a Telerik RgbColor object for use in PDF documents.
+            Uses System.Drawing.ColorTranslator for robust color parsing.
+            </summary>
+            <param name="color">Color string in hex format (e.g., "#FF0000", "#ffffff").</param>
+            <returns>RgbColor object if parsing succeeds, null if color is null/empty.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.CalculateImageSize(Telerik.Windows.Documents.Fixed.Model.Resources.ImageSource,System.Nullable{System.Double},System.Nullable{System.Double},System.Boolean)">
+            <summary>
+            Calculates the final size for an image based on the provided width, height, and aspect ratio settings.
+            When maintaining aspect ratio, chooses the scaling constraint that results in the smaller scaling factor
+            to ensure the image fits within both specified dimensions.
+            </summary>
+            <param name="imageSource">The image source containing original dimensions.</param>
+            <param name="width">Desired width in points. If null, original width is used unless height is specified with aspect ratio maintenance.</param>
+            <param name="height">Desired height in points. If null, original height is used unless width is specified with aspect ratio maintenance.</param>
+            <param name="maintainAspectRatio">If true, preserves original aspect ratio by scaling proportionally. If false, uses exact specified dimensions.</param>
+            <returns>A Size object representing the calculated final dimensions for the image.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.LoadAndInsertImageIntoEditor(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String,System.Nullable{System.Double},System.Nullable{System.Double},System.Boolean)">
+            <summary>
+            Loads an image from the specified file path and inserts it inline into the PDF document at the current position.
+            Calculates final dimensions based on size constraints and aspect ratio settings before insertion.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to insert the image into.</param>
+            <param name="imagePath">The absolute or relative path to the image file.</param>
+            <param name="width">Optional width constraint in points. If null, uses original width or calculated width based on height and aspect ratio.</param>
+            <param name="height">Optional height constraint in points. If null, uses original height or calculated height based on width and aspect ratio.</param>
+            <param name="maintainAspectRatio">If true, maintains original aspect ratio when scaling. If false, uses exact specified dimensions.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfUtilities.CreateAndInsertTable(Telerik.Windows.Documents.Fixed.Model.Editing.RadFixedDocumentEditor,System.String[][],System.String[],System.Boolean,System.String,System.String,System.Double,System.Double)">
+            <summary>
+            Creates and inserts a formatted table into the PDF document using the RadFixedDocumentEditor.
+            Implements proper table creation patterns based on official Telerik SDK guidelines,
+            including optional headers, borders, and comprehensive styling options.
+            </summary>
+            <param name="editor">The RadFixedDocumentEditor to insert the table into.</param>
+            <param name="rows">Array of table data rows, where each row is an array of cell values.</param>
+            <param name="headers">Optional array of header cell values. If provided, creates a styled header row. Can be null to skip headers.</param>
+            <param name="showBorders">If true, applies black borders to the table and all cells with small padding. If false, creates a borderless table.</param>
+            <param name="headerBackgroundColor">Background color for header cells in hex format (e.g., "#F0F0F0"). Only applied if headers are provided. Can be null or empty.</param>
+            <param name="headerTextColor">Text color for header cells in hex format (e.g., "#000000"). Only applied if headers are provided. Can be null or empty.</param>
+            <param name="headerFontSize">Font size in points for header text.</param>
+            <param name="fontSize">Font size in points for regular table cell text.</param>
+            <example>
+            <code>
+            var tableData = new string[][] { 
+                new[] { "Product", "Price", "Stock" },
+                new[] { "Widget A", "$10.99", "25" },
+                new[] { "Widget B", "$15.99", "10" }
+            };
+            var headers = new[] { "Item", "Cost", "Available" };
+            CreateAndInsertTable(editor, tableData, headers, true, "#E0E0E0", "#000000", 12, 10);
+            </code>
+            </example>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator">
+            <summary>
+            Provides validation utilities for PDF-related operations.
+            Ensures PDF file descriptors and properties meet application requirements.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateContentSegment(Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ContentSegment,System.Int32,System.String)">
+            <summary>
+            Validates content segment based on its type and properties.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateFormattedTextParameters(System.String,System.Double,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Validates formatted text parameters including content, font, colors, and styling options.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateFontSize(System.Double)">
+            <summary>
+            Validates font size is within acceptable bounds.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateFontFamily(System.String)">
+            <summary>
+            Validates font family is supported.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateColor(System.String,System.String)">
+            <summary>
+            Validates color format (hex format required).
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateUnderlinePattern(System.String)">
+            <summary>
+            Validates underline pattern is supported.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateStrikethroughPattern(System.String)">
+            <summary>
+            Validates strikethrough pattern is supported.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateBaselineAlignment(System.String)">
+            <summary>
+            Validates baseline alignment is supported.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateParagraphBreakSegment(Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ParagraphBreakSegment)">
+            <summary>
+            Validates paragraph break segment properties.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateSectionBreakSegment(Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.SectionBreakSegment)">
+            <summary>
+            Validates section break segment properties.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateImageSegment(Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.ImageSegment,System.String)">
+            <summary>
+            Validates image segment properties.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateTableSegment(Telerik.Documents.AI.Tools.Fixed.Core.Models.ContentSegments.TableSegment)">
+            <summary>
+            Validates table segment properties.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateImagePath(System.String,System.String)">
+            <summary>
+            Validates that an image path is within the configured image directory and exists.
+            Requires explicit permission via IMAGE_DIR environment variable for security.
+            </summary>
+            <param name="imagePath">The image file path to validate</param>
+            <param name="imageDirectory">The configured image directory (required for security)</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateImageParameters(System.String,System.Nullable{System.Double},System.Nullable{System.Double},System.String)">
+            <summary>
+            Validates image parameters by reusing the comprehensive ImageSegment validation.
+            This reduces code duplication between InsertImage and ValidateImageSegment methods.
+            </summary>
+            <param name="imagePath">The image file path to validate</param>
+            <param name="width">Optional width constraint</param>
+            <param name="height">Optional height constraint</param>
+            <param name="imageDirectory">The configured image directory for security validation</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.PdfValidator.ValidateTableData(System.String[][],System.String[],System.String,System.String,System.Double,System.Double)">
+            <summary>
+            Validates table data including rows, headers, and formatting parameters.
+            </summary>
+            <param name="rows">Array of table rows</param>
+            <param name="headers">Optional header row</param>
+            <param name="headerBackgroundColor">Header background color</param>
+            <param name="headerTextColor">Header text color</param>
+            <param name="headerFontSize">Font size for header text</param>
+            <param name="fontSize">Font size for table text</param>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Fixed.Core.ServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for registering Fixed document agent tools and related services with an <see
+            cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Fixed.Core.ServiceCollectionExtensions.AddFixedAgentTools(Microsoft.Extensions.DependencyInjection.IServiceCollection,Telerik.Documents.AI.Tools.Core.DocumentProcessingOptions)">
+            <summary>
+            Adds Fixed document agent tools to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="options">Configuration options for document processing.</param>
+        </member>
+    </members>
+</doc>

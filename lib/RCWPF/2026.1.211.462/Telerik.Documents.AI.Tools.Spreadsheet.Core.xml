@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Documents.AI.Tools.Spreadsheet.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository">
+            <summary>
+            Repository for multi-document orchestration scenarios.
+            Manages multiple workbooks in memory with support for creation and import.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.#ctor(System.Nullable{System.TimeSpan})">
+            <summary>
+            Initializes a new instance with no documents.
+            </summary>
+            <param name="importTimeout">Timeout for import operations, or null to allow unlimited time. For security against DDoS attacks, explicitly choose a value or null.</param>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.DocumentType">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.DefaultFormat">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.DefaultNewDocumentBaseName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.CreateDocument(System.String,System.String[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.Export(System.String,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.IO.Stream)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.Import(System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.ExportToPdf(System.String,System.IO.Stream)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Spreadsheet.Core.InMemoryWorkbookRepository.MergeAndExport(System.String[],System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Spreadsheet.Core.IWorkbookRepository">
+            <summary>
+            Provides a unified interface for managing spreadsheet workbooks.
+            Extends IDocumentProvider with spreadsheet-specific creation capabilities.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Spreadsheet.Core.ServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for registering Spreadsheet agent tools and related services with an <see
+            cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Spreadsheet.Core.ServiceCollectionExtensions.AddSpreadsheetAgentTools(Microsoft.Extensions.DependencyInjection.IServiceCollection,Telerik.Documents.AI.Tools.Core.DocumentProcessingOptions)">
+            <summary>
+            Adds Spreadsheet agent tools to the service collection.
+            </summary>
+            <param name="services">The service collection.</param>
+            <param name="options">Configuration options for document processing.</param>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Spreadsheet.Core.SpreadProcessingFormulaTools">
+            <summary>
+            Formula and calculation tools for spreadsheets.
+            These tools allow formula evaluation and discovery without modifying the document.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Spreadsheet.Core.SpreadProcessingReadTools">
+            <summary>
+            Read-only spreadsheet tools for querying and analyzing workbook data without modification.
+            These tools are safe for analysis-only scenarios.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Spreadsheet.Core.SpreadProcessingWorksheetTools">
+            <summary>
+            Worksheet management tools for creating, deleting, and organizing worksheets in a workbook.
+            These tools modify the workbook structure but not cell content.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Spreadsheet.Core.SpreadProcessingWriteTools">
+            <summary>
+            Document editing tools for writing data, applying styles, and formatting spreadsheets.
+            These tools modify cell content and formatting in the workbook.
+            </summary>
+        </member>
+    </members>
+</doc>

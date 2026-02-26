@@ -1,0 +1,528 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Documents.AI.Tools.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Documents.AI.Tools.Core.AgentToolBase">
+            <summary>
+            Provides a base class for defining agent tools that can be automatically discovered and exposed as AITool
+            instances.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.AgentToolBase.#ctor">
+            <summary>
+            Initializes a new instance of the AgentToolBase class.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.AgentToolBase.GetTools">
+            <summary>
+            Gets all tools as AITool instances, automatically discovering wrapper methods.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.CallToolResult">
+            <summary>
+            Legacy tool result structure.
+            For new code, use strongly-typed results from Messages.Tools namespace.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.CallToolResult.IsError">
+            <summary>
+            Gets or sets a value indicating whether the tool execution encountered an error.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.CallToolResult.Message">
+            <summary>
+            Gets or sets the result message.
+            Can contain plain text, JSON, SVG, or other content.
+            For new code, use StructuredResult instead.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.DocumentFormat">
+            <summary>
+            Defines the supported document formats for import/export operations.
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.XLSX">
+            <summary>
+            Excel Open XML Spreadsheet format (.xlsx).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.CSV">
+            <summary>
+            Comma-Separated Values format (.csv).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.XLS">
+            <summary>
+            Excel 97-2003 format (.xls).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.XLSM">
+            <summary>
+            Excel macro-enabled workbook file format (.xlsm).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.DOCX">
+            <summary>
+            Word Open XML Document format (.docx).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.DOC">
+            <summary>
+            Word 97-2003 format (.doc).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.RTF">
+            <summary>
+            Rich Text Format (.rtf).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.HTML">
+            <summary>
+            HyperText Markup Language (.html).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.TXT">
+            <summary>
+            Plain text format (.txt).
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentFormat.PDF">
+            <summary>
+            Portable Document Format (.pdf).
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.DocumentInfo">
+            <summary>
+            Contains metadata about a document managed by a document provider.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.DocumentInfo.Id">
+            <summary>
+            Gets or sets the unique identifier for the document.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.DocumentInfo.Name">
+            <summary>
+            Gets or sets the display name of the document.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.DocumentInfo.Format">
+            <summary>
+            Gets or sets the format of the document.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.DocumentProcessingOptions">
+            <summary>
+            Configuration options for document processing repositories.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.DocumentProcessingOptions.ImportTimeout">
+            <summary>
+            Gets or sets the timeout for document import operations.
+            Set to null to allow unlimited time (not recommended for production).
+            For security against DDoS attacks, explicitly choose a reasonable timeout value.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.DocumentRepositoryRegistry">
+            <summary>
+            Provides a registry for associating document types with their corresponding document repositories.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.DocumentRepositoryRegistry.RegisterRepository(Telerik.Documents.AI.Tools.Core.DocumentType,Telerik.Documents.AI.Tools.Core.IDocumentRepository)">
+            <summary>
+            Registers the specified document repository for the given document type.
+            </summary>
+            <param name="documentType">The type of document for which the repository is being registered.</param>
+            <param name="repository">The repository instance to associate with the specified document type. Cannot be null.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="repository"/> is null.</exception>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.DocumentRepositoryRegistry.TryGetRepository(Telerik.Documents.AI.Tools.Core.DocumentType,Telerik.Documents.AI.Tools.Core.IDocumentRepository@)">
+            <summary>
+            Attempts to retrieve the repository associated with the specified document type.
+            </summary>
+            <remarks>This method does not throw an exception if the repository is not found. Use the
+            returned Boolean value to determine whether the repository was successfully retrieved.</remarks>
+            <param name="documentType">The type of document for which to retrieve the repository.</param>
+            <param name="repository">When this method returns, contains the repository associated with the specified document type, if found;
+            otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+            <returns><see langword="true"/> if a repository for the specified document type was found; otherwise, <see
+            langword="false"/>.</returns>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.DocumentType">
+            <summary>
+            Specifies the type of Document Processing document.
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentType.Workbook">
+            <summary>
+            Represents a collection of worksheets and related data within a spreadsheet file. The main document class of the Telerik SpreadProcessing library.
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentType.FlowDocument">
+            <summary>
+            Represents a flow content document that supports rich formatting, layout, and editing features. The main document class of the Telerik WordsProcessing library.
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.DocumentType.FixedDocument">
+            <summary>
+            Represents a fixed-layout document that can be paginated and viewed, typically used for print-ready content
+            or precise document rendering. The main document class of the Telerik PdfProcessing library.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.FileDescriptor">
+            <summary>
+            Describes a document file with its path and format for processing operations
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.FileDescriptor.FilePath">
+            <summary>
+            Gets or sets the path to the document file to be processed.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.FileDescriptor.Format">
+            <summary>
+            Gets or sets the format of the document file.
+            </summary>
+            <remarks>Supported formats include Word (DOC, DOCX, RTF, HTML, TXT), Spreadsheet (XLS, XLSX,
+            CSV, TXT), and PDF. The selected format determines how the document is processed and saved.</remarks>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.FileManagementTools">
+            <summary>
+            Provides document lifecycle management tools for creating, listing, and exporting documents.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.IDocumentRepository">
+            <summary>
+            Defines a contract for managing, importing, exporting, and retrieving documents of a specific type within a
+            repository.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.IDocumentRepository.DocumentType">
+            <summary>
+            Gets the type of the document represented by this instance.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.IDocumentRepository.SupportsCreation">
+            <summary>
+            Gets a value indicating whether this provider supports creating new documents.
+            Single-document providers typically return false.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.IDocumentRepository.SupportsMultipleDocuments">
+            <summary>
+            Gets a value indicating whether this provider supports managing multiple documents.
+            Single-document providers return false.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.IDocumentRepository.ListDocuments">
+            <summary>
+            Lists all documents currently managed by this provider.
+            </summary>
+            <returns>Collection of document metadata.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.IDocumentRepository.Export(System.String,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.IO.Stream)">
+            <summary>
+            Exports a document to a byte array in the specified format.
+            </summary>
+            <param name="documentId">
+            The document identifier to export. If null, exports the default/current document.
+            </param>
+            <param name="format">The target format for export.</param>
+            <param name="destinationStream">The stream to which the document will be exported.</param>
+            <returns>The document content as a byte array.</returns>
+            <exception cref="T:System.NotSupportedException">
+            Thrown when the specified format is not supported.
+            </exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">
+            Thrown when the specified document ID does not exist.
+            </exception>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.IDocumentRepository.Import(System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat,System.String)">
+            <summary>
+            Imports a document from a byte array and adds it to the provider.
+            </summary>
+            <param name="data">The document content as a byte array.</param>
+            <param name="format">The format of the document being imported.</param>
+            <param name="documentName">Optional name for the imported document.</param>
+            <returns>The document ID assigned to the imported document.</returns>
+            <exception cref="T:System.NotSupportedException">
+            Thrown when the provider does not support creation or the format is not supported.
+            </exception>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.IDocumentRepository.GetDocumentAsObject(System.String)">
+            <summary>
+            Gets a document by its identifier.
+            </summary>
+            <param name="documentId">
+            The document identifier. If null, returns the default/current document.
+            In single-document mode, this parameter is ignored.
+            </param>
+            <returns>The requested document instance.</returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">
+            Thrown when the specified document ID does not exist.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when no documents are available and documentId is null.
+            </exception>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.IDocumentRepository.CreateDocument(System.String,System.String[])">
+            <summary>
+            Creates a document using the specified document identifier and arguments.
+            </summary>
+            <param name="documentId">The unique identifier for the document to be created. Cannot be null or empty.</param>
+            <param name="args">An array of arguments used to populate or configure the document. Cannot be null.</param>
+            <returns>A string containing the contents of the created document.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.IDocumentRepository.MergeAndExport(System.String[],System.IO.Stream,Telerik.Documents.AI.Tools.Core.DocumentFormat)">
+            <summary>
+            Merges the specified source documents and exports the combined result to the provided stream in the
+            specified format.
+            </summary>
+            <param name="sourceFileIds">An array of identifiers for the source documents to merge. The order of identifiers determines the order in
+            which documents are merged. Cannot be null or empty.</param>
+            <param name="stream">The stream to which the merged document will be written. Must be writable and remain open for the duration
+            of the operation.</param>
+            <param name="exportFormat">The format in which to export the merged document.</param>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.IDocumentRepository`1">
+            <summary>
+            Provides a unified interface for managing documents of a specific type.
+            Implementations can support single-document or multi-document scenarios.
+            </summary>
+            <typeparam name="TDocument">The type of document managed by this provider.</typeparam>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.IDocumentRepository`1.GetDocument(System.String)">
+            <summary>
+            Gets a document by its identifier.
+            </summary>
+            <param name="documentId">
+            The document identifier. If null, returns the default/current document.
+            In single-document mode, this parameter is ignored.
+            </param>
+            <returns>The requested document instance.</returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">
+            Thrown when the specified document ID does not exist.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when no documents are available and documentId is null.
+            </exception>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1">
+            <summary>
+            Base class for in-memory document repositories that manage multiple documents.
+            Provides common functionality for document storage, ID management, and metadata tracking.
+            </summary>
+            <typeparam name="TDocument">The type of document managed by this repository.</typeparam>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.documents">
+            <summary>
+            Storage for documents keyed by document ID.
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.documentInfos">
+            <summary>
+            Storage for document metadata keyed by document ID.
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.currentDocumentId">
+            <summary>
+            The ID of the currently active document.
+            </summary>
+        </member>
+        <member name="F:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.importTimeout">
+            <summary>
+            The timeout for import operations, or null for no timeout.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.#ctor(System.Nullable{System.TimeSpan})">
+            <summary>
+            Initializes a new instance with no documents.
+            </summary>
+            <param name="importTimeout">Timeout for import operations, or null to allow unlimited time.</param>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.SupportsCreation">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.SupportsMultipleDocuments">
+            <inheritdoc/>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.DocumentType">
+            <summary>
+            Gets the document type managed by this repository.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.DefaultFormat">
+            <summary>
+            Gets the default format for documents created by this repository.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.DefaultNewDocumentBaseName">
+            <summary>
+            Gets the default base name for newly created documents.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.GetDocument(System.String)">
+            <summary>
+            Gets a document by its ID, or the current document if no ID is specified.
+            </summary>
+            <param name="documentId">The document ID, or null to get the current document.</param>
+            <returns>The requested document.</returns>
+            <exception cref="T:System.InvalidOperationException">No document ID specified and no current document is set.</exception>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">The specified document ID was not found.</exception>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.GetDocumentAsObject(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.ListDocuments">
+            <inheritdoc/>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.ResolveDocumentId(System.String,System.String,System.String)">
+            <summary>
+            Resolves and validates a document ID according to Option 3 rules:
+            - If null/empty, generates a unique ID using the provided base name
+            - If provided and already exists, throws ArgumentException
+            - If provided and unique, returns it as-is
+            </summary>
+            <param name="documentId">The document ID to validate, or null/empty for auto-generation.</param>
+            <param name="defaultBaseName">The base name to use when generating a new ID.</param>
+            <param name="paramName">The parameter name for exception messages.</param>
+            <returns>The validated or generated document ID.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.StoreDocument(System.String,`0,System.String,Telerik.Documents.AI.Tools.Core.DocumentFormat)">
+            <summary>
+            Stores a document and its metadata in the repository.
+            </summary>
+            <param name="documentId">The document ID.</param>
+            <param name="document">The document to store.</param>
+            <param name="name">The display name for the document.</param>
+            <param name="format">The document format.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.GenerateUniqueId(System.String)">
+            <summary>
+            Generates a unique document ID, appending a numeric suffix if needed.
+            </summary>
+            <param name="baseName">The base name for the ID.</param>
+            <returns>A unique document ID.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.RemoveDocument(System.String)">
+            <summary>
+            Removes a document from the repository.
+            </summary>
+            <param name="documentId">The identifier of the document to remove.</param>
+            <returns>True if the document was removed; false if not found.</returns>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.InMemoryDocumentRepositoryBase`1.Clear">
+            <summary>
+            Removes all documents from the repository.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.ISupportPdfExport">
+            <summary>
+            Defines a contract for exporting documents to PDF format.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.ISupportPdfExport.ExportToPdf(System.String,System.IO.Stream)">
+            <summary>
+            Exports the specified document to PDF format and writes the result to the provided stream.
+            </summary>
+            <param name="documentId">The unique identifier of the document to export. Cannot be null or empty.</param>
+            <param name="destinationStream">The stream to which the generated PDF will be written. Must be writable and remain open for the duration of
+            the operation.</param>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.License.LicenseException">
+            <summary>
+            Represents errors that occur during license validation for Telerik Document Processing libraries.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.License.LicenseException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Documents.AI.Tools.Core.License.LicenseException"/> class with a specified error message.
+            </summary>
+            <param name="message">The message that describes the license validation error.</param>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.License.LicenseException.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Telerik.Documents.AI.Tools.Core.License.LicenseException"/> class with a specified error message.
+            </summary>
+            <param name="message">The message that describes the license validation error.</param>
+            <param name="log">The log content providing details about the license validation process.</param>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.License.LicenseException.Log">
+            <summary>
+            Gets the log content as a string, providing a record of events or messages generated by the application.
+            </summary>
+            <remarks>The log is updated in real-time and can be used for monitoring application behavior
+            or debugging purposes.</remarks>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.License.LicenseValidator.Validate">
+            <summary>
+            Validates the Telerik license.
+            </summary>
+            <exception cref="T:Telerik.Documents.AI.Tools.Core.License.LicenseException">Thrown when the license is invalid</exception>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.PathValidator">
+            <summary>
+            Provides validation utilities for output file paths.
+            Ensures compliance with file system restrictions and application-specific requirements.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.Tools.Core.PathValidator.ValidateAndResolveOutputFilePath(System.String,System.String)">
+            <summary>
+            Validates that a destination file path is within the allowed output directory and that the directory exists.
+            Returns the full file path if validation passes.
+            </summary>
+            <param name="filePath">The file path to validate</param>
+            <param name="allowedOutputDirectory">The allowed output directory that the file must be within</param>
+            <returns>The full file path if valid</returns>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.Range">
+            <summary>
+            Represents a rectangular range in a worksheet defined by starting and ending row and column indices.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.Range.FromRow">
+            <summary>
+            Gets or sets the zero-based index of the first row in the range.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.Range.FromColumn">
+            <summary>
+            Gets or sets the zero-based index of the starting column in the range.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.Range.ToRow">
+            <summary>
+            Gets or sets the zero-based index of the last row in the range, inclusive.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.Range.ToColumn">
+            <summary>
+            Gets or sets the zero-based, inclusive index of the ending column in the range.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.ToolAttribute">
+            <summary>
+            Marks a method as a tool that can be exposed to AI agents.
+            Use with [Description] attribute to provide tool documentation.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.ToolAttribute.Name">
+            <summary>
+            Optional custom name for the tool. If not specified, method name is used.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.Tools.Core.ToolAttribute.IsEnabled">
+            <summary>
+            Whether this tool is enabled. Disabled tools are not registered.
+            </summary>
+        </member>
+        <member name="T:Telerik.Documents.AI.Tools.Core.ToolResultHelpers">
+            <summary>
+            Shared helpers for building standard MCP tool results with consistent
+            success/error signaling and optional structured payloads.
+            </summary>
+        </member>
+    </members>
+</doc>

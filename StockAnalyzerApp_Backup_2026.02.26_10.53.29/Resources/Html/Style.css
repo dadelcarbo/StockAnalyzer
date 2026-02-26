@@ -1,0 +1,81 @@
+﻿a {
+    color: lightgray;
+    text-decoration: none;
+}
+
+    a:visited {
+        color: lightgray;
+    }
+
+    a:hover {
+        color: white;
+    }
+
+body {
+    background-color: #101010;
+    color: #C0C0C0;
+    font-family: Roboto
+}
+
+table.reportTable {
+    width: 800px;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+    table.reportTable tbody td {
+        font-size: 12px;
+        border: 1px solid #AAAAAA;
+    }
+
+    table.reportTable th {
+        font-size: 14px;
+        font-weight: bold;
+        background: #80504030;
+        text-align: left;
+        border: 1px solid #AAAAAA;
+    }
+
+    table.reportTable tbody tr:nth-child(even) {
+        background: #202020;
+    }
+
+    table.reportTable tbody tr:nth-child(odd) {
+        background: #101010;
+    }
+
+.tooltip {
+    text-decoration: none;
+    position: relative;
+}
+
+    .tooltip span {
+        display: none;
+        color: black;
+        background: white;
+    }
+
+        .tooltip span img {
+            float: right;
+        }
+
+    .tooltip:hover span {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        width: auto;
+        border: 1px solid gray;
+        margin-top: 12px;
+        margin-left: 80px;
+        overflow: hidden;
+    }
+
+
+/* Optional: Style the details content */
+details {
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

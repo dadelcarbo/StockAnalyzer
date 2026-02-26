@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Telerik.Documents.AI.AgentTools.Fixed</name>
+    </assembly>
+    <members>
+        <member name="T:Telerik.Documents.AI.AgentTools.Fixed.FixedDocumentAgentToolsBase">
+            <summary>
+            Base class for PDF (Fixed) document agent tools that provides document access via a repository.
+            </summary>
+        </member>
+        <member name="P:Telerik.Documents.AI.AgentTools.Fixed.FixedDocumentAgentToolsBase.Repository">
+            <summary>
+            Gets the fixed document repository.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Fixed.FixedDocumentAgentToolsBase.#ctor(Telerik.Documents.AI.Tools.Fixed.Core.IFixedDocumentRepository)">
+            <summary>
+            Initializes a new instance with the specified fixed document repository.
+            </summary>
+            <param name="repository">The fixed document repository for document access.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when repository is null.</exception>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Fixed.FixedDocumentContentAgentTools">
+            <summary>
+            Provides agent tools for creating and manipulating PDF document content.
+            These tools handle content segments including text, images, tables, and document structure.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Fixed.FixedDocumentContentAgentTools.#ctor(Telerik.Documents.AI.Tools.Fixed.Core.IFixedDocumentRepository,System.String)">
+            <summary>
+            Initializes a new instance with the specified repository.
+            </summary>
+            <param name="repository">The fixed document repository for document access.</param>
+            <param name="imageDirectory">The directory path where images are stored for image segments.</param>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Fixed.FixedDocumentFormAgentTools">
+            <summary>
+            Provides agent tools for working with PDF form fields.
+            These tools handle form field reading and filling operations.
+            </summary>
+        </member>
+        <member name="M:Telerik.Documents.AI.AgentTools.Fixed.FixedDocumentFormAgentTools.#ctor(Telerik.Documents.AI.Tools.Fixed.Core.IFixedDocumentRepository)">
+            <summary>
+            Initializes a new instance with the specified repository.
+            </summary>
+            <param name="repository">The fixed document repository for document access.</param>
+        </member>
+        <member name="T:Telerik.Documents.AI.AgentTools.Fixed.FixedFileManagementAgentTools">
+            <summary>
+            Provides document lifecycle management tools for creating, listing, and exporting fixed documents (PDFs).
+            </summary>
+        </member>
+    </members>
+</doc>
