@@ -233,6 +233,8 @@
     <Compile Include="StockAgent\Agents\TrailSTOKAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTATRAgent.cs" />
     <Compile Include="StockAgent\Agents\TrendBodyMidUpAgent.cs" />
+    <Compile Include="StockAgent\BackTests\BBStopBackTest.cs" />
+    <Compile Include="StockAgent\BackTests\IBackTest.cs" />
     <Compile Include="StockAgent\EntryStops\StockEntryStop_ATR.cs" />
     <Compile Include="StockAgent\EntryStops\StockEntryStop_Percent.cs" />
     <Compile Include="StockAgent\EntryStops\StockEntryStop_None.cs" />
@@ -262,6 +264,7 @@
     <Compile Include="StockAgent\IStockParameterized.cs" />
     <Compile Include="StockAgent\IStopStrategy.cs" />
     <Compile Include="StockAgent\PositionManagement.cs" />
+    <Compile Include="StockAgent\BackTestEngine.cs" />
     <Compile Include="StockAgent\StockEntryTargetBase.cs" />
     <Compile Include="StockAgent\StockEntryStopBase.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentBase.cs" />

@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
+using StockAnalyzer.StockAgent.BackTests;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockHelpers;
@@ -16,9 +17,9 @@ using System.Threading;
 
 namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 {
-    public class AgentSimulationViewModel : NotifyPropertyChangedBase
+    public class BackTestViewModel : NotifyPropertyChangedBase
     {
-        public AgentSimulationViewModel()
+        public BackTestViewModel()
         {
             this.performText = "Perform";
             this.Selector = "ExpectedGainPerBar";
@@ -27,8 +28,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 return;
 
             Agent = Agents.FirstOrDefault();
-            EntryStop = EntryStops.FirstOrDefault();
-            EntryTarget = EntryTargets.FirstOrDefault();
 
             this.BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
@@ -52,7 +51,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
 
         #region Agent
-        public List<string> Agents => StockAgentBase.GetAgentNames(typeof(IStockAgent));
+        public List<string> Agents => BackTestBase.GetAgentNames(typeof(IBackTest));
 
         private string agent;
         public string Agent
@@ -69,56 +68,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
-        public string AgentDescription => StockAgentBase.CreateInstance(this.agent).Description;
+        public string AgentDescription => BackTestBase.CreateInstance(this.agent).Description;
 
-        private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents." + agent + "Agent");
+        private Type agentType => typeof(IBackTest).Assembly.GetType("StockAnalyzer.StockAgent.BackTests." + agent + "BackTest");
         public IEnumerable<ParameterRangeViewModel> AgentParameters => ParameterRangeViewModel.GetParameters(this.agentType);
-        #endregion
-
-        #region EntryStop
-        public List<string> EntryStops => StockEntryStopBase.GetEntryStopNames();
-
-        private string entryStop;
-        public string EntryStop
-        {
-            get => entryStop;
-            set
-            {
-                if (entryStop != value)
-                {
-                    entryStop = value;
-                    OnPropertyChanged("EntryStopParameters");
-                    OnPropertyChanged("EntryStopDescription");
-                }
-            }
-        }
-
-        private Type entryStopType => StockEntryStopBase.GetType(entryStop);
-        public string EntryStopDescription => StockEntryStopBase.CreateInstance(entryStop)?.Description;
-        public IEnumerable<ParameterRangeViewModel> EntryStopParameters => ParameterRangeViewModel.GetParameters(entryStopType);
-        #endregion
-
-        #region EntryTarget
-        public List<string> EntryTargets => StockEntryTargetBase.GetEntryTargetNames();
-
-        private string entryTarget;
-        public string EntryTarget
-        {
-            get => entryTarget;
-            set
-            {
-                if (entryTarget != value)
-                {
-                    entryTarget = value;
-                    OnPropertyChanged("EntryTargetParameters");
-                    OnPropertyChanged("EntryTargetDescription");
-                }
-            }
-        }
-
-        private Type entryTargetType => StockEntryTargetBase.GetType(entryTarget);
-        public string EntryTargetDescription => StockEntryTargetBase.CreateInstance(entryTarget)?.Description;
-        public IEnumerable<ParameterRangeViewModel> EntryTargetParameters => ParameterRangeViewModel.GetParameters(entryTargetType);
         #endregion
 
         string report;
@@ -194,10 +147,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         BackgroundWorker worker = null;
 
-        StockAgentEngine engine;
 
-        private IStockAgent bestAgent;
-        public IStockAgent BestAgent
+        private IBackTest bestAgent;
+        public IBackTest BestAgent
         {
             get => bestAgent;
             set
@@ -209,33 +161,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 }
             }
         }
-        private IStockEntryStop bestEntryStop;
-        public IStockEntryStop BestEntryStop
-        {
-            get => bestEntryStop;
-            set
-            {
-                if (bestEntryStop != value)
-                {
-                    bestEntryStop = value;
-                    OnPropertyChanged("BestEntryStop");
-                }
-            }
-        }
-        private IStockEntryTarget bestEntryTarget;
-        public IStockEntryTarget BestEntryTarget
-        {
-            get => bestEntryTarget;
-            set
-            {
-                if (bestEntryTarget != value)
-                {
-                    bestEntryTarget = value;
-                    OnPropertyChanged("BestEntryTarget");
-                }
-            }
-        }
 
+        BackTestEngine engine;
         public void Perform()
         {
             if (worker == null)
@@ -251,19 +178,15 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 {
                     this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerBar\t" + this.AgentParameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
                 }
-                engine = new StockAgentEngine(agentType, entryStopType, entryTargetType);
-                engine.BestAgentDetected += (bestAgent, bestEntryStop, bestEntryTarget) =>
+                engine = new BackTestEngine(agentType);
+                engine.BestAgentDetected += (bestAgent) =>
                 {
                     this.BestAgent = bestAgent;
-                    this.BestEntryStop = bestEntryStop;
-                    this.BestEntryTarget = bestEntryTarget;
                     string msg = bestAgent.TradeSummary.ToLog(this.BarDuration) + Environment.NewLine;
                     msg += bestAgent.ToLog() + Environment.NewLine;
-                    msg += bestEntryStop.ToLog() + Environment.NewLine;
-                    msg += bestEntryTarget.ToLog() + Environment.NewLine;
                     this.Report = msg;
                 };
-                engine.AgentPerformed += (agent, entryStop, entryTarget) =>
+                engine.AgentPerformed += (agent) =>
                 {
                     this.Stats += (agent.TradeSummary.WinTradeRatio.ToString("P2") + "\t" + agent.TradeSummary.RiskRewardRatio.ToString("#.##") + "\t" + agent.TradeSummary.ExpectedGainPerBar.ToString("P3") + "\t" + agent.ToParamValueString() + Environment.NewLine)
                     .Replace(".", ",");
@@ -291,8 +214,6 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                             this.TradeSummary = engine.BestTradeSummary;
                             string rpt = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + "\t" + this.Selector + "\t" + this.Group + "\t" + this.BarDuration + "\t" + this.Agent + "\t";
                             rpt += engine.BestTradeSummary.ToStats();
-                            rpt += EntryStop + "\t";
-                            rpt += EntryTarget + "\t";
                             rpt += engine.BestAgent.GetParameterValues();
 
                             // Update Simu Portfolio

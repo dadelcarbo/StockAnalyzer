@@ -2857,6 +2857,26 @@ namespace StockAnalyzerApp
             }
         }
 
+
+        BackTestDlg backTestDialog = null;
+        private void backTestMenuItem_Click(object sender, EventArgs e)
+        {
+            if (backTestDialog == null)
+            {
+                backTestDialog = new BackTestDlg() { StartPosition = FormStartPosition.CenterScreen };
+                backTestDialog.backTestControl.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+                backTestDialog.FormClosed += (a, b) =>
+                {
+                    backTestDialog = null;
+                };
+                backTestDialog.Show();
+            }
+            else
+            {
+                backTestDialog.Activate();
+            }
+        }
+
         PortfolioSimulationDlg portfolioSimulationDialog = null;
         private void portfolioSimulationMenuItem_Click(object sender, EventArgs e)
         {

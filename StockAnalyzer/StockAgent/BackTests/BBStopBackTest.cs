@@ -3,11 +3,11 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockMath;
 using System;
 
-namespace StockAnalyzer.StockAgent.Agents
+namespace StockAnalyzer.StockAgent.BackTests
 {
-    public class BBStopAgent : StockAgentBase
+    public class BBStopBackTest : BackTestBase
     {
-        public BBStopAgent()
+        public BBStopBackTest()
         {
             Period = 13;
             BBWidth = 2.0f;
@@ -29,10 +29,15 @@ namespace StockAnalyzer.StockAgent.Agents
         {
             if (stockSerie.Count < Period)
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILBB({Period},{BBWidth},{-BBWidth},EMA)");
+            trailStop = stockSerie.GetTrailStop($"TRAILBB({Period},{BBWidth},{-BBWidth})");
             bullEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;
+        }
+
+        public override float GetStop(int index)
+        {
+            return trailStop.Series[0][index];
         }
 
         protected override TradeAction TryToOpenPosition(int index)

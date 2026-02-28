@@ -496,6 +496,16 @@
     <Compile Include="CustomControl\PalmaresDlg\PalmaresViewModel.cs" />
     <Compile Include="CustomControl\PropertyAttribute.cs" />
     <Compile Include="CustomControl\ReportDlg\Report.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\BackTestViewModel.cs" />
+    <Compile Include="CustomControl\SimulationDlgs\BackTestDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\BackTestDlg.Designer.cs">
+      <DependentUpon>BackTestDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SimulationDlgs\BackTestUserControl.xaml.cs">
+      <DependentUpon>BackTestUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\PortfolioSimulationControl.xaml.cs">
       <DependentUpon>PortfolioSimulationControl.xaml</DependentUpon>
@@ -811,6 +821,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerDlg.resx">
       <DependentUpon>TradeManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\BackTestDlg.resx">
+      <DependentUpon>BackTestDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
       <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
@@ -1214,6 +1227,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\SimulationDlgs\BackTestUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

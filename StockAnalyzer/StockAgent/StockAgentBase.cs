@@ -26,26 +26,30 @@ namespace StockAnalyzer.StockAgent
         protected FloatSerie volumeEuroSerie;  // Exchanged volume in M€
 
         public StockTrade Trade { get; set; }
-        public StockSerie StockSerie { get; private set; }
-        static List<string> agentNames = null;
-        public static List<string> GetAgentNames()
-        {
-            if (agentNames != null)
-                return agentNames;
+        public StockSerie StockSerie { get; protected set; }
 
-            agentNames = new List<string>();
-            foreach (Type t in typeof(IStockAgent).Assembly.GetTypes())
+        static SortedDictionary<Type, List<string>> agentNameDicos = new SortedDictionary<Type, List<string>>();
+        public static List<string> GetAgentNames(Type type)
+        {
+            if (!agentNameDicos.TryGetValue(type, out var agentNames))
             {
-                Type st = t.GetInterface("IStockAgent");
-                if (st != null)
+                agentNames = new List<string>();
+                agentNameDicos.Add(type, agentNames);
+
+                var suffix = type.Name.Substring(1);
+                foreach (Type t in type.Assembly.GetTypes())
                 {
-                    if (!t.Name.EndsWith("Base"))
+                    Type st = t.GetInterface(type.Name);
+                    if (st != null)
                     {
-                        agentNames.Add(t.Name.Replace("Agent", ""));
+                        if (!t.Name.EndsWith("Base"))
+                        {
+                            agentNames.Add(t.Name.Replace(suffix, ""));
+                        }
                     }
                 }
+                agentNames.Sort();
             }
-            agentNames.Sort();
             return agentNames;
         }
         static public IStockAgent CreateInstance(string shortName)
@@ -55,7 +59,7 @@ namespace StockAnalyzer.StockAgent
         }
 
 
-        protected float EntryStopValue { get; private set; }
+        protected float EntryStopValue { get; set; }
         protected IStockEntryStop EntryStopAgent { get; private set; }
 
         protected float EntryTargetValue { get; private set; }

@@ -87,6 +87,7 @@ namespace StockAnalyzerApp
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
             this.agentTunningMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.backTestMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioSimulationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
@@ -592,6 +593,7 @@ namespace StockAnalyzerApp
                 this.instrumentsMenuItem,
                 this.toolStripSeparator10,
                 this.agentTunningMenuItem,
+                this.backTestMenuItem,
                 this.portfolioSimulationMenuItem,
                 this.toolStripSeparator8,
                 this.showAlertDefDialogMenuItem,
@@ -651,6 +653,14 @@ namespace StockAnalyzerApp
             this.agentTunningMenuItem.Text = "Agent Greedy Tunning";
             this.agentTunningMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
             this.agentTunningMenuItem.Click += new System.EventHandler(this.agentTunningMenuItem_Click);
+            // 
+            // backTestMenuItem
+            // 
+            this.backTestMenuItem.Name = "backTestMenuItem";
+            this.backTestMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.backTestMenuItem.Text = "Back Test";
+            this.backTestMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F10;
+            this.backTestMenuItem.Click += new System.EventHandler(this.backTestMenuItem_Click);
             // 
             // portfolioSimulationMenuItem
             // 
@@ -1592,6 +1602,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showIndicatorTextMenuItem;
         private ToolStripMenuItem analysisMenuItem;
         private ToolStripMenuItem agentTunningMenuItem;
+        private ToolStripMenuItem backTestMenuItem;
         private ToolStripSeparator toolStripSeparator5;
         private ToolStripMenuItem portfolioSimulationMenuItem;
         private ToolStripSeparator toolStripSeparator6;

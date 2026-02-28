@@ -164,7 +164,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 worker = null;
             }
         }
-        public List<string> Agents => StockAgentBase.GetAgentNames();
+        public List<string> Agents => StockAgentBase.GetAgentNames(typeof(IStockAgent));
 
         private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents.PortfolioAgent");
         public IEnumerable<ParameterViewModel> Parameters { get; private set; }
@@ -357,7 +357,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         ExitEvent = this.ExitEvent,
                         PositionManagement = this.PositionManagement,
                     };
-                    if (agent.Initialize(serie, this.Duration, null,null /*this.PositionManagement.StopATR*/)) // Need to implement entry stop management.
+                    if (agent.Initialize(serie, this.Duration, null, null /*this.PositionManagement.StopATR*/)) // Need to implement entry stop management.
                     {
                         agents.Add(agent);
                     }
