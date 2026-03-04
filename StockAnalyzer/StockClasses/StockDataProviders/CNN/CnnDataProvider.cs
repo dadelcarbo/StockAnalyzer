@@ -88,7 +88,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
                     string fileName = stockSerie.Symbol + "_" + stockSerie.StockName + "_" + stockSerie.StockGroup.ToString() + ".csv";
                     string archiveFileName = DataFolder + ARCHIVE_FOLDER + "\\" + fileName;
-                    var lastDate = stockSerie.Keys.Last().Date == DateTime.Today ? stockSerie.Keys.Last().AddDays(-1): stockSerie.Keys.Last();
+                    var lastDate = stockSerie.Keys.Last().Date == DateTime.Today ? stockSerie.Keys.Last().AddDays(-1) : stockSerie.Keys.Last();
                     stockSerie.SaveToCSVFromDateToDate(archiveFileName, stockSerie.Keys.First(), lastDate);
 
                     return true;
@@ -117,11 +117,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
                     var handler = new HttpClientHandler();
                     handler.AutomaticDecompression = ~DecompressionMethods.None;
                     httpClient = new HttpClient(handler);
+
+                    httpClient.DefaultRequestHeaders.Add("Cache-Control", "no-cache, no-store, must-revalidate");
+                    httpClient.DefaultRequestHeaders.Add("Pragma", "no-cache");
+
                     using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://production.dataviz.cnn.io/index/fearandgreed/graphdata"))
                     {
                         request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
                         request.Headers.TryAddWithoutValidation("accept-language", "fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-                        request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
                         request.Headers.TryAddWithoutValidation("if-none-match", "W/9218406070119492977");
                         request.Headers.TryAddWithoutValidation("priority", "u=0, i");
                         request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Microsoft Edge\";v=\"125\", \"Chromium\";v=\"125\", \"Not.A/Brand\";v=\"24\"");
