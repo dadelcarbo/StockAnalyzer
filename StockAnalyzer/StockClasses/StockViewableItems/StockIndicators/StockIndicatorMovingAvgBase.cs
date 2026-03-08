@@ -44,8 +44,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Areas[1].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
             for (int i = 2; i < maSerie.Count; i++)
             {
-                this.eventSeries[0][i] = (maSerie[i - 2] > maSerie[i - 1] && maSerie[i - 1] < maSerie[i]);  // Bottom
-                this.eventSeries[1][i] = (maSerie[i - 2] < maSerie[i - 1] && maSerie[i - 1] > maSerie[i]);  // Top
+                this.eventSeries[0][i] = (maSerie[i - 2] >= maSerie[i - 1] && maSerie[i - 1] < maSerie[i]); // Bottom
+                this.eventSeries[1][i] = (maSerie[i - 2] <= maSerie[i - 1] && maSerie[i - 1] > maSerie[i]); // Top
                 this.eventSeries[2][i] = closeSerie[i - 1] < maSerie[i - 1] && closeSerie[i] > maSerie[i];  // CrossAbove
                 this.eventSeries[3][i] = closeSerie[i - 1] > maSerie[i - 1] && closeSerie[i] < maSerie[i];  // CrossBelow
                 this.eventSeries[4][i] = lowSerie[i] > maSerie[i] && lowSerie[i - 1] < maSerie[i - 1];      // FirstBarAbove
@@ -54,10 +54,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 this.eventSeries[7][i] = closeSerie[i] < maSerie[i];                                        // PriceBelow
                 this.eventSeries[8][i] = lowSerie[i] > maSerie[i];                                          // BarAbove
                 this.eventSeries[9][i] = highSerie[i] < maSerie[i];                                         // BarBelow
-                this.eventSeries[10][i] = maSerie[i - 1] < maSerie[i];                                      // Rising
-                this.eventSeries[11][i] = maSerie[i - 1] > maSerie[i];                                      // Falling
-                this.eventSeries[10][i] = maSerie[i - 1] < maSerie[i];                                      // Rising
-                this.eventSeries[11][i] = maSerie[i - 1] > maSerie[i];                                      // Falling
+                this.eventSeries[10][i] = maSerie[i - 1] < maSerie[i] || maSerie[i - 1] == maSerie[i] && this.eventSeries[10][i - 1]; // Rising
+                this.eventSeries[11][i] = maSerie[i - 1] > maSerie[i] || maSerie[i - 1] == maSerie[i] && this.eventSeries[11][i - 1]; // Falling
                 this.eventSeries[12][i] = closeSerie[i] > openSerie[i] && bodyLowSerie[i] > maSerie[i] && bodyLowSerie[i - 1] < maSerie[i - 1];      // FirstBarAbove
                 this.eventSeries[13][i] = closeSerie[i] < openSerie[i] && bodyHighSerie[i] < maSerie[i] && bodyHighSerie[i - 1] > maSerie[i - 1];    // FirstBarBelow
 

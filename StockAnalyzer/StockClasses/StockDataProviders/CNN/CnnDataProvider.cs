@@ -120,7 +120,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
                     httpClient.DefaultRequestHeaders.Add("Cache-Control", "no-cache, no-store, must-revalidate");
                     httpClient.DefaultRequestHeaders.Add("Pragma", "no-cache");
-
                     using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://production.dataviz.cnn.io/index/fearandgreed/graphdata"))
                     {
                         request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");

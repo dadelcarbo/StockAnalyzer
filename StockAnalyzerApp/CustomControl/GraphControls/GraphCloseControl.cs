@@ -782,8 +782,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     if (eventFound)
                     {
-                        PointF[] marqueePoints = GetEventMarqueePointsAtIndex(i);
-                        aGraphic.FillPolygon(Brushes.DarkBlue, marqueePoints);
+                        PointF[] markerPoints = GetEventMarqueePointsAtIndex(i);
+                        aGraphic.FillPolygon(ColorManager.GetBrush("Graph.Marker"), markerPoints);
                     }
                 }
             }
@@ -802,7 +802,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         int index = this.IndexOf(agendaEntry.Date, this.StartIndex, this.EndIndex);
 
                         PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
-                        aGraphic.FillPolygon(Brushes.DarkCyan, marqueePoints);
+                        aGraphic.FillPolygon(ColorManager.GetBrush("Graph.Marker"), marqueePoints);
                     }
                 }
             }
