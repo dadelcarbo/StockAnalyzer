@@ -65,7 +65,6 @@ namespace StockAnalyzerApp
             this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEventMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showGridMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showCommentMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDividendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorDivMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -375,7 +374,6 @@ namespace StockAnalyzerApp
             this.showAgendaMenuItem,
             this.showDividendMenuItem,
             this.showEventMarqueeMenuItem,
-            this.showCommentMarqueeMenuItem,
             this.showIndicatorDivMenuItem,
             this.showIndicatorTextMenuItem,
             this.showGridMenuItem,
@@ -470,16 +468,6 @@ namespace StockAnalyzerApp
             this.showGridMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showGridMenuItem.Text = "Show Grid";
             this.showGridMenuItem.Click += new System.EventHandler(this.showGridMenuItem_Click);
-            // 
-            // showCommentMarqueeMenuItem
-            // 
-            this.showCommentMarqueeMenuItem.Checked = true;
-            this.showCommentMarqueeMenuItem.CheckOnClick = true;
-            this.showCommentMarqueeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.showCommentMarqueeMenuItem.Name = "showCommentMarqueeMenuItem";
-            this.showCommentMarqueeMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.showCommentMarqueeMenuItem.Text = "Show Comment Marquees";
-            this.showCommentMarqueeMenuItem.Click += new System.EventHandler(this.showCommentMarqueeMenuItem_Click);
             // 
             // showDividendMenuItem
             // 
@@ -1596,7 +1584,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showDrawingsMenuItem;
         private ToolStripMenuItem showEventMarqueeMenuItem;
         private ToolStripMenuItem showGridMenuItem;
-        private ToolStripMenuItem showCommentMarqueeMenuItem;
         private ToolStripMenuItem showDividendMenuItem;
         private ToolStripMenuItem showIndicatorDivMenuItem;
         private ToolStripMenuItem showIndicatorTextMenuItem;

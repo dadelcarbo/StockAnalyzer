@@ -160,42 +160,6 @@ namespace StockAnalyzerSettings.Properties {
                 this["ShowGrid"] = value;
             }
         }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SelectedEvents {
-            get {
-                return ((string)(this["SelectedEvents"]));
-            }
-            set {
-                this["SelectedEvents"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string EventMarquees {
-            get {
-                return ((string)(this["EventMarquees"]));
-            }
-            set {
-                this["EventMarquees"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EventAll")]
-        public string EventMarqueeMode {
-            get {
-                return ((string)(this["EventMarqueeMode"]));
-            }
-            set {
-                this["EventMarqueeMode"] = value;
-            }
-        }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -399,18 +363,6 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["DefaultBarNumber"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowCommentMarquee {
-            get {
-                return ((bool)(this["ShowCommentMarquee"]));
-            }
-            set {
-                this["ShowCommentMarquee"] = value;
             }
         }
         

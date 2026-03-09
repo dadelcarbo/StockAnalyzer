@@ -2698,13 +2698,6 @@ namespace StockAnalyzerApp
             OnNeedReinitialise(false);
         }
 
-        private void showCommentMarqueeMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.Default.ShowCommentMarquee = this.showCommentMarqueeMenuItem.Checked;
-            Settings.Default.Save();
-            // Refresh the graphs
-            OnNeedReinitialise(false);
-        }
         private void showDividendMenuItem_Click(object sender, EventArgs e)
         {
             Settings.Default.ShowDividend = this.showDividendMenuItem.Checked;

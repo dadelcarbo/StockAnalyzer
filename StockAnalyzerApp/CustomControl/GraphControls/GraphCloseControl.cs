@@ -8,7 +8,6 @@ using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
-using StockAnalyzerApp.CustomControl.ColorPalette;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager;
 using StockAnalyzerSettings;
@@ -67,8 +66,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected bool ShowVariation => Settings.Default.ShowVariation;
         protected bool ShowOrders => Settings.Default.ShowOrders;
         protected bool ShowPositions => Settings.Default.ShowPositions;
-        protected bool ShowEventMarquee => Settings.Default.ShowEventMarquee;
-        protected bool ShowCommentMarquee => Settings.Default.ShowCommentMarquee;
+        protected bool ShowEventMarker => Settings.Default.ShowEventMarquee;
         protected bool ShowDividend => Settings.Default.ShowDividend;
 
         protected AgendaEntryType ShowAgenda => (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), Settings.Default.ShowAgenda);
@@ -696,7 +694,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             #region Display event marquee
 
-            if (this.ShowEventMarquee)
+            if (this.ShowEventMarker)
             {
                 bool eventFound = false;
                 for (int i = this.StartIndex; i <= this.EndIndex; i++)
@@ -815,7 +813,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     int index = this.IndexOf(dividendEntry.Date, this.StartIndex, this.EndIndex);
 
                     PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
-                    aGraphic.FillPolygon(Brushes.DarkGreen, marqueePoints);
+                    aGraphic.FillPolygon(ColorManager.GetBrush("Graph.Marker"), marqueePoints);
                 }
             }
             #endregion
@@ -1562,7 +1560,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             #region Display Event text box
             // Display events if required
-            if (mouseOverThis && this.ShowEventMarquee &&
+            if (mouseOverThis && this.ShowEventMarker &&
                 (mousePoint.Y >= this.GraphRectangle.Top) &&
                 (mousePoint.Y <= this.GraphRectangle.Top + EVENT_MARQUEE_SIZE * 2))
             {
