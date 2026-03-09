@@ -386,9 +386,6 @@ namespace StockAnalyzer.StockClasses
                     case StockDataType.ADR:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ADR).ToArray(), "ADR");
                         break;
-                    case StockDataType.ADBR:
-                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ADBR).ToArray(), "ADBR");
-                        break;
                     case StockDataType.VOLUME:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VOLUME * 1.0f).ToArray(), "VOLUME");
                         break;

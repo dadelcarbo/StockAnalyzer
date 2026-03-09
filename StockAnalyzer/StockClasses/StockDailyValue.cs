@@ -13,7 +13,7 @@ namespace StockAnalyzer.StockClasses
         BODYHIGH,
         BODYLOW,
         /// <summary>
-        /// Variation in percent from previous bar
+        /// Variation in percent from previous bar (Close to Close)
         /// </summary>
         VARIATION,
         /// <summary>
@@ -25,9 +25,8 @@ namespace StockAnalyzer.StockClasses
         /// </summary>
         ADR,
         /// <summary>
-        /// ADBR: Average Bar Body Range
+        /// Represents the number of exchanged stocks.
         /// </summary>
-        ADBR,
         VOLUME,
         /// <summary>
         /// Amount of currency exchange during the bar. 0.5f * (OPEN + CLOSE) * VOLUME; 
@@ -54,12 +53,6 @@ namespace StockAnalyzer.StockClasses
 
         public float BodyHigh => Math.Max(OPEN, CLOSE);
         public float BodyLow => Math.Min(OPEN, CLOSE);
-
-        /// <summary>
-        /// ADBR Average Day Body Range
-        /// </summary>
-        public float ADBR => BodyHigh - BodyLow;
-        public float NADBR => ADBR / CLOSE;
 
         /// <summary>
         /// ADR Average Day Range (no gap)
