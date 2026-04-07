@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using System.Xml.Serialization;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 {
@@ -386,8 +387,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             this.Lines = new ObservableCollection<PalmaresLine>();
 
-            string path = Folders.Palmares;
-            this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(path).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
+            this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(Folders.Palmares).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
             this.Setting = this.Settings.FirstOrDefault();
 
             this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
@@ -683,6 +683,61 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 ProgressVisibility = Visibility.Collapsed;
                 this.RunStatus = "Run";
             }
+        }
+
+
+        public PalmaresSettings LoadSettings()
+        {
+            string fileName = Path.Combine(Folders.Palmares, this.Setting + ".xml");
+            if (File.Exists(fileName))
+            {
+                using FileStream fs = new FileStream(fileName, FileMode.Open);
+                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                settings.IgnoreWhitespace = true;
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
+                var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
+
+                this.Group = palmaresSettings.Group;
+                this.BarDuration = palmaresSettings.BarDuration;
+
+                this.Indicator1 = palmaresSettings.Indicator1;
+                this.Indicator1Min = palmaresSettings.Indicator1Min;
+                this.Indicator1Operator = palmaresSettings.Indicator1Operator;
+
+                this.Indicator2 = palmaresSettings.Indicator2;
+                this.Indicator2Min = palmaresSettings.Indicator2Min;
+                this.Indicator2Operator = palmaresSettings.Indicator2Operator;
+
+                this.Indicator3 = palmaresSettings.Indicator3;
+                this.Indicator3Min = palmaresSettings.Indicator3Min;
+                this.Indicator3Operator = palmaresSettings.Indicator3Operator;
+
+                this.AthOnly = palmaresSettings.AthOnly;
+                this.Ath1 = palmaresSettings.Ath1;
+                this.Ath2 = palmaresSettings.Ath2;
+
+                this.Stok = palmaresSettings.Stok;
+                this.StokMin = palmaresSettings.StokMin;
+                this.StokOperator = palmaresSettings.StokOperator;
+
+                this.ScreenerOnly = palmaresSettings.ScreenerOnly;
+                this.Screener = StockScriptManager.Instance.StockScripts?.FirstOrDefault(s => s.Name == palmaresSettings.Screener);
+                this.Stop = palmaresSettings.Stop;
+                this.BullOnly = palmaresSettings.BullOnly;
+                this.Liquidity = palmaresSettings.Liquidity;
+
+                if (StockAnalyzerForm.MainFrame.Themes.Contains(palmaresSettings.Theme) || string.IsNullOrEmpty(palmaresSettings.Theme))
+                    this.Theme = palmaresSettings.Theme;
+                else
+                {
+                    this.Theme = null;
+                    MessageBox.Show($"Theme '{palmaresSettings.Theme}' doen't exist !", "Error");
+                }
+
+                return palmaresSettings;
+            }
+            return null;
         }
     }
 }

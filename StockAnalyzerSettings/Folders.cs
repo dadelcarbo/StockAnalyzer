@@ -53,6 +53,9 @@ namespace StockAnalyzerSettings
         public static string WatchlistReportTemplate => Path.Combine(Report, "WatchlistReportTemplate.html");
         public static string WatchlistItemTemplate => Path.Combine(Report, "WatchlistItemTemplate.html");
 
+        public static string PalmaresReportTemplate => Path.Combine(Report, "PalmaresReportTemplate.html");
+        public static string PalmaresItemTemplate => Path.Combine(Report, "PalmaresItemTemplate.html");
+
         public static string ReportTemplate = Path.Combine(Report, "ReportTemplate.html");
 
         public static string ColorPalette = Path.Combine(Settings.Default.PersonalFolder, "ColorPalette.json");

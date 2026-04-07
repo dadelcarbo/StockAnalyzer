@@ -33,6 +33,7 @@ using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.InstrumentDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
 using StockAnalyzerApp.CustomControl.PalmaresControl;
+using StockAnalyzerApp.CustomControl.PalmaresDlg;
 using StockAnalyzerApp.CustomControl.PortfolioDlg;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.SaxoPortfolioDlg;
 using StockAnalyzerApp.CustomControl.SectorDlg;
@@ -414,7 +415,7 @@ namespace StockAnalyzerApp
             StockTimer.TimerSuspended = true;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
             Thread.CurrentThread.CurrentUICulture = EnglishCulture;
             Thread.CurrentThread.CurrentCulture = EnglishCulture;
@@ -589,7 +590,7 @@ namespace StockAnalyzerApp
             if (Settings.Default.GenerateDailyReport)
             {
                 // Generate Template and watchlist reports
-                this.GenerateReports();
+                await this.GenerateReports();
 
                 // Generate report for alerts
                 var fileName = Path.Combine(Folders.Report, "LastGeneration.txt");
@@ -632,12 +633,12 @@ namespace StockAnalyzerApp
             this.Focus();
         }
 
-        private void generateReportMenuItem_Click(object sender, EventArgs e)
+        private async void generateReportMenuItem_Click(object sender, EventArgs e)
         {
-            GenerateReports(true);
+            await GenerateReports(true);
         }
 
-        private void GenerateReports(bool force = false)
+        private async Task GenerateReports(bool force = false)
         {
             var currentSize = this.Size;
             var currentState = this.WindowState;
@@ -666,28 +667,60 @@ namespace StockAnalyzerApp
                     GenerateReportFromTemplate(reportTemplate, force);
                 }
 
+                #region WATCHLIST REPORT
                 var reportFileName = Path.Combine(Folders.Report, "Watchlist.html");
                 var reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
-                if (!force && reportDate.Date == DateTime.Today &&
-                    reportDate > File.GetLastWriteTime(Folders.WatchlistReportTemplate) &&
-                    reportDate > File.GetLastWriteTime(Folders.WatchlistItemTemplate))
-                    return;
-
-                string watchlistItems = string.Empty;
-                foreach (var watchlist in StockWatchList.WatchLists.Where(w => w.Report && w.StockList.Count > 0))
+                if (force || reportDate.Date != DateTime.Today ||
+                    reportDate <= File.GetLastWriteTime(Folders.WatchlistReportTemplate) ||
+                    reportDate <= File.GetLastWriteTime(Folders.WatchlistItemTemplate))
                 {
-                    StockSplashScreen.ProgressText = $"Generating report - {watchlist.Name}";
 
-                    watchlistItems += GenerateReportFromWatchList(watchlist);
+                    string watchlistItems = string.Empty;
+                    foreach (var watchlist in StockWatchList.WatchLists.Where(w => w.Report && w.StockList.Count > 0))
+                    {
+                        StockSplashScreen.ProgressText = $"Generating report - {watchlist.Name}";
+
+                        watchlistItems += GenerateReportFromWatchList(watchlist);
+                    }
+
+                    var htmlReport = File.ReadAllText(Folders.WatchlistReportTemplate);
+                    htmlReport = htmlReport.Replace("%%Title%%", $"Watchlists {DateTime.Now}");
+
+                    htmlReport = htmlReport.Replace("%%WATCHLIST_ITEMS%%", watchlistItems);
+                    File.WriteAllText(reportFileName, htmlReport);
+
+                    Process.Start(reportFileName);
                 }
+                #endregion
 
-                var htmlReport = File.ReadAllText(Folders.WatchlistReportTemplate);
-                htmlReport = htmlReport.Replace("%%Title%%", $"Watchlists {DateTime.Now}");
 
-                htmlReport = htmlReport.Replace("%%WATCHLIST_ITEMS%%", watchlistItems);
-                File.WriteAllText(reportFileName, htmlReport);
+                #region PALMARES REPORT
 
-                Process.Start(reportFileName);
+                this.Size = new Size(500, 800);
+
+                reportFileName = Path.Combine(Folders.Report, "Palmares.html");
+                reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
+                if (force || reportDate.Date != DateTime.Today ||
+                    reportDate <= File.GetLastWriteTime(Folders.PalmaresReportTemplate) ||
+                    reportDate <= File.GetLastWriteTime(Folders.PalmaresItemTemplate))
+                {
+                    string palmaresItems = string.Empty;
+
+                    var palmares = "Quallamagie";
+
+                    StockSplashScreen.ProgressText = $"Generating report - {palmares}";
+
+                    palmaresItems += await GenerateReportFromPalmares(palmares);
+
+                    var htmlReport = File.ReadAllText(Folders.PalmaresReportTemplate);
+                    htmlReport = htmlReport.Replace("%%Title%%", $"Palmares {DateTime.Now}");
+
+                    htmlReport = htmlReport.Replace("%%PALMARES_ITEMS%%", palmaresItems);
+                    File.WriteAllText(reportFileName, htmlReport);
+
+                    Process.Start(reportFileName);
+                }
+                #endregion
             }
             catch (Exception ex)
             {
@@ -753,7 +786,7 @@ namespace StockAnalyzerApp
             Process.Start(reportFileName);
         }
 
-        const string TABLE_ROW_TEMPLATE = @"<tr>
+        const string TABLE_ROW_TEMPLATE_WATCHLIST = @"<tr>
             <td>%%Weekly%%</td>
             <td>%%Daily%%</td>
         </tr>";
@@ -776,7 +809,7 @@ namespace StockAnalyzerApp
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[stockName], theme, true, duration, nbBars);
                 string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
-                var row = TABLE_ROW_TEMPLATE.Replace("%%Daily%%", data);
+                var row = TABLE_ROW_TEMPLATE_WATCHLIST.Replace("%%Daily%%", data);
 
                 duration = BarDuration.Weekly;
                 theme = REPORT_THEME;
@@ -793,6 +826,43 @@ namespace StockAnalyzerApp
 
             return htmlReport;
         }
+
+        const string TABLE_ROW_TEMPLATE_PALMARES = @"<tr>
+            <td>%%Daily%%</td>
+        </tr>";
+        private async Task<string> GenerateReportFromPalmares(string palmares)
+        {
+            StockSplashScreen.ProgressText = $"Generating palmares report - {palmares}";
+
+            var htmlReport = File.ReadAllText(Folders.PalmaresItemTemplate);
+
+            var tableRows = string.Empty;
+
+            PalmaresViewModel palmaresViewModel = new PalmaresViewModel
+            {
+                Setting = palmares
+            };
+            palmaresViewModel.LoadSettings();
+            await palmaresViewModel.CalculateAsync();
+
+            foreach (var line in palmaresViewModel.Lines.OrderByDescending(l => l.Indicator1).Take(20))
+            {
+                var duration = palmaresViewModel.BarDuration;
+                var theme = palmaresViewModel.Theme;
+                var nbBars = 75;
+                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[line.Name], theme, true, duration, nbBars);
+                string data = $"\r\n    <h3>{line.Name}            {palmaresViewModel.Indicator1}: {line.Indicator1}</h3> \r\n<a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+
+                var row = TABLE_ROW_TEMPLATE_PALMARES.Replace("%%Daily%%", data);
+
+                tableRows += row;
+            }
+            htmlReport = htmlReport.Replace("%%Title%%", $"{palmares} - {palmaresViewModel.BarDuration}");
+            htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
+
+            return htmlReport;
+        }
+
         string typedSearch = null;
         private void SearchCombo_TextChanged(object sender, EventArgs e)
         {
@@ -2242,25 +2312,32 @@ namespace StockAnalyzerApp
             this.CurrentStockSerie = stockSerie;
             var previousDuration = stockSerie.BarDuration;
 
-            this.barDurationChangeFromUI = true;
-            this.ViewModel.BarDuration = duration;
-            this.barDurationChangeFromUI = false;
+            try
+            {
 
-            if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
-            {
-                this.CurrentTheme = theme;
-            }
-            else
-            {
-                this.CurrentTheme = EMPTY_THEME;
-            }
-            if (nbBars > 0)
-            {
-                this.ChangeZoom(stockSerie.LastIndex - nbBars, stockSerie.LastIndex);
-            }
+                this.barDurationChangeFromUI = true;
+                this.ViewModel.BarDuration = duration;
+                this.barDurationChangeFromUI = false;
 
-            stockSerie.BarDuration = previousDuration;
-            return SnapshotAsHtml(mainGraphOnly);
+                if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
+                {
+                    this.CurrentTheme = theme;
+                }
+                else
+                {
+                    this.CurrentTheme = EMPTY_THEME;
+                }
+                if (nbBars > 0)
+                {
+                    this.ChangeZoom(stockSerie.LastIndex - nbBars, stockSerie.LastIndex);
+                }
+
+                return SnapshotAsHtml(mainGraphOnly);
+            }
+            finally
+            {
+                stockSerie.BarDuration = previousDuration;
+            }
         }
 
         private string SnapshotAsHtml(bool mainGraphOnly)

@@ -43,7 +43,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         private void PalmaresControl_Loaded(object sender, RoutedEventArgs e)
         {
-            this.LoadSettings();
+            var palmaresSettings = this.ViewModel.LoadSettings();
+
+            this.GenerateColumns();
+            LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
+
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -51,7 +55,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             switch (e.PropertyName)
             {
                 case "Setting":
-                    LoadSettings();
+                    var palmaresSettings = this.ViewModel.LoadSettings();
+
+                    this.GenerateColumns();
+                    LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
                     break;
             }
         }
@@ -420,58 +427,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "File saving Error !!!");
-            }
-        }
-        private void LoadSettings()
-        {
-            string fileName = Path.Combine(Folders.Palmares, this.ViewModel.Setting + ".xml");
-            if (File.Exists(fileName))
-            {
-                using FileStream fs = new FileStream(fileName, FileMode.Open);
-                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                settings.IgnoreWhitespace = true;
-                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
-                var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
-
-                this.ViewModel.Group = palmaresSettings.Group;
-                this.ViewModel.BarDuration = palmaresSettings.BarDuration;
-
-                this.ViewModel.Indicator1 = palmaresSettings.Indicator1;
-                this.ViewModel.Indicator1Min = palmaresSettings.Indicator1Min;
-                this.ViewModel.Indicator1Operator = palmaresSettings.Indicator1Operator;
-
-                this.ViewModel.Indicator2 = palmaresSettings.Indicator2;
-                this.ViewModel.Indicator2Min = palmaresSettings.Indicator2Min;
-                this.ViewModel.Indicator2Operator = palmaresSettings.Indicator2Operator;
-
-                this.ViewModel.Indicator3 = palmaresSettings.Indicator3;
-                this.ViewModel.Indicator3Min = palmaresSettings.Indicator3Min;
-                this.ViewModel.Indicator3Operator = palmaresSettings.Indicator3Operator;
-
-                this.ViewModel.AthOnly = palmaresSettings.AthOnly;
-                this.ViewModel.Ath1 = palmaresSettings.Ath1;
-                this.ViewModel.Ath2 = palmaresSettings.Ath2;
-
-                this.ViewModel.Stok = palmaresSettings.Stok;
-                this.ViewModel.StokMin = palmaresSettings.StokMin;
-                this.ViewModel.StokOperator = palmaresSettings.StokOperator;
-
-                this.ViewModel.ScreenerOnly = palmaresSettings.ScreenerOnly;
-                this.ViewModel.Screener = StockScriptManager.Instance.StockScripts?.FirstOrDefault(s => s.Name == palmaresSettings.Screener);
-                this.ViewModel.Stop = palmaresSettings.Stop;
-                this.ViewModel.BullOnly = palmaresSettings.BullOnly;
-                this.ViewModel.Liquidity = palmaresSettings.Liquidity;
-                this.GenerateColumns();
-                LoadColumnFilters(this.gridView, palmaresSettings.FilterSettings);
-
-                if (StockAnalyzerForm.MainFrame.Themes.Contains(palmaresSettings.Theme) || string.IsNullOrEmpty(palmaresSettings.Theme))
-                    this.ViewModel.Theme = palmaresSettings.Theme;
-                else
-                {
-                    this.ViewModel.Theme = null;
-                    MessageBox.Show($"Theme '{palmaresSettings.Theme}' doen't exist !", "Error");
-                }
             }
         }
 
