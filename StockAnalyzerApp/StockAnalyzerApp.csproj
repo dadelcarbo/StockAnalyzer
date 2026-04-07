@@ -495,7 +495,6 @@
     <Compile Include="CustomControl\PalmaresDlg\PalmaresLine.cs" />
     <Compile Include="CustomControl\PalmaresDlg\PalmaresViewModel.cs" />
     <Compile Include="CustomControl\PropertyAttribute.cs" />
-    <Compile Include="CustomControl\ReportDlg\Report.cs" />
     <Compile Include="CustomControl\SimulationDlgs\BackTestViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\BackTestDlg.cs">
       <SubType>Form</SubType>
