@@ -66,6 +66,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
         {
             var cac40 = StockDictionary.Instance["CAC40"];
             cac40.Initialise();
+            cac40.BarDuration = BarDuration.Daily;
+
             if (stockSerie.Count == 0 || cac40.Keys.Last() > stockSerie.LastValue.DATE)
             {
                 var json = HttpGet("https://production.dataviz.cnn.io/index/fearandgreed/graphdata");

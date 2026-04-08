@@ -28,7 +28,7 @@
                         <Label Content="Group " Width="50"/>
                         <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="120" VerticalAlignment="Center"/>
                         <Label>Duration</Label>
-                        <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
+                        <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80" VerticalAlignment="Center"/>
                         <Label Content="Theme"/>
                         <ComboBox SelectedItem="{Binding Theme, ValidatesOnDataErrors=True}" 
                                   ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center" />
@@ -51,6 +51,8 @@
                                 Click="Button_Click">
                             <Image Source="/Resources/Wizard.jpg" />
                         </Button>
+
+                        <CheckBox Content="Report" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="70" IsChecked="{Binding IsReportable}"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

@@ -407,7 +407,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     ScreenerOnly = this.ViewModel.ScreenerOnly,
                     Screener = this.ViewModel.Screener?.Name,
                     Theme = this.ViewModel.Theme,
-                    Liquidity = this.ViewModel.Liquidity
+                    Liquidity = this.ViewModel.Liquidity,
+
+                    IsReportable = this.ViewModel.IsReportable
                 };
 
                 using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
@@ -419,9 +421,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     serializer.Serialize(xmlWriter, palmaresSettings);
                 }
                 var name = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
-                if (!this.ViewModel.Settings.Contains(name))
+                if (!PalmaresViewModel.Settings.Contains(name))
                 {
-                    this.ViewModel.Settings.Insert(0, name);
+                    PalmaresViewModel.Settings.Insert(0, name);
                 }
             }
             catch (Exception ex)

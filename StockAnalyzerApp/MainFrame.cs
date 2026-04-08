@@ -664,13 +664,13 @@ namespace StockAnalyzerApp
 
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
-                    // GenerateReportFromTemplate(reportTemplate, force);
+                    GenerateReportFromTemplate(reportTemplate, force);
                 }
 
 
                 #region PALMARES REPORT
 
-                this.Size = new Size(500, 800);
+                this.Size = new Size(500, 600);
 
                 var reportFileName = Path.Combine(Folders.Report, "Palmares.html");
                 var reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
@@ -680,11 +680,12 @@ namespace StockAnalyzerApp
                 {
                     string palmaresItems = string.Empty;
 
-                    var palmares = "Quallamagie";
-
-                    StockSplashScreen.ProgressText = $"Generating report - {palmares}";
-
-                    palmaresItems += await GenerateReportFromPalmares(palmares);
+                    foreach (var palmares in PalmaresViewModel.Settings)
+                    {
+                        var palmaresSettings = PalmaresViewModel.LoadSettings(palmares);
+                        if (palmaresSettings != null && palmaresSettings.IsReportable)
+                            palmaresItems += await GenerateReportFromPalmares(palmares);
+                    }
 
                     var htmlReport = File.ReadAllText(Folders.PalmaresReportTemplate);
                     htmlReport = htmlReport.Replace("%%Title%%", $"Palmares {DateTime.Now}");
@@ -693,8 +694,6 @@ namespace StockAnalyzerApp
                     File.WriteAllText(reportFileName, htmlReport);
 
                     Process.Start(reportFileName);
-
-                    return;
                 }
                 #endregion
 
@@ -831,7 +830,7 @@ namespace StockAnalyzerApp
             return htmlReport;
         }
 
-        private async Task<string> GenerateReportFromPalmares(string palmares)
+        private async Task<string> GenerateReportFromPalmares(string palmares, int nbLines = 50)
         {
             StockSplashScreen.ProgressText = $"Generating palmares report - {palmares}";
 
@@ -851,7 +850,7 @@ namespace StockAnalyzerApp
             htmlReport = htmlReport.Replace("%%INDICATOR3%%", $"{palmaresSettings.Indicator3}");
             htmlReport = htmlReport.Replace("%%STOK%%", $"{palmaresSettings.Stok}");
 
-            foreach (var line in palmaresViewModel.Lines.OrderByDescending(l => l.Indicator1).Take(20))
+            foreach (var line in palmaresViewModel.Lines.OrderByDescending(l => l.Indicator1).Take(nbLines))
             {
                 var duration = palmaresViewModel.BarDuration;
                 var theme = palmaresViewModel.Theme;

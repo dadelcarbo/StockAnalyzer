@@ -301,7 +301,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
-        public ObservableCollection<string> Settings { get; set; }
+        static public ObservableCollection<string> Settings { get; } = new ObservableCollection<string>(Directory.EnumerateFiles(Folders.Palmares).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
 
         private string setting;
         public string Setting
@@ -313,6 +313,20 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     setting = value;
                     OnPropertyChanged("Setting");
+                }
+            }
+        }
+
+        private bool isReportable;
+        public bool IsReportable
+        {
+            get { return isReportable; }
+            set
+            {
+                if (value != isReportable)
+                {
+                    isReportable = value;
+                    OnPropertyChanged("IsReportable");
                 }
             }
         }
@@ -387,8 +401,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             this.Lines = new ObservableCollection<PalmaresLine>();
 
-            this.Settings = new ObservableCollection<string>(Directory.EnumerateFiles(Folders.Palmares).Select(s => Path.GetFileNameWithoutExtension(s)).OrderBy(s => s));
-            this.Setting = this.Settings.FirstOrDefault();
+            this.Setting = Settings.FirstOrDefault();
 
             this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
             this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
@@ -515,7 +528,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     var previousDuration = stockSerie.BarDuration;
                     stockSerie.BarDuration = this.BarDuration;
-                    if (stockSerie.Count < 40)
+                    if (stockSerie.Count < Math.Max(100, this.Stok))
                     {
                         stockSerie.BarDuration = previousDuration;
                         continue;
@@ -685,6 +698,20 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
         }
 
+        public static PalmaresSettings LoadSettings(string palmaresSetting)
+        {
+            string fileName = Path.Combine(Folders.Palmares, palmaresSetting + ".xml");
+            if (File.Exists(fileName))
+            {
+                using FileStream fs = new FileStream(fileName, FileMode.Open);
+                System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+                settings.IgnoreWhitespace = true;
+                System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
+                XmlSerializer serializer = new XmlSerializer(typeof(PalmaresSettings));
+                return (PalmaresSettings)serializer.Deserialize(xmlReader);
+            }
+            return null;
+        }
 
         public PalmaresSettings LoadSettings()
         {
@@ -726,6 +753,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 this.Stop = palmaresSettings.Stop;
                 this.BullOnly = palmaresSettings.BullOnly;
                 this.Liquidity = palmaresSettings.Liquidity;
+
+                this.IsReportable = palmaresSettings.IsReportable;
 
                 if (StockAnalyzerForm.MainFrame.Themes.Contains(palmaresSettings.Theme) || string.IsNullOrEmpty(palmaresSettings.Theme))
                     this.Theme = palmaresSettings.Theme;

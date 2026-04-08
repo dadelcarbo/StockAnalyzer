@@ -32,6 +32,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public string Screener { get; set; }
         public string Theme { get; set; }
         public float Liquidity { get; set; }
+
+        public bool IsReportable { get; set; }
     }
     public class FilterDescriptorProxy
     {
