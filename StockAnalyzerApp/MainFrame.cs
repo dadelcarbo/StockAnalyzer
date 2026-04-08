@@ -664,12 +664,43 @@ namespace StockAnalyzerApp
 
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
-                    GenerateReportFromTemplate(reportTemplate, force);
+                    // GenerateReportFromTemplate(reportTemplate, force);
                 }
 
-                #region WATCHLIST REPORT
-                var reportFileName = Path.Combine(Folders.Report, "Watchlist.html");
+
+                #region PALMARES REPORT
+
+                this.Size = new Size(500, 800);
+
+                var reportFileName = Path.Combine(Folders.Report, "Palmares.html");
                 var reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
+                if (force || reportDate.Date != DateTime.Today ||
+                    reportDate <= File.GetLastWriteTime(Folders.PalmaresReportTemplate) ||
+                    reportDate <= File.GetLastWriteTime(Folders.PalmaresItemTemplate))
+                {
+                    string palmaresItems = string.Empty;
+
+                    var palmares = "Quallamagie";
+
+                    StockSplashScreen.ProgressText = $"Generating report - {palmares}";
+
+                    palmaresItems += await GenerateReportFromPalmares(palmares);
+
+                    var htmlReport = File.ReadAllText(Folders.PalmaresReportTemplate);
+                    htmlReport = htmlReport.Replace("%%Title%%", $"Palmares {DateTime.Now}");
+
+                    htmlReport = htmlReport.Replace("%%PALMARES_ITEMS%%", palmaresItems);
+                    File.WriteAllText(reportFileName, htmlReport);
+
+                    Process.Start(reportFileName);
+
+                    return;
+                }
+                #endregion
+
+                #region WATCHLIST REPORT
+                reportFileName = Path.Combine(Folders.Report, "Watchlist.html");
+                reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
                 if (force || reportDate.Date != DateTime.Today ||
                     reportDate <= File.GetLastWriteTime(Folders.WatchlistReportTemplate) ||
                     reportDate <= File.GetLastWriteTime(Folders.WatchlistItemTemplate))
@@ -694,33 +725,6 @@ namespace StockAnalyzerApp
                 #endregion
 
 
-                #region PALMARES REPORT
-
-                this.Size = new Size(500, 800);
-
-                reportFileName = Path.Combine(Folders.Report, "Palmares.html");
-                reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
-                if (force || reportDate.Date != DateTime.Today ||
-                    reportDate <= File.GetLastWriteTime(Folders.PalmaresReportTemplate) ||
-                    reportDate <= File.GetLastWriteTime(Folders.PalmaresItemTemplate))
-                {
-                    string palmaresItems = string.Empty;
-
-                    var palmares = "Quallamagie";
-
-                    StockSplashScreen.ProgressText = $"Generating report - {palmares}";
-
-                    palmaresItems += await GenerateReportFromPalmares(palmares);
-
-                    var htmlReport = File.ReadAllText(Folders.PalmaresReportTemplate);
-                    htmlReport = htmlReport.Replace("%%Title%%", $"Palmares {DateTime.Now}");
-
-                    htmlReport = htmlReport.Replace("%%PALMARES_ITEMS%%", palmaresItems);
-                    File.WriteAllText(reportFileName, htmlReport);
-
-                    Process.Start(reportFileName);
-                }
-                #endregion
             }
             catch (Exception ex)
             {
@@ -827,9 +831,6 @@ namespace StockAnalyzerApp
             return htmlReport;
         }
 
-        const string TABLE_ROW_TEMPLATE_PALMARES = @"<tr>
-            <td>%%Daily%%</td>
-        </tr>";
         private async Task<string> GenerateReportFromPalmares(string palmares)
         {
             StockSplashScreen.ProgressText = $"Generating palmares report - {palmares}";
@@ -842,8 +843,13 @@ namespace StockAnalyzerApp
             {
                 Setting = palmares
             };
-            palmaresViewModel.LoadSettings();
+            var palmaresSettings = palmaresViewModel.LoadSettings();
             await palmaresViewModel.CalculateAsync();
+
+            htmlReport = htmlReport.Replace("%%INDICATOR1%%", $"{palmaresSettings.Indicator1}");
+            htmlReport = htmlReport.Replace("%%INDICATOR2%%", $"{palmaresSettings.Indicator2}");
+            htmlReport = htmlReport.Replace("%%INDICATOR3%%", $"{palmaresSettings.Indicator3}");
+            htmlReport = htmlReport.Replace("%%STOK%%", $"{palmaresSettings.Stok}");
 
             foreach (var line in palmaresViewModel.Lines.OrderByDescending(l => l.Indicator1).Take(20))
             {
@@ -851,9 +857,8 @@ namespace StockAnalyzerApp
                 var theme = palmaresViewModel.Theme;
                 var nbBars = 75;
                 var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary[line.Name], theme, true, duration, nbBars);
-                string data = $"\r\n    <h3>{line.Name}            {palmaresViewModel.Indicator1}: {line.Indicator1}</h3> \r\n<a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
-                var row = TABLE_ROW_TEMPLATE_PALMARES.Replace("%%Daily%%", data);
+                string row = $"<tr><td style=\"font-size:11px;\"><a class=\"tooltip\">{line.Name}<span><img src=\"{bitmapString}\"></span></a></td> <td style=\"font-size:11px;\">{line.Group}</td> <td>{line.Value}</td> <td>{ToNaNString(line.Indicator1)}</td> <td>{ToNaNString(line.Indicator2)}</td> <td>{ToNaNString(line.Indicator3)}</td> <td>{line.Stok}</td> <td>{line.Highest}</td> <td>{line.LastDate.ToShortDateString()}</td> </tr>";
 
                 tableRows += row;
             }
@@ -861,6 +866,11 @@ namespace StockAnalyzerApp
             htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
 
             return htmlReport;
+        }
+
+        string ToNaNString(float value)
+        {
+            return float.IsNaN(value) ? "" : value.ToString();
         }
 
         string typedSearch = null;
@@ -3281,37 +3291,6 @@ namespace StockAnalyzerApp
             this.Size = previousSize;
             this.WindowState = previousState;
 
-            // Download Market Harmonics pictures
-            string url = "http://www.market-harmonics.com/images/tech/sentiment/nu.png";
-            string destFile = Path.Combine(folderName, $"NU_{DateTime.Now.Ticks}.png");
-            if (StockWebHelper.DownloadFile(destFile, url))
-            {
-                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NU_IMG%", "file://" + destFile);
-            }
-            else
-            {
-                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NU_IMG%", url);
-            }
-            url = "http://www.market-harmonics.com/images/tech/sentiment/nulong.png";
-            destFile = Path.Combine(folderName, $"NUL_{DateTime.Now.Ticks}.png");
-            if (StockWebHelper.DownloadFile(destFile, url))
-            {
-                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NUL_IMG%", "file://" + destFile);
-            }
-            else
-            {
-                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NUL_IMG%", url);
-            }
-            url = "http://www.market-harmonics.com/images/tech/sentiment/ndsi.png";
-            destFile = Path.Combine(folderName, $"NSDI_{DateTime.Now.Ticks}.png");
-            if (StockWebHelper.DownloadFile(destFile, url))
-            {
-                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NSDI_IMG%", "file://" + destFile);
-            }
-            else
-            {
-                htmlReportTemplate = htmlReportTemplate.Replace("%MH_NSDI_IMG%", url);
-            }
 
             var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", $"{duration} Report").Replace("%HTML_BODY%", htmlBody);
             using (StreamWriter sw = new StreamWriter(fileName))
