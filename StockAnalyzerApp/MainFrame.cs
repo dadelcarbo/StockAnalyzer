@@ -861,7 +861,8 @@ namespace StockAnalyzerApp
 
                 tableRows += row;
             }
-            htmlReport = htmlReport.Replace("%%Title%%", $"{palmares} - {palmaresViewModel.BarDuration}");
+
+            htmlReport = htmlReport.Replace("%%Title%%", $"{palmares} - {palmaresViewModel.Group} - {palmaresViewModel.BarDuration}");
             htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
 
             return htmlReport;
