@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockLogging;
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -19,6 +20,12 @@ namespace StockAnalyzerApp
         {
             try
             {
+                var culture = new CultureInfo("en-GB");
+                System.Threading.Thread.CurrentThread.CurrentCulture = culture;
+                System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
+                CultureInfo.DefaultThreadCurrentCulture = culture;
+                CultureInfo.DefaultThreadCurrentUICulture = culture;
+
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new StockAnalyzerForm());
