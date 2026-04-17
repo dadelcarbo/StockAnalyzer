@@ -2,6 +2,7 @@
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 
@@ -129,7 +130,7 @@ namespace StockAnalyzer.StockLogging
             {
                 StackTrace st = new StackTrace(1, true);
                 StackFrame sf = st.GetFrame(0);
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {sf.GetMethod().Name}";
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} {sf.GetMethod().Name}";
                 StockLog.Logger.sw.WriteLine($"{prefix}: {logText}");
             }
         }
@@ -137,7 +138,7 @@ namespace StockAnalyzer.StockLogging
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {type.Name}::{sf.GetMethod().Name}";
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} {type.Name}::{sf.GetMethod().Name}";
                 StockLog.Logger.sw.WriteLine($"{prefix}: Entry {text}");
             }
         }
@@ -145,7 +146,7 @@ namespace StockAnalyzer.StockLogging
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {type.Name}::{sf.GetMethod().Name}";
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} {type.Name}::{sf.GetMethod().Name}";
                 StockLog.Logger.sw.WriteLine($"{prefix}: Exit");
             }
         }
@@ -174,7 +175,8 @@ namespace StockAnalyzer.StockLogging
                 }
                 sw.WriteLine("Date        : " + DateTime.Now.ToLongTimeString());
                 sw.WriteLine("Time        : " + DateTime.Now.ToShortDateString());
-                sw.WriteLine("Thread        : " + Thread.CurrentThread.ManagedThreadId);
+                sw.WriteLine("Thread      : " + Thread.CurrentThread.ManagedThreadId);
+                sw.WriteLine("Culture     : " + CultureInfo.CurrentCulture);
                 sw.WriteLine("Error       : " + strException.Trim());
                 if (objException.StackTrace != null)
                 {

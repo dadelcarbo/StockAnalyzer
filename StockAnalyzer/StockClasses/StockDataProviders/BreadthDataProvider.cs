@@ -121,8 +121,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateIndiceBest("ROR", stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "ROD":
                     return stockDictionary.GenerateIndiceBest("ROD", stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
-                case "OSC":
-                    return stockDictionary.GenerateIndiceBestOSC(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "HL":
                     return stockDictionary.GenerateHigherThanHLTrailSerie(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "EMA":
@@ -137,6 +135,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     return stockDictionary.GenerateSTOKSBreadthSerie(stockSerie, row[1], BarDuration.Daily, DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 case "MM":
                     return stockDictionary.GenerateHigherThanMMSerie(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
+                //case "OSC":
+                //    return stockDictionary.GenerateIndexOSC(stockSerie, row[1], DataFolder + FOLDER, DataFolder + ARCHIVE_FOLDER);
                 default:
                     StockLog.Write($"BREADTH Not Found: {stockSerie.StockName}");
                     break;

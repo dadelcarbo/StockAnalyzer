@@ -227,8 +227,6 @@ namespace StockAnalyzerApp
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.drawToolStrip);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.themeToolStrip);
 
-            this.darkModeStripButton.Checked = Settings.Default.DarkMode;
-
             //this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 
             this.ResumeLayout();
@@ -532,6 +530,8 @@ namespace StockAnalyzerApp
             InitialiseStockCombo(true);
 
             InitialiseWatchListComboBox();
+
+            this.darkModeStripButton.Checked = Settings.Default.DarkMode;
 
             this.Show();
             this.progressBar.Value = 0;
