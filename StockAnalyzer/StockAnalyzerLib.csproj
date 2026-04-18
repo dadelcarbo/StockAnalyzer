@@ -334,6 +334,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DDLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DRAWDOWNADR.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA2SR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DDADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RSN.cs" />
@@ -542,7 +543,7 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKFBODY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_SUPPORT.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKSTREND.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBMA.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_BBVOL.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MDH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_FIBOCHANNEL.cs" />
