@@ -21,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 new ParamRangeInt(1, 500)
                 };
 
-        public override string[] SerieNames => new string[] { "BBUp", "BBDown", this.parameters[3] + "(" + (int)this.parameters[0] + ")", "Smoothed" };
+        public override string[] SerieNames => new string[] { "BBUp", "BBDown", "MA(" + (int)this.parameters[0] + ")", "Smoothed" };
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.DarkRed) };
 

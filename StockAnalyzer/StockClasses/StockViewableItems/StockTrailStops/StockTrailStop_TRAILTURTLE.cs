@@ -8,7 +8,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override string Definition => base.Definition + Environment.NewLine + "TrailStop based on steroïd turtles as defined by InvestingZen.";
 
         public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "EMAPeriod" };
-        public override Object[] ParameterDefaultValues => new Object[] { 36, 12, 3 };
+        public override Object[] ParameterDefaultValues => new Object[] { 75, 35, 12 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
 
@@ -18,8 +18,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, float.NaN);
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
-            var indicator = stockSerie.GetIndicator(this.Name.Replace("TRAIL",""));
-            var upLine = indicator.Series[0];
+            var indicator = stockSerie.GetIndicator(this.Name.Replace("TRAIL", ""));
+            var lowLine = indicator.Series[1];
             var emaSerie = indicator.Series[2];
 
             bool bull = false;
@@ -27,9 +27,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             {
                 if (bull)
                 {
-                    if (closeSerie[i] > emaSerie[i])
+                    if (lowLine[i - 1] <= emaSerie[i])
                     {
-                        longStopSerie[i] = emaSerie[i];
+                        longStopSerie[i] = lowLine[i];
                     }
                     else
                     {
@@ -38,7 +38,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 }
                 else
                 {
-                    if (emaSerie[i - 1] < upLine[i - 1] && emaSerie[i] >= upLine[i])// BrokenUp
+                    if (emaSerie[i] > lowLine[i])// BrokenUp
                     {
                         bull = true;
                         longStopSerie[i] = emaSerie[i];
