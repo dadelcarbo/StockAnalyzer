@@ -9,11 +9,6 @@ namespace StockAnalyzer.StockDrawing
         {
 
         }
-        public Area(int count)
-        {
-            this.UpLine = new FloatSerie(count, float.NaN);
-            this.DownLine = new FloatSerie(count, float.NaN);
-        }
         public string Name { get; set; } = "Fill";
         public bool Visibility { get; set; } = true;
         private Color color;

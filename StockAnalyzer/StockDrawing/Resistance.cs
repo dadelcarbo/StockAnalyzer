@@ -4,18 +4,19 @@ using System.Linq;
 
 namespace StockAnalyzer.StockDrawing
 {
-    public class Box : Rectangle2D
+    public class Resistance : Rectangle2D
     {
         static readonly Brush fillBrush = new SolidBrush(Color.FromArgb(32, Color.LightGreen));
 
-        public Box(PointF p1, PointF p2) : this(p1, p2, false)
+        public Resistance(PointF p1, PointF p2) : this(p1, p2, false)
         {
         }
-        public Box(PointF p1, PointF p2, bool isOpened) : base(p1, p2)
+        public Resistance(PointF p1, PointF p2, bool isOpened) : base(p1, p2)
         {
             this.Fill = true;
             this.Pen = new Pen(Color.Green) { Width = 1 };
         }
+
 
         public override void Draw(Graphics g, Pen pen, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
         {
@@ -26,8 +27,6 @@ namespace StockAnalyzer.StockDrawing
             if (graphRectangle.Contains(points[0]) && graphRectangle.Contains(points[2]))
             {
                 g.DrawLines(pen, points);
-                var mid = (2f * points[0].Y + points[2].Y) / 3f;
-                g.DrawLine(pen, points[0].X, mid, points[1].X, mid);
                 if (this.Fill)
                 {
                     g.FillPolygon(fillBrush, points);

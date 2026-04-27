@@ -616,7 +616,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                             CandleStick candleStick = new CandleStick
                             {
-                                Width = (int)(0.40f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count()) - 1
+                                Width = (int)(0.450f * aGraphic.VisibleClipBounds.Width / tmpPoints.Count()) - 1
                             };
                             for (int i = 0; i < tmpPoints.Count(); i++)
                             {
@@ -1861,7 +1861,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case GraphDrawMode.AddBox:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        DrawTmpItem(this.foregroundGraphic, new Box(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y)), true);
+                        DrawTmpItem(this.foregroundGraphic, new Resistance(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y)), true);
                     }
                     break;
                 case GraphDrawMode.AddWinRatio:
@@ -2109,7 +2109,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         case GraphDrawingStep.ItemSelected: // Selecting second point
                             try
                             {
-                                var newArea = new Box(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y));
+                                var newArea = new Resistance(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y));
                                 drawingItems.Add(newArea);
                                 drawingItems.RefDate = dateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
