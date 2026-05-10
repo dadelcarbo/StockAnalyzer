@@ -15,21 +15,15 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "High", "Low", "EMA" };
 
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] {
+        public override Pen[] SeriePens => seriePens ??= new Pen[] {
                     new Pen(Color.DarkGreen) { Width = 2},
                     new Pen(Color.DarkRed)  { Width = 2},
                     new Pen(Color.DarkBlue) { Width = 2}};
-                return seriePens;
-            }
-        }
+
         public override Area[] Areas => areas ??= new Area[]
             {
-                new Area {Name="Bull", Color = Color.FromArgb(128, Color.LightGreen) },
-                new Area {Name="Bear", Color = Color.FromArgb(128, Color.Red) }
+                new Area {Name="BearConso", Color = Color.FromArgb(128, Color.LightGreen) },
+                new Area {Name="BullConso", Color = Color.FromArgb(128, Color.Red) }
             };
 
         public override void ApplyTo(StockSerie stockSerie)
@@ -78,31 +72,62 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.CreateEventSeries(stockSerie.Count);
 
             bool upTrend = false;
+            bool downTrend = false;
+            bool upTrendConso = false;
+            bool downTrendConso = false;
             for (int i = 1; i < stockSerie.Count; i++)
             {
                 count = 0;
+
+                if (emaSerie[i] >= upLine[i])
+                {
+                    upTrend = true;
+                    downTrend = false;
+                    upTrendConso = downTrendConso = false;
+                }
+                if (emaSerie[i] <= downLine[i])
+                {
+                    upTrend = false;
+                    downTrend = true;
+                    upTrendConso = downTrendConso = false;
+                }
+
                 if (upTrend)
                 {
-                    upTrend = !(emaSerie[i] <= downLine[i]);
+                    upTrendConso = emaSerie[i] < upLine[i];
+                    if (upTrendConso)
+                    {
+                        this.Areas[1].UpLine[i] = upLine[i];
+                        this.Areas[1].DownLine[i] = emaSerie[i];
+                    }
+                    this.Areas[0].UpLine[i] = emaSerie[i];
+                    this.Areas[0].DownLine[i] = downLine[i];
                 }
-                else
+                if (downTrend)
                 {
-                    upTrend = emaSerie[i] >= upLine[i];
+                    downTrendConso = emaSerie[i] > downLine[i];
+                    if (downTrendConso)
+                    {
+                        this.Areas[0].UpLine[i] = emaSerie[i];
+                        this.Areas[0].DownLine[i] = downLine[i];
+                    }
+                    this.Areas[1].UpLine[i] = upLine[i];
+                    this.Areas[1].DownLine[i] = emaSerie[i];
                 }
-                this.Areas[upTrend ? 0 : 1].UpLine[i] = upLine[i];
-                this.Areas[upTrend ? 0 : 1].DownLine[i] = downLine[i];
 
                 this.Events[count++][i] = emaSerie[i - 1] < upLine[i - 1] && emaSerie[i] >= upLine[i];  // BrokenUp
                 this.Events[count++][i] = emaSerie[i - 1] > downLine[i - 1] && emaSerie[i] <= downLine[i]; // BrokenDown
                 this.Events[count++][i] = upTrend;
-                this.Events[count++][i] = !upTrend;
+                this.Events[count++][i] = downTrend;
+                this.Events[count++][i] = upTrendConso;
+                this.Events[count++][i] = downTrendConso;
             }
         }
 
-        static readonly string[] eventNames = new string[] { "BrokenUp", "BrokenDown", "Bullish", "Bearish" };
+        static readonly string[] eventNames = new string[] { "BrokenUp", "BrokenDown", "Bullish", "Bearish", "BullishConso", "BearishConso" };
         public override string[] EventNames => eventNames;
 
-        static readonly bool[] isEvent = new bool[] { true, true, false, false };
+        static readonly bool[] isEvent = new bool[] { true, true, false, false, false, false };
         public override bool[] IsEvent => isEvent;
     }
 }

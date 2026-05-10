@@ -72,6 +72,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public override void InitDictionary(StockDictionary dictionary, bool download)
         {
+            AbcClient.CacheFolder = DataFolder + ABC_WEB_CACHE_FOLDER;
             stockDictionary = dictionary;
             CreateDirectories();
 
