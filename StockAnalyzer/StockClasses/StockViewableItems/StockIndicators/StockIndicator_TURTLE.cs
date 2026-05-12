@@ -13,12 +13,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override Object[] ParameterDefaultValues => new Object[] { 36, 12, 3 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames => new string[] { "High", "Low", "EMA" };
+        public override string[] SerieNames => new string[] { "EMA", "High", "Low" };
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] {
+                    new Pen(Color.DarkGray) { Width = 2},
                     new Pen(Color.DarkGreen) { Width = 2},
-                    new Pen(Color.DarkRed)  { Width = 2},
-                    new Pen(Color.DarkBlue) { Width = 2}};
+                    new Pen(Color.DarkRed)  { Width = 2}};
 
         public override Area[] Areas => areas ??= new Area[]
             {
@@ -53,13 +53,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
 
             int count = 0;
-            this.series[count] = upLine;
+
+            this.series[count] = emaSerie;
+            this.Series[count].Name = this.SerieNames[count];
+
+            this.series[++count] = upLine;
             this.Series[count].Name = this.SerieNames[count];
 
             this.series[++count] = downLine;
-            this.Series[count].Name = this.SerieNames[count];
-
-            this.series[++count] = emaSerie;
             this.Series[count].Name = this.SerieNames[count];
 
             this.Areas[0].UpLine = new FloatSerie(stockSerie.Count, float.NaN);

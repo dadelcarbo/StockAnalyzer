@@ -410,6 +410,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 foreach (var stockIndicator in CurveList.Indicators)
                 {
+                    // Draw indicator areas
+                    if (stockIndicator.Areas != null)
+                    {
+                        foreach (var area in stockIndicator.Areas.Where(a => a.Visibility))
+                        {
+                            FillAreaEx(aGraphic, area.UpLine, area.DownLine, null, area.Brush);
+                        }
+                    }
+
                     this.DrawStockText(aGraphic, stockIndicator.StockTexts);
                     for (int i = 0; i < stockIndicator.SeriesCount; i++)
                     {
@@ -475,15 +484,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 DrawSeriePoints(aGraphic, stockIndicator.Series[i], stockIndicator.SeriePens[i]);
                             }
-                        }
-                    }
-
-                    // Draw indicator areas
-                    if (stockIndicator.Areas != null)
-                    {
-                        foreach (var area in stockIndicator.Areas.Where(a => a.Visibility))
-                        {
-                            FillAreaEx(aGraphic, area.UpLine, area.DownLine, null, area.Brush);
                         }
                     }
                 }
