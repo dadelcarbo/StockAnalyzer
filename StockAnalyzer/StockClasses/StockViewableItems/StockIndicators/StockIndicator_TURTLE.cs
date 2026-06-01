@@ -10,7 +10,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string Definition => base.Definition + Environment.NewLine + "Display the highest, lowest lines for the specified period of a EMA over defined period. This is for InvestingZen Turtle strategy";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "EMAPeriod" };
-        public override Object[] ParameterDefaultValues => new Object[] { 36, 12, 3 };
+        public override Object[] ParameterDefaultValues => new Object[] { 35, 35, 6 };
+
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
         public override string[] SerieNames => new string[] { "EMA", "High", "Low" };
