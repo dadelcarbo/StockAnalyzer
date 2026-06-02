@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             for (int i = Math.Max((int)this.Parameters[0], (int)this.Parameters[1]); i < stockSerie.Count; i++)
             {
                 if (highSerie[i] != lowSerie[i])
-                    stoSerie[i] = 100.0f * (emaSerie[i] - lowSerie[i]) / (highSerie[i] - lowSerie[i]);
+                    stoSerie[i] = (float)Math.Round(100.0 * (emaSerie[i] - lowSerie[i]) / (highSerie[i] - lowSerie[i]),2);
 
                 if (bull)
                 {
