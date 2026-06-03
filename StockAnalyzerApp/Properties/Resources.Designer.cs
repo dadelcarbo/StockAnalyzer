@@ -613,6 +613,16 @@ namespace StockAnalyzerApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap SaxoTurbos {
+            get {
+                object obj = ResourceManager.GetObject("SaxoTurbos", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap ScrollLeft {
             get {
                 object obj = ResourceManager.GetObject("ScrollLeft", resourceCulture);

@@ -1159,7 +1159,7 @@ namespace StockAnalyzerApp
             // saxoTurbo
             // 
             this.saxoTurboButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saxoTurboButton.Image = global::StockAnalyzerApp.Properties.Resources.UpDown;
+            this.saxoTurboButton.Image = global::StockAnalyzerApp.Properties.Resources.SaxoTurbos;
             this.saxoTurboButton.Name = "saxoTurbo";
             this.saxoTurboButton.Size = new System.Drawing.Size(23, 20);
             this.saxoTurboButton.ToolTipText = "Search for Saxo Turbo";
