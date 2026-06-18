@@ -55,6 +55,7 @@ namespace StockAnalyzer.StockClasses
             CANADA,
             USA,
             SAXO,
+            SPIRICA,
             INDICES,
             INDICATOR,
             SECTORS,

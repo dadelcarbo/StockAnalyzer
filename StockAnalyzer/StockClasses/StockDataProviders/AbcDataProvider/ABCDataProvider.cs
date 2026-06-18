@@ -51,6 +51,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         static readonly string defaultConfigFileContent = "ISIN;NOM;SICOVAM;TICKER;GROUP" + Environment.NewLine + "FR0003500008;CAC40;;CAC40;INDICES";
 
         static string configPath => Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
+        static string spiricaCsv => "spirica.csv";
 
         List<AbcDownloadHistory> downloadHistory;
         static string historyFileName = Path.Combine(DataFolder + ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
@@ -79,6 +80,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             if (File.Exists(excludeFileName))
             {
                 excludeList = File.ReadAllLines(excludeFileName).ToList();
+            }
+
+            // Copy spirica file if newer
+            var dest = Path.Combine(DataFolder + ABC_DAILY_CFG_GROUP_FOLDER, spiricaCsv);
+            var source = Path.Combine(Folders.PersonalFolder, spiricaCsv);
+            if (!File.Exists(dest) || File.GetLastWriteTime(source) > File.GetLastWriteTime(dest))
+            {
+                File.Copy(source, dest, true);
             }
 
             if (!File.Exists(configPath))
@@ -1333,9 +1342,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                         if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
                         {
                             string[] row = line.Split(';');
-                            groupList.Add(row[1].ToUpper());
+                            var serie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
+                            if (serie != null)
+                            {
+                                groupList.Add(serie.StockName);
+                            }
                         }
                     }
+                    groupSeries[group] = groupList;
                 }
                 else
                 {
@@ -1343,10 +1357,12 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
             }
 
+
             return groupList != null && groupList.Contains(stockSerie.StockName);
         }
 
         static readonly string[] AK_SEPARATOR = new[] { " au " };
+
         public static void DownloadAgenda(StockSerie stockSerie)
         {
             if (!stockSerie.BelongsToGroup(StockSerie.Groups.CACALL)) return;
