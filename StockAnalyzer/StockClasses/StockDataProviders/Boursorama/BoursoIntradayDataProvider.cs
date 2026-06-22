@@ -218,9 +218,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                     return false;
                 var fileName = DataFolder + FOLDER + $"\\{stockSerie.Symbol}_{stockSerie.StockGroup}.txt";
 
-                using var wc = new WebClient();
-                wc.Proxy.Credentials = CredentialCache.DefaultCredentials;
-
                 int nbTries = 2;
                 while (nbTries > 0)
                 {

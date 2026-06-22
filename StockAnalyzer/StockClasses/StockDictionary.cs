@@ -1546,7 +1546,7 @@ namespace StockAnalyzer.StockClasses
             {
                 foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
                 {
-                    if (alertDef.BarDuration > BarDuration.Monthly && stockSerie.BelongsToGroup(StockSerie.Groups.PEA) && !stockSerie.Intraday) // if intraday
+                    if (alertDef.BarDuration > BarDuration.Monthly && stockSerie.BelongsToGroup(StockSerie.Groups.PEA)) // if intraday
                     {
                         continue;
                     }

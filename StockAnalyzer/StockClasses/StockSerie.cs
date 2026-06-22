@@ -2941,8 +2941,6 @@ namespace StockAnalyzer.StockClasses
             return this.BelongsToGroup((Groups)Enum.Parse(typeof(Groups), groupName));
         }
 
-        public bool Intraday => BoursoIntradayDataProvider.ContainsSerie(this);
-
         #region Advanced Data Access (min/max ...)
         private DateTime[] dateArray = null;
 
@@ -3258,51 +3256,51 @@ namespace StockAnalyzer.StockClasses
                     }
                     break;
                 default:
-                    {
-                        int period;
-                        string[] timeSpanString = timeSpan.ToString().Split('_');
-                        switch (timeSpanString[0].ToUpper())
-                        {
-                            case "H":
-                                if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
-                                {
-                                    if (!string.IsNullOrEmpty(this.ISIN) && this.DataProvider == StockDataProvider.ABC)
-                                    {
-                                        var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
-                                        intradaySerie.ResetAllCache();
-                                        if (StockDataProviderBase.DownloadSerieData(intradaySerie) && intradaySerie.Initialise())
-                                        {
-                                            newBarList = GenerateHourBar(intradaySerie.Values.ToList(), period);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        newBarList = GenerateHourBar(dailyValueList, period);
-                                    }
-                                }
-                                break;
-                            case "M":
-                                if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
-                                {
-                                    if (!string.IsNullOrEmpty(this.ISIN) && this.DataProvider == StockDataProvider.ABC)
-                                    {
-                                        var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
-                                        intradaySerie.ResetAllCache();
-                                        if (StockDataProviderBase.DownloadSerieData(intradaySerie) && intradaySerie.Initialise())
-                                        {
-                                            newBarList = GenerateMinuteBar(intradaySerie.Values.ToList(), period);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        newBarList = GenerateMinuteBar(dailyValueList, period);
-                                    }
-                                }
-                                break;
-                            default:
-                                throw new NotImplementedException("Bar duration: " + timeSpan.ToString() + " is not implemented");
-                        }
-                    }
+                    //{
+                    //    int period;
+                    //    string[] timeSpanString = timeSpan.ToString().Split('_');
+                    //    switch (timeSpanString[0].ToUpper())
+                    //    {
+                    //        case "H":
+                    //            if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
+                    //            {
+                    //                if (!string.IsNullOrEmpty(this.ISIN) && this.DataProvider == StockDataProvider.ABC)
+                    //                {
+                    //                    var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
+                    //                    intradaySerie.ResetAllCache();
+                    //                    if (StockDataProviderBase.DownloadSerieData(intradaySerie) && intradaySerie.Initialise())
+                    //                    {
+                    //                        newBarList = GenerateHourBar(intradaySerie.Values.ToList(), period);
+                    //                    }
+                    //                }
+                    //                else
+                    //                {
+                    //                    newBarList = GenerateHourBar(dailyValueList, period);
+                    //                }
+                    //            }
+                    //            break;
+                    //        case "M":
+                    //            if (timeSpanString.Length > 1 && int.TryParse(timeSpanString[1], out period))
+                    //            {
+                    //                if (!string.IsNullOrEmpty(this.ISIN) && this.DataProvider == StockDataProvider.ABC)
+                    //                {
+                    //                    var intradaySerie = new StockSerie { StockName = this.StockName, StockGroup = this.StockGroup, Symbol = this.Symbol, ISIN = this.ISIN, DataProvider = StockDataProvider.BoursoIntraday };
+                    //                    intradaySerie.ResetAllCache();
+                    //                    if (StockDataProviderBase.DownloadSerieData(intradaySerie) && intradaySerie.Initialise())
+                    //                    {
+                    //                        newBarList = GenerateMinuteBar(intradaySerie.Values.ToList(), period);
+                    //                    }
+                    //                }
+                    //                else
+                    //                {
+                    //                    newBarList = GenerateMinuteBar(dailyValueList, period);
+                    //                }
+                    //            }
+                    //            break;
+                    //        default:
+                    //            throw new NotImplementedException("Bar duration: " + timeSpan.ToString() + " is not implemented");
+                    //    }
+                    //}
                     break;
             }
             return newBarList;

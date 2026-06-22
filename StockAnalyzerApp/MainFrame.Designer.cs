@@ -140,7 +140,6 @@ namespace StockAnalyzerApp
             this.showVariationBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.excludeButton = new System.Windows.Forms.ToolStripButton();
-            this.intradayButton = new System.Windows.Forms.ToolStripButton();
             this.saxoTurboButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.drawToolStrip = new System.Windows.Forms.ToolStrip();
@@ -1007,7 +1006,6 @@ namespace StockAnalyzerApp
             this.divScaleBtn,
             this.toolStripSeparator2,
             this.excludeButton,
-            this.intradayButton,
             this.saxoTurboButton,
             this.toolStripSeparator5});
             this.browseToolStrip.Location = new System.Drawing.Point(458, 0);
@@ -1145,16 +1143,6 @@ namespace StockAnalyzerApp
             this.excludeButton.Text = "Exclude";
             this.excludeButton.ToolTipText = "Exclude value from list";
             this.excludeButton.Click += new System.EventHandler(this.excludeButton_Click);
-            // 
-            // intradayButton
-            // 
-            this.intradayButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.intradayButton.Image = global::StockAnalyzerApp.Properties.Resources.Binoculars;
-            this.intradayButton.Name = "intradayButton";
-            this.intradayButton.Size = new System.Drawing.Size(23, 20);
-            this.intradayButton.Text = "Intraday";
-            this.intradayButton.ToolTipText = "Add or remove from intraday list";
-            this.intradayButton.Click += new System.EventHandler(this.intradayButton_Click);
             // 
             // saxoTurbo
             // 
@@ -1567,7 +1555,6 @@ namespace StockAnalyzerApp
         private ToolStripButton saveAnalysisToolStripButton;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton excludeButton;
-        private ToolStripButton intradayButton;
         private ToolStripButton saxoTurboButton;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripMenuItem viewMenuItem;
