@@ -3610,6 +3610,35 @@ namespace StockAnalyzer.StockClasses
             Monitor.Exit(__lockObj);
         }
 
+        internal void AddIntradayValue(StockDailyValue dailyValue)
+        {
+            if (!this.Initialise())
+                return;
+
+            var barDuration = this.BarDuration;
+            this.BarDuration = BarDuration.Daily;
+
+            this.IsInitialised = false;
+            if (!StockDataProviderBase.LoadSerieData(this) || this.Count == 0)
+            {
+                return;
+            }
+
+            if (this.Values.Last().DATE < dailyValue.DATE.Date)
+            {
+                this.Add(dailyValue.DATE, dailyValue);
+
+                if (this.BarSmoothedDictionary.ContainsKey("Daily"))
+                {
+                    this.BarSmoothedDictionary.Remove("Daily");
+                }
+                this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
+            }
+
+            this.Initialise();
+            this.BarDuration = barDuration;
+        }
+
         #endregion
     }
 }

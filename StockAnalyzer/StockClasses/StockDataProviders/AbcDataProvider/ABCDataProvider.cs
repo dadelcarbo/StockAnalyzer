@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockWeb;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
@@ -10,7 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices.ComTypes;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -18,6 +17,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static StockAnalyzer.StockClasses.StockSerie;
+
+using HtmlAgilityPack;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
@@ -1048,7 +1049,15 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         }
         public override bool DownloadIntradayData(StockSerie stockSerie)
         {
-            return false;
+            var dailyValue = AbcClient.DownloadDailyValue(stockSerie.ABCName);
+            if (dailyValue == null)
+                return false;
+
+            stockSerie.AddIntradayValue(dailyValue);
+
+            return true;
+
+
             //StockLog.Write("DownloadIntradayData Group: " + stockSerie.StockGroup + " - " + stockSerie.StockName);
 
             //if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())

@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockLogging;
+﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -467,18 +468,100 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             body = body.Remove(index);
             return body;
         }
-    }
+
+        public static StockDailyValue DownloadDailyValue(string abcId)
+        {
+            StockLog.Write($"Isin: {abcId}");
+            var dailyValue = null as StockDailyValue;
+            Task.Run(async () =>
+            {
+                var data = await GetStockDailyValueAsync(abcId);
+                if (data == null)
+                    return;
+
+                dailyValue = data;
+            }).Wait();
+
+            return dailyValue;
+        }
+
+        private static async Task<StockDailyValue> GetStockDailyValueAsync(string abcId)
+        {
+            if (!await InitClientAsync())
+                return null;
+
+            try
+            {
+                string url = $"https://www.abcbourse.com/cotation/{abcId}";
+
+                using var request = new HttpRequestMessage(new HttpMethod("GET"), url);
+                request.Headers.TryAddWithoutValidation("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+                request.Headers.TryAddWithoutValidation("accept-language", "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7");
+                request.Headers.TryAddWithoutValidation("cache-control", "max-age=0");
+                request.Headers.TryAddWithoutValidation("origin", "https://www.abcbourse.com");
+                request.Headers.TryAddWithoutValidation("priority", "u=0, i");
+                request.Headers.TryAddWithoutValidation("referer", "https://www.abcbourse.com");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua", "\"Chromium\";v=\"142\", \"Microsoft Edge\";v=\"142\", \"Not_A Brand\";v=\"99\"");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-mobile", "?0");
+                request.Headers.TryAddWithoutValidation("sec-ch-ua-platform", "\"Windows\"");
+                request.Headers.TryAddWithoutValidation("sec-fetch-dest", "document");
+                request.Headers.TryAddWithoutValidation("sec-fetch-mode", "navigate");
+                request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
+                request.Headers.TryAddWithoutValidation("sec-fetch-user", "?1");
+                request.Headers.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+                request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0");
+
+                var cookieString = cookies.Select(c => $"{c.Key}={c.Value}").Aggregate((i, j) => $"{i};{j}");
+                request.Headers.TryAddWithoutValidation("Cookie", cookieString);
+
+                var response = await httpClient.SendAsync(request);
+
+                response.EnsureSuccessStatusCode();
+                string htmlContent = await response.Content.ReadAsStringAsync();
+
+                // Load the HTML into HtmlAgilityPack
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(htmlContent);
+
+                // Extract Open, High, Low, Close, and Volume
+                // Note: Adjust the XPath or CSS selectors based on the actual HTML structure
+                string dateTime = doc.GetElementbyId("lastTrade")?.InnerText.Trim().Replace("- ", "") ?? null;
+                string close = doc.GetElementbyId("lastcx")?.InnerText.Trim().Replace(",", ".").Replace("&nbsp;", "") ?? null;
+                close = close.Substring(0, close.IndexOf(" ")).Trim();
+
+                string open = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Ouverture')]/following-sibling::td").InnerText.Trim().Replace(",", ".");
+                string high = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Plus haut')]/following-sibling::td").InnerText.Trim().Replace(",", ".");
+                string low = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Plus bas')]/following-sibling::td").InnerText.Trim().Replace(",", ".");
+                string volume = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Volume')]/following-sibling::td").InnerText.Trim().Replace("&#xA0;", "");
+
+                // Print the results
+                Console.WriteLine($"Open: {open}");
+                Console.WriteLine($"High: {high}");
+                Console.WriteLine($"Low: {low}");
+                Console.WriteLine($"Close: {close}");
+                Console.WriteLine($"Volume: {volume}");
+
+                return new StockDailyValue(float.Parse(open), float.Parse(high), float.Parse(low), float.Parse(close), long.Parse(volume), DateTime.Parse(dateTime))
+                { IsComplete = false };
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex.Message);
+                return null;
+            }
+        }
 
 
-    public class AbcAgenda
-    {
-        public AbcAgendaItem[] Items { get; set; }
-    }
+        public class AbcAgenda
+        {
+            public AbcAgendaItem[] Items { get; set; }
+        }
 
-    public class AbcAgendaItem
-    {
-        public string Item1 { get; set; }
-        public string Item2 { get; set; }
-        public string Item3 { get; set; }
+        public class AbcAgendaItem
+        {
+            public string Item1 { get; set; }
+            public string Item2 { get; set; }
+            public string Item3 { get; set; }
+        }
     }
 }
