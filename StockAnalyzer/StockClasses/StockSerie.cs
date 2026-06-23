@@ -397,6 +397,8 @@ namespace StockAnalyzer.StockClasses
 
             return ValueSeries[(int)dataType];
         }
+
+        #region Inficator Management
         public IStockTrailStop GetTrailStop(String trailStopName)
         {
             if (this.TrailStopCache != null && this.TrailStopCache.Name == trailStopName)
@@ -580,7 +582,11 @@ namespace StockAnalyzer.StockClasses
                 this.CloudCache.Add(indicator.Name, indicator);
             }
         }
+
         #endregion
+
+        #endregion
+
         #region Constructors
         public StockSerie()
         {

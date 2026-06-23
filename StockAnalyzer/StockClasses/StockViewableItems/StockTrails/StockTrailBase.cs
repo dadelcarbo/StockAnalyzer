@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 using System;
@@ -58,6 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
         }
 
         abstract public void ApplyTo(StockSerie stockSerie);
+        public void ApplyTo(DataSerie dataSerie) => this.ApplyTo(dataSerie.Instrument.StockSerie);
 
 
         protected FloatSerie[] series;

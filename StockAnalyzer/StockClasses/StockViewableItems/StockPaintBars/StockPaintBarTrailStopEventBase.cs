@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 using System;
@@ -95,6 +96,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars
         {
             this.baseIndicator = stockSerie.GetTrailStop(this.Name);
         }
+        public void ApplyTo(DataSerie dataSerie) => this.ApplyTo(dataSerie.Instrument.StockSerie);
 
         #region IStockEvent implementation
 

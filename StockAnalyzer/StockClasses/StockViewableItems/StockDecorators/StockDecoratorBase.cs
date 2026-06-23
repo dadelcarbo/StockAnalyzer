@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockDrawing;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
@@ -58,6 +59,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
         }
 
         abstract public void ApplyTo(StockSerie stockSerie);
+        public void ApplyTo(DataSerie dataSerie) => this.ApplyTo(dataSerie.Instrument.StockSerie);
 
         protected BoolSerie[] eventSeries;
         public int EventCount => EventNames.Length;

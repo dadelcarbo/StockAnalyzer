@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockData;
+using System;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems
@@ -65,5 +66,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
 
         void Initialise(string[] parameters);
         void ApplyTo(StockSerie stockSerie);
+        void ApplyTo(DataSerie dataSerie);
     }
 }

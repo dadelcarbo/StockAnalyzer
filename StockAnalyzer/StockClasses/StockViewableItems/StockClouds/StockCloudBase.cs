@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockDrawing;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         }
 
         abstract public void ApplyTo(StockSerie stockSerie);
+        public void ApplyTo(DataSerie dataSerie) => this.ApplyTo(dataSerie.Instrument.StockSerie);
 
         #region IStockEvent implementation
         protected BoolSerie[] eventSeries;
