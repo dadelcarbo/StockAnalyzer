@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -22,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(.25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var longPeriod = (int)parameters[0];
             var shortPeriod = (int)parameters[1];

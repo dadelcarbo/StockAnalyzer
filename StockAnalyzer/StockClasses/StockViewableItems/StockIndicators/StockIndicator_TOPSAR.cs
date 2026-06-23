@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             float accelerationFactorStart = (float)this.parameters[0] / 100f;
             float accelerationFactorStep = (float)this.parameters[1] / 100f;

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 
@@ -14,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(1, 500) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
             {

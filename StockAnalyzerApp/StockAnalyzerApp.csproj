@@ -535,12 +535,6 @@
     <Compile Include="CustomControl\IndicatorDlgs\AddIndicatorDlg.Designer.cs">
       <DependentUpon>AddIndicatorDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\IndicatorDlgs\AddPaintBarDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\IndicatorDlgs\AddPaintBarDlg.Designer.cs">
-      <DependentUpon>AddPaintBarDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailStopDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -812,12 +806,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddIndicatorDlg.resx">
       <DependentUpon>AddIndicatorDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddPaintBarDlg.fr-FR.resx">
-      <DependentUpon>AddPaintBarDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddPaintBarDlg.resx">
-      <DependentUpon>AddPaintBarDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddTrailStopDlg.fr-FR.resx">
       <DependentUpon>AddTrailStopDlg.cs</DependentUpon>

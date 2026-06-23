@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
@@ -32,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             CreateEventSeries(stockSerie.Count);
 

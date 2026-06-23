@@ -58,8 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
             return index != -1 ? this.Series[index] : null;
         }
 
-        abstract public void ApplyTo(StockSerie stockSerie);
-        public void ApplyTo(DataSerie dataSerie) => this.ApplyTo(dataSerie.Instrument.StockSerie);
+        abstract public void ApplyTo(DataSerie stockSerie);
 
 
         protected FloatSerie[] series;

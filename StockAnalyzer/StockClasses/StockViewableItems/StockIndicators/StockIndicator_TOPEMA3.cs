@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
@@ -29,7 +30,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 new Area {Name="Bull", Color = Color.FromArgb(64, Color.Green), Visibility = true }
             };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
 

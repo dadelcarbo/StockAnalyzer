@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -36,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
         public override string[] SerieFormats => serieFormats ??= new string[] { "P2", "P2", "P2" };
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var fastMA = stockSerie.GetIndicator($"EMA({this.parameters[1]})").Series[0];
             var slowMA = stockSerie.GetIndicator($"EMA({this.parameters[0]})").Series[0];

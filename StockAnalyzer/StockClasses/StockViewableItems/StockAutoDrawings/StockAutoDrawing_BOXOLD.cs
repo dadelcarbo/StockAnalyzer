@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
@@ -39,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var highPeriod = (int)this.parameters[0];
             var lowPeriod = (int)this.parameters[1];

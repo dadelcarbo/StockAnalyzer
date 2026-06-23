@@ -10,7 +10,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockHelpers;
@@ -4369,12 +4368,6 @@ namespace StockAnalyzerApp
                                                     {
                                                         curveList.Cloud = stockCloud;
                                                     }
-                                                }
-                                                break;
-                                            case "PAINTBAR":
-                                                {
-                                                    IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
-                                                    curveList.PaintBar = paintBar;
                                                 }
                                                 break;
                                             case "AUTODRAWING":

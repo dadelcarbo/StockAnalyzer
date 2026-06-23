@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0f, 5f) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, SerieNames[0], float.NaN);
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, SerieNames[1], float.NaN);
@@ -22,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             var fiboRatio = (float)this.parameters[2];
             int startPeriod = Math.Max(highPeriod, lowPeriod);
 
-            if (stockSerie.ValueArray.Length < startPeriod)
+            if (stockSerie.Values.Length < startPeriod)
             {
                 // Generate events
                 this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);
@@ -54,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 }
                 else
                 {
-                    if (closeSerie[i] > fiboHighSerie[i - 1] && stockSerie.ValueArray[i].VARIATION > 0.05f)
+                    if (closeSerie[i] > fiboHighSerie[i - 1] && stockSerie.Values[i].VARIATION > 0.05f)
                     {  // new high => up trend starts
                         upTrend = true;
                         longStopSerie[i] = fiboLongSerie[i];

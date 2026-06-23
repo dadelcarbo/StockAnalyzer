@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -30,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return lines;
             }
         }
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             IStockIndicator fastSerie = stockSerie.GetIndicator($"{this.parameters[3]}({this.parameters[0]})");
             IStockIndicator slowSerie = stockSerie.GetIndicator($"{this.parameters[3]}({this.parameters[1]})");

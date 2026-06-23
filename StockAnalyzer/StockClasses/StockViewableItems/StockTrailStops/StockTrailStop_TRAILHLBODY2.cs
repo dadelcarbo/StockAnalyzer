@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeInt(0, 500) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, SerieNames[0]);
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, SerieNames[1]);
@@ -20,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             int trailUpPeriod = (int)this.parameters[0];
             int trailDownPeriod = (int)this.parameters[1];
 
-            if (stockSerie.ValueArray.Length < Math.Max(trailUpPeriod, trailDownPeriod))
+            if (stockSerie.Values.Length < Math.Max(trailUpPeriod, trailDownPeriod))
             {
                 // Generate events
                 this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);
@@ -33,7 +34,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 
             StockDailyValue previousValue = stockSerie.Values.First();
-            bool upTrend = previousValue.CLOSE > stockSerie.ValueArray[1].CLOSE;
+            bool upTrend = previousValue.CLOSE > stockSerie.Values[1].CLOSE;
             int i = 1;
             if (upTrend)
             {

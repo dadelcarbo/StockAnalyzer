@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 
@@ -17,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine((float)this.parameters[2], new Pen(Color.Black) { Width = 2 }) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var ddSerie = stockSerie.CalculateDrawdownValue((int)this.parameters[0]);
             var adrSerie = stockSerie.GetIndicator($"ADR({this.parameters[1]}").Series[0];

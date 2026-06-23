@@ -1,10 +1,11 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_EMA : StockIndicatorMovingAvgBase
     {
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             this.Series[0] = closeSerie.CalculateEMA((int)this.parameters[0]);

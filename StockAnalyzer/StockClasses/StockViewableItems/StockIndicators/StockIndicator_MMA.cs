@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -14,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             new ParamRangeInt(1, 500)
         };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             var fastEma = closeSerie.CalculateEMA((int)this.parameters[0]);

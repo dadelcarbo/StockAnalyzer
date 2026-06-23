@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -23,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         static readonly Pen supportPen = new Pen(Brushes.DarkRed, 3);
         static readonly Pen resistancePen = new Pen(Brushes.DarkGreen, 3);
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var period = (int)this.parameters[0];
 

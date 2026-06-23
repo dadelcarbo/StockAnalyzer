@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzer.StockData;
+using System;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -17,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
@@ -27,7 +28,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             if (!indexSerie.Initialise())
                 return;
 
-            var indexCloseSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(indexSerie, stockSerie.BarDuration);
+            var indexCloseSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(this.parameters[0] as string, stockSerie.BarDuration);
 
             var rsSerie = 100.0f * closeSerie / indexCloseSerie;
 

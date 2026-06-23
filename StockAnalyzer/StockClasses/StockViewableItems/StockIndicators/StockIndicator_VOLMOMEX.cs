@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
@@ -42,7 +43,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return lines;
             }
         }
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             using MethodLogger ml = new MethodLogger(this);
             FloatSerie upVolume = new FloatSerie(stockSerie.Count);

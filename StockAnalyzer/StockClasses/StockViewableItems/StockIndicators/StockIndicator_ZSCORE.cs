@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -17,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.Gray)) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
 

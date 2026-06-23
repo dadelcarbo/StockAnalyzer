@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 new ParamRangeMA()
                 };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie longStopSerie;
             FloatSerie shortStopSerie;

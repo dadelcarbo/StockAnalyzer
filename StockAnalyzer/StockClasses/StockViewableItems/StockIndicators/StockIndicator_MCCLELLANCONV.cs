@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
@@ -22,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 new Area {Name="Bear", Color = Color.FromArgb(64, Color.Red), Visibility = true }
             };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var fastEma = stockSerie.GetIndicator($"EMA({parameters[0]})").Series[0];
             var slowEma = stockSerie.GetIndicator($"EMA({parameters[1]})").Series[0];

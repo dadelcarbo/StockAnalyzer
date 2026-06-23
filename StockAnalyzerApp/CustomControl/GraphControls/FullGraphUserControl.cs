@@ -5,7 +5,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
@@ -182,11 +181,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.StartIndex = Math.Max(0, currentStockSerie.Count - Settings.Default.DefaultBarNumber);
                 this.EndIndex = currentStockSerie.Count - 1;
 
-                if (currentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
-                {
-                    currentStockSerie.PaintBarCache = null;
-                }
-
                 // Force resetting the secondary serie.
                 if (currentTheme["CloseGraph"].FindIndex(s => s.StartsWith("SECONDARY")) == -1)
                 {
@@ -335,12 +329,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                             {
                                                 curveList.Cloud = stockCloud;
                                             }
-                                        }
-                                        break;
-                                    case "PAINTBAR":
-                                        {
-                                            IStockPaintBar paintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line, currentStockSerie);
-                                            curveList.PaintBar = paintBar;
                                         }
                                         break;
                                     case "AUTODRAWING":

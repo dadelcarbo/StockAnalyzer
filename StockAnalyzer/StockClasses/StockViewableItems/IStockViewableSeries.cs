@@ -15,7 +15,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         SimpleCurve,                /// Draw as a curve like EMA
         SupportResistance,          /// Draw as support/resistance dots
         TrailStop,                  /// Draw as a trailing stop
-        PaintBar,                   /// Draw as a paint bar
         DecoratorPlot,              /// Draw as a plot
         DecoratorLine,              /// Draw a a vertical line
         TrailCurve,
@@ -25,7 +24,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
     {
         Indicator,
         Decorator,
-        PaintBar,
         TrailStop,
         Trail,
         Cloud,
@@ -65,7 +63,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         Pen[] SeriePens { get; }
 
         void Initialise(string[] parameters);
-        void ApplyTo(StockSerie stockSerie);
+
         void ApplyTo(DataSerie dataSerie);
     }
 }

@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockDrawing;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
 using StockAnalyzerSettings;
 using System;
@@ -25,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 new Area {Name="Bear", Color = Color.FromArgb(20, Color.Red), Visibility = false }
             };
 
-        protected void CalculateEvents(StockSerie stockSerie)
+        protected void CalculateEvents(DataSerie stockSerie)
         {
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             FloatSerie openSerie = stockSerie.GetSerie(StockDataType.OPEN);

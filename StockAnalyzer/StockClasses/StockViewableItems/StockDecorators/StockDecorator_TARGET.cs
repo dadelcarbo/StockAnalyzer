@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using System;
@@ -35,7 +36,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             using MethodLogger ml = new MethodLogger(this);
             List<string> eventNames = this.EventNames.ToList();

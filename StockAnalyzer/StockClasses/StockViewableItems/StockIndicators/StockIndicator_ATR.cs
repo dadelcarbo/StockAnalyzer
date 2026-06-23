@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -23,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override HLine[] HorizontalLines => null;
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie atrSerie = stockSerie.GetSerie(StockDataType.ATR);
 

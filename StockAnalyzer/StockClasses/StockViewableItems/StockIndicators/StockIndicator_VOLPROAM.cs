@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -30,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie volume = stockSerie.GetSerie(StockDataType.VOLUME) * 1.0f; // * stockSerie.GetSerie(StockDataType.CLOSE) / 1000.0f;
             FloatSerie upperBB = null;

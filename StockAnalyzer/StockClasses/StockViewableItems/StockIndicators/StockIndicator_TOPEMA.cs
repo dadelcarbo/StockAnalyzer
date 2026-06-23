@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -23,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Green, 2), new Pen(Color.Red, 2), new Pen(Color.Blue, 2) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
 

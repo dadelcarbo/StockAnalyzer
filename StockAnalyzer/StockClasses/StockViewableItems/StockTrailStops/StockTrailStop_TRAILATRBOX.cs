@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Linq;
 
@@ -17,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                 new ParamRangeFloat(0.0f, 20.0f),
                 new ParamRangeFloat(0.0f, 20.0f),
                 };
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie longStop = new FloatSerie(stockSerie.Count, this.SerieNames[0], float.NaN);
             FloatSerie shortStop = new FloatSerie(stockSerie.Count, this.SerieNames[1], float.NaN);

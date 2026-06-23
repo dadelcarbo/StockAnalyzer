@@ -1,4 +1,5 @@
 ﻿using System;
+using StockAnalyzer.StockData;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -23,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
 
             //foreach (var value in stockSerie.Values.Reverse())

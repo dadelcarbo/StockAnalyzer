@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
@@ -14,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var mcClellanIndicator = stockSerie.GetIndicator($"MCCLELLANCONV({this.Parameters[0]},{this.Parameters[1]})");
 

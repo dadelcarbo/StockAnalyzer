@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         }
         public override HLine[] HorizontalLines => null;
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             this.series[0] = new FloatSerie(stockSerie.Values.Select(v => v.NADR)).CalculateEMA((int)this.Parameters[0]) * 100f;
             this.Series[0].Name = this.Name;

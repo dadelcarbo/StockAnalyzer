@@ -1,4 +1,5 @@
 ﻿using System;
+using StockAnalyzer.StockData;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -38,7 +39,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             Queue<float> resistanceQueue = new Queue<float>(new float[] { float.MinValue, float.MinValue });
             Queue<float> supportQueue = new Queue<float>(new float[] { float.MaxValue, float.MaxValue });

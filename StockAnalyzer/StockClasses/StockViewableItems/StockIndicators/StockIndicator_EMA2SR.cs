@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -15,7 +16,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "EMA2.S", "EMA2.R" };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             int slowPeriod = (int)this.Parameters[0];
             int fastPeriod = (int)this.Parameters[1];

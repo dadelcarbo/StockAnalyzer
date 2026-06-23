@@ -3,7 +3,6 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
@@ -527,10 +526,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             #endregion
 
             #region Display the stock value
-            if (this.CurveList.PaintBar != null)
-            {
-                this.DrawStockText(aGraphic, this.CurveList.PaintBar.StockTexts);
-            }
 
             // Then draw the value
             if (closeCurveType != null && closeCurveType.IsVisible)
@@ -578,29 +573,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 bar.Open = tmpOpenPoints[i].Y;
                                 bar.Low = tmpLowPoints[i].Y;
 
-                                if (!this.HideIndicators && this.CurveList.PaintBar != null)
-                                {
-                                    Pen barPen = null;
-                                    // Get pen from paintBar
-                                    IStockPaintBar pb = this.CurveList.PaintBar;
-                                    if (pb.Events[0].Count == this.dateSerie.Length)
-                                    {
-                                        for (int pbIndex = 0; pbIndex < pb.SeriesCount; pbIndex++)
-                                        {
-                                            if (pb.SerieVisibility[pbIndex] && pb.Events[pbIndex][i + this.StartIndex])
-                                            {
-                                                barPen = pb.SeriePens[pbIndex];
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    bar.Draw(aGraphic, barPen);
-                                }
-                                else
-                                {
-                                    bar.Draw(aGraphic);
-                                }
-
+                                bar.Draw(aGraphic);
                             }
                         }
                         break;
@@ -626,36 +599,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 candleStick.Open = (int)tmpOpenPoints[i].Y;
                                 candleStick.Low = (int)tmpLowPoints[i].Y;
 
-                                Color? color = null;
-                                if (!this.HideIndicators && this.CurveList.PaintBar != null)
-                                {
-                                    // Get pen from paintBar
-                                    IStockPaintBar pb = this.CurveList.PaintBar;
-                                    if (pb.Events[0].Count == this.dateSerie.Length)
-                                    {
-                                        for (int pbIndex = 0; pbIndex < pb.SeriesCount; pbIndex++)
-                                        {
-                                            if (pb.SerieVisibility[pbIndex] && pb.Events[pbIndex][i + this.StartIndex])
-                                            {
-                                                color = pb.SeriePens[pbIndex].Color;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (color == null)
-                                    {
-                                        candleStick.Draw(aGraphic);
-                                    }
-                                    else
-                                    {
-                                        using Brush brush = new SolidBrush(color.Value);
-                                        candleStick.Draw(aGraphic, new Pen(color.Value), brush);
-                                    }
-                                }
-                                else
-                                {
-                                    candleStick.Draw(aGraphic);
-                                }
+                                candleStick.Draw(aGraphic);
                             }
                         }
                         break;
@@ -733,21 +677,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     break;
                                 }
                             }
-                        }
-                    }
-                    // Paint bars
-                    if (!eventFound && this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
-                    {
-                        int j = 0;
-                        foreach (var eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
-                        {
-                            if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null &&
-                                this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
-                            {
-                                eventFound = true;
-                                break;
-                            }
-                            j++;
                         }
                     }
                     // Cloud
@@ -1186,7 +1115,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             string graphTitle = this.serie.Instrument.Group + " - " + this.serie?.StockName;
 
-            // Add PaintBars, SR, Trail...
+            // Add SR, Trail...
             foreach (IStockIndicator indicator in this.CurveList.Indicators)
             {
                 graphTitle += " " + (indicator.Name);
@@ -1194,10 +1123,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.CurveList.Cloud != null)
             {
                 graphTitle += " " + (this.CurveList.Cloud.Name);
-            }
-            if (this.CurveList.PaintBar != null)
-            {
-                graphTitle += " " + (this.CurveList.PaintBar.Name);
             }
             if (this.CurveList.TrailStop != null)
             {
@@ -1612,20 +1537,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         }
                     }
                 }
-                // Paint Bars
-                if (this.CurveList.PaintBar != null && this.CurveList.PaintBar.EventCount > 0)
-                {
-                    int j = 0;
-                    foreach (BoolSerie eventSerie in this.CurveList.PaintBar.Events.Where(ev => ev != null && ev.Count > 0))
-                    {
-                        if (this.CurveList.PaintBar.SerieVisibility[j] && this.CurveList.PaintBar.IsEvent != null && this.CurveList.PaintBar.IsEvent[j] && eventSerie[i])
-                        {
-                            eventTypeString += this.CurveList.PaintBar.Name + " - " + eventSerie.Name + System.Environment.NewLine;
-                        }
-                        j++;
-                    }
-                }
-                // Paint Bars
+                // Auto Drawing
                 if (this.CurveList.AutoDrawing != null && this.CurveList.AutoDrawing.EventCount > 0)
                 {
 

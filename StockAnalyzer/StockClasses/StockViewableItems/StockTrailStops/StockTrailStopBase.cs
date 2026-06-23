@@ -61,8 +61,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
             this.ParseInputParameters(parameters);
         }
 
-        abstract public void ApplyTo(StockSerie stockSerie);
-        public void ApplyTo(DataSerie dataSerie) => this.ApplyTo(dataSerie.Instrument.StockSerie);
+        abstract public void ApplyTo(DataSerie stockSerie);
 
         #region IStockEvent implementation
         protected BoolSerie[] eventSeries;
@@ -112,7 +111,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         private static readonly bool[] isEvent = new bool[] { true, true, true, true, true, true, false, false, true, true, true, false, true };
         public bool[] IsEvent => isEvent;
 
-        protected void GenerateEvents(StockSerie stockSerie, FloatSerie longStopSerie, FloatSerie shortStopSerie)
+        protected void GenerateEvents(DataSerie stockSerie, FloatSerie longStopSerie, FloatSerie shortStopSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
 
@@ -224,7 +223,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         protected int ReentryPeriod { get; set; } = 6;
 
-        private void CalculateLongReentry(StockSerie stockSerie, FloatSerie longStop, FloatSerie shortStop)
+        private void CalculateLongReentry(DataSerie stockSerie, FloatSerie longStop, FloatSerie shortStop)
         {
             float alpha = 2.0f / (ReentryPeriod + 1f);
             var longReentrySerie = new FloatSerie(stockSerie.Count, this.SerieNames[2], float.NaN);

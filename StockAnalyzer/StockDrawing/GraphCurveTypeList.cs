@@ -2,7 +2,6 @@
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using System;
 using System.Collections.Generic;
@@ -79,8 +78,6 @@ namespace StockAnalyzer.StockDrawing
             if (this.Cloud != null) count += 2;
             return count;
         }
-
-        public IStockPaintBar PaintBar { get; set; }
         public IStockAutoDrawing AutoDrawing { get; set; }
         public IStockDecorator Decorator { get; set; }
         public IStockTrailStop TrailStop { get; set; }

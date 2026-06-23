@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Drawing;
@@ -21,7 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Default") };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var turtle = stockSerie.GetIndicator($"TURTLE({this.Parameters[0]},{this.Parameters[1]},{this.Parameters[2]})");
 

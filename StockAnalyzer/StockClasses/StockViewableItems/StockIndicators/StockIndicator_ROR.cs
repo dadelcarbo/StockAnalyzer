@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
 
@@ -18,7 +19,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine((float)this.parameters[1], new Pen(Color.Black) { Width = 2 }) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie rocSerie = (stockSerie.CalculateRateOfRise((int)this.parameters[0], InputType.Body));
 

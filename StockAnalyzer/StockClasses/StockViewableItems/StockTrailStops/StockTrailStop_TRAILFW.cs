@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
@@ -10,7 +11,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
         public override Object[] ParameterDefaultValues => new Object[] { 20, 5f };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeFloat(0f, 20f) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var period = (int)this.Parameters[0];
             var nbAtr = (float)this.Parameters[1];

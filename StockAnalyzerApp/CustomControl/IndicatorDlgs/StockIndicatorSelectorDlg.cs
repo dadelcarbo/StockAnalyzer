@@ -3,7 +3,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
@@ -162,15 +161,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 this.SelectedImageKey = "Trail";
             }
         }
-        public class PaintBarsNode : ViewableItemNode
-        {
-            public PaintBarsNode(string name, ContextMenuStrip menuStrip, IStockPaintBar stockPaintBar)
-                : base(name, NodeType.PaintBars, menuStrip, (IStockViewableSeries)stockPaintBar)
-            {
-                this.ImageKey = "PB";
-                this.SelectedImageKey = "PB";
-            }
-        }
         public class AutoDrawingsNode : ViewableItemNode
         {
             public AutoDrawingsNode(string name, ContextMenuStrip menuStrip, IStockAutoDrawing stockAutoDrawing)
@@ -296,7 +286,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.groupBoxList.Add(curveConfigBox);
             this.groupBoxList.Add(lineConfigBox);
             this.groupBoxList.Add(graphConfigBox);
-            this.groupBoxList.Add(paintBarGroupBox);
             this.groupBoxList.Add(trailStopGroupBox);
 
             suspendPreview = false;
@@ -475,21 +464,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
                                             curveNode.ImageKey = "LINE";
                                             curveNode.SelectedImageKey = "LINE";
-                                        }
-                                        treeNode.Nodes.Add(treeNode1);
-                                    }
-                                    break;
-                                case "PAINTBAR":
-                                    {
-                                        IStockPaintBar stockPaintBar = (IStockPaintBar)StockViewableItemsManager.GetViewableItem(line);
-                                        treeNode1 = new PaintBarsNode(stockPaintBar.Name, this.indicatorMenuStrip, stockPaintBar);
-                                        for (int i = 0; i < stockPaintBar.SeriesCount; i++)
-                                        {
-                                            CurveNode curveNode = new CurveNode(stockPaintBar.SerieNames[i], null, stockPaintBar.SeriePens[i], true, stockPaintBar.SerieVisibility[i]);
-                                            treeNode1.Nodes.Add(curveNode);
-
-                                            curveNode.ImageKey = treeNode1.ImageKey;
-                                            curveNode.SelectedImageKey = treeNode1.SelectedImageKey;
                                         }
                                         treeNode.Nodes.Add(treeNode1);
                                     }
@@ -1762,7 +1736,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         this.addIndicatorToolStripMenuItem.Visible = true;
                         this.addHorizontalLineToolStripMenuItem.Visible = true;
-                        this.addPaintBarsToolStripMenuItem.Visible = true;
                         this.addAutoDrawingsToolStripMenuItem.Visible = true;
                         this.addTrailStopsToolStripMenuItem.Visible = true;
                     }
@@ -1770,7 +1743,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         this.addIndicatorToolStripMenuItem.Visible = true;
                         this.addHorizontalLineToolStripMenuItem.Visible = true;
-                        this.addPaintBarsToolStripMenuItem.Visible = false;
                         this.addAutoDrawingsToolStripMenuItem.Visible = false;
                         this.addTrailStopsToolStripMenuItem.Visible = false;
                     }
@@ -1778,7 +1750,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     {
                         this.addIndicatorToolStripMenuItem.Visible = false;
                         this.addHorizontalLineToolStripMenuItem.Visible = false;
-                        this.addPaintBarsToolStripMenuItem.Visible = false;
                         this.addAutoDrawingsToolStripMenuItem.Visible = false;
                         this.addTrailStopsToolStripMenuItem.Visible = false;
                     }
@@ -1823,24 +1794,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                         this.addTrailToolStripMenuItem.Visible = false;
                     }
                     break;
-                case NodeType.PaintBars:
-                    {
-                        ActivateIndicatorConfigPanel("PaintBarParam");
-                        ViewableItemNode viewableItemNode = (ViewableItemNode)treeNode;
-                        this.removeStripMenuItem.Visible = true;
-                        this.copyStripMenuItem.Visible = true;
-                        if (viewableItemNode.ViewableItem.DisplayTarget == IndicatorDisplayTarget.PriceIndicator)
-                        {
-                            this.addDecoratorToolStripMenuItem.Visible = false;
-                            this.addTrailToolStripMenuItem.Visible = false;
-                        }
-                        else
-                        {
-                            this.addDecoratorToolStripMenuItem.Visible = true;
-                            this.addTrailToolStripMenuItem.Visible = true;
-                        }
-                    }
-                    break;
                 case NodeType.AutoDrawings:
                     {
                         ActivateIndicatorConfigPanel("AutoDrawingParam");
@@ -1870,15 +1823,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     break;
                 case NodeType.Curve:
                 case NodeType.Fill:
-                    if (((StockNode)treeNode.Parent).Type == NodeType.PaintBars)
-                    {
-                        ActivatePaintBarConfigPanel((CurveNode)treeNode);
-                    }
-                    // @@@@ if (((StockNode)treeNode.Parent).Type == NodeType.Cloud)
-                    //{
-                    //    ActivateCloudConfigPanel((CurveNode)treeNode);
-                    //}
-                    else if (treeNode is FillNode)
+                    if (treeNode is FillNode)
                     {
                         ActivateAreaConfigPanel((FillNode)treeNode);
                     }
@@ -1974,7 +1919,7 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
 
             if (graphNode.Text.ToUpper() == "CLOSEGRAPH" && graphNode.GraphMode == GraphChartMode.BarChart)
             {
-                PaintPreviewWithPaintBars(g, Pens.Black);
+                PaintPreviewWithCandleSticks(g, Pens.Black);
             }
             else
             {
@@ -2024,40 +1969,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             }
         }
         #endregion
-        #region PAINTBAR PARAMETERS
-        private void ActivatePaintBarConfigPanel(CurveNode curveNode)
-        {
-            this.MakeVisible(this.paintBarGroupBox);
-            this.suspendPreview = true;
-
-            this.lineTypeComboBox.Parent = this.paintBarGroupBox;
-            this.thicknessComboBox.Parent = this.paintBarGroupBox;
-            this.lineColorPanel.Parent = this.paintBarGroupBox;
-
-            if (curveNode.SupportVisibility)
-            {
-                this.visibleCheckBox.Parent = paintBarGroupBox;
-                this.visibleCheckBox.Visible = true;
-                this.visibleCheckBox.Checked = curveNode.Visible;
-            }
-            else
-            {
-                this.visibleCheckBox.Visible = false;
-            }
-
-            this.lineTypeComboBox.SelectedItem = curveNode.CurvePen.DashStyle.ToString();
-            this.thicknessComboBox.SelectedItem = (int)curveNode.CurvePen.Width;
-            this.lineColorPanel.BackColor = Color.FromArgb(255, curveNode.CurvePen.Color);
-
-            //this.opacityTrackBar.Visible = false;
-
-            this.curvePreviewLabel.Parent = this.paintBarGroupBox;
-            this.previewPanel.Parent = this.paintBarGroupBox;
-            this.suspendPreview = false;
-            this.previewPanel.Refresh();
-        }
-
-        #endregion
 
         private void applyButton_Click(object sender, EventArgs e)
         {
@@ -2075,52 +1986,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     return;
                 }
                 this.treeView1.Nodes.Remove(stockNode);
-            }
-        }
-
-        private void addPaintBarsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AddPaintBarDlg addDlg;
-            StockNode stockNode = (StockNode)this.treeView1.SelectedNode;
-            switch (stockNode.Text)
-            {
-                case "CloseGraph":
-                    addDlg = new AddPaintBarDlg() { StartPosition = FormStartPosition.CenterParent };
-                    break;
-                default:
-                    return;
-            }
-            if (addDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                // Only one paint bar per graph
-                int index = 0;
-                bool found = false;
-                foreach (StockNode node in stockNode.Nodes)
-                {
-                    if (node.Type == NodeType.PaintBars)
-                    {
-                        found = true;
-                        break;
-                    }
-                    index++;
-                }
-                if (found)
-                {
-                    stockNode.Nodes.RemoveAt(index);
-                }
-
-                // Add new paint bar
-                IStockPaintBar stockPaintBar = StockPaintBarManager.CreatePaintBar(addDlg.PaintBarName);
-                StockNode paintBarNode = new PaintBarsNode(stockPaintBar.Name, this.indicatorMenuStrip, stockPaintBar);
-                stockNode.Nodes.Add(paintBarNode);
-                int i = 0;
-                foreach (string paintBarName in stockPaintBar.SerieNames)
-                {
-                    paintBarNode.Nodes.Add(new CurveNode(paintBarName, null, stockPaintBar.SeriePens[i], stockPaintBar.SerieVisibility[i]));
-                    i++;
-                }
-                this.treeView1.SelectedNode = paintBarNode;
-                paintBarNode.Expand();
             }
         }
 

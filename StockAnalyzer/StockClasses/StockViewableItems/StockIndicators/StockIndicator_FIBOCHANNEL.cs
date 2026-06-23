@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -25,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             new Pen(Color.DarkRed,2)
         };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             int highPeriod = (int)this.parameters[0];
             int lowPeriod = (int)this.parameters[1];

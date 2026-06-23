@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
@@ -21,7 +22,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 };
         public override string[] SerieNames => new string[] { "Bull", "Bear", "MA" };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var atrBandIndicator = stockSerie.GetIndicator($"ATRBAND({(int)this.parameters[0]},{(int)this.parameters[1]},{(float)this.parameters[2]},{(float)this.parameters[3]},{this.parameters[4]})");
             var bandUp = atrBandIndicator.Series[0];

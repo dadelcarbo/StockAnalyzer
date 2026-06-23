@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Linq;
 
@@ -14,14 +15,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500) };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie longStopSerie = new FloatSerie(stockSerie.Count, "TRAILBRANDT.LS");
             FloatSerie shortStopSerie = new FloatSerie(stockSerie.Count, "TRAILBRANDT.SS");
 
             int period = (int)this.parameters[0];
 
-            if (stockSerie.ValueArray.Length < period)
+            if (stockSerie.Values.Length < period)
             {
                 // Generate events
                 this.GenerateEvents(stockSerie, longStopSerie, shortStopSerie);

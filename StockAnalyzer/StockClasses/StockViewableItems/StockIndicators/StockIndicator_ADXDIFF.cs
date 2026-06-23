@@ -1,4 +1,5 @@
 ﻿using System;
+using StockAnalyzer.StockData;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -39,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             // Set HLine value
             float trendThreshold = 25; // Used only for event calculation

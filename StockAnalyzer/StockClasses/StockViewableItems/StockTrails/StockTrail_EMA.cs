@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
@@ -31,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrails
             }
         }
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             IStockIndicator indicator = stockSerie.GetIndicator(this.TrailedItem);
             if (indicator != null && indicator.Series[0].Count > 0)

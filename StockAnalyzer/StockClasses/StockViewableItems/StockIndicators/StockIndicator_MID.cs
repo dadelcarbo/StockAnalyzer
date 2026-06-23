@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -6,7 +7,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_MID : StockIndicatorMovingAvgBase
     {
         public override string Definition => "Calculates the mid point from High and Low over the given period, it can be used as a moving average";
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             int period = (int)this.parameters[0];
 

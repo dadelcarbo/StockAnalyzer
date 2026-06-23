@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -16,7 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.DarkRed), new Pen(Color.Black) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot } };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var indicator = stockSerie.GetIndicator(this.parameters[0].ToString().Replace("_", ","));
             if (!string.IsNullOrEmpty(indicator.SerieFormats?[0]))

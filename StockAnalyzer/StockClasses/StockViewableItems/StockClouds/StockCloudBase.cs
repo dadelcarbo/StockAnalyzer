@@ -51,8 +51,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
             this.ParseInputParameters(parameters);
         }
 
-        abstract public void ApplyTo(StockSerie stockSerie);
-        public void ApplyTo(DataSerie dataSerie) => this.ApplyTo(dataSerie.Instrument.StockSerie);
+        abstract public void ApplyTo(DataSerie stockSerie);
 
         #region IStockEvent implementation
         protected BoolSerie[] eventSeries;
@@ -101,7 +100,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
                 this.eventSeries[i] = new BoolSerie(count, this.EventNames[i]);
             }
         }
-        protected virtual void GenerateEvents(StockSerie stockSerie)
+        protected virtual void GenerateEvents(DataSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
 

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -31,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override Pen[] SeriePens => seriePens ?? new Pen[] { new Pen(Color.DarkGreen) { Width = 2 } };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             this.CreateEventSeries(stockSerie.Count);
             var maxPeriod = (int)this.parameters[0];

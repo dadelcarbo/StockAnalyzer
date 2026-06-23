@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -22,7 +23,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         static readonly Pen resistancePen = new Pen(Brushes.DarkGreen, 2) { DashStyle = System.Drawing.Drawing2D.DashStyle.Solid };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var lookbackPeriod = (int)this.parameters[0];
             var pivotPeriod = (int)this.parameters[1];

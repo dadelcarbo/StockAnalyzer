@@ -614,6 +614,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     int highestIn = lastBar.VARIATION > 0 ? closeSerie.GetHighestIn(endIndex) : 0;
 
+                    var dataSerie = StockDictionary.Instruments[stockSerie.StockName].GetDataSerie(this.BarDuration);
+
                     #region Calculate Indicators
                     float stockIndicator1 = float.NaN;
                     if (viewableSeries1 != null)
@@ -621,7 +623,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         if (Indicator1.StartsWith("RO"))
                             stockIndicator1 = stockSerie.CalculateLastROx(Indicator1, (int)viewableSeries1.Parameters[0]);
                         else
-                            try { viewableSeries1.ApplyTo(stockSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
+                            try { viewableSeries1.ApplyTo(dataSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
 
                         if (stockIndicator1 != float.NaN && indicator1Operator != Operator.No)
                         {
@@ -635,7 +637,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         if (Indicator2.StartsWith("RO"))
                             stockIndicator2 = stockSerie.CalculateLastROx(Indicator2, (int)viewableSeries2.Parameters[0]);
                         else
-                            try { viewableSeries2.ApplyTo(stockSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
+                            try { viewableSeries2.ApplyTo(dataSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
 
                         if (stockIndicator2 != float.NaN && indicator2Operator != Operator.No)
                         {
@@ -649,7 +651,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         if (Indicator3.StartsWith("RO"))
                             stockIndicator3 = stockSerie.CalculateLastROx(Indicator3, (int)viewableSeries3.Parameters[0]);
                         else
-                            try { viewableSeries3.ApplyTo(stockSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
+                            try { viewableSeries3.ApplyTo(dataSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
 
                         if (stockIndicator3 != float.NaN && indicator3Operator != Operator.No)
                         {

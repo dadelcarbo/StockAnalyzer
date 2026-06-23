@@ -58,8 +58,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockDecorators
             this.ParseInputParameters(parameters);
         }
 
-        abstract public void ApplyTo(StockSerie stockSerie);
-        public void ApplyTo(DataSerie dataSerie) => this.ApplyTo(dataSerie.Instrument.StockSerie);
+        abstract public void ApplyTo(DataSerie stockSerie);
 
         protected BoolSerie[] eventSeries;
         public int EventCount => EventNames.Length;

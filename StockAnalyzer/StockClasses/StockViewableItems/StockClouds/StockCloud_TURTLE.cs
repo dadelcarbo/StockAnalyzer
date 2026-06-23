@@ -1,4 +1,5 @@
 ﻿using System;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 {
@@ -13,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
 
         public override string[] SerieNames => new string[] { "High", "Low", "EMA" };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var indicator = stockSerie.GetIndicator(this.Name);
             var upLine = indicator.Series[0];

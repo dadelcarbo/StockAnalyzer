@@ -5,7 +5,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
@@ -242,8 +241,6 @@ namespace StockAnalyzer.StockClasses
         [XmlIgnore]
         public IStockTrailStop TrailStopCache { get; set; }
         [XmlIgnore]
-        public IStockPaintBar PaintBarCache { get; set; }
-        [XmlIgnore]
         public IStockAutoDrawing AutoDrawingCache { get; set; }
         [XmlIgnore]
 
@@ -411,7 +408,7 @@ namespace StockAnalyzer.StockClasses
                 if (trailStop != null && (this.HasVolume || !trailStop.RequiresVolumeData))
                 {
                     StockLog.Write($"{trailStopName} to {this.StockName} - {this.BarDuration}");
-                    trailStop.ApplyTo(this);
+                    trailStop.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
                     this.TrailStopCache = trailStop;
                     return trailStop;
                 }
@@ -430,7 +427,7 @@ namespace StockAnalyzer.StockClasses
                 if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
                 {
                     StockLog.Write($"{indicatorName} to {this.StockName} - {this.BarDuration}", false);
-                    indicator.ApplyTo(this);
+                    indicator.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
                     AddIndicatorSerie(indicator, indicatorName);
                     return indicator;
                 }
@@ -450,29 +447,9 @@ namespace StockAnalyzer.StockClasses
                 if (cloud != null && (this.HasVolume || !cloud.RequiresVolumeData))
                 {
                     StockLog.Write($"{cloudName} to {this.StockName} - {this.BarDuration}");
-                    cloud.ApplyTo(this);
+                    cloud.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
                     AddCloudSerie(cloud);
                     return cloud;
-                }
-                return null;
-            }
-        }
-        public IStockPaintBar GetPaintBar(String paintBarName)
-        {
-            if (this.PaintBarCache != null && this.PaintBarCache.Name == paintBarName)
-            {
-                return this.PaintBarCache;
-            }
-            else
-            {
-                IStockPaintBar paintBar = StockPaintBarManager.CreatePaintBar(paintBarName);
-                if (paintBar != null && (this.HasVolume || !paintBar.RequiresVolumeData))
-                {
-                    StockLog.Write($"{paintBarName} to {this.StockName} - {this.BarDuration}");
-                    paintBar.ApplyTo(this);
-
-                    this.PaintBarCache = paintBar;
-                    return paintBar;
                 }
                 return null;
             }
@@ -489,7 +466,7 @@ namespace StockAnalyzer.StockClasses
                 if (autoDrawing != null && (this.HasVolume || !autoDrawing.RequiresVolumeData))
                 {
                     StockLog.Write($"{autoDrawingName} to {this.StockName} - {this.BarDuration}");
-                    autoDrawing.ApplyTo(this);
+                    autoDrawing.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
 
                     this.AutoDrawingCache = autoDrawing;
                     return autoDrawing;
@@ -510,7 +487,7 @@ namespace StockAnalyzer.StockClasses
                 if (decorator != null && (this.HasVolume || !decorator.RequiresVolumeData))
                 {
                     StockLog.Write($"{decoratorName} to {this.StockName} - {this.BarDuration}");
-                    decorator.ApplyTo(this);
+                    decorator.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
                     this.DecoratorCache.Add(fullDecoratorName, decorator);
                     return decorator;
                 }
@@ -529,7 +506,7 @@ namespace StockAnalyzer.StockClasses
                 if (trail != null && (this.HasVolume || !trail.RequiresVolumeData))
                 {
                     StockLog.Write($"{trailName} to {this.StockName} - {this.BarDuration}");
-                    trail.ApplyTo(this);
+                    trail.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
                     this.TrailCache = trail;
                     return trail;
                 }
@@ -550,8 +527,6 @@ namespace StockAnalyzer.StockClasses
                     return this.GetTrailStop(nameFields[1]);
                 case "TRAIL":
                     return this.GetTrail(nameFields[1], nameFields[2]);
-                case "PAINTBAR":
-                    return this.GetPaintBar(nameFields[1]);
                 case "AUTODRAWING":
                     return this.GetAutoDrawing(nameFields[1]);
                 case "DECORATOR":
@@ -628,7 +603,6 @@ namespace StockAnalyzer.StockClasses
             this.IndicatorCache = new Dictionary<string, IStockIndicator>();
             this.DecoratorCache = new Dictionary<string, IStockDecorator>();
             this.CloudCache = new Dictionary<string, IStockCloud>();
-            this.PaintBarCache = null;
             this.AutoDrawingCache = null;
             this.TrailStopCache = null;
             this.TrailCache = null;
@@ -642,7 +616,6 @@ namespace StockAnalyzer.StockClasses
             this.IndicatorCache.Clear();
             this.DecoratorCache.Clear();
             this.CloudCache.Clear();
-            this.PaintBarCache = null;
             this.AutoDrawingCache = null;
             this.TrailStopCache = null;
             this.TrailCache = null;
@@ -1207,49 +1180,6 @@ namespace StockAnalyzer.StockClasses
             serie.Name = $"ROC_{period}";
             return serie;
         }
-        public FloatSerie CalculateOnBalanceVolume()
-        {
-            if (!this.HasVolume)
-            {
-                return new FloatSerie(0, "OBV");
-            }
-
-            FloatSerie OBV = new FloatSerie(this.Count, "OBV");
-            FloatSerie vol = new FloatSerie(this.Values.Select(d => d.VOLUME * 1.0f));
-            FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-            float previousClose = closeSerie[0];
-            for (int i = 1; i < this.Count; i++)
-            {
-                if (closeSerie[i] > previousClose)
-                {
-                    OBV[i] = OBV[i - 1] + vol[i];
-                }
-                else if (closeSerie[i] < previousClose)
-                {
-                    OBV[i] = OBV[i - 1] - vol[i];
-                }
-                else
-                {
-                    OBV[i] = OBV[i - 1];
-                }
-                previousClose = closeSerie[i];
-            }
-            return OBV;
-        }
-        public FloatSerie CalculateOnBalanceVolumeEx(int period)
-        {
-            if (!this.HasVolume)
-            {
-                return new FloatSerie(0, "OBVEX");
-            }
-            var volume = this.Values.Select(v => (float)(v.VARIATION >= 0 ? v.VOLUME : -v.VOLUME)).ToArray();
-
-            FloatSerie volumeSerie = new FloatSerie(volume);
-            var OBVEX = volumeSerie.CalculateEMA(period);
-            OBVEX.Name = $"OBVEX({period}";
-
-            return OBVEX;
-        }
 
         /// <summary>
         /// 
@@ -1520,27 +1450,6 @@ namespace StockAnalyzer.StockClasses
                 previousValue = currentValue;
                 i++;
             }
-        }
-
-        public bool NeedIntradayDowload()
-        {
-            return true;
-        }
-        public bool IsMarketOpened()
-        {
-            return true;
-            var today = DateTime.Now;
-            if (today.DayOfWeek == DayOfWeek.Sunday || today.DayOfWeek == DayOfWeek.Saturday)
-                return false;
-            if (this.StockName.StartsWith("INT_US_") && today.TimeOfDay > new TimeSpan(14, 30, 0) && today.TimeOfDay < new TimeSpan(22, 0, 0))
-                return true;
-            if (this.StockName.StartsWith("INT_") && today.TimeOfDay > new TimeSpan(9, 0, 0) && today.TimeOfDay < new TimeSpan(17, 40, 0))
-                return true;
-            if (this.StockName.StartsWith("FUT_") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay < new TimeSpan(22, 05, 0))
-                return true;
-            if (this.StockName.StartsWith("TURBO") && today.TimeOfDay > new TimeSpan(8, 0, 0) && today.TimeOfDay < new TimeSpan(22, 05, 0))
-                return true;
-            return false;
         }
 
         public void CalculateHighLowSmoothedTrailStop(int period, int smoothing, out FloatSerie longStopSerie, out FloatSerie shortStopSerie)
@@ -2335,218 +2244,6 @@ namespace StockAnalyzer.StockClasses
             ResistanceBroken,
             UpTrend,
             DownTrend
-        }
-        public void generateAutomaticTrendLines(int startIndex, int endIndex, int leftStrength, int rightStrength, int nbPivots, ref BoolSerie[] events)
-        {
-            DrawingItem.CreatePersistent = false;
-            try
-            {
-                IStockPaintBar pivots = this.GetPaintBar("PIVOT(" + leftStrength + "," + rightStrength + ")");
-                BoolSerie highPivots = pivots.Events[0];
-                BoolSerie lowPivots = pivots.Events[1];
-
-                Queue<int> highPivotIndexQueue = new Queue<int>(nbPivots);
-                Queue<int> lowPivotIndexQueue = new Queue<int>(nbPivots);
-                Queue<float> highPivotValueQueue = new Queue<float>(nbPivots);
-                Queue<float> lowPivotValueQueue = new Queue<float>(nbPivots);
-
-                FloatSerie lowSerie = this.GetSerie(StockDataType.LOW);
-                FloatSerie highSerie = this.GetSerie(StockDataType.HIGH);
-                FloatSerie closeSerie = this.GetSerie(StockDataType.CLOSE);
-
-                float latestHighPivotValue;
-                float latestLowPivotValue;
-
-                Line2DBase latestResistanceLine = null;
-                Line2DBase latestSupportLine = null;
-
-                List<Line2DBase> supportList = new List<Line2DBase>();
-                List<Line2DBase> resistanceList = new List<Line2DBase>();
-
-                if (this.StockAnalysis.DrawingItems.ContainsKey(this.BarDuration))
-                {
-                    this.StockAnalysis.DrawingItems[this.BarDuration].Clear();
-                }
-                else
-                {
-                    this.StockAnalysis.DrawingItems.Add(this.BarDuration, new StockDrawingItems());
-                }
-
-                int j, pivotIndex;
-                bool brokenResistance = false;
-                bool brokenSupport = false;
-                for (int i = startIndex + leftStrength + rightStrength; i <= endIndex; i++)
-                {
-                    // Check for broken lines
-                    if (latestResistanceLine != null)
-                    {
-                        if (closeSerie[i] > latestResistanceLine.ValueAtX(i))
-                        {
-                            // Down trend line has been broken
-                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine.Cut(i, true));
-                            resistanceList.Remove(latestResistanceLine);
-                            latestResistanceLine = null;
-                            events[(int)TLEvent.ResistanceBroken][i] = true;
-                            brokenResistance = true;
-                            brokenSupport = false;
-                        }
-                        else
-                        {
-                            brokenResistance = false;
-                        }
-                    }
-                    if (latestSupportLine != null)
-                    {
-                        if (closeSerie[i] < latestSupportLine.ValueAtX(i))
-                        {
-                            // Up trend line has been broken
-                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine.Cut(i, true));
-                            supportList.Remove(latestSupportLine);
-                            latestSupportLine = null;
-                            events[(int)TLEvent.SupportBroken][i] = true;
-                            brokenSupport = true;
-                            brokenResistance = false;
-                        }
-                        else
-                        {
-                            brokenSupport = false;
-                        }
-                    }
-
-                    pivotIndex = i - rightStrength;
-                    if (highPivots[pivotIndex])
-                    {
-                        latestHighPivotValue = highSerie[pivotIndex];
-
-                        if (highPivotIndexQueue.Count >= nbPivots)
-                        {
-                            highPivotIndexQueue.Dequeue();
-                            highPivotValueQueue.Dequeue();
-                        }
-                        highPivotIndexQueue.Enqueue(pivotIndex);
-                        highPivotValueQueue.Enqueue(latestHighPivotValue);
-
-                        bool highestPivotFound = false;
-                        for (j = highPivotValueQueue.Count - 2; j >= 0; j--)
-                        {
-                            if (latestHighPivotValue < highPivotValueQueue.ElementAt(j))
-                            {
-                                highestPivotFound = true;
-                                break;
-                            }
-                        }
-                        if (highestPivotFound)
-                        {
-                            if (latestResistanceLine != null)
-                            {
-                                // New line has to be drawn
-                                this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine.Cut(i, true));
-                                resistanceList.Remove(latestResistanceLine);
-                            }
-
-                            latestResistanceLine =
-                                new HalfLine2D(
-                                    new PointF(highPivotIndexQueue.ElementAt(j), highPivotValueQueue.ElementAt(j)),
-                                    new PointF(pivotIndex, latestHighPivotValue),
-                                    Pens.Green);
-                            resistanceList.Add(latestResistanceLine);
-
-                            events[(int)TLEvent.ResistanceDetected][i] = true;
-                            brokenResistance = false;
-                        }
-                    }
-                    else if (lowPivots[pivotIndex])
-                    {
-                        latestLowPivotValue = lowSerie[pivotIndex];
-
-                        if (lowPivotIndexQueue.Count >= nbPivots)
-                        {
-                            lowPivotIndexQueue.Dequeue();
-                            lowPivotValueQueue.Dequeue();
-                        }
-                        lowPivotIndexQueue.Enqueue(pivotIndex);
-                        lowPivotValueQueue.Enqueue(lowSerie[pivotIndex]);
-
-                        bool lowestPivotFound = false;
-                        for (j = lowPivotValueQueue.Count - 2; j >= 0; j--)
-                        {
-                            if (latestLowPivotValue > lowPivotValueQueue.ElementAt(j))
-                            {
-                                lowestPivotFound = true;
-                                break;
-                            }
-                        }
-                        if (lowestPivotFound)
-                        {
-                            if (latestSupportLine != null)
-                            {
-                                // New line has to be drawn
-                                this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine.Cut(pivotIndex, true));
-                                supportList.Remove(latestSupportLine);
-                            }
-
-                            latestSupportLine =
-                                new HalfLine2D(
-                                    new PointF(lowPivotIndexQueue.ElementAt(j), lowPivotValueQueue.ElementAt(j)),
-                                    new PointF(pivotIndex, latestLowPivotValue),
-                                    Pens.Red);
-                            supportList.Add(latestSupportLine);
-
-                            events[(int)TLEvent.SupportDetected][i] = true;
-
-                            brokenSupport = false;
-                        }
-                    }
-
-                    // Detecting upTrend events
-                    bool upTrend = resistanceList.Count == 0 && supportList.Count != 0;
-                    foreach (Line2DBase line in resistanceList)
-                    {
-                        if (closeSerie[i] > line.ValueAtX(i))
-                        {
-                            upTrend = false;
-                            break;
-                        }
-                    }
-
-                    // Detecting downTrend events
-                    bool downTrend = supportList.Count == 0 && resistanceList.Count != 0;
-                    foreach (Line2DBase line in supportList)
-                    {
-                        if (closeSerie[i] < line.ValueAtX(i))
-                        {
-                            downTrend = false;
-                            break;
-                        }
-                    }
-                    if (!(downTrend || upTrend))
-                    {
-                        events[(int)TLEvent.UpTrend][i] = brokenResistance;
-                        events[(int)TLEvent.DownTrend][i] = brokenSupport;
-                    }
-                    else
-                    {
-                        events[(int)TLEvent.UpTrend][i] = upTrend;
-                        events[(int)TLEvent.DownTrend][i] = downTrend;
-                    }
-                }
-                if (latestSupportLine != null)
-                {
-                    this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine);
-                }
-                if (latestResistanceLine != null)
-                {
-                    this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine);
-                }
-            }
-            catch (Exception e)
-            {
-                StockLog.Write(e);
-            }
-            finally
-            {
-                DrawingItem.CreatePersistent = true;
-            }
         }
         public void generateAutomaticHLTrendLines(int startIndex, int endIndex, int period, int nbPivots, ref BoolSerie[] events)
         {

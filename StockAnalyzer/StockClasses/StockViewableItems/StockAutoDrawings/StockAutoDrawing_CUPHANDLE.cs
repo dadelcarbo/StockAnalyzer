@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -20,7 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         public override string[] SerieNames => new string[] { };
         public override Pen[] SeriePens => seriePens ??= new Pen[] { };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var period = (int)this.parameters[0];
             var rightHigherLow = (bool)this.parameters[1];

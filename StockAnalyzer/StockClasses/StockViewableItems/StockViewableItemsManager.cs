@@ -2,7 +2,6 @@
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockPaintBars;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
@@ -35,8 +34,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                     return StockIndicatorManager.Supports(fields[1]);
                 case "CLOUD":
                     return StockCloudManager.Supports(fields[1]);
-                case "PAINTBAR":
-                    return StockPaintBarManager.Supports(fields[1]);
                 case "AUTODRAWING":
                     return StockAutoDrawingManager.Supports(fields[1]);
                 case "TRAILSTOP":
@@ -76,17 +73,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                     else
                     {
                         viewableSerie = stockSerie.GetCloud(fields[1]);
-                    }
-                    offset = 2;
-                    break;
-                case "PAINTBAR":
-                    if (stockSerie == null)
-                    {
-                        viewableSerie = StockPaintBarManager.CreatePaintBar(fields[1]);
-                    }
-                    else
-                    {
-                        viewableSerie = stockSerie.GetPaintBar(fields[1]);
                     }
                     offset = 2;
                     break;
@@ -203,9 +189,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                     break;
                 case ViewableItemType.Decorator:
                     viewableSerie = stockSerie.GetDecorator(aViewableSerie.Name, ((IStockDecorator)aViewableSerie).DecoratedItem);
-                    break;
-                case ViewableItemType.PaintBar:
-                    viewableSerie = stockSerie.GetPaintBar(aViewableSerie.Name);
                     break;
                 case ViewableItemType.TrailStop:
                     viewableSerie = stockSerie.GetTrailStop(aViewableSerie.Name);

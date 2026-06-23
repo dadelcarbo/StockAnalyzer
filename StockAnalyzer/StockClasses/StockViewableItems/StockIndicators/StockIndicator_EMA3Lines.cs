@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -26,7 +27,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 return seriePens;
             }
         }
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie fastSerie = stockSerie.GetIndicator(this.SerieNames[0]).Series[0].ShiftForward((int)this.parameters[3]);
             FloatSerie mediumSerie = stockSerie.GetIndicator(this.SerieNames[1]).Series[0].ShiftForward((int)this.parameters[4]);

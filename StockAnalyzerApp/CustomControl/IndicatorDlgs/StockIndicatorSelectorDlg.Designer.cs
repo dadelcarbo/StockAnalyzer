@@ -66,14 +66,12 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.visibleCheckBox = new System.Windows.Forms.CheckBox();
             this.curvePreviewLabel = new System.Windows.Forms.Label();
             this.previewPanel = new System.Windows.Forms.Panel();
-            this.paintBarGroupBox = new System.Windows.Forms.GroupBox();
             this.trailStopGroupBox = new System.Windows.Forms.GroupBox();
             this.graphMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.indicatorMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addIndicatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addCloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addHorizontalLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addPaintBarsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addAutoDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTrailStopsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addDecoratorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -342,12 +340,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.previewPanel.Name = "previewPanel";
             this.previewPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.previewPanel_Paint);
             // 
-            // paintBarGroupBox
-            // 
-            resources.ApplyResources(this.paintBarGroupBox, "paintBarGroupBox");
-            this.paintBarGroupBox.Name = "paintBarGroupBox";
-            this.paintBarGroupBox.TabStop = false;
-            // 
             // trailStopGroupBox
             // 
             resources.ApplyResources(this.trailStopGroupBox, "trailStopGroupBox");
@@ -360,7 +352,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.addIndicatorToolStripMenuItem,
             this.addCloudToolStripMenuItem,
             this.addHorizontalLineToolStripMenuItem,
-            this.addPaintBarsToolStripMenuItem,
             this.addTrailStopsToolStripMenuItem,
             addAutoDrawingsToolStripMenuItem});
             this.graphMenuStrip.Name = "graphMenuStrip";
@@ -383,12 +374,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.addHorizontalLineToolStripMenuItem.Name = "addHorizontalLineToolStripMenuItem";
             resources.ApplyResources(this.addHorizontalLineToolStripMenuItem, "addHorizontalLineToolStripMenuItem");
             this.addHorizontalLineToolStripMenuItem.Click += new System.EventHandler(this.addHorizontalLineToolStripMenuItem_Click);
-            // 
-            // addPaintBarsToolStripMenuItem
-            // 
-            this.addPaintBarsToolStripMenuItem.Name = "addPaintBarsToolStripMenuItem";
-            resources.ApplyResources(this.addPaintBarsToolStripMenuItem, "addPaintBarsToolStripMenuItem");
-            this.addPaintBarsToolStripMenuItem.Click += new System.EventHandler(this.addPaintBarsToolStripMenuItem_Click);
             // 
             // addAutoDrawingsToolStripMenuItem
             // 
@@ -470,7 +455,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             this.Controls.Add(this.trailStopGroupBox);
             this.Controls.Add(this.lineConfigBox);
             this.Controls.Add(this.indicatorConfigBox);
-            this.Controls.Add(this.paintBarGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -498,7 +482,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.GroupBox indicatorConfigBox;
         private System.Windows.Forms.GroupBox curveConfigBox;
         private System.Windows.Forms.GroupBox lineConfigBox;
-        private System.Windows.Forms.GroupBox paintBarGroupBox;
         private System.Windows.Forms.GroupBox trailStopGroupBox;
         private System.Windows.Forms.ContextMenuStrip graphMenuStrip;
         private System.Windows.Forms.ContextMenuStrip indicatorMenuStrip;
@@ -534,7 +517,6 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Panel lineColorPanel;
         private System.Windows.Forms.Panel backgroundColorPanel;
-        private System.Windows.Forms.ToolStripMenuItem addPaintBarsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addAutoDrawingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addTrailStopsToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader minColumnHeader;

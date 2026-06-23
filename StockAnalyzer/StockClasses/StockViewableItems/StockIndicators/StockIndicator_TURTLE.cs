@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 using System.Drawing;
@@ -27,7 +28,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 new Area {Name="BullConso", Color = Color.FromArgb(128, Color.Red) }
             };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             int highPeriod = (int)this.parameters[0];
             int lowPeriod = (int)this.parameters[1];

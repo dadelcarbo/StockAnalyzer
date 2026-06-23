@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
@@ -12,7 +13,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override Object[] ParameterDefaultValues => new Object[] { 50, 25 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[] { "Bull", "Bear", "Mid" };
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var upPeriod = (int)this.parameters[0];
             var downPeriod = (int)this.parameters[1];

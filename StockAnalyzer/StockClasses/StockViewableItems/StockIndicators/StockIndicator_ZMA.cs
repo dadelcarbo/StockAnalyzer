@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockMath;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -6,7 +7,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     public class StockIndicator_ZMA : StockIndicatorMovingAvgBase
     {
         public override string Definition => "ZMA: Z-Score based EMA. It adjusts ema coefficient based on ZScore to avoid whipsaw when score is low";
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             var emaPeriod = (int)this.parameters[0];

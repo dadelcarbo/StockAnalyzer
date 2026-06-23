@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 
@@ -31,7 +32,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             new HLine(75f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
         };
 
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie fastK = stockSerie.CalculateFastOscillator((int)this.parameters[0], InputType.HighLow);
             FloatSerie fastD = fastK.CalculateMA((int)this.parameters[1]);

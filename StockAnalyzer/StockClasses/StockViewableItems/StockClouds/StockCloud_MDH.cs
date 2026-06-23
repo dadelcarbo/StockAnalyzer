@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockMath;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
@@ -13,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockClouds
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
 
         public override string[] SerieNames => new string[] { "Bull", "Bear", "Mid" };
-        public override void ApplyTo(StockSerie stockSerie)
+        public override void ApplyTo(DataSerie stockSerie)
         {
             var period = (int)this.parameters[0];
 
