@@ -43,7 +43,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             }
         }
 
-        public List<StockSerie.Groups> Groups => StockDictionary.Instance.GetValidGroups();
+        public List<Groups> Groups => StockDictionary.Instance.GetValidGroups();
 
         private int period;
 

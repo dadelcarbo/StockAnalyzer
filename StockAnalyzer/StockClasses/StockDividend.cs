@@ -77,7 +77,7 @@ namespace StockAnalyzer.StockClasses
         public bool DownloadFromYahoo(StockSerie stockSerie, bool force = false)
         {
             var shortName = stockSerie.Symbol;
-            if (stockSerie.DataProvider == StockDataProvider.ABC && stockSerie.BelongsToGroup(StockSerie.Groups.PEA))
+            if (stockSerie.DataProvider == StockDataProvider.ABC && stockSerie.BelongsToGroup(Groups.PEA))
             {
                 if (!shortName.EndsWith(".PA"))
                 {

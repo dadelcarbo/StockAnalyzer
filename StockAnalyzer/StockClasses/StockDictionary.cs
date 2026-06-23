@@ -31,16 +31,16 @@ namespace StockAnalyzer.StockClasses
             StockPortfolio.StockPortfolio.PriceProvider = this;
         }
 
-        private static List<StockSerie.Groups> validGroups = null;
-        public List<StockSerie.Groups> GetValidGroups()
+        private static List<Groups> validGroups = null;
+        public List<Groups> GetValidGroups()
         {
             if (validGroups == null)
             {
-                validGroups = new List<StockSerie.Groups>();
-                foreach (StockSerie.Groups group in Enum.GetValues(typeof(StockSerie.Groups)))
+                validGroups = new List<Groups>();
+                foreach (Groups group in Enum.GetValues(typeof(Groups)))
                 {
-                    if (!this.Values.Any(s => s.BelongsToGroup(group)) || group == StockSerie.Groups.ALL ||
-                        group == StockSerie.Groups.NONE)
+                    if (!this.Values.Any(s => s.BelongsToGroup(group)) || group == Groups.ALL ||
+                        group == Groups.NONE)
                     {
                         continue;
                     }
@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockClasses
         }
 
         #region RANK Calculation
-        public void CalculateRank(StockSerie.Groups group, string indicatorName, BarDuration duration, string destinationFolder)
+        public void CalculateRank(Groups group, string indicatorName, BarDuration duration, string destinationFolder)
         {
             var groupsSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(group) && s.Initialise()).ToList();
 
@@ -1166,7 +1166,7 @@ namespace StockAnalyzer.StockClasses
             return true;
         }
 
-        public float GeneratePTFBestFilter(StockSerie.Groups stockGroup, BarDuration barDuration, string filter, int nbStocks)
+        public float GeneratePTFBestFilter(Groups stockGroup, BarDuration barDuration, string filter, int nbStocks)
         {
             StockSerie indiceSerie = this["CAC40"]; // Use CAC40 as a reference serie
             if (!indiceSerie.Initialise())
@@ -1546,7 +1546,7 @@ namespace StockAnalyzer.StockClasses
             {
                 foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
                 {
-                    if (alertDef.BarDuration > BarDuration.Monthly && stockSerie.BelongsToGroup(StockSerie.Groups.PEA)) // if intraday
+                    if (alertDef.BarDuration > BarDuration.Monthly && stockSerie.BelongsToGroup(Groups.PEA)) // if intraday
                     {
                         continue;
                     }

@@ -50,13 +50,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
                         if (!stockDictionary.ContainsKey(longName))
                         {
-                            stockDictionary.Add(longName, new StockSerie(longName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
+                            stockDictionary.Add(longName, new StockSerie(longName, row[0], (Groups)Enum.Parse(typeof(Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
                             if (longName.StartsWith("AD."))
                             {
                                 var stockName = longName.Replace("AD.", "McClellan.");
-                                stockDictionary.Add(stockName, new StockSerie(stockName, stockName, StockSerie.Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
+                                stockDictionary.Add(stockName, new StockSerie(stockName, stockName, Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
                                 stockName = longName.Replace("AD.", "McClellanSum.");
-                                stockDictionary.Add(stockName, new StockSerie(stockName, stockName, StockSerie.Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
+                                stockDictionary.Add(stockName, new StockSerie(stockName, stockName, Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
                             }
                         }
                     }
@@ -104,7 +104,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             StockLog.Write(stockSerie.StockName);
             var stockDictionary = StockDictionary.Instance;
             string[] row = stockSerie.Symbol.Split('.');
-            StockSerie.Groups group = (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[1]);
+            Groups group = (Groups)Enum.Parse(typeof(Groups), row[1]);
             switch (row[0].Split('_')[0])
             {
                 case "AD":

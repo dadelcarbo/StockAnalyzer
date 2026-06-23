@@ -30,10 +30,10 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
     public class PalmaresViewModel : NotifyPropertyChangedBase
     {
-        static public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
+        static public Array Groups => Enum.GetValues(typeof(Groups));
 
-        private StockSerie.Groups group;
-        public StockSerie.Groups Group
+        private Groups group;
+        public Groups Group
         {
             get { return group; }
             set
@@ -495,7 +495,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 #endregion
                 if (this.DownloadIntraday)
                 {
-                    if (this.group != StockSerie.Groups.TURBO)
+                    if (this.group != StockAnalyzer.StockClasses.Groups.TURBO)
                     {
                         var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
                         dataProvider.DownloadAllGroupsIntraday();
@@ -519,7 +519,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     count++;
                     if (count % 10 == 0)
                         this.Progress = count;
-                    if (this.DownloadIntraday && (this.group == StockSerie.Groups.TURBO_5M || this.group == StockSerie.Groups.TURBO))
+                    if (this.DownloadIntraday && (this.group == StockAnalyzer.StockClasses.Groups.TURBO_5M || this.group == StockAnalyzer.StockClasses.Groups.TURBO))
                     {
                         StockDataProviderBase.DownloadSerieData(stockSerie);
                     }

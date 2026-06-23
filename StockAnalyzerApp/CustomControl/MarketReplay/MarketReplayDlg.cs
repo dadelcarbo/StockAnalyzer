@@ -5,7 +5,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 {
     public partial class MarketReplayDlg : Form
     {
-        public MarketReplayDlg(StockSerie.Groups selectedGroup, BarDuration barDuration)
+        public MarketReplayDlg(Groups selectedGroup, BarDuration barDuration)
         {
             InitializeComponent();
 

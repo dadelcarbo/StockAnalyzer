@@ -25,59 +25,59 @@ using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses
 {
+    #region Type Definition
+    public enum Groups
+    {
+        NONE = 0,
+        PEA,
+        PEA_EURONEXT,
+        CAC40,
+        SBF120,
+        CAC_AT,
+        CACALL,
+        EURO_A,
+        EURO_A_B,
+        EURO_B,
+        EURO_A_B_C,
+        EURO_C,
+        SRD,
+        SRD_LO,
+        ALTERNEXT,
+        BELGIUM,
+        HOLLAND,
+        PORTUGAL,
+        EUROPE,
+        ITALIA,
+        GERMANY,
+        SPAIN,
+        CANADA,
+        USA,
+        SAXO,
+        SPIRICA,
+        INDICES,
+        INDICATOR,
+        SECTORS,
+        SECTORS_CAC,
+        SECTORS_STOXX,
+        CURRENCY,
+        COMMODITY,
+        FOREX,
+        FUND,
+        BREADTH,
+        PTF,
+        BOND,
+        INTRADAY,
+        TURBO,
+        TURBO_5M,
+        Portfolio,
+        Replay,
+        ALL_STOCKS,
+        ALL
+    }
+
+    #endregion
     public class StockSerie : StockSortedDictionary, IXmlSerializable
     {
-        #region Type Definition
-        public enum Groups
-        {
-            NONE = 0,
-            PEA,
-            PEA_EURONEXT,
-            CAC40,
-            SBF120,
-            CAC_AT,
-            CACALL,
-            EURO_A,
-            EURO_A_B,
-            EURO_B,
-            EURO_A_B_C,
-            EURO_C,
-            SRD,
-            SRD_LO,
-            ALTERNEXT,
-            BELGIUM,
-            HOLLAND,
-            PORTUGAL,
-            EUROPE,
-            ITALIA,
-            GERMANY,
-            SPAIN,
-            CANADA,
-            USA,
-            SAXO,
-            SPIRICA,
-            INDICES,
-            INDICATOR,
-            SECTORS,
-            SECTORS_CAC,
-            SECTORS_STOXX,
-            CURRENCY,
-            COMMODITY,
-            FOREX,
-            FUND,
-            BREADTH,
-            PTF,
-            BOND,
-            INTRADAY,
-            TURBO,
-            TURBO_5M,
-            Portfolio,
-            Replay,
-            ALL_STOCKS,
-            ALL
-        }
-
-        #endregion
         #region public properties
         public string StockName { get; private set; }
         public string Symbol { get; private set; }

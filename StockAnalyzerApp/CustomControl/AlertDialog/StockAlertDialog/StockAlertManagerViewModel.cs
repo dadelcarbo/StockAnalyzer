@@ -105,10 +105,10 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         private string stockName;
         public string StockName { get => stockName; set => SetProperty(ref stockName, value); }
 
-        private StockSerie.Groups group;
-        public StockSerie.Groups Group { get => group; set => SetProperty(ref group, value); }
+        private Groups group;
+        public Groups Group { get => group; set => SetProperty(ref group, value); }
 
-        public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
+        public Array Groups => Enum.GetValues(typeof(Groups));
 
         private string theme;
         public string Theme { get => theme; set => SetProperty(ref theme, value); }

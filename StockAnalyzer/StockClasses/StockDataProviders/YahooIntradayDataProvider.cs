@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var stockName = row[1];
                     if (!stockDictionary.ContainsKey(stockName))
                     {
-                        var stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.YahooIntraday, BarDuration.M_5);
+                        var stockSerie = new StockSerie(stockName, row[0], (Groups)Enum.Parse(typeof(Groups), row[2]), StockDataProvider.YahooIntraday, BarDuration.M_5);
                         stockDictionary.Add(stockName, stockSerie);
 
                         if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie

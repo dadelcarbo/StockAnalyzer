@@ -48,11 +48,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
     public class Data
     {
-        public Groups groups { get; set; }
+        public ProductGroups groups { get; set; }
         public Pagination pagination { get; set; }
     }
 
-    public class Groups
+    public class ProductGroups
     {
         public List<Product> products { get; set; }
     }

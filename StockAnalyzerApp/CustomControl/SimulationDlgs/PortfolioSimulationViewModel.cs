@@ -47,8 +47,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
 
         public PositionManagement PositionManagement { get; set; }
-        public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
-        public StockSerie.Groups Group { get; set; }
+        public Array Groups => Enum.GetValues(typeof(Groups));
+        public Groups Group { get; set; }
         public IList<BarDuration> Durations => StockBarDuration.BarDurations;
         public BarDuration Duration { get; set; }
 

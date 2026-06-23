@@ -54,7 +54,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(Folders.Portfolio);
                 foreach (var p in Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoClientId)))
                 {
-                    var stockSerie = new StockSerie(p.Name, p.SaxoClientId, StockSerie.Groups.Portfolio, StockDataProvider.Portfolio, BarDuration.Daily);
+                    var stockSerie = new StockSerie(p.Name, p.SaxoClientId, Groups.Portfolio, StockDataProvider.Portfolio, BarDuration.Daily);
                     stockDictionary.Add(p.Name, stockSerie);
                 }
             }

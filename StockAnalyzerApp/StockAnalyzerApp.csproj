@@ -376,17 +376,6 @@
     <Compile Include="CustomControl\PortfolioDlg\PortfolioViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockDateToStringConverter.cs" />
     <Compile Include="CustomControl\PortfolioDlg\StockPositionViewModel.cs" />
-    <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsControl.xaml.cs">
-      <DependentUpon>ConditionalStatisticsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.Designer.cs">
-      <DependentUpon>ConditionalStatisticsDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\ConditionalStatisticsDlg\CondStatisticsResult.cs" />
-    <Compile Include="CustomControl\ConditionalStatisticsDlg\CondStatisticsViewModel.cs" />
     <Compile Include="CustomControl\DrawingDlg\DrawingControl.xaml.cs">
       <DependentUpon>DrawingControl.xaml</DependentUpon>
     </Compile>
@@ -398,17 +387,6 @@
       <DependentUpon>DrawingDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\DrawingDlg\DrawingViewModel.cs" />
-    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml.cs">
-      <DependentUpon>ExpectedValueControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.Designer.cs">
-      <DependentUpon>ExpectedValueDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\ExpectedValueDlg\ExpectedValueViewModel.cs" />
-    <Compile Include="CustomControl\ExpectedValueDlg\TradeResult.cs" />
     <Compile Include="CustomControl\FixedTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -527,17 +505,6 @@
     </Compile>
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\ViewModels\ParameterRangeViewModel.cs" />
-    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsControl.xaml.cs">
-      <DependentUpon>StatisticsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsDlg.Designer.cs">
-      <DependentUpon>StatisticsDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsResult.cs" />
-    <Compile Include="CustomControl\ExpectedValueDlg\StatisticsViewModel.cs" />
     <Compile Include="CustomControl\IndicatorDlgs\AddTrailDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -761,14 +728,8 @@
     <EmbeddedResource Include="CustomControl\PortfolioDlg\PortfolioDlg.resx">
       <DependentUpon>PortfolioDlg.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsDlg.resx">
-      <DependentUpon>ConditionalStatisticsDlg.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\DrawingDlg\DrawingDlg.resx">
       <DependentUpon>DrawingDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\ExpectedValueDlg\ExpectedValueDlg.resx">
-      <DependentUpon>ExpectedValueDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
       <DependentUpon>FullGraphUserControl.cs</DependentUpon>
@@ -826,9 +787,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
       <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\ExpectedValueDlg\StatisticsDlg.resx">
-      <DependentUpon>StatisticsDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\AgentSimulationDlg.resx">
       <DependentUpon>AgentSimulationDlg.cs</DependentUpon>
@@ -1198,15 +1156,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControl\ConditionalStatisticsDlg\ConditionalStatisticsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="CustomControl\DrawingDlg\DrawingControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\ExpectedValueDlg\ExpectedValueControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1249,10 +1199,6 @@
     <Page Include="CustomControl\SimulationDlgs\AgentSimulationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\ExpectedValueDlg\StatisticsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\SectorDlg\SectorUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>

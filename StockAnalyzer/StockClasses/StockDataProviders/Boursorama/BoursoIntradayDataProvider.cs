@@ -144,7 +144,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
             if (string.IsNullOrEmpty(stockSerie.Symbol) || string.IsNullOrEmpty(stockSerie.ISIN) || stockSerie.ISIN.Length < 2)
                 return null;
             var prefix = stockSerie.ISIN.Substring(0, 2);
-            if (stockSerie.StockGroup == StockSerie.Groups.FUND)
+            if (stockSerie.StockGroup == Groups.FUND)
             {
                 prefix += "T";
             }
@@ -164,7 +164,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
                 "CA" => $"{stockSerie.Symbol}",
                 _ => null
             };
-            if (stockSerie.BelongsToGroup(StockSerie.Groups.EURO_A_B_C) && prefix != "LU")
+            if (stockSerie.BelongsToGroup(Groups.EURO_A_B_C) && prefix != "LU")
             {
                 symbol = $"1rP{stockSerie.Symbol}";
             }

@@ -22,7 +22,7 @@ namespace StockAnalyzerApp.CustomControl
 
         public IEnumerable<string> SelectedStocks => this.selectedStockListBox.Items.Cast<string>();
 
-        public StockScannerDlg(StockDictionary stockDictionary, StockSerie.Groups stockGroup, BarDuration barDuration, Dictionary<string, List<string>> theme)
+        public StockScannerDlg(StockDictionary stockDictionary, Groups stockGroup, BarDuration barDuration, Dictionary<string, List<string>> theme)
         {
             InitializeComponent();
 
@@ -180,7 +180,7 @@ namespace StockAnalyzerApp.CustomControl
 
         void groupComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (groupComboBox.SelectedItem.Equals(StockSerie.Groups.TURBO))
+            if (groupComboBox.SelectedItem.Equals(Groups.TURBO))
             {
                 this.refreshDataCheckBox.CheckState = CheckState.Checked;
             }
@@ -190,7 +190,7 @@ namespace StockAnalyzerApp.CustomControl
             }
             if (SelectStockGroupChanged != null)
             {
-                SelectStockGroupChanged((StockSerie.Groups)groupComboBox.SelectedItem);
+                SelectStockGroupChanged((Groups)groupComboBox.SelectedItem);
             }
         }
         /// <summary>

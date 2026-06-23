@@ -39,7 +39,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             var stockName = "CBOE_EPCR";
             var stockSymbol = "I:CBOEEPCR";
-            var stockSerie = new StockSerie(stockName, stockSymbol, StockSerie.Groups.INDICATOR, StockDataProvider.yCharts, BarDuration.Daily);
+            var stockSerie = new StockSerie(stockName, stockSymbol, Groups.INDICATOR, StockDataProvider.yCharts, BarDuration.Daily);
             stockDictionary.Add(stockName, stockSerie);
         }
 
@@ -177,7 +177,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var row = line.Split(',');
                     if (!stockDictionary.ContainsKey(row[1]))
                     {
-                        var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.INDICATOR, StockDataProvider.yCharts, BarDuration.Daily);
+                        var stockSerie = new StockSerie(row[1], row[0], Groups.INDICATOR, StockDataProvider.yCharts, BarDuration.Daily);
                         stockSerie.ISIN = row[0];
                         stockDictionary.Add(row[1], stockSerie);
                         if (row.Length == 3)

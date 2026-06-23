@@ -32,8 +32,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.Group;
         }
-        public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
-        public StockSerie.Groups Group { get; set; }
+        public Array Groups => Enum.GetValues(typeof(Groups));
+        public Groups Group { get; set; }
 
         private BarDuration barDuration;
         public BarDuration BarDuration { get { return barDuration; } set { if (value != barDuration) { barDuration = value; OnPropertyChanged("BarDuration"); } } }

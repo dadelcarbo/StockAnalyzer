@@ -19,14 +19,12 @@ using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockPortfolio.AutoTrade;
-using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.CustomControl;
 using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 using StockAnalyzerApp.CustomControl.AutoTradeDlg;
 using StockAnalyzerApp.CustomControl.ColorPalette;
 using StockAnalyzerApp.CustomControl.DrawingDlg;
-using StockAnalyzerApp.CustomControl.ExpectedValueDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
 using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
@@ -41,6 +39,7 @@ using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.SplitDlg;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerApp.StockScripting;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
@@ -77,7 +76,7 @@ namespace StockAnalyzerApp
         public delegate void SelectedStockAndDurationAndThemeChangedEventHandler(string stockName, BarDuration barDuration, string theme, bool activateMainWindow);
         public delegate void SelectedStockAndDurationAndIndexChangedEventHandler(string stockName, int startIndex, int endIndex, BarDuration barDuration, bool activateMainWindow);
 
-        public delegate void SelectedStockGroupChangedEventHandler(StockSerie.Groups stockgroup);
+        public delegate void SelectedStockGroupChangedEventHandler(Groups stockgroup);
 
         public delegate void SelectedStrategyChangedEventHandler(string strategyName);
 
@@ -180,8 +179,8 @@ namespace StockAnalyzerApp
             }
         }
 
-        private StockSerie.Groups selectedGroup;
-        public StockSerie.Groups Group => selectedGroup;
+        private Groups selectedGroup;
+        public Groups Group => selectedGroup;
 
 
         private static int NbBars { get; set; }
@@ -510,6 +509,9 @@ namespace StockAnalyzerApp
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
+
+            StockInstrument.Initialize(this.StockDictionary.Values);
+
 
             // Create Groups menu items
             CreateGroupMenuItem();
@@ -1094,7 +1096,7 @@ namespace StockAnalyzerApp
                 var sw = Stopwatch.StartNew();
                 var groups = alertDefs.Select(a => a.Group).Distinct();
 
-                var turboList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockGroup == StockSerie.Groups.TURBO);
+                var turboList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockGroup == Groups.TURBO);
                 var downloadTasks = turboList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s)));
 
                 Task.WaitAll(downloadTasks.ToArray());
@@ -1259,7 +1261,7 @@ namespace StockAnalyzerApp
                     {
                         var stockSerie = this.StockDictionary[stockName];
 
-                        StockSerie.Groups newGroup = stockSerie.StockGroup;
+                        Groups newGroup = stockSerie.StockGroup;
                         if (this.selectedGroup != newGroup)
                         {
                             this.selectedGroup = newGroup;
@@ -1303,7 +1305,7 @@ namespace StockAnalyzerApp
                     {
                         var stockSerie = this.StockDictionary[stockName];
 
-                        StockSerie.Groups newGroup = stockSerie.StockGroup;
+                        Groups newGroup = stockSerie.StockGroup;
                         if (!stockSerie.BelongsToGroup(this.selectedGroup))
                         {
                             this.selectedGroup = newGroup;
@@ -1362,7 +1364,7 @@ namespace StockAnalyzerApp
                     {
                         var stockSerie = this.StockDictionary[stockName];
 
-                        StockSerie.Groups newGroup = stockSerie.StockGroup;
+                        Groups newGroup = stockSerie.StockGroup;
                         if (!stockSerie.BelongsToGroup(this.selectedGroup))
                         {
                             this.selectedGroup = newGroup;
@@ -1405,7 +1407,7 @@ namespace StockAnalyzerApp
                     {
                         var stockSerie = this.StockDictionary[stockName];
 
-                        StockSerie.Groups newGroup = stockSerie.StockGroup;
+                        Groups newGroup = stockSerie.StockGroup;
                         if (this.selectedGroup != newGroup)
                         {
                             this.selectedGroup = newGroup;
@@ -1472,7 +1474,7 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + this.ViewModel.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if (!this.IsReportingIntraday && (currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO) || currentStockSerie.BelongsToGroup(StockSerie.Groups.TURBO_5M)))
+                if (!this.IsReportingIntraday && (currentStockSerie.BelongsToGroup(Groups.TURBO) || currentStockSerie.BelongsToGroup(Groups.TURBO_5M)))
                 {
                     this.statusLabel.Text = ("Downloading data...");
                     this.Refresh();
@@ -1733,7 +1735,7 @@ namespace StockAnalyzerApp
 
                     if (StockDataProviderBase.ForceDownloadSerieData(this.currentStockSerie))
                     {
-                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                        if (this.currentStockSerie.BelongsToGroup(Groups.CACALL))
                         {
                             try
                             {
@@ -2501,8 +2503,8 @@ namespace StockAnalyzerApp
         {
             if (!Enum.TryParse(Settings.Default.SelectedGroup, out this.selectedGroup))
             {
-                this.selectedGroup = StockSerie.Groups.INDICES;
-                Settings.Default.SelectedGroup = StockSerie.Groups.INDICES.ToString();
+                this.selectedGroup = Groups.INDICES;
+                Settings.Default.SelectedGroup = Groups.INDICES.ToString();
                 Settings.Default.Save();
             }
 
@@ -2535,7 +2537,7 @@ namespace StockAnalyzerApp
                 // Set default group
                 ((ToolStripMenuItem)groupMenuItems[0]).Checked = true;
                 this.selectedGroup =
-                   (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), groupMenuItems[0].ToString());
+                   (Groups)Enum.Parse(typeof(Groups), groupMenuItems[0].ToString());
                 Settings.Default.SelectedGroup = this.selectedGroup.ToString();
                 Settings.Default.Save();
             }
@@ -2548,7 +2550,7 @@ namespace StockAnalyzerApp
             Settings.Default.SelectedGroup = sender.ToString();
             Settings.Default.Save();
 
-            this.OnSelectedStockGroupChanged((StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), sender.ToString()));
+            this.OnSelectedStockGroupChanged((Groups)Enum.Parse(typeof(Groups), sender.ToString()));
         }
 
         #region MENU CREATION
@@ -2672,12 +2674,12 @@ namespace StockAnalyzerApp
         #endregion
 
         public bool changingGroup = false;
-        private void OnSelectedStockGroupChanged(StockSerie.Groups stockGroup)
+        private void OnSelectedStockGroupChanged(Groups stockGroup)
         {
             try
             {
                 changingGroup = true;
-                StockSerie.Groups newGroup = stockGroup;
+                Groups newGroup = stockGroup;
                 if (this.selectedGroup != newGroup)
                 {
                     this.selectedGroup = newGroup;
@@ -2700,13 +2702,13 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void SetDurationForStockGroup(StockSerie.Groups newGroup)
+        private void SetDurationForStockGroup(Groups newGroup)
         {
             // In order to speed the intraday display.
             switch (newGroup)
             {
-                case StockSerie.Groups.TURBO_5M:
-                case StockSerie.Groups.TURBO:
+                case Groups.TURBO_5M:
+                case Groups.TURBO:
                     if (this.logScaleBtn.CheckState == CheckState.Checked)
                     {
                         this.logScaleBtn_Click(null, null);
@@ -3923,48 +3925,7 @@ namespace StockAnalyzerApp
             this.sectorDlg = null;
         }
         #endregion
-        #region Conditional Statistics
-        StatisticsDlg statisticsDlg = null;
-        void statisticsMenuItem_Click(object sender, EventArgs e)
-        {
-            if (statisticsDlg == null)
-            {
-                statisticsDlg = new StatisticsDlg() { StartPosition = FormStartPosition.CenterScreen };
-                statisticsDlg.Disposed += statisticsDlg_Disposed;
-                statisticsDlg.Show();
-            }
-            else
-            {
-                statisticsDlg.Activate();
-            }
-        }
 
-        void statisticsDlg_Disposed(object sender, EventArgs e)
-        {
-            this.statisticsDlg = null;
-        }
-        #endregion
-        #region EXPECTED VALUE
-        ExpectedValueDlg expectedValueDlg = null;
-        void expectedValueMenuItem_Click(object sender, EventArgs e)
-        {
-            if (expectedValueDlg == null)
-            {
-                expectedValueDlg = new ExpectedValueDlg() { StartPosition = FormStartPosition.CenterScreen };
-                expectedValueDlg.Disposed += expectedValueDlg_Disposed;
-                expectedValueDlg.Show();
-            }
-            else
-            {
-                expectedValueDlg.Activate();
-            }
-        }
-
-        void expectedValueDlg_Disposed(object sender, EventArgs e)
-        {
-            this.expectedValueDlg = null;
-        }
-        #endregion
         #region HORSE RACE DIALOG
         HorseRaceDlg horseRaceDlg = null;
         void showHorseRaceViewMenuItem_Click(object sender, EventArgs e)
@@ -4502,7 +4463,7 @@ namespace StockAnalyzerApp
                             }
                         }
 
-                        if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.BREADTH))
+                        if (this.currentStockSerie.BelongsToGroup(Groups.BREADTH))
                         {
                             string[] fields = this.currentStockSerie.StockName.Split('.');
                             if (fields.Length > 1 && this.StockDictionary.ContainsKey(fields[1]))
@@ -5041,7 +5002,7 @@ namespace StockAnalyzerApp
         {
             if (this.currentStockSerie != null)
             {
-                if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.CACALL))
+                if (this.currentStockSerie.BelongsToGroup(Groups.CACALL))
                 {
                     ABCDataProvider.DownloadAgenda(this.currentStockSerie);
                 }
@@ -5067,7 +5028,7 @@ namespace StockAnalyzerApp
         internal void openInTradingViewMenu()
         {
             string url = $"https://www.tradingview.com/";
-            if (this.currentStockSerie.BelongsToGroup(StockSerie.Groups.PEA_EURONEXT))
+            if (this.currentStockSerie.BelongsToGroup(Groups.PEA_EURONEXT))
             {
                 url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.Symbol}/financials-statistics-and-ratios/";
             }

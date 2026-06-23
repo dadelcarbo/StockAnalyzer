@@ -242,7 +242,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (!stockDictionary.ContainsKey(row[2]))
                     {
                         var stockSerie = new StockSerie(row[2], row[1],
-                            (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[3]),
+                            (Groups)Enum.Parse(typeof(Groups), row[3]),
                             StockDataProvider.InvestingIntraday, BarDuration.M_5);
                         stockSerie.Ticker = long.Parse(row[0]);
 

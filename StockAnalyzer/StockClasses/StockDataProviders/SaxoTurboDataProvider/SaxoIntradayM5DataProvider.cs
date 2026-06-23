@@ -329,7 +329,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider
                     row[1] = "MA_" + row[1];
                     if (!stockDictionary.ContainsKey(row[1]))
                     {
-                        var stockSerie = new StockSerie(row[1], row[0], StockSerie.Groups.TURBO_5M, StockDataProvider.SaxoIntraday_M5, BarDuration.M_5);
+                        var stockSerie = new StockSerie(row[1], row[0], Groups.TURBO_5M, StockDataProvider.SaxoIntraday_M5, BarDuration.M_5);
                         stockSerie.ISIN = row[0];
                         stockDictionary.Add(row[1], stockSerie);
                         if (row.Length == 3)

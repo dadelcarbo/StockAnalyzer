@@ -55,7 +55,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var stockName = row[1];
                     if (!stockDictionary.ContainsKey(stockName))
                     {
-                        var stockSerie = new StockSerie(stockName, row[0], (StockSerie.Groups)Enum.Parse(typeof(StockSerie.Groups), row[2]), StockDataProvider.Yahoo, BarDuration.Daily);
+                        var stockSerie = new StockSerie(stockName, row[0], (Groups)Enum.Parse(typeof(Groups), row[2]), StockDataProvider.Yahoo, BarDuration.Daily);
                         if (row.Length > 3)
                         {
                             stockSerie.ISIN = row[3];

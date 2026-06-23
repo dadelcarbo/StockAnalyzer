@@ -1228,7 +1228,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
             foreach (var operation in operations.Where(p => p.ActivityTime >= startDate && p.ActivityTime < endDate))
             {
-                DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == StockSerie.Groups.TURBO) ? operation.ActivityTime : operation.ActivityTime.Date;
+                DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == Groups.TURBO) ? operation.ActivityTime : operation.ActivityTime.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
@@ -1263,7 +1263,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private void PaintOpenedPosition(Graphics graphic, StockPositionBase position)
         {
-            DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == StockSerie.Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+            DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
             int entryIndex = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
             entryIndex = Math.Max(this.StartIndex, entryIndex);
 
@@ -1318,7 +1318,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             foreach (var position in positions.Where(p => p.IsClosed && startDate < p.ExitDate.Value && endDate > p.EntryDate))
             {
-                DateTime entryDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == StockSerie.Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+                DateTime entryDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
                 int entryIndex = this.IndexOf(entryDate, this.StartIndex, this.EndIndex);
                 entryIndex = Math.Max(this.StartIndex, entryIndex);
 

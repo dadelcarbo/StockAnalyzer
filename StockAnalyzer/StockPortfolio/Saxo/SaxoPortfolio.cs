@@ -61,7 +61,7 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             var instrument = instrumentService.GetInstrumentById(uic);
             if (instrument == null)
             {
-                stockSerie = new StockSerie(uic.ToString(), uic.ToString(), StockSerie.Groups.ALL, StockDataProvider.Generated, BarDuration.Daily);
+                stockSerie = new StockSerie(uic.ToString(), uic.ToString(), Groups.ALL, StockDataProvider.Generated, BarDuration.Daily);
                 UicToSerieCache.Add(uic, stockSerie);
                 StockLog.Write($"Instrument: {uic} not found !");
                 return stockSerie;
@@ -92,7 +92,7 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             {
                 if (instrument.ExchangeId == "CATS_SAXO" || instrument.AssetType == "WarrantOpenEndKnockOut")
                 {
-                    stockSerie = new StockSerie(instrument.Description, symbol, StockSerie.Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
+                    stockSerie = new StockSerie(instrument.Description, symbol, Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
                     stockSerie.ISIN = symbol;
                 }
             }

@@ -175,7 +175,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var row = line.Split(',');
                     if (!stockDictionary.ContainsKey(row[3]))
                     {
-                        var stockSerie = new StockSerie(row[3], row[1], row[0], StockSerie.Groups.TURBO, StockDataProvider.SocGenIntraday, BarDuration.M_5);
+                        var stockSerie = new StockSerie(row[3], row[1], row[0], Groups.TURBO, StockDataProvider.SocGenIntraday, BarDuration.M_5);
                         stockSerie.Ticker = long.Parse(row[2]);
 
                         stockDictionary.Add(row[3], stockSerie);

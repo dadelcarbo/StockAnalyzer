@@ -11,7 +11,7 @@ namespace StockAnalyzerApp.CustomControl
 {
     public partial class MultiTimeFrameChartDlg : Form
     {
-        private StockSerie.Groups selectedGroup;
+        private Groups selectedGroup;
         public MultiTimeFrameChartDlg()
         {
             this.fullGraphUserControl1 = new FullGraphUserControl(BarDuration.Monthly);
@@ -29,14 +29,14 @@ namespace StockAnalyzerApp.CustomControl
             this.fullGraphUserControl3.OnMouseDateChanged += fullGraphUserControl2.MouseDateChanged;
         }
 
-        public void Initialize(StockSerie.Groups group, StockSerie stockSerie)
+        public void Initialize(Groups group, StockSerie stockSerie)
         {
             this.selectedGroup = group;
             this.CurrentStockSerie = stockSerie;
 
             switch (this.selectedGroup)
             {
-                case StockSerie.Groups.TURBO:
+                case Groups.TURBO:
                     fullGraphUserControl3.SetDuration(BarDuration.Daily);
                     break;
             }

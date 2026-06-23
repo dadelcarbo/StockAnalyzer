@@ -93,8 +93,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
             this.bestTrendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sectorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.expectedValueMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statisticsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoTradeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.currentPortfolioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -586,9 +584,7 @@ namespace StockAnalyzerApp
                 this.showAlertDefDialogMenuItem,
                 this.generateReportMenuItem,
                 this.sectorMenuItem,
-                this.bestTrendMenuItem,
-                this.expectedValueMenuItem,
-                this.statisticsMenuItem });
+                this.bestTrendMenuItem });
             this.analysisMenuItem.Name = "analysisMenuItem";
             this.analysisMenuItem.Size = new System.Drawing.Size(62, 20);
             this.analysisMenuItem.Text = "Analysis";
@@ -680,22 +676,6 @@ namespace StockAnalyzerApp
             this.sectorMenuItem.Size = new System.Drawing.Size(240, 22);
             this.sectorMenuItem.Text = "Sector View";
             this.sectorMenuItem.Click += new System.EventHandler(this.sectorViewMenuItem_Click);
-            // 
-            // expectedValueMenuItem
-            // 
-            this.expectedValueMenuItem.Name = "expectedValueMenuItem";
-            this.expectedValueMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.expectedValueMenuItem.Text = "Expected Value";
-            this.expectedValueMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F12)));
-            this.expectedValueMenuItem.Click += new System.EventHandler(this.expectedValueMenuItem_Click);
-            // 
-            // statisticsMenuItem
-            // 
-            this.statisticsMenuItem.Name = "statisticsMenuItem";
-            this.statisticsMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.statisticsMenuItem.Text = "Statistics";
-            this.statisticsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F12)));
-            this.statisticsMenuItem.Click += new System.EventHandler(this.statisticsMenuItem_Click);
             // 
             // toolStripSeparator21
             // 
@@ -1618,8 +1598,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem bestTrendMenuItem;
         private ToolStripMenuItem sectorMenuItem;
-        private ToolStripMenuItem expectedValueMenuItem;
-        private ToolStripMenuItem statisticsMenuItem;
         private ToolStripButton snapshotToolStripButton;
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripComboBox themeComboBox;

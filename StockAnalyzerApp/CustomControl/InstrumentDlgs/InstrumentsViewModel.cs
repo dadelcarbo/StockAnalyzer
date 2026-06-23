@@ -21,10 +21,10 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
     public class InstrumentViewModel : NotifyPropertyChangedBase
     {
 
-        static public Array Groups => Enum.GetValues(typeof(StockSerie.Groups));
+        static public Array Groups => Enum.GetValues(typeof(Groups));
 
-        private StockSerie.Groups group;
-        public StockSerie.Groups Group
+        private StockAnalyzer.StockClasses.Groups group;
+        public Groups Group
         {
             get { return group; }
             set

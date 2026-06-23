@@ -15,7 +15,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         public SectorViewModel()
         {
             this.BarDuration = BarDuration.Daily;
-            this.group = StockSerie.Groups.SECTORS_STOXX;
+            this.group = StockAnalyzer.StockClasses.Groups.SECTORS_STOXX;
         }
 
         BarDuration barDuration;
@@ -23,10 +23,10 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
 
         public List<BarDuration> BarDurations => new List<BarDuration>() { BarDuration.Daily, BarDuration.Weekly };
 
-        StockSerie.Groups group;
-        public StockSerie.Groups Group { get => group; set => SetProperty(ref group, value); }
+        Groups group;
+        public Groups Group { get => group; set => SetProperty(ref group, value); }
 
-        public List<StockSerie.Groups> Groups => StockDictionary.Instance.GetValidGroups();
+        public List<Groups> Groups => StockDictionary.Instance.GetValidGroups();
 
         public void Perform(string param)
         {

@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
             var longName = "FEAR_GREED";
             if (!stockDictionary.ContainsKey(longName))
             {
-                stockDictionary.Add(longName, new StockSerie(longName, "FnG", StockSerie.Groups.BREADTH, StockDataProvider.CNN, BarDuration.Daily));
+                stockDictionary.Add(longName, new StockSerie(longName, "FnG", Groups.BREADTH, StockDataProvider.CNN, BarDuration.Daily));
             }
             needDownload = false;
         }

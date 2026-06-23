@@ -274,7 +274,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             {
                 groupSeries.Add(config.Group, null);
             }
-            if (config.Group == StockSerie.Groups.SRD || config.Group == StockSerie.Groups.SRD_LO)
+            if (config.Group == Groups.SRD || config.Group == Groups.SRD_LO)
             {
                 InitSRDFromLibelleFile(fileName, config.Group);
             }
@@ -552,11 +552,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                         string stockName = row[1].ToUpper().Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
                         if (stockDictionary.ContainsKey(stockName))
                         {
-                            if (group == StockSerie.Groups.SRD)
+                            if (group == Groups.SRD)
                             {
                                 stockDictionary[stockName].SRD = true;
                             }
-                            if (group == StockSerie.Groups.SRD_LO)
+                            if (group == Groups.SRD_LO)
                             {
                                 stockDictionary[stockName].SRD_LO = true;
                             }
@@ -759,58 +759,58 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             //string abcGroup = null;
             //switch (stockGroup)
             //{
-            //    case StockSerie.Groups.EURO_A:
+            //    case Groups.EURO_A:
             //        abcGroup = "eurolistap";
             //        break;
-            //    case StockSerie.Groups.EURO_B:
+            //    case Groups.EURO_B:
             //        abcGroup = "eurolistbp";
             //        break;
-            //    case StockSerie.Groups.EURO_C:
+            //    case Groups.EURO_C:
             //        abcGroup = "eurolistcp";
             //        break;
-            //    case StockSerie.Groups.ALTERNEXT:
+            //    case Groups.ALTERNEXT:
             //        abcGroup = "eurogp";
             //        break;
-            //    case StockSerie.Groups.SECTORS_CAC:
+            //    case Groups.SECTORS_CAC:
             //        abcGroup = "indicessecp";
             //        break;
-            //    case StockSerie.Groups.BELGIUM:
+            //    case Groups.BELGIUM:
             //        abcGroup = "belg";
             //        break;
-            //    case StockSerie.Groups.HOLLAND:
+            //    case Groups.HOLLAND:
             //        abcGroup = "holln";
             //        break;
-            //    case StockSerie.Groups.PORTUGAL:
+            //    case Groups.PORTUGAL:
             //        abcGroup = "lisboal";
             //        break;
-            //    case StockSerie.Groups.CAC40:
+            //    case Groups.CAC40:
             //        abcGroup = "xcac40p";
             //        break;
-            //    case StockSerie.Groups.SBF120:
+            //    case Groups.SBF120:
             //        abcGroup = "xsbf120p";
             //        break;
-            //    case StockSerie.Groups.CAC_AT:
+            //    case Groups.CAC_AT:
             //        abcGroup = "xcacatp";
             //        break;
-            //    case StockSerie.Groups.USA:
+            //    case Groups.USA:
             //        abcGroup = "usau";
             //        break;
-            //    case StockSerie.Groups.SPAIN:
+            //    case Groups.SPAIN:
             //        abcGroup = "spainm";
             //        break;
-            //    case StockSerie.Groups.ITALIA:
+            //    case Groups.ITALIA:
             //        abcGroup = "italiai";
             //        break;
-            //    case StockSerie.Groups.GERMANY:
+            //    case Groups.GERMANY:
             //        abcGroup = "germanyf";
             //        break;
-            //    //case StockSerie.Groups.NASDAQ:
+            //    //case Groups.NASDAQ:
             //    //    abcGroup = "nasu";
             //    //    break;
-            //    case StockSerie.Groups.SRD:
+            //    case Groups.SRD:
             //        abcGroup = "srdp";
             //        break;
-            //    case StockSerie.Groups.SRD_LO:
+            //    case Groups.SRD_LO:
             //        abcGroup = "srdlop";
             //        break;
             //    default:
@@ -897,7 +897,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 stockSerie.IsInitialised = false;
                 int nbFile = 0;
                 var isin = stockSerie.ISIN;
-                if (stockSerie.StockGroup == StockSerie.Groups.USA)
+                if (stockSerie.StockGroup == Groups.USA)
                     isin += "u";
 
                 int year = DateTime.Today.Year;
@@ -1123,9 +1123,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             //        downloadingGroups = "True";
             //        var groups = new Groups[] {
-            //            StockSerie.Groups.BELGIUM, StockSerie.Groups.HOLLAND, StockSerie.Groups.PORTUGAL,
-            //            StockSerie.Groups.ITALIA, StockSerie.Groups.GERMANY, StockSerie.Groups.SPAIN, StockSerie.Groups.USA, StockSerie.Groups.CANADA,
-            //            StockSerie.Groups.EURO_A, StockSerie.Groups.EURO_B, StockSerie.Groups.EURO_C, StockSerie.Groups.ALTERNEXT };
+            //            Groups.BELGIUM, Groups.HOLLAND, Groups.PORTUGAL,
+            //            Groups.ITALIA, Groups.GERMANY, Groups.SPAIN, Groups.USA, Groups.CANADA,
+            //            Groups.EURO_A, Groups.EURO_B, Groups.EURO_C, Groups.ALTERNEXT };
 
             //        foreach (var group in groups)
             //        {
@@ -1310,7 +1310,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public static bool BelongsToGroup(StockSerie stockSerie, Groups group)
         {
-            if (group == stockSerie.StockGroup || group == StockSerie.Groups.ALL_STOCKS)
+            if (group == stockSerie.StockGroup || group == Groups.ALL_STOCKS)
                 return true;
 
             switch (group)
@@ -1374,7 +1374,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public static void DownloadAgenda(StockSerie stockSerie)
         {
-            if (!stockSerie.BelongsToGroup(StockSerie.Groups.CACALL)) return;
+            if (!stockSerie.BelongsToGroup(Groups.CACALL)) return;
             if (stockSerie.Agenda == null)
             {
                 stockSerie.Agenda = new StockAgenda();

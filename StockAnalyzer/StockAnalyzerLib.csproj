@@ -401,6 +401,9 @@
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILEMA2Lines.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStop_TRAILTOPEMAHL.cs" />
+    <Compile Include="StockData\IDataProvider.cs" />
+    <Compile Include="StockData\OhlcBar.cs" />
+    <Compile Include="StockData\StockInstrument.cs" />
     <Compile Include="StockDrawing\Area.cs" />
     <Compile Include="StockDrawing\Resistance.cs" />
     <Compile Include="StockDrawing\Box.cs" />

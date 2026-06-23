@@ -337,7 +337,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     var row = line.Split(',');
                     if (!stockDictionary.ContainsKey(row[2]))
                     {
-                        var stockSerie = new StockSerie(row[2], row[1], StockSerie.Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
+                        var stockSerie = new StockSerie(row[2], row[1], Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
                         stockSerie.ISIN = row[1];
                         stockDictionary.Add(row[2], stockSerie);
                         stockSerie.Underlying = row[0]; 
