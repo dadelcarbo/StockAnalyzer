@@ -1184,7 +1184,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         protected override void PaintGraphTitle(Graphics gr)
         {
-            string graphTitle = this.serie.StockGroup + " - " + this.serie?.StockName;
+            string graphTitle = this.serie.Instrument.Group + " - " + this.serie?.StockName;
 
             // Add PaintBars, SR, Trail...
             foreach (IStockIndicator indicator in this.CurveList.Indicators)
@@ -1228,7 +1228,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
             foreach (var operation in operations.Where(p => p.ActivityTime >= startDate && p.ActivityTime < endDate))
             {
-                DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == Groups.TURBO) ? operation.ActivityTime : operation.ActivityTime.Date;
+                DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.Instrument.Group == Groups.TURBO) ? operation.ActivityTime : operation.ActivityTime.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
@@ -1263,7 +1263,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private void PaintOpenedPosition(Graphics graphic, StockPositionBase position)
         {
-            DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+            DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.Instrument.Group == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
             int entryIndex = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
             entryIndex = Math.Max(this.StartIndex, entryIndex);
 
@@ -1318,7 +1318,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             foreach (var position in positions.Where(p => p.IsClosed && startDate < p.ExitDate.Value && endDate > p.EntryDate))
             {
-                DateTime entryDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.StockGroup == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+                DateTime entryDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.Instrument.Group == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
                 int entryIndex = this.IndexOf(entryDate, this.StartIndex, this.EndIndex);
                 entryIndex = Math.Max(this.StartIndex, entryIndex);
 
@@ -1828,7 +1828,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         this.sellMenu.Visible = Portfolio?.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
                         this.cancelMenu.Visible = Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault() != null;
                         this.buyMenu.Visible = !(this.sellMenu.Visible || this.cancelMenu.Visible);
-                        this.openSaxoIntradyConfigDlg.Visible = this.serie?.SaxoId > 0;
+                        this.openSaxoIntradyConfigDlg.Visible = this.serie?.Instrument.SaxoId > 0;
                         this.contextMenu.Show(this, e.Location);
                     }
                 }
@@ -2549,7 +2549,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var portfolioValue = Portfolio.TotalValue;
             openTradeViewModel = new OpenTradeViewModel
             {
-                StockSerie = this.serie,
+                StockSerie = this.serie.Instrument.StockSerie,
                 BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
                 EntryValue = this.closeCurveType.DataSerie[EndIndex],
                 StopValue = FindStopValueFromTheme(),
@@ -2590,7 +2590,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void tradeMenu_Click(object sender, EventArgs e)
         {
-            var tradeManagerViewModel = new TradeManagerViewModel(Portfolio, this.serie);
+            var tradeManagerViewModel = new TradeManagerViewModel(Portfolio, this.serie.Instrument.StockSerie);
             tradeManagerViewModel.OrdersChanged += TradeManagerViewModel_OrdersChanged;
             var tradeManagerDlg = new TradeManagerDlg(tradeManagerViewModel);
             tradeManagerDlg.Show(this);
@@ -2633,7 +2633,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             closeTradeViewModel = new CloseTradeViewModel
             {
-                StockSerie = this.serie,
+                StockSerie = this.serie.Instrument.StockSerie,
                 Position = pos,
                 ExitValue = this.serie.LastValue.CLOSE,
                 ExitQty = pos.EntryQty,
@@ -2700,7 +2700,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         void openSaxoIntradyConfigDlg_Click(object sender, EventArgs e)
         {
-            StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.serie.SaxoId);
+            StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.serie.Instrument.SaxoId);
         }
         #endregion
     }

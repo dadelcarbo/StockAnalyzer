@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.Bnp;
-using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.CNN;
 using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
@@ -192,9 +191,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         break;
                     case StockDataProvider.YahooIntraday:
                         dataProvider = new YahooIntradayDataProvider();
-                        break;
-                    case StockDataProvider.BoursoIntraday:
-                        dataProvider = new BoursoIntradayDataProvider();
                         break;
                     case StockDataProvider.yCharts:
                         dataProvider = new ychartsDataProvider();

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzerApp.StockData
 {
@@ -11,12 +12,13 @@ namespace StockAnalyzerApp.StockData
         public string Isin { get; set; }
         public string Ticker { get; set; }
         public Groups Group { get; set; }
+        public long SaxoId => StockSerie?.SaxoId ?? 0;
 
-        private StockSerie serie;
+        public StockSerie StockSerie { get; set; }
 
-        private StockInstrument(StockSerie serie)
+        public StockInstrument(StockSerie serie)
         {
-            this.serie = serie;
+            this.StockSerie = serie;
 
             this.Id = serie.StockName;
             this.DisplayName = serie.StockName;
@@ -26,37 +28,25 @@ namespace StockAnalyzerApp.StockData
             this.Group = serie.StockGroup;
         }
 
-        private SortedDictionary<BarDuration, StockDailyValue[]> cache = new SortedDictionary<BarDuration, StockDailyValue[]>();
+        private SortedDictionary<BarDuration, DataSerie> cache = new SortedDictionary<BarDuration, DataSerie>();
         /// <summary>
         /// Return data from cache dictionnary
         /// </summary>
         /// <param name="duration"></param>
         /// <returns></returns>
-        public StockDailyValue[] GetValues(BarDuration duration)
+        public DataSerie GetDataSerie(BarDuration duration)
         {
             if (!cache.ContainsKey(duration))
             {
-                serie.BarDuration = duration;
-                if (serie.BarDuration > 0)
+                StockSerie.BarDuration = duration;
+                if (StockSerie.Count > 0)
                 {
-                    cache.Add(duration, serie.ValueArray);
+                    cache.Add(duration, new DataSerie(this, duration, StockSerie.ValueArray));
                 }
                 else
                     return null;
             }
             return cache[duration];
-        }
-
-        static public SortedDictionary<string, StockInstrument> Instruments { get; private set; } = new SortedDictionary<string, StockInstrument>();
-
-        static public void Initialize(IEnumerable<StockSerie> stockSeries)
-        {
-            Instruments.Clear();
-            foreach (var serie in stockSeries)
-            {
-                var instrument = new StockInstrument(serie);
-                Instruments[instrument.Id] = instrument;
-            }
         }
     }
 }

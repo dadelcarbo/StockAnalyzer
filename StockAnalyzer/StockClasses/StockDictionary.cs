@@ -1,19 +1,38 @@
 ﻿using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace StockAnalyzer.StockClasses
 {
     public class StockDictionary : SortedDictionary<string, StockSerie>, IStockPriceProvider
     {
+        static private SortedDictionary<string, StockInstrument> instruments;
+        static public SortedDictionary<string, StockInstrument> Instruments => instruments ??= InitializeInstruments();
+
+        static private SortedDictionary<string, StockInstrument> InitializeInstruments()
+        {
+            var instruments = new SortedDictionary<string, StockInstrument>();
+            foreach (var serie in StockDictionary.Instance.Values)
+            {
+                var instrument = new StockInstrument(serie);
+                instruments[instrument.Id] = instrument;
+            }
+            return instruments;
+        }
+
+
+
         public DateTime ArchiveEndDate { get; private set; }
 
         public delegate void OnSerieEventDetectionDone();
@@ -1595,6 +1614,17 @@ namespace StockAnalyzer.StockClasses
             StockLog.Write($"MatchAlert Duration: {sw.Elapsed} for {alertDef.BarDuration} {alertDef.Group} {alertDef.Title}");
 
             return alerts;
+        }
+
+        public static DataSerie GetDataSerie(string instrumentId, BarDuration duration)
+        {
+            var instrument = StockDictionary.Instruments[instrumentId];
+            if (instrument == null)
+            {
+                return null;
+            }
+            return instrument.GetDataSerie(duration);
+
         }
     }
 }

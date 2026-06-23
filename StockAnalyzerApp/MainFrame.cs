@@ -3,7 +3,6 @@ using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
-using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
@@ -509,9 +508,6 @@ namespace StockAnalyzerApp
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
-
-            StockInstrument.Initialize(this.StockDictionary.Values);
-
 
             // Create Groups menu items
             CreateGroupMenuItem();
@@ -4446,7 +4442,7 @@ namespace StockAnalyzerApp
                                         this.CurrentStockSerie.StockAnalysis.DrawingItems.Add(this.CurrentStockSerie.BarDuration, new StockDrawingItems());
                                     }
                                     graphControl.Initialize(curveList, horizontalLines, dateSerie,
-                                        CurrentStockSerie,
+                                        StockDictionary.GetDataSerie(currentStockSerie.StockName, this.ViewModel.BarDuration),
                                         CurrentStockSerie.StockAnalysis.DrawingItems[this.CurrentStockSerie.BarDuration],
                                         startIndex, endIndex);
                                 }

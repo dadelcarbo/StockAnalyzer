@@ -74,18 +74,18 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 lastValueString += (lastValue / 1000000000).ToString("0.##") + "G€";
             }
             else
-            if (lastValue > 1000000)
-            {
-                lastValueString += (lastValue / 1000000).ToString("0.##") + "M€";
-            }
-            else if (lastValue > 1000)
-            {
-                lastValueString += (lastValue / 1000).ToString("0.##") + "K€";
-            }
-            else
-            {
-                lastValueString += lastValue.ToString("0.##") + "€";
-            }
+                if (lastValue > 1000000)
+                {
+                    lastValueString += (lastValue / 1000000).ToString("0.##") + "M€";
+                }
+                else if (lastValue > 1000)
+                {
+                    lastValueString += (lastValue / 1000).ToString("0.##") + "K€";
+                }
+                else
+                {
+                    lastValueString += lastValue.ToString("0.##") + "€";
+                }
 
             aGraphic.DrawString(lastValueString, axisFont, legendBrush, GraphRectangle.Right + 1, GraphRectangle.Top + 8);
 
@@ -172,14 +172,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     if (curveType.DataSerie.Name == "EXCHANGED")
                     {
-                        var volume = this.serie.GetSerie(StockAnalyzer.StockClasses.StockDataType.VOLUME)[this.lastMouseIndex];
+                        var volume = this.serie.Values[this.lastMouseIndex].VOLUME;
                         var exchanged = curveType.DataSerie[this.lastMouseIndex];
                         value += BuildTabbedString("VOLUME", volume, 12) + "\r\n";
                         value += BuildTabbedString("EXCHANGED", exchanged / 1000000, 12) + "\r\n";
-                        if (this.lastMouseIndex == this.serie.LastIndex)
-                        {
-                            value += BuildTabbedString("EXCHANGED AVG", this.serie.GetExchanged(10), 12) + "\r\n";
-                        }
                     }
                     else
                     {

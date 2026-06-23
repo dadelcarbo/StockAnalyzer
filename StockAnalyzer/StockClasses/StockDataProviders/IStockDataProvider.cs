@@ -14,7 +14,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         Generated,
         Replay,
         Investing,
-        BoursoIntraday,
         SaxoIntraday,
         SaxoIntraday_M5,
         VontobelIntraday,

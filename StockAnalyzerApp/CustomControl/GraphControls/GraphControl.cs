@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
@@ -100,7 +101,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         public bool IsInitialized { get; protected set; }
         protected DateTime[] dateSerie;
 
-        protected StockSerie serie;
+        protected DataSerie serie;
         public int EndIndex { get; set; }
         public int StartIndex { get; set; }
 
@@ -222,7 +223,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             LowerLowPen = new Pen(Color.Red, 1.0f);
             SetFrameMargin();
         }
-        public void Initialize(GraphCurveTypeList curveList, List<HLine> horizontallines, DateTime[] dateSerie, StockSerie serie, StockDrawingItems drawingItems, int startIndex, int endIndex)
+        public void Initialize(GraphCurveTypeList curveList, List<HLine> horizontallines, DateTime[] dateSerie, DataSerie serie, StockDrawingItems drawingItems, int startIndex, int endIndex)
         {
             using MethodLogger ml = new MethodLogger(this);
             this.dateSerie = dateSerie;
@@ -1069,13 +1070,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     else
                         if (value > 1000000)
-                    {
-                        valueString = (value / 1000).ToString("0.#") + "K";
-                    }
-                    else
-                    {
-                        valueString = value.ToString("0.##");
-                    }
+                        {
+                            valueString = (value / 1000).ToString("0.#") + "K";
+                        }
+                        else
+                        {
+                            valueString = value.ToString("0.##");
+                        }
                     this.DrawString(this.foregroundGraphic, valueString, axisFont, this.TextForegroundBrush, TextBackgroundBrush, new PointF(GraphRectangle.Right + 2, point2.Y - 8), true);
                 }
             }

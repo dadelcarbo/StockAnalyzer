@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
-using StockAnalyzer.StockClasses.StockDataProviders.Bourso;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;

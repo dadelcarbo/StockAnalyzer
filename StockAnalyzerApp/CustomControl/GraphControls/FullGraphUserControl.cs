@@ -405,7 +405,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 currentStockSerie.StockAnalysis.DrawingItems.Add(currentStockSerie.BarDuration, new StockDrawingItems());
                             }
                             graphControl.Initialize(curveList, horizontalLines, dateSerie,
-                                currentStockSerie,
+                                StockDictionary.GetDataSerie(currentStockSerie.StockName, (BarDuration)this.durationComboBox.SelectedItem),
                                 currentStockSerie.StockAnalysis.DrawingItems[currentStockSerie.BarDuration],
                                 startIndex, endIndex);
                         }
