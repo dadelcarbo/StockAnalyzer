@@ -2687,8 +2687,8 @@ namespace StockAnalyzerApp
                         groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup.ToString();
                         break;
                     }
-                    InitialiseStockCombo(true);
                     SetDurationForStockGroup(newGroup);
+                    InitialiseStockCombo(true);
 
                     changingGroup = false;
                     ApplyTheme();
@@ -2711,12 +2711,12 @@ namespace StockAnalyzerApp
                     {
                         this.logScaleBtn_Click(null, null);
                     }
-                    this.ViewModel.BarDuration = BarDuration.H_1;
+                    this.ViewModel.SetBarDuration(BarDuration.H_1, false);
                     break;
                 default:
                     if (this.ViewModel.BarDuration > BarDuration.Monthly)
                     {
-                        this.ViewModel.BarDuration = BarDuration.Daily;
+                        this.ViewModel.SetBarDuration(BarDuration.Daily, false);
                     }
                     break;
             }
