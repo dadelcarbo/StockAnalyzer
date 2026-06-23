@@ -30,8 +30,20 @@ namespace StockAnalyzer.StockData
             this.BarDuration = barDuration;
             this.Values = values;
 
-            this.ValueSeries = new FloatSerie[Enum.GetValues(typeof(StockDataType)).Length];
+            ResetAllCache();
         }
+
+        public void ResetAllCache()
+        {
+            this.ValueSeries = new FloatSerie[Enum.GetValues(typeof(StockDataType)).Length];
+            this.IndicatorCache = new Dictionary<string, IStockIndicator>();
+            this.DecoratorCache = new Dictionary<string, IStockDecorator>();
+            this.CloudCache = new Dictionary<string, IStockCloud>();
+            this.AutoDrawingCache = null;
+            this.TrailStopCache = null;
+            this.TrailCache = null;
+        }
+
         public StockDailyValue[] Values;
         public StockDailyValue this[DateTime key] => this.Values?.FirstOrDefault(v => v.DATE == key);
 
