@@ -54,7 +54,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
             this.eraseDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eraseAllDrawingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stockFilterMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showShowStatusBarMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hideIndicatorsStockMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -178,7 +177,6 @@ namespace StockAnalyzerApp
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileMenuItem,
             this.toolStripMenuItem1,
-            this.stockFilterMenuItem,
             this.viewMenuItem,
             this.analysisMenuItem,
             this.portfolioMenuItem,
@@ -349,12 +347,6 @@ namespace StockAnalyzerApp
             this.eraseAllDrawingsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
             this.eraseAllDrawingsToolStripMenuItem.Text = "Erase all drawings";
             this.eraseAllDrawingsToolStripMenuItem.Click += new System.EventHandler(this.eraseAllDrawingsToolStripMenuItem_Click);
-            // 
-            // stockFilterMenuItem
-            // 
-            this.stockFilterMenuItem.Name = "stockFilterMenuItem";
-            this.stockFilterMenuItem.Size = new System.Drawing.Size(45, 20);
-            this.stockFilterMenuItem.Text = "Filter";
             // 
             // viewMenuItem
             // 
@@ -1561,7 +1553,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem manageWatchlistsMenuItem;
         private ToolStripMenuItem scriptEditorMenuItem;
         private GridLayoutPanel indicatorLayoutPanel;
-        private ToolStripMenuItem stockFilterMenuItem;
         private ToolStripMenuItem secondarySerieMenuItem;
         private ToolStripMenuItem bestTrendMenuItem;
         private ToolStripMenuItem sectorMenuItem;

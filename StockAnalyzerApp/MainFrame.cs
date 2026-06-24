@@ -2374,56 +2374,6 @@ namespace StockAnalyzerApp
         }
         #endregion
 
-        public bool changingGroup = false;
-        private void OnSelectedStockGroupChanged(Groups stockGroup)
-        {
-            try
-            {
-                changingGroup = true;
-                Groups newGroup = stockGroup;
-                if (this.selectedGroup != newGroup)
-                {
-                    this.selectedGroup = newGroup;
-
-                    foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
-                    {
-                        groupSubMenuItem.Checked = groupSubMenuItem.Text == stockGroup.ToString();
-                        break;
-                    }
-                    SetDurationForStockGroup(newGroup);
-
-                    changingGroup = false;
-                    ApplyTheme();
-                }
-            }
-            finally
-            {
-                changingGroup = false;
-            }
-        }
-
-        private void SetDurationForStockGroup(Groups newGroup)
-        {
-            // In order to speed the intraday display.
-            switch (newGroup)
-            {
-                case Groups.TURBO_5M:
-                case Groups.TURBO:
-                    if (this.logScaleBtn.CheckState == CheckState.Checked)
-                    {
-                        this.logScaleBtn_Click(null, null);
-                    }
-                    this.ViewModel.SetBarDuration(BarDuration.H_1, false);
-                    break;
-                default:
-                    if (this.ViewModel.BarDuration > BarDuration.Monthly)
-                    {
-                        this.ViewModel.SetBarDuration(BarDuration.Daily, false);
-                    }
-                    break;
-            }
-        }
-
         private void showShowStatusBarMenuItem_Click(object sender, EventArgs e)
         {
             Settings.Default.ShowStatusBar = this.showShowStatusBarMenuItem.Checked;
@@ -3155,7 +3105,6 @@ namespace StockAnalyzerApp
             {
                 stockScannerDlg = new StockScannerDlg(StockDictionary, this.selectedGroup, this.CurrentStockSerie.BarDuration, this.currentTheme);
                 stockScannerDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                stockScannerDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
                 stockScannerDlg.FormClosing += new FormClosingEventHandler(delegate
                 {
                     this.stockScannerDlg = null;
@@ -3828,7 +3777,7 @@ namespace StockAnalyzerApp
                         this.Cursor = Cursors.WaitCursor;
 
                         StockLog.Write($"Apply theme {this.CurrentStockSerie?.StockName}-{this.ViewModel.BarDuration}-{this.CurrentTheme}");
-                        if (changingGroup) return;
+
                         if (this.CurrentTheme == null || this.CurrentStockSerie == null) return;
                         if (!this.CurrentStockSerie.IsInitialised)
                         {
