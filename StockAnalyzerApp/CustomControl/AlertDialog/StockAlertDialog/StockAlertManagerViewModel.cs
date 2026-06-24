@@ -37,7 +37,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.allAlertDefs = StockAlertDef.AlertDefs;
             this.SelectedAlerts = StockAlertDef.AlertDefs.Select(a => new SelectedAlertDef { AlertDef = a, IsSelected = a.InReport }).ToList();
             this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
-            this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
+            this.Theme = MainFrameViewModel.Instance.Theme;
             if (this.Theme.Contains("*"))
                 this.Theme = this.Themes.FirstOrDefault();
 
@@ -546,7 +546,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.InReport = true;
             this.InAlert = true;
             this.CompleteBar = false;
-            this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
+            this.Theme = MainFrameViewModel.Instance.Theme;
             if (this.Theme.Contains("*"))
                 this.Theme = this.Themes.FirstOrDefault();
             this.TriggerEvent = null;

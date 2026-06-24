@@ -2777,70 +2777,6 @@ namespace StockAnalyzer.StockClasses
             stockSerie.Initialise();
             return stockSerie;
         }
-        public StockSerie GenerateDivStockSerie()
-        {
-            string stockName = this.StockName + "_DIV";
-            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated, this.DataSource.Duration);
-            stockSerie.IsPortfolioSerie = this.IsPortfolioSerie;
-
-            // Calculate ratio foreach values
-            var previousDate = DateTime.MaxValue;
-            var adjClose = this.Values.First().CLOSE;
-            var previousClose = this.Values.First().CLOSE;
-
-            var bars = new List<StockDailyValue>();
-            foreach (var bar in this.Values)
-            {
-                float dividend = 0;
-                var entries = this?.Dividend?.Entries.Where(e => e.Date == bar.DATE).ToList();
-                if (entries.Count > 0)
-                {
-                    dividend = entries.Sum(e => e.Dividend) / previousClose;
-                }
-
-                var adjVar = 1 + bar.VARIATION + dividend;
-                adjClose *= adjVar;
-                var newBar = new StockDailyValue(bar.OPEN * adjClose / bar.CLOSE, bar.HIGH * adjClose / bar.CLOSE, bar.LOW * adjClose / bar.CLOSE, adjClose, bar.VOLUME, bar.DATE);
-                bars.Add(newBar);
-
-                previousDate = bar.DATE;
-                previousClose = bar.CLOSE;
-            }
-            var ratio = previousClose / adjClose;
-
-            foreach (var bar in bars)
-            {
-                bar.OPEN *= ratio;
-                bar.HIGH *= ratio;
-                bar.LOW *= ratio;
-                bar.CLOSE *= ratio;
-                stockSerie.Add(bar.DATE, bar);
-            }
-
-            //foreach (var value in this.Values.Reverse())
-            //{
-            //    var entries = this?.Dividend?.Entries.Where(e => e.Date <= previousDate && e.Date > value.DATE.Date).ToList();
-            //    if (entries.Count > 0)
-            //    {
-            //        dividend += entries.Sum(e => e.Dividend) * previousClose / previousAdjClose;
-            //    }
-
-            //    var newValue = new StockDailyValue(value.OPEN - dividend, value.HIGH - dividend, value.LOW - dividend, value.CLOSE - dividend, value.VOLUME, value.DATE);
-            //    bars.Add(newValue);
-
-            //    previousDate = value.DATE;
-            //    previousClose = value.CLOSE;
-            //    previousAdjClose = newValue.CLOSE;
-            //}
-            //bars.Reverse();
-            if (this.ValueArray.Length != stockSerie.Count)
-            {
-                StockLog.Write("Here!");
-            }
-            // Initialise the serie
-            stockSerie.Initialise();
-            return stockSerie;
-        }
 
         public List<StockDailyValue> GenerateSerieForTimeSpan(List<StockDailyValue> dailyValueList, BarDuration timeSpan)
         {
@@ -3309,6 +3245,9 @@ namespace StockAnalyzer.StockClasses
                     this.BarSmoothedDictionary.Remove("Daily");
                 }
                 this.BarSmoothedDictionary.Add("Daily", this.Values.ToList());
+
+                var instrument = StockDictionary.Instruments[this.StockName];
+                instrument.ClearCache();
             }
 
             this.Initialise();

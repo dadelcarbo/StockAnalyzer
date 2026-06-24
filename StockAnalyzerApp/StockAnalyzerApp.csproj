@@ -422,16 +422,6 @@
     </Compile>
     <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\CloseTradeViewModel.cs" />
     <Compile Include="CustomControl\PortfolioDlg\TradeDlgs\OpenTradeViewModel.cs" />
-    <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml.cs">
-      <DependentUpon>HorseRaceControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.Designer.cs">
-      <DependentUpon>HorseRaceDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\HorseRaceDlgs\HorseRaceViewModel.cs" />
     <Compile Include="CustomControl\IndicatorDlgs\AddCloudDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -736,9 +726,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\OpenPositionDlg.resx">
       <DependentUpon>OpenPositionDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\HorseRaceDlgs\HorseRaceDlg.resx">
-      <DependentUpon>HorseRaceDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddCloudDlg.fr-FR.resx">
       <DependentUpon>AddCloudDlg.cs</DependentUpon>
@@ -1157,10 +1144,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\PortfolioDlg\TradeDlgs\OpenTradeUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControl\HorseRaceDlgs\HorseRaceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

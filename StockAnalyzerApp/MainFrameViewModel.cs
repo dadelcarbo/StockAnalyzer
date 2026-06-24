@@ -1,7 +1,9 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 
 namespace StockAnalyzerApp
 {
@@ -18,6 +20,8 @@ namespace StockAnalyzerApp
     }
     public class MainFrameViewModel : NotifyPropertyChangedBase
     {
+        private MainFrameViewModel() { }
+
         static public bool NotificationSuspended { get; set; } = false;
 
         #region Bar Duration
@@ -47,12 +51,17 @@ namespace StockAnalyzerApp
         #endregion
 
         #region StockSerie
+        StockInstrument instrument;
+        public StockInstrument Instrument { get { return instrument; } set { SetProperty(ref instrument, value); } }
         #endregion
 
         private int browsingHistoryIndex = 0;
         private readonly List<BrowsingEntry> browingHistory = new List<BrowsingEntry>();
 
         public bool IsHistoryActive { get; set; } = true;
+
+        static MainFrameViewModel instance = new MainFrameViewModel();
+        public static MainFrameViewModel Instance => instance;
 
         internal void AddHistory(string stockName, string theme)
         {

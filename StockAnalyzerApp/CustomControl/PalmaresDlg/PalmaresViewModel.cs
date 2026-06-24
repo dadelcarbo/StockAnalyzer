@@ -404,7 +404,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             this.Setting = Settings.FirstOrDefault();
 
             this.Themes = StockAnalyzerForm.MainFrame.Themes.Append(string.Empty);
-            this.Theme = StockAnalyzerForm.MainFrame.CurrentTheme;
+            this.Theme = MainFrameViewModel.Instance.Theme;
             if (this.Theme.Contains("*"))
                 this.Theme = this.Themes.FirstOrDefault();
 

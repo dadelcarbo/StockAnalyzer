@@ -2,6 +2,7 @@
 
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData;
+using Telerik.Windows.Controls.Data.CardView;
 
 namespace StockAnalyzerApp.StockData
 {
@@ -29,6 +30,11 @@ namespace StockAnalyzerApp.StockData
         }
 
         private SortedDictionary<BarDuration, DataSerie> cache = new SortedDictionary<BarDuration, DataSerie>();
+
+        public void ClearCache()
+        {
+            cache.Clear();
+        }
         /// <summary>
         /// Return data from cache dictionnary
         /// </summary>

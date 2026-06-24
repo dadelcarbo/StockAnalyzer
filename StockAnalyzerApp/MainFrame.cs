@@ -24,7 +24,6 @@ using StockAnalyzerApp.CustomControl.AutoTradeDlg;
 using StockAnalyzerApp.CustomControl.ColorPalette;
 using StockAnalyzerApp.CustomControl.DrawingDlg;
 using StockAnalyzerApp.CustomControl.GraphControls;
-using StockAnalyzerApp.CustomControl.HorseRaceDlgs;
 using StockAnalyzerApp.CustomControl.IndicatorDlgs;
 using StockAnalyzerApp.CustomControl.InstrumentDlgs;
 using StockAnalyzerApp.CustomControl.MarketReplay;
@@ -80,8 +79,6 @@ namespace StockAnalyzerApp
 
         public delegate void NotifySelectedThemeChangedEventHandler(Dictionary<string, List<string>> theme);
 
-        public delegate void NotifyBarDurationChangedEventHandler(BarDuration barDuration);
-
         public delegate void NotifyStrategyChangedEventHandler(string newStrategy);
 
         public delegate void StockWatchListsChangedEventHandler();
@@ -115,6 +112,7 @@ namespace StockAnalyzerApp
         public ToolStripProgressBar ProgressBar => this.progressBar;
 
         public GraphCloseControl GraphCloseControl => this.graphCloseControl;
+
 
         private StockSerie currentStockSerie = null;
 
@@ -231,7 +229,7 @@ namespace StockAnalyzerApp
 
             MainFrame = this;
 
-            this.ViewModel = new MainFrameViewModel();
+            this.ViewModel = MainFrameViewModel.Instance;
             this.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             this.IsClosing = false;
@@ -294,8 +292,25 @@ namespace StockAnalyzerApp
                 case "BarDuration":
                     OnBarDurationChanged();
                     break;
+                case "Instrument":
+                    OnInstrumentChanged();
+                    break;
+                case "Theme":
+                    StockAnalyzerForm_ThemeChanged();
+                    break;
+                default:
+                    StockLog.Write("Unhandled property changed: " + e.PropertyName);
+                    break;
             }
         }
+
+        #region INSTRUMENT MANAGEMENT
+        private void OnInstrumentChanged()
+        {
+            StockLog.Write($"Instrument changed to {this.ViewModel.Instrument?.DisplayName}");
+        }
+        #endregion
+
         #region BAR DURATION MANAGEMENT
 
         private bool barDurationChangeFromUI = false;
@@ -317,8 +332,6 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (this.currentStockSerie == null || !this.currentStockSerie.Initialise()) return;
-
                 this.barDurationChangeFromUI = true;
                 ViewModel.SetBarDuration((BarDuration)barDurationComboBox.SelectedItem, true);
                 this.barDurationChangeFromUI = false;
@@ -352,11 +365,6 @@ namespace StockAnalyzerApp
                 if (!repaintSuspended)
                 {
                     this.ApplyTheme();
-                }
-
-                if (NotifyBarDurationChanged != null) // @@@@ Need to remove this event ==> Subscribe directly to the view model.
-                {
-                    this.NotifyBarDurationChanged(this.ViewModel.BarDuration);
                 }
             }
         }
@@ -544,7 +552,7 @@ namespace StockAnalyzerApp
             this.showPositionsMenuItem.Checked = Settings.Default.ShowPositions;
 
             this.StockSerieChanged += new OnStockSerieChangedHandler(StockAnalyzerForm_StockSerieChanged);
-            this.ThemeChanged += new OnThemeChangedHandler(StockAnalyzerForm_ThemeChanged);
+
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(graphScrollerControl_ZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphCloseControl.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator2Control.OnZoomChanged);
@@ -1150,12 +1158,13 @@ namespace StockAnalyzerApp
                 }
                 else
                 {
+                    var DataSerie = ViewModel.Instrument.GetDataSerie(ViewModel.BarDuration);
                     int nbBars = NbBars;
-                    if (CurrentStockSerie.Count > 1 && CurrentStockSerie.Count - 1 - nbBars < 0) // Previous serie was longer
+                    if (DataSerie.Count > 1 && DataSerie.Count - 1 - nbBars < 0) // Previous serie was longer
                     {
-                        nbBars = CurrentStockSerie.Count - 1;
+                        nbBars = DataSerie.Count - 1;
                     }
-                    ChangeZoom(Math.Max(0, CurrentStockSerie.Count - 1 - nbBars), CurrentStockSerie.Count - 1);
+                    ChangeZoom(Math.Max(0, DataSerie.Count - 1 - nbBars), DataSerie.Count - 1);
                 }
             }
         }
@@ -1222,28 +1231,6 @@ namespace StockAnalyzerApp
             ChangeZoom(this.startIndex, this.endIndex);
         }
 
-        private void divScaleBtn_Click(object sender, EventArgs e)
-        {
-            if (this.currentStockSerie == null) return;
-
-            if (this.currentStockSerie.StockName.EndsWith("_DIV"))
-            {
-                this.OnSelectedStockChanged(this.currentStockSerie.StockName.Replace("_DIV", ""), false);
-                return;
-            }
-            if (StockDictionary.ContainsKey(this.currentStockSerie.StockName + "_DIV"))
-            {
-                this.OnSelectedStockChanged(this.currentStockSerie.StockName + "_DIV", false);
-                return;
-            }
-            if (!this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie, true) || this.CurrentStockSerie.Dividend.Entries.Count == 0)
-            {
-                return;
-            }
-
-            StockSerie newSerie = this.CurrentStockSerie.GenerateDivStockSerie();
-            AddNewSerie(newSerie);
-        }
         #endregion
 
         public void OnSelectedStockChanged(string stockName, bool activate)
@@ -1640,6 +1627,8 @@ namespace StockAnalyzerApp
                 if (!string.IsNullOrEmpty(stockNameComboBox.Items[0].ToString()))
                 {
                     this.CurrentStockSerie = this.StockDictionary[stockNameComboBox.SelectedItem.ToString()];
+
+                    this.ViewModel.Instrument = StockDictionary.Instruments[stockNameComboBox.SelectedItem.ToString()];
                 }
             }
         }
@@ -1690,6 +1679,8 @@ namespace StockAnalyzerApp
             }
             // Set the new selected serie
             CurrentStockSerie = selectedSerie;
+
+            this.ViewModel.Instrument = StockDictionary.Instruments[stockNameComboBox.SelectedItem.ToString()];
         }
 
         private void downloadBtn_Click(object sender, EventArgs e)
@@ -1935,9 +1926,9 @@ namespace StockAnalyzerApp
         private void addToWatchListSubMenuItem_Click(object sender, EventArgs e)
         {
             StockWatchList watchList = StockWatchList.WatchLists.Find(wl => wl.Name == sender.ToString());
-            if (!watchList.StockList.Contains(this.stockNameComboBox.SelectedItem.ToString()))
+            if (!watchList.StockList.Contains(this.ViewModel.Instrument.DisplayName))
             {
-                watchList.StockList.Add(this.stockNameComboBox.SelectedItem.ToString());
+                watchList.StockList.Add(this.ViewModel.Instrument.DisplayName);
                 this.SaveWatchList();
             }
         }
@@ -2996,7 +2987,7 @@ namespace StockAnalyzerApp
             this.WindowState = FormWindowState.Normal;
             this.Size = new Size(600, 600);
 
-            var previousTheme = StockAnalyzerForm.MainFrame.CurrentTheme;
+            var previousTheme = MainFrameViewModel.Instance.Theme;
 
             string reportBody = html;
             foreach (var position in positions)
@@ -3446,15 +3437,11 @@ namespace StockAnalyzerApp
             if (this.currentStockSerie == null) return;
             if (stockScannerDlg == null)
             {
-                stockScannerDlg = new StockScannerDlg(StockDictionary, this.selectedGroup,
-                    this.CurrentStockSerie.BarDuration,
-                    this.themeDictionary[this.currentTheme]);
+                stockScannerDlg = new StockScannerDlg(StockDictionary, this.selectedGroup, this.CurrentStockSerie.BarDuration, this.currentTheme);
                 stockScannerDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
                 stockScannerDlg.SelectStockGroupChanged += new SelectedStockGroupChangedEventHandler(this.OnSelectedStockGroupChanged);
                 stockScannerDlg.FormClosing += new FormClosingEventHandler(delegate
                 {
-                    this.NotifyThemeChanged -= stockScannerDlg.OnThemeChanged;
-                    this.NotifyBarDurationChanged -= stockScannerDlg.OnBarDurationChanged;
                     this.stockScannerDlg = null;
                 });
                 stockScannerDlg.Show();
@@ -3463,9 +3450,6 @@ namespace StockAnalyzerApp
             {
                 stockScannerDlg.Activate();
             }
-            this.NotifyThemeChanged += stockScannerDlg.OnThemeChanged;
-            this.NotifyBarDurationChanged += stockScannerDlg.OnBarDurationChanged;
-
         }
         #endregion
         #region Stock Split Dlg
@@ -3834,10 +3818,7 @@ namespace StockAnalyzerApp
                     {
                         themeComboBox.SelectedItem = value;
                         currentTheme = value;
-                        if (this.ThemeChanged != null)
-                        {
-                            this.ThemeChanged(value);
-                        }
+                        this.ViewModel.Theme = value;
                     }
                 }
                 else
@@ -3845,10 +3826,7 @@ namespace StockAnalyzerApp
                     if (currentTheme != value)
                     {
                         currentTheme = value;
-                        if (this.ThemeChanged != null)
-                        {
-                            this.ThemeChanged(value);
-                        }
+                        this.ViewModel.Theme = value;
                     }
                 }
             }
@@ -3921,27 +3899,6 @@ namespace StockAnalyzerApp
         }
         #endregion
 
-        #region HORSE RACE DIALOG
-        HorseRaceDlg horseRaceDlg = null;
-        void showHorseRaceViewMenuItem_Click(object sender, EventArgs e)
-        {
-            if (horseRaceDlg == null)
-            {
-                horseRaceDlg = new HorseRaceDlg(this.selectedGroup.ToString(), this.ViewModel.BarDuration);
-                horseRaceDlg.Disposed += horseRaceDlg_Disposed;
-                horseRaceDlg.Show();
-            }
-            else
-            {
-                horseRaceDlg.Activate();
-            }
-        }
-
-        void horseRaceDlg_Disposed(object sender, EventArgs e)
-        {
-            this.horseRaceDlg = null;
-        }
-        #endregion
         #region MARKET REPLAY
         MarketReplayDlg marketReplayDlg = null;
         void marketReplayViewMenuItem_Click(object sender, EventArgs e)
@@ -4120,22 +4077,16 @@ namespace StockAnalyzerApp
             return indicatorNames;
         }
 
-
-        public event NotifySelectedThemeChangedEventHandler NotifyThemeChanged;
-        public event NotifyBarDurationChangedEventHandler NotifyBarDurationChanged;
-
-        event OnThemeChangedHandler ThemeChanged;
-
-        void StockAnalyzerForm_ThemeChanged(string currentTheme)
+        void StockAnalyzerForm_ThemeChanged()
         {
-            if (string.IsNullOrEmpty(currentTheme))
+            if (string.IsNullOrEmpty(this.ViewModel.Theme))
             {
                 // Add error management here
                 throw new Exception("We don't deal with empty themes in this house");
             }
             else
             {
-                if (this.currentStockSerie.StockAnalysis != null && this.currentStockSerie.StockAnalysis.Theme == currentTheme)
+                if (this.currentStockSerie?.StockAnalysis?.Theme == currentTheme)
                 {
                     this.defaultThemeStripButton.CheckState = CheckState.Checked;
                 }
@@ -4548,7 +4499,7 @@ namespace StockAnalyzerApp
                         Settings.Default.Save();
                     }
 
-                    this.NotifyThemeChanged?.Invoke(this.themeDictionary[this.currentTheme]);
+                    this.ViewModel.Theme = this.CurrentTheme;
                 }
             }
             catch (Exception exception)

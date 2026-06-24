@@ -12,17 +12,11 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
 
             (this.elementHost1.Child as BestTrendUserControl).ViewModel.BarDuration = barDuration;
             (this.elementHost1.Child as BestTrendUserControl).ViewModel.Group = group;
-            StockAnalyzerForm.MainFrame.NotifyBarDurationChanged += MainFrame_NotifyBarDurationChanged;
-        }
 
-        void MainFrame_NotifyBarDurationChanged(BarDuration barDuration)
-        {
-            (this.elementHost1.Child as BestTrendUserControl).ViewModel.BarDuration = barDuration;
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            StockAnalyzerForm.MainFrame.NotifyBarDurationChanged -= MainFrame_NotifyBarDurationChanged;
             base.OnClosed(e);
         }
     }

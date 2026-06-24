@@ -2468,7 +2468,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 LongReentry = FindLongReentryValueFromTheme(),
                 Portfolio = this.Portfolio,
                 Themes = StockAnalyzerForm.MainFrame.Themes,
-                Theme = StockAnalyzerForm.MainFrame.CurrentTheme.Contains("*") ? null : StockAnalyzerForm.MainFrame.CurrentTheme
+                Theme = MainFrameViewModel.Instance.Theme.Contains("*") ? null : MainFrameViewModel.Instance.Theme
             };
             openTradeViewModel.OrdersChanged += OpenTradeViewModel_OrdersChanged;
             openTradeViewModel.Refresh(false);

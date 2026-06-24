@@ -6,9 +6,11 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Telerik.Windows.Controls;
 
 namespace StockAnalyzerApp.CustomControl
 {
@@ -22,7 +24,7 @@ namespace StockAnalyzerApp.CustomControl
 
         public IEnumerable<string> SelectedStocks => this.selectedStockListBox.Items.Cast<string>();
 
-        public StockScannerDlg(StockDictionary stockDictionary, Groups stockGroup, BarDuration barDuration, Dictionary<string, List<string>> theme)
+        public StockScannerDlg(StockDictionary stockDictionary, Groups stockGroup, BarDuration barDuration, string themeName)
         {
             InitializeComponent();
 
@@ -37,13 +39,37 @@ namespace StockAnalyzerApp.CustomControl
             periodComboBox.SelectedIndex = 0;
             completeBarCheckBox.Checked = true;
 
-            OnThemeChanged(theme);
+            OnThemeChanged(themeName);
             OnBarDurationChanged(barDuration);
 
             oneRadioButton.Checked = true;
+
+            MainFrameViewModel.Instance.PropertyChanged += ViewModel_PropertyChanged;
         }
-        public void OnThemeChanged(Dictionary<string, List<string>> theme)
+
+        protected override void OnClosing(CancelEventArgs e)
         {
+            MainFrameViewModel.Instance.PropertyChanged -= ViewModel_PropertyChanged;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "BarDuration":
+                    OnBarDurationChanged(MainFrameViewModel.Instance.BarDuration);
+                    break;
+                case "Theme":
+                    OnThemeChanged(MainFrameViewModel.Instance.Theme);
+                    break;
+            }
+        }
+
+        public void OnThemeChanged(string themeName)
+        {
+            var theme = StockAnalyzerForm.MainFrame.GetTheme(themeName);
+
+
             if (this.IsDisposed) return;
             // Initialise treeview
             eventTreeView.Nodes.Clear();
