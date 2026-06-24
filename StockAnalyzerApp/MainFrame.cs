@@ -3595,7 +3595,7 @@ namespace StockAnalyzerApp
             {
                 stockAlertManagerViewModel = new StockAlertManagerViewModel()
                 {
-                    StockName = this.CurrentStockSerie.StockName,
+                    StockName = this.ViewModel.Instrument?.DisplayName,
                     Group = StockAnalyzerForm.MainFrame.Group,
                     BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
                     IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
