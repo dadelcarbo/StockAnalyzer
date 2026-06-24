@@ -172,7 +172,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     if (curveType.DataSerie.Name == "EXCHANGED")
                     {
-                        var volume = this.serie.Values[this.lastMouseIndex].VOLUME;
+                        var volume = this.dataSerie.Values[this.lastMouseIndex].VOLUME;
                         var exchanged = curveType.DataSerie[this.lastMouseIndex];
                         value += BuildTabbedString("VOLUME", volume, 12) + "\r\n";
                         value += BuildTabbedString("EXCHANGED", exchanged / 1000000, 12) + "\r\n";

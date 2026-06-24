@@ -99,9 +99,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected int currentActionIndex;
 
         public bool IsInitialized { get; protected set; }
-        protected DateTime[] dateSerie;
 
-        protected DataSerie serie;
+        protected DataSerie dataSerie;
         public int EndIndex { get; set; }
         public int StartIndex { get; set; }
 
@@ -223,14 +222,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             LowerLowPen = new Pen(Color.Red, 1.0f);
             SetFrameMargin();
         }
-        public void Initialize(GraphCurveTypeList curveList, List<HLine> horizontallines, DateTime[] dateSerie, DataSerie serie, StockDrawingItems drawingItems, int startIndex, int endIndex)
+        public void Initialize(GraphCurveTypeList curveList, List<HLine> horizontallines, DataSerie dataSerie, StockDrawingItems drawingItems, int startIndex, int endIndex)
         {
             using MethodLogger ml = new MethodLogger(this);
-            this.dateSerie = dateSerie;
             this.CurveList = curveList;
             this.StartIndex = startIndex;
             this.EndIndex = endIndex;
-            this.serie = serie;
+            this.dataSerie = dataSerie;
             this.drawingItems = drawingItems;
             this.horizontalLines = horizontallines;
 
@@ -250,7 +248,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             this.DrawingStep = GraphDrawingStep.SelectItem;
 
-            drawingItems.ApplyDateOffset(dateSerie);
+            drawingItems.ApplyDateOffset(dataSerie.DateSerie);
         }
         public void Deactivate(string msg, bool setInitialisedTo)
         {
@@ -265,7 +263,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             this.IsCollapsed = false;
             using MethodLogger ml = new MethodLogger(this);
-            if (!this.IsInitialized || this.dateSerie == null)
+            if (!this.IsInitialized || this.dataSerie?.Values == null)
             {
                 if (string.IsNullOrWhiteSpace(this.alternateString))
                 {
@@ -285,7 +283,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using MethodLogger ml = new MethodLogger(this);
             if (!CheckGraphSanity()) { return; }
-            if (startIndex == endIndex || startIndex < 0 || endIndex > this.dateSerie.Length - 1)
+            if (startIndex == endIndex || startIndex < 0 || endIndex > this.dataSerie.Values.Length - 1)
             {
                 this.Deactivate("Invalid input data range...", false);
                 return;
@@ -301,7 +299,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using MethodLogger ml = new MethodLogger(this);
             if (!CheckGraphSanity()) { return false; }
-            if (this.StartIndex == this.EndIndex || this.EndIndex > this.dateSerie.Length - 1)
+            if (this.StartIndex == this.EndIndex || this.EndIndex > this.dataSerie.Values.Length - 1)
             {
                 this.IsInitialized = false;
                 InvalidSerieException e = new InvalidSerieException("Invalid input data range...");
@@ -866,17 +864,17 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         public int IndexOf(DateTime date, int startIndex, int endIndex)
         {
-            if (date < dateSerie[startIndex]) { return -1; }
-            if (date > dateSerie[endIndex]) { return endIndex; }
+            if (date < this.dataSerie.DateSerie[startIndex]) { return -1; }
+            if (date > this.dataSerie.DateSerie[endIndex]) { return endIndex; }
             return IndexOfRec(date, startIndex + 1, endIndex);
         }
         private int IndexOfRec(DateTime date, int startIndex, int endIndex)
         {
-            if (date <= dateSerie[startIndex]) { return startIndex; }
-            if (date >= dateSerie[endIndex]) { return endIndex; }
+            if (date <= this.dataSerie.DateSerie[startIndex]) { return startIndex; }
+            if (date >= this.dataSerie.DateSerie[endIndex]) { return endIndex; }
 
             int midIndex = (startIndex + endIndex) / 2;
-            return date.CompareTo(dateSerie[midIndex]) switch
+            return date.CompareTo(this.dataSerie.DateSerie[midIndex]) switch
             {
                 0 => midIndex,
                 -1 => IndexOfRec(date, startIndex + 1, midIndex),
@@ -926,7 +924,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         if (mouseOverThis && this.OnMouseValueChanged != null)
                         {
                             int index = RoundToIndex(mousePoint);
-                            this.OnMouseValueChanged(null, this.dateSerie[index], 0, true);
+                            this.OnMouseValueChanged(null, this.dataSerie.DateSerie[index], 0, true);
                         }
                     }
                     return;
@@ -964,7 +962,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                         lastMouseIndex = index;
 
-                        this.OnMouseValueChanged?.Invoke(null, this.dateSerie[index], 0, false);
+                        this.OnMouseValueChanged?.Invoke(null, this.dataSerie.DateSerie[index], 0, false);
                     }
                 }
                 this.PaintForeground();
@@ -981,9 +979,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             PointF point = GetValuePointFromScreenPoint(screenPoint2D);
             int index = Math.Max(Math.Min((int)Math.Round(point.X), this.EndIndex), this.StartIndex);
-            if (index >= dateSerie.Length)
+            if (index >= this.dataSerie.DateSerie.Length)
             {
-                index = dateSerie.Length - 1;
+                index = this.dataSerie.DateSerie.Length - 1;
             }
             else if (index < 0)
             {
@@ -1211,7 +1209,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             var gridHeight = this.ShowGrid ? GraphRectangle.Y : GraphRectangle.Y + GraphRectangle.Height - 6;
 
-            TimeSpan duration = this.dateSerie[endIndex] - this.dateSerie[startIndex];
+            TimeSpan duration = this.dataSerie.DateSerie[endIndex] - this.dataSerie.DateSerie[startIndex];
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             Calendar cal = dfi.Calendar;
             PointF p1;
@@ -1222,24 +1220,24 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             int previousHour = -1;
             if (startIndex > 0)
             {
-                previousMonth = this.dateSerie[startIndex - 1].Month;
-                previousYear = this.dateSerie[startIndex - 1].Year;
-                previousWeek = cal.GetWeekOfYear(this.dateSerie[startIndex - 1], dfi.CalendarWeekRule, DayOfWeek.Monday);
-                previousDay = this.dateSerie[startIndex - 1].DayOfYear;
-                previousHour = this.dateSerie[startIndex - 1].Hour;
+                previousMonth = this.dataSerie.DateSerie[startIndex - 1].Month;
+                previousYear = this.dataSerie.DateSerie[startIndex - 1].Year;
+                previousWeek = cal.GetWeekOfYear(this.dataSerie.DateSerie[startIndex - 1], dfi.CalendarWeekRule, DayOfWeek.Monday);
+                previousDay = this.dataSerie.DateSerie[startIndex - 1].DayOfYear;
+                previousHour = this.dataSerie.DateSerie[startIndex - 1].Hour;
             }
             if (duration.Days > 1000) // greater the 5 years, display years only 
             {
                 for (int i = startIndex; i <= endIndex; i++)
                 {
-                    if (this.dateSerie[i].Year != previousYear)
+                    if (this.dataSerie.DateSerie[i].Year != previousYear)
                     {
                         p1 = GetScreenPointFromValuePoint(i, 100);
-                        previousYear = this.dateSerie[i].Year;
+                        previousYear = this.dataSerie.DateSerie[i].Year;
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                         aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                     }
@@ -1250,25 +1248,25 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 int modulo = Math.Max(1, (int)((duration.Days / 30) / (GraphRectangle.Width / 100)));
                 for (int i = startIndex; i <= endIndex; i++)
                 {
-                    if (this.dateSerie[i].Year != previousYear || this.dateSerie[i].Month != previousMonth && (this.dateSerie[i].Month - 1) % modulo == 0)
+                    if (this.dataSerie.DateSerie[i].Year != previousYear || this.dataSerie.DateSerie[i].Month != previousMonth && (this.dataSerie.DateSerie[i].Month - 1) % modulo == 0)
                     {
                         p1 = GetScreenPointFromValuePoint(i, 100);
-                        previousMonth = this.dateSerie[i].Month;
+                        previousMonth = this.dataSerie.DateSerie[i].Month;
                         aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
-                        if (this.dateSerie[i].Year != previousYear)
+                        if (this.dataSerie.DateSerie[i].Year != previousYear)
                         {
-                            previousYear = this.dateSerie[i].Year;
+                            previousYear = this.dataSerie.DateSerie[i].Year;
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                                aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                             }
                         }
                         else
                         {
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                         }
                     }
@@ -1279,51 +1277,51 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 int currentWeekNumber;
                 for (int i = startIndex; i <= endIndex; i++)
                 {
-                    currentWeekNumber = cal.GetWeekOfYear(this.dateSerie[i], dfi.CalendarWeekRule, DayOfWeek.Monday);
+                    currentWeekNumber = cal.GetWeekOfYear(this.dataSerie.DateSerie[i], dfi.CalendarWeekRule, DayOfWeek.Monday);
                     if (currentWeekNumber != previousWeek)
                     {
                         p1 = GetScreenPointFromValuePoint(i, 100);
                         previousWeek = currentWeekNumber;
                         aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
-                        if (this.dateSerie[i].Year != previousYear)
+                        if (this.dataSerie.DateSerie[i].Year != previousYear)
                         {
-                            previousYear = this.dateSerie[i].Year;
+                            previousYear = this.dataSerie.DateSerie[i].Year;
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                                aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                             }
                         }
                         else
                         {
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                         }
                     }
                 }
             }
-            else if (this.dateSerie[StartIndex + 1] - this.dateSerie[StartIndex] >= new TimeSpan(1, 0, 0, 0)) // Display every day, but remains in daily time frame
+            else if (this.dataSerie.DateSerie[StartIndex + 1] - this.dataSerie.DateSerie[StartIndex] >= new TimeSpan(1, 0, 0, 0)) // Display every day, but remains in daily time frame
             {
                 for (int i = startIndex; i <= endIndex; i++)
                 {
                     p1 = GetScreenPointFromValuePoint(i, 100);
                     aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
-                    if (this.dateSerie[i].Year != previousYear)
+                    if (this.dataSerie.DateSerie[i].Year != previousYear)
                     {
-                        previousYear = this.dateSerie[i].Year;
+                        previousYear = this.dataSerie.DateSerie[i].Year;
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("yyyy"), axisFont, legendBrush, p1.X - 11, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                     }
                     else
                     {
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                         }
                     }
                 }
@@ -1332,15 +1330,15 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 for (int i = startIndex; i <= endIndex; i++)
                 {
-                    if (this.dateSerie[i].DayOfYear != previousDay)
+                    if (this.dataSerie.DateSerie[i].DayOfYear != previousDay)
                     {
-                        previousDay = this.dateSerie[i].DayOfYear;
+                        previousDay = this.dataSerie.DateSerie[i].DayOfYear;
                         p1 = GetScreenPointFromValuePoint(i, 100);
                         aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                     }
                 }
@@ -1349,26 +1347,26 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 for (int i = startIndex; i <= endIndex; i++)
                 {
-                    if (this.dateSerie[i].DayOfYear != previousDay)
+                    if (this.dataSerie.DateSerie[i].DayOfYear != previousDay)
                     {
-                        previousDay = this.dateSerie[i].DayOfYear;
+                        previousDay = this.dataSerie.DateSerie[i].DayOfYear;
                         p1 = GetScreenPointFromValuePoint(i, 100);
                         aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                     }
                     else
                     {
-                        if (this.dateSerie[i].Minute == 0)
+                        if (this.dataSerie.DateSerie[i].Minute == 0)
                         {
                             p1 = GetScreenPointFromValuePoint(i, 100);
                             aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                         }
                     }
@@ -1379,27 +1377,27 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 int barCount = 0;
                 for (int i = startIndex; i <= endIndex; i++)
                 {
-                    if (this.dateSerie[i].DayOfYear != previousDay)
+                    if (this.dataSerie.DateSerie[i].DayOfYear != previousDay)
                     {
-                        previousDay = this.dateSerie[i].DayOfYear;
+                        previousDay = this.dataSerie.DateSerie[i].DayOfYear;
                         p1 = GetScreenPointFromValuePoint(i, 100);
                         aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                         barCount = 0;
                     }
                     else
                     {
-                        if (this.dateSerie[i].Minute == 0 && barCount >= 50)
+                        if (this.dataSerie.DateSerie[i].Minute == 0 && barCount >= 50)
                         {
                             p1 = GetScreenPointFromValuePoint(i, 100);
                             aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                             barCount = 0;
                         }
@@ -1412,24 +1410,24 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 for (int i = startIndex; i <= endIndex; i++)
                 {
                     p1 = GetScreenPointFromValuePoint(i, 100);
-                    if (this.dateSerie[i].DayOfYear != previousDay)
+                    if (this.dataSerie.DateSerie[i].DayOfYear != previousDay)
                     {
-                        previousDay = this.dateSerie[i].DayOfYear;
+                        previousDay = this.dataSerie.DateSerie[i].DayOfYear;
                         aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                         if (drawDate)
                         {
-                            aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
-                            aGraphic.DrawString(this.dateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                            aGraphic.DrawString(this.dataSerie.DateSerie[i].ToString("dd/MM"), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height + 8);
                         }
                     }
                     else
                     {
-                        if (this.dateSerie[i].Minute % 5 == 0)
+                        if (this.dataSerie.DateSerie[i].Minute % 5 == 0)
                         {
                             aGraphic.DrawLine(gridPen, p1.X, gridHeight, p1.X, GraphRectangle.Y + GraphRectangle.Height);
                             if (drawDate)
                             {
-                                aGraphic.DrawString(this.dateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
+                                aGraphic.DrawString(this.dataSerie.DateSerie[i].ToShortTimeString(), axisFont, legendBrush, p1.X - 13, GraphRectangle.Y + GraphRectangle.Height);
                             }
                         }
                     }

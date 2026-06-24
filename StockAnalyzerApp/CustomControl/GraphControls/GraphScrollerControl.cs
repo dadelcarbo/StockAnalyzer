@@ -34,7 +34,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 minValue = float.MaxValue;
                 maxValue = float.MinValue;
-                this.CurveList.GetMinMax(0, dateSerie.Length - 1, ref minValue, ref maxValue, this.ScaleInvisible);
+                this.CurveList.GetMinMax(0, this.dataSerie.DateSerie.Length - 1, ref minValue, ref maxValue, this.ScaleInvisible);
 
                 if (minValue == maxValue || minValue == float.MaxValue || float.IsNaN(minValue) || float.IsInfinity(minValue) || maxValue == float.MinValue || float.IsNaN(maxValue) || float.IsInfinity(maxValue))
                 {
@@ -64,7 +64,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     tmpMaxValue = maxValue;
                 }
 
-                float coefX = (this.GraphRectangle.Width * 0.94f) / (dateSerie.Length - 1);
+                float coefX = (this.GraphRectangle.Width * 0.94f) / (this.dataSerie.DateSerie.Length - 1);
                 float coefY = this.GraphRectangle.Height / (tmpMaxValue - tmpMinValue);
 
                 matrixValueToScreen = new System.Drawing.Drawing2D.Matrix();
@@ -131,7 +131,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             #region Draw vertical lines
             if (this.ShowGrid && this.IsInitialized)
             {
-                DrawVerticalGridLines(aGraphic, false, 0, dateSerie.Length - 1);
+                DrawVerticalGridLines(aGraphic, false, 0, this.dataSerie.DateSerie.Length - 1);
             }
             #endregion
 
@@ -142,7 +142,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 if (currentCurveType.IsVisible)
                 {
-                    points = GetScreenPoints(0, dateSerie.Length - 1, currentCurveType.DataSerie);
+                    points = GetScreenPoints(0, this.dataSerie.DateSerie.Length - 1, currentCurveType.DataSerie);
                     if (points != null && points.Count() > 1)
                     {
                         aGraphic.DrawLines(ColorManager.GetPen("Graph.Close"), points);
@@ -181,7 +181,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             PointF[] points = new PointF[] { screenPoint2D };
             this.matrixScreenToValue.TransformPoints(points);
-            int index = Math.Max(Math.Min((int)Math.Round(points[0].X), this.dateSerie.Length - 1), 0);
+            int index = Math.Max(Math.Min((int)Math.Round(points[0].X), this.dataSerie.DateSerie.Length - 1), 0);
             return index;
         }
         #region MOUSE EVENTS
@@ -289,7 +289,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         else if (holdingViewWindow)
                         {
                             this.StartIndex = Math.Max(0, this.StartIndex - lastMouseIndex + currentMouseIndex);
-                            this.EndIndex = Math.Min(this.dateSerie.Length - 1, this.EndIndex - lastMouseIndex + currentMouseIndex);
+                            this.EndIndex = Math.Min(this.dataSerie.DateSerie.Length - 1, this.EndIndex - lastMouseIndex + currentMouseIndex);
                             dirty = true;
                         }
                         if (dirty)
@@ -335,7 +335,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             using MethodLogger ml = new MethodLogger(this);
             if (!CheckGraphSanity()) { return; }
-            if (startIndex == endIndex || startIndex < 0 || endIndex > this.dateSerie.Length - 1)
+            if (startIndex == endIndex || startIndex < 0 || endIndex > this.dataSerie.DateSerie.Length - 1)
             {
                 this.Deactivate("Invalid input data range...", false);
                 return;

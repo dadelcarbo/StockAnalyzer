@@ -26,7 +26,7 @@
                 this.Deactivate("No data to display...", false);
                 return false;
             }
-            if (this.StartIndex == this.EndIndex || this.EndIndex > this.dateSerie.Length - 1)
+            if (this.StartIndex == this.EndIndex || this.EndIndex > this.dataSerie.DateSerie.Length - 1)
             {
                 this.IsInitialized = false;
                 InvalidSerieException e = new InvalidSerieException("Invalid input data range...");

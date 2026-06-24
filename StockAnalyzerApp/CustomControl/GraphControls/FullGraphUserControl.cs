@@ -194,7 +194,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                 }
 
-                DateTime[] dateSerie = currentStockSerie.Keys.ToArray();
                 GraphCurveTypeList curveList;
                 bool skipEntry = false;
                 foreach (string entry in currentTheme.Keys)
@@ -392,7 +391,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 currentStockSerie.StockAnalysis.DrawingItems.Add(currentStockSerie.BarDuration, new StockDrawingItems());
                             }
-                            graphControl.Initialize(curveList, horizontalLines, dateSerie,
+                            graphControl.Initialize(curveList, horizontalLines, 
                                 StockDictionary.GetDataSerie(currentStockSerie.StockName, (BarDuration)this.durationComboBox.SelectedItem),
                                 currentStockSerie.StockAnalysis.DrawingItems[currentStockSerie.BarDuration],
                                 startIndex, endIndex);

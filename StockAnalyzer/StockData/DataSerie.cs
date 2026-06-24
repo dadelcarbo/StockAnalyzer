@@ -40,7 +40,11 @@ namespace StockAnalyzer.StockData
             this.AutoDrawingCache = null;
             this.TrailStopCache = null;
             this.TrailCache = null;
+            this.dateSerie = null;
         }
+
+        protected DateTime[] dateSerie;
+        public DateTime[] DateSerie => dateSerie ??= this.Values.Select(v => v.DATE).ToArray();
 
         public StockDailyValue[] Values;
         public StockDailyValue this[DateTime key] => this.Values?.FirstOrDefault(v => v.DATE == key);

@@ -240,9 +240,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             #endregion
 
-            aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("dd/MM"), axisFont, legendBrush,
+            aGraphic.DrawString(this.dataSerie.DateSerie[this.EndIndex].ToString("dd/MM"), axisFont, legendBrush,
                GraphRectangle.Right - 3, GraphRectangle.Y + GraphRectangle.Height);
-            aGraphic.DrawString(this.dateSerie[this.EndIndex].ToString("yyyy"), axisFont, legendBrush,
+            aGraphic.DrawString(this.dataSerie.DateSerie[this.EndIndex].ToString("yyyy"), axisFont, legendBrush,
                GraphRectangle.Right - 1, GraphRectangle.Y + GraphRectangle.Height + 8);
 
             #endregion
@@ -516,7 +516,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 #endregion
 
-                if (StockPortfolio.Portfolios.Any(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == serie.StockName)))
+                if (StockPortfolio.Portfolios.Any(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == dataSerie.StockName)))
                 {
                     var portfolioArea = new RectangleF(GraphRectangle.Right - ORDER_AREA_WITDH, GraphRectangle.Y, ORDER_AREA_WITDH, 10);
                     aGraphic.FillRectangle(PortfolioAreaBrush, portfolioArea);
@@ -720,8 +720,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             #region Display comment marquee
             if (this.Agenda != null && this.ShowAgenda != AgendaEntryType.No)
             {
-                var startDate = this.dateSerie[StartIndex];
-                var endDate = this.dateSerie[EndIndex];
+                var startDate = this.dataSerie.DateSerie[StartIndex];
+                var endDate = this.dataSerie.DateSerie[EndIndex];
                 foreach (var agendaEntry in this.Agenda.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
                 {
                     if (agendaEntry.IsOfType(this.ShowAgenda))
@@ -735,8 +735,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             if (this.ShowDividend && this.Dividends != null && this.Dividends.Entries.Count > 0)
             {
-                var startDate = this.dateSerie[StartIndex];
-                var endDate = this.dateSerie[EndIndex];
+                var startDate = this.dataSerie.DateSerie[StartIndex];
+                var endDate = this.dataSerie.DateSerie[EndIndex];
                 foreach (var dividendEntry in this.Dividends.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
                 {
                     int index = this.IndexOf(dividendEntry.Date, this.StartIndex, this.EndIndex);
@@ -958,10 +958,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         // Input point are in Value Units
         protected override void PaintDailyBox(PointF mousePoint)
         {
-            if (this.serie.Count == 0) return;
-            if (lastMouseIndex == -1 || lastMouseIndex > this.serie.Count) return;
+            if (this.dataSerie.Count == 0) return;
+            if (lastMouseIndex == -1 || lastMouseIndex > this.dataSerie.Count) return;
             string value = string.Empty;
-            var mouseDate = this.dateSerie[lastMouseIndex];
+            var mouseDate = this.dataSerie.DateSerie[lastMouseIndex];
             value += BuildTabbedString("DATE", mouseDate.ToString("dd/MM/yy"), 12) + "\r\n";
             if (mouseDate.Hour != 0)
             {
@@ -969,7 +969,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             float closeValue = float.NaN;
             float var = float.NaN;
-            var mouseBar = this.serie[mouseDate];
+            var mouseBar = this.dataSerie[mouseDate];
             foreach (GraphCurveType curveType in this.CurveList)
             {
                 if (!float.IsNaN(curveType.DataSerie[this.lastMouseIndex]))
@@ -1084,7 +1084,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Calculate Highest in bars.
             if (this.lastMouseIndex > 0)
             {
-                var closeSerie = this.serie.GetSerie(StockDataType.CLOSE);
+                var closeSerie = this.dataSerie.GetSerie(StockDataType.CLOSE);
                 int highest = closeSerie.GetHighestIn(lastMouseIndex);
                 if (highest > 0)
                 {
@@ -1113,7 +1113,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         protected override void PaintGraphTitle(Graphics gr)
         {
-            string graphTitle = this.serie.Instrument.Group + " - " + this.serie?.StockName;
+            string graphTitle = this.dataSerie.Instrument.Group + " - " + this.dataSerie?.StockName;
 
             // Add SR, Trail...
             foreach (IStockIndicator indicator in this.CurveList.Indicators)
@@ -1148,12 +1148,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            var operations = this.Portfolio.GetExecutedOrders(this.serie.StockName);
-            var startDate = this.dateSerie[this.StartIndex];
-            var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
+            var operations = this.Portfolio.GetExecutedOrders(this.dataSerie.StockName);
+            var startDate = this.dataSerie.DateSerie[this.StartIndex];
+            var endDate = this.EndIndex == this.dataSerie.DateSerie.Length - 1 ? DateTime.MaxValue : this.dataSerie.DateSerie[this.EndIndex + 1];
             foreach (var operation in operations.Where(p => p.ActivityTime >= startDate && p.ActivityTime < endDate))
             {
-                DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.Instrument.Group == Groups.TURBO) ? operation.ActivityTime : operation.ActivityTime.Date;
+                DateTime orderDate = (StockBarDuration.IsIntraday(this.dataSerie.BarDuration) || this.dataSerie.Instrument.Group == Groups.TURBO) ? operation.ActivityTime : operation.ActivityTime.Date;
                 int index = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
                 valuePoint2D.X = index;
                 if (valuePoint2D.X < 0)
@@ -1173,7 +1173,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 return;
             }
             PointF valuePoint2D = PointF.Empty;
-            var openedOrders = this.Portfolio.SaxoOpenOrders.Where(o => o.StockName == this.serie.StockName);
+            var openedOrders = this.Portfolio.SaxoOpenOrders.Where(o => o.StockName == this.dataSerie.StockName);
             foreach (var operation in openedOrders)
             {
                 valuePoint2D.Y = operation.Price.Value;
@@ -1188,7 +1188,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         private void PaintOpenedPosition(Graphics graphic, StockPositionBase position)
         {
-            DateTime orderDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.Instrument.Group == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+            DateTime orderDate = (StockBarDuration.IsIntraday(this.dataSerie.BarDuration) || this.dataSerie.Instrument.Group == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
             int entryIndex = this.IndexOf(orderDate, this.StartIndex, this.EndIndex);
             entryIndex = Math.Max(this.StartIndex, entryIndex);
 
@@ -1199,7 +1199,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 this.DrawStop(graphic, stopPen, entryIndex, position.Stop, true);
             }
 
-            var openedOrders = this.Portfolio.SaxoOpenOrders.Where(o => o.StockName == this.serie.StockName);
+            var openedOrders = this.Portfolio.SaxoOpenOrders.Where(o => o.StockName == this.dataSerie.StockName);
             foreach (var operation in openedOrders)
             {
                 if (operation.Price.Value != position.Stop)
@@ -1219,11 +1219,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             if (this.Portfolio == null)
                 return;
 
-            var name = this.serie.StockName.ToUpper();
+            var name = this.dataSerie.StockName.ToUpper();
             var positions = this.Portfolio.Positions.Where(p => p.StockName.ToUpper() == name).Cast<StockPositionBase>().Union(this.Portfolio.ClosedPositions.Where(p => p.StockName.ToUpper() == name)).ToList();
 
 
-            foreach (var openedOrder in Portfolio.GetActiveOrders(this.serie.StockName).Where(o => o.BuySell == "Buy"))
+            foreach (var openedOrder in Portfolio.GetActiveOrders(this.dataSerie.StockName).Where(o => o.BuySell == "Buy"))
             {
                 if (openedOrder != null)
                 {
@@ -1238,12 +1238,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             PointF valuePoint2D = PointF.Empty;
             PointF screenPoint2D = PointF.Empty;
-            var startDate = this.dateSerie[this.StartIndex];
-            var endDate = this.EndIndex == this.dateSerie.Length - 1 ? DateTime.MaxValue : this.dateSerie[this.EndIndex + 1];
+            var startDate = this.dataSerie.DateSerie[this.StartIndex];
+            var endDate = this.EndIndex == this.dataSerie.DateSerie.Length - 1 ? DateTime.MaxValue : this.dataSerie.DateSerie[this.EndIndex + 1];
 
             foreach (var position in positions.Where(p => p.IsClosed && startDate < p.ExitDate.Value && endDate > p.EntryDate))
             {
-                DateTime entryDate = (StockBarDuration.IsIntraday(this.serie.BarDuration) || this.serie.Instrument.Group == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
+                DateTime entryDate = (StockBarDuration.IsIntraday(this.dataSerie.BarDuration) || this.dataSerie.Instrument.Group == Groups.TURBO) ? position.EntryDate : position.EntryDate.Date;
                 int entryIndex = this.IndexOf(entryDate, this.StartIndex, this.EndIndex);
                 entryIndex = Math.Max(this.StartIndex, entryIndex);
 
@@ -1273,7 +1273,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
 
-            if (this.EndIndex == this.dateSerie.Length - 1)
+            if (this.EndIndex == this.dataSerie.DateSerie.Length - 1)
             {
                 var position = positions.FirstOrDefault(p => !p.IsClosed);
                 if (position != null)
@@ -1414,20 +1414,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 {
                     if (IsBuying)
                     {
-                        this.RaiseDateChangedEvent(null, this.serie.LastValue.DATE, mouseValuePoint.Y, true);
+                        this.RaiseDateChangedEvent(null, this.dataSerie.LastValue.DATE, mouseValuePoint.Y, true);
                     }
                     else
                     {
-                        var position = Portfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                        var position = Portfolio.Positions.FirstOrDefault(p => p.StockName == this.dataSerie.StockName);
                         if (position != null)
                         {
                             this.DrawStop(foregroundGraphic, trailStopPen, this.StartIndex, mouseValuePoint.Y, true);
-                            this.RaiseDateChangedEvent(null, this.serie.LastValue.DATE, mouseValuePoint.Y, true);
+                            this.RaiseDateChangedEvent(null, this.dataSerie.LastValue.DATE, mouseValuePoint.Y, true);
                             this.PaintForeground();
                         }
                         else
                         {
-                            var openOrder = Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault();
+                            var openOrder = Portfolio.GetActiveOrders(this.dataSerie.StockName).FirstOrDefault();
                             if (openOrder != null)
                             {
                                 this.DrawStop(foregroundGraphic, entryOrderPen, this.StartIndex, mouseValuePoint.Y, true);
@@ -1470,12 +1470,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 if ((key & Keys.Control) != 0)
                 {
-                    this.RaiseDateChangedEvent(null, this.dateSerie[index], mouseValuePoint.Y, !this.IsBuying);
+                    this.RaiseDateChangedEvent(null, this.dataSerie.DateSerie[index], mouseValuePoint.Y, !this.IsBuying);
                 }
                 else
                 {
                     RefreshMouseMarquee(index, e.Location, false);
-                    this.RaiseDateChangedEvent(null, this.dateSerie[index], 0, false);
+                    this.RaiseDateChangedEvent(null, this.dataSerie.DateSerie[index], 0, false);
                 }
             }
             else
@@ -1565,8 +1565,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                  (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
             {
                 int i = this.RoundToIndex(mousePoint);
-                DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
-                DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
+                DateTime agendaDate1 = this.dataSerie.DateSerie[Math.Max(StartIndex, i - 1)];
+                DateTime agendaDate2 = this.dataSerie.DateSerie[Math.Min(EndIndex, i + 1)];
                 var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2 && a.IsOfType(this.ShowAgenda));
                 if (agendaEntry != null)
                 {
@@ -1584,8 +1584,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                  (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
             {
                 int i = this.RoundToIndex(mousePoint);
-                DateTime agendaDate1 = this.dateSerie[Math.Max(StartIndex, i - 1)];
-                DateTime agendaDate2 = this.dateSerie[Math.Min(EndIndex, i + 1)];
+                DateTime agendaDate1 = this.dataSerie.DateSerie[Math.Max(StartIndex, i - 1)];
+                DateTime agendaDate2 = this.dataSerie.DateSerie[Math.Min(EndIndex, i + 1)];
                 var dividendEntry = this.Dividends.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2);
                 if (dividendEntry != null)
                 {
@@ -1616,13 +1616,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Notify listeners
             if (this.lastMouseIndex != -1 && this.PointPick != null)
             {
-                PointPick(lastMouseIndex, this.dateSerie[lastMouseIndex]);
+                PointPick(lastMouseIndex, this.dataSerie.DateSerie[lastMouseIndex]);
             }
 
             PointF mousePoint = new PointF(e.X, e.Y);
             if (mousePoint.Y - this.GraphRectangle.Y < 10)
             {
-                var ptfs = StockPortfolio.Portfolios.Where(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == serie.StockName) || p.SaxoOpenOrders.Any(o => o.StockName == serie.StockName)).ToList();
+                var ptfs = StockPortfolio.Portfolios.Where(p => p.Positions.Any(pos => !pos.IsClosed && pos.StockName == dataSerie.StockName) || p.SaxoOpenOrders.Any(o => o.StockName == dataSerie.StockName)).ToList();
                 if (ptfs.Count == 0)
                     return;
                 var text = ptfs.Select(p => p.Name).Aggregate((i, j) => i + Environment.NewLine + j);
@@ -1636,14 +1636,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             if (this.ShowPositions && (Control.ModifierKeys & Keys.Control) != 0 && this.Portfolio != null && mousePoint.X + ORDER_AREA_WITDH >= this.GraphRectangle.Right)
             {
-                var position = Portfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName);
+                var position = Portfolio.Positions.FirstOrDefault(p => p.StockName == this.dataSerie.StockName);
                 if (position != null)
                 {
                     if (DialogResult.Yes == MessageBox.Show("Do you want to sent order to Saxo", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
                         var mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
                         var trailStopValue = Math.Max(mouseValuePoint.Y, position.Stop);
-                        trailStopValue = Math.Min(trailStopValue, serie.LastValue.LOW);
+                        trailStopValue = Math.Min(trailStopValue, dataSerie.LastValue.LOW);
 
                         var orderId = this.Portfolio.SaxoUpdateStopOrder(position, trailStopValue);
                         this.ForceRefresh();
@@ -1655,7 +1655,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 else
                 {
-                    var openOrder = Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault();
+                    var openOrder = Portfolio.GetActiveOrders(this.dataSerie.StockName).FirstOrDefault();
                     if (openOrder != null)
                     {
                         if (DialogResult.Yes == MessageBox.Show("Do you want to sent order update to Saxo", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
@@ -1664,11 +1664,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             var value = mouseValuePoint.Y;
                             if (openOrder.OrderType == SaxoOrderType.StopIfTraded.ToString())
                             {
-                                value = Math.Max(serie.LastValue.CLOSE, value);
+                                value = Math.Max(dataSerie.LastValue.CLOSE, value);
                             }
                             else
                             {
-                                value = Math.Min(serie.LastValue.CLOSE, value);
+                                value = Math.Min(dataSerie.LastValue.CLOSE, value);
                             }
                             var orderId = this.Portfolio.SaxoUpdateOpenOrder(openOrder, value);
                             this.ForceRefresh();
@@ -1709,7 +1709,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 mouseValuePoint = GetValuePointFromScreenPoint(mousePoint);
                                 Line2D newLine = (Line2D)new Line2D(mouseValuePoint, 0.0f, 1.0f, DrawingPen);
                                 drawingItems.Add(newLine);
-                                drawingItems.RefDate = dateSerie[(int)mouseValuePoint.X];
+                                drawingItems.RefDate = this.dataSerie.DateSerie[(int)mouseValuePoint.X];
                                 drawingItems.RefDateIndex = (int)mouseValuePoint.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -1737,10 +1737,10 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     }
                     else
                     {
-                        this.sellMenu.Visible = Portfolio?.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName) != null;
-                        this.cancelMenu.Visible = Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault() != null;
+                        this.sellMenu.Visible = Portfolio?.Positions.FirstOrDefault(p => p.StockName == this.dataSerie.StockName) != null;
+                        this.cancelMenu.Visible = Portfolio.GetActiveOrders(this.dataSerie.StockName).FirstOrDefault() != null;
                         this.buyMenu.Visible = !(this.sellMenu.Visible || this.cancelMenu.Visible);
-                        this.openSaxoIntradyConfigDlg.Visible = this.serie?.Instrument.SaxoId > 0;
+                        this.openSaxoIntradyConfigDlg.Visible = this.dataSerie?.Instrument.SaxoId > 0;
                         this.contextMenu.Show(this, e.Location);
                     }
                 }
@@ -1995,7 +1995,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 Line2D newLine = new Line2D(point1, point2, DrawingPen);
                                 drawingItems.Add(newLine);
-                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDate = this.dataSerie.DateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -2023,7 +2023,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 var newArea = new Resistance(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y));
                                 drawingItems.Add(newArea);
-                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDate = this.dataSerie.DateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newArea);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -2068,7 +2068,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                 {
                                     newWinRatio.Exit = point2;
                                     drawingItems.Add(newWinRatio);
-                                    drawingItems.RefDate = dateSerie[(int)point1.X];
+                                    drawingItems.RefDate = this.dataSerie.DateSerie[(int)point1.X];
                                     drawingItems.RefDateIndex = (int)point1.X;
                                     AddToUndoBuffer(GraphActionType.AddItem, newWinRatio);
                                     this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -2098,7 +2098,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 Segment2D newSegment = new Segment2D(point1, point2, DrawingPen);
                                 drawingItems.Add(newSegment);
-                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDate = this.dataSerie.DateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newSegment);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -2123,7 +2123,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             if (cupHandle != null)
                             {
                                 drawingItems.Add(cupHandle);
-                                drawingItems.RefDate = dateSerie[(int)cupHandle.Point1.X];
+                                drawingItems.RefDate = this.dataSerie.DateSerie[(int)cupHandle.Point1.X];
                                 drawingItems.RefDateIndex = (int)cupHandle.Point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, cupHandle);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -2148,7 +2148,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 HalfLine2D newhalfLine = new HalfLine2D(point1, point2, DrawingPen);
                                 drawingItems.Add(newhalfLine);
-                                drawingItems.RefDate = dateSerie[(int)point1.X];
+                                drawingItems.RefDate = this.dataSerie.DateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
                                 AddToUndoBuffer(GraphActionType.AddItem, newhalfLine);
                                 this.DrawingStep = GraphDrawingStep.SelectItem;
@@ -2294,7 +2294,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
                 // Draw date for selected value
                 string dateString;
-                DateTime currentDate = this.dateSerie[indexInValues];
+                DateTime currentDate = this.dataSerie.DateSerie[indexInValues];
                 if (currentDate.Hour == 0 && currentDate.Minute == 0)
                 {
                     dateString = currentDate.ToShortDateString();
@@ -2455,13 +2455,13 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 MessageBox.Show("Please select a valid portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (lastMouseIndex == -1 || this.openCurveType == null || this.dateSerie == null)
+            if (lastMouseIndex == -1 || this.openCurveType == null || this.dataSerie.DateSerie == null)
                 return;
 
             var portfolioValue = Portfolio.TotalValue;
             openTradeViewModel = new OpenTradeViewModel
             {
-                StockSerie = this.serie.Instrument.StockSerie,
+                StockSerie = this.dataSerie.Instrument.StockSerie,
                 BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
                 EntryValue = this.closeCurveType.DataSerie[EndIndex],
                 StopValue = FindStopValueFromTheme(),
@@ -2502,7 +2502,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void tradeMenu_Click(object sender, EventArgs e)
         {
-            var tradeManagerViewModel = new TradeManagerViewModel(Portfolio, this.serie.Instrument.StockSerie);
+            var tradeManagerViewModel = new TradeManagerViewModel(Portfolio, this.dataSerie.Instrument.StockSerie);
             tradeManagerViewModel.OrdersChanged += TradeManagerViewModel_OrdersChanged;
             var tradeManagerDlg = new TradeManagerDlg(tradeManagerViewModel);
             tradeManagerDlg.Show(this);
@@ -2536,7 +2536,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 MessageBox.Show("Please select a valid portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var pos = StockAnalyzerForm.MainFrame.Portfolio.Positions.FirstOrDefault(p => p.StockName == this.serie.StockName && p.IsClosed == false);
+            var pos = StockAnalyzerForm.MainFrame.Portfolio.Positions.FirstOrDefault(p => p.StockName == this.dataSerie.StockName && p.IsClosed == false);
             if (pos == null)
             {
                 MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2545,11 +2545,11 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             closeTradeViewModel = new CloseTradeViewModel
             {
-                StockSerie = this.serie.Instrument.StockSerie,
+                StockSerie = this.dataSerie.Instrument.StockSerie,
                 Position = pos,
-                ExitValue = this.serie.LastValue.CLOSE,
+                ExitValue = this.dataSerie.LastValue.CLOSE,
                 ExitQty = pos.EntryQty,
-                StockName = this.serie.StockName,
+                StockName = this.dataSerie.StockName,
                 Portfolio = this.Portfolio
             };
             closeTradeViewModel.CalculateTickSize();
@@ -2580,7 +2580,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 MessageBox.Show("Please select a valid portfolio", "Invalid Portfolio", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var order = StockAnalyzerForm.MainFrame.Portfolio.GetActiveOrders(this.serie.StockName).FirstOrDefault(o => o.BuySell == "Buy");
+            var order = StockAnalyzerForm.MainFrame.Portfolio.GetActiveOrders(this.dataSerie.StockName).FirstOrDefault(o => o.BuySell == "Buy");
             if (order == null)
             {
                 MessageBox.Show("Cannot sell not opened position", "Invalid Order", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2612,7 +2612,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         void openSaxoIntradyConfigDlg_Click(object sender, EventArgs e)
         {
-            StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.serie.Instrument.SaxoId);
+            StockAnalyzerForm.MainFrame.OpenSaxoIntradyConfigDlg(this.dataSerie.Instrument.SaxoId);
         }
         #endregion
     }
