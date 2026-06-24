@@ -308,6 +308,9 @@ namespace StockAnalyzerApp
         private void OnInstrumentChanged()
         {
             StockLog.Write($"Instrument changed to {this.ViewModel.Instrument?.DisplayName}");
+            this.CurrentStockSerie = this.ViewModel.Instrument?.StockSerie;
+
+            Settings.Default.LastInstrument = this.ViewModel.Instrument.Id;
         }
         #endregion
 
@@ -516,9 +519,6 @@ namespace StockAnalyzerApp
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
 
-            // Create Groups menu items
-            CreateGroupMenuItem();
-
             CreateAgendaMenuItem();
 
             // Update dynamic menu
@@ -531,12 +531,14 @@ namespace StockAnalyzerApp
             // Watchlist menu item
             this.LoadWatchList();
 
-            // 
-            InitialiseStockCombo(true);
-
             InitialiseWatchListComboBox();
 
             this.darkModeStripButton.Checked = Settings.Default.DarkMode;
+
+            if (StockDictionary.Instruments.TryGetValue(Settings.Default.LastInstrument, out var lastInstrument))
+            {
+                this.ViewModel.Instrument = lastInstrument;
+            }
 
             this.Show();
             this.progressBar.Value = 0;
@@ -559,12 +561,8 @@ namespace StockAnalyzerApp
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator3Control.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphIndicator1Control.OnZoomChanged);
             this.graphScrollerControl.ZoomChanged += new OnZoomChangedHandler(this.graphVolumeControl.OnZoomChanged);
-            StockSplashScreen.ProgressText = "Loading " + this.CurrentStockSerie.StockName + " data...";
 
             GraphControl.IsStarted = true;
-
-            SetDurationForStockGroup(this.CurrentStockSerie.StockGroup);
-            this.StockAnalyzerForm_StockSerieChanged(this.CurrentStockSerie, false);
 
             // Initialise event call backs (because of a bug in the designer)
             this.graphCloseControl.MouseClick += new MouseEventHandler(graphCloseControl.GraphControl_MouseClick);
@@ -917,7 +915,7 @@ namespace StockAnalyzerApp
                     Debug.WriteLine("Cond3");
                     searchCombo.Text = name;
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
-                    this.SetCurrentStock(match.First().ToUpper());
+                    this.SetCurrentStock(match.First());
                 }
                 else
                 {
@@ -947,39 +945,14 @@ namespace StockAnalyzerApp
             if (searchCombo.SelectedItem == null)
                 return;
 
-            var stockName = searchCombo.SelectedItem.ToString().ToUpper();
-            SetCurrentStock(stockName);
+            SetCurrentStock(searchCombo.SelectedItem.ToString());
         }
 
         private void SetCurrentStock(string stockName)
         {
-            if (stockName == this.currentStockSerie.StockName.ToUpper()) return;
-
-            var serie = this.StockDictionary.Values.FirstOrDefault(s => s.StockName.ToUpper() == stockName);
-
-            if (serie == null) return;
-
-            // Update Group
-            if (this.selectedGroup != serie.StockGroup)
+            if (StockDictionary.Instruments.TryGetValue(stockName, out var instrument))
             {
-                this.selectedGroup = serie.StockGroup;
-                repaintSuspended = true;
-                SetDurationForStockGroup(serie.StockGroup);
-                repaintSuspended = false;
-
-                foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
-                {
-                    groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
-                }
-
-                InitialiseStockCombo(false);
-            }
-
-            // Update Stock
-            if (this.currentStockSerie != serie)
-            {
-                //StockAnalyzerForm_StockSerieChanged(serie, false);
-                this.stockNameComboBox.SelectedItem = serie.StockName;
+                this.ViewModel.Instrument = instrument;
             }
         }
 
@@ -1237,38 +1210,6 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (!this.stockNameComboBox.Items.Contains(stockName))
-                {
-                    if (this.StockDictionary.ContainsKey(stockName))
-                    {
-                        var stockSerie = this.StockDictionary[stockName];
-
-                        Groups newGroup = stockSerie.StockGroup;
-                        if (this.selectedGroup != newGroup)
-                        {
-                            this.selectedGroup = newGroup;
-
-
-                            foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
-                            {
-                                groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
-                            }
-
-                            InitialiseStockCombo(false);
-                            SetDurationForStockGroup(newGroup);
-                        }
-                    }
-                    else
-                    {
-                        this.stockNameComboBox.Items.Add(stockName);
-                    }
-                }
-                this.repaintSuspended = true;
-                this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
-                this.stockNameComboBox.Text = stockName;
-                this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
-                this.repaintSuspended = false;
-
                 StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
 
                 if (activate)
@@ -1281,34 +1222,6 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (!this.stockNameComboBox.Items.Contains(stockName))
-                {
-                    if (this.StockDictionary.ContainsKey(stockName))
-                    {
-                        var stockSerie = this.StockDictionary[stockName];
-
-                        Groups newGroup = stockSerie.StockGroup;
-                        if (!stockSerie.BelongsToGroup(this.selectedGroup))
-                        {
-                            this.selectedGroup = newGroup;
-
-                            foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
-                            {
-                                groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
-                            }
-
-                            InitialiseStockCombo(false);
-                        }
-                    }
-                    else
-                    {
-                        this.stockNameComboBox.Items.Add(stockName);
-                    }
-                }
-                this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
-                this.stockNameComboBox.Text = stockName;
-                this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
-
                 this.repaintSuspended = true;
                 this.ViewModel.BarDuration = barDuration;
                 this.repaintSuspended = false;
@@ -1340,34 +1253,6 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (!this.stockNameComboBox.Items.Contains(stockName))
-                {
-                    if (this.StockDictionary.ContainsKey(stockName))
-                    {
-                        var stockSerie = this.StockDictionary[stockName];
-
-                        Groups newGroup = stockSerie.StockGroup;
-                        if (!stockSerie.BelongsToGroup(this.selectedGroup))
-                        {
-                            this.selectedGroup = newGroup;
-
-                            foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
-                            {
-                                groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
-                            }
-
-                            InitialiseStockCombo(false);
-                        }
-                    }
-                    else
-                    {
-                        this.stockNameComboBox.Items.Add(stockName);
-                    }
-                }
-                this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
-                this.stockNameComboBox.Text = stockName;
-                this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
-
                 this.ViewModel.BarDuration = barDuration;
 
                 StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
@@ -1383,38 +1268,9 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (!this.stockNameComboBox.Items.Contains(stockName))
-                {
-                    if (this.StockDictionary.ContainsKey(stockName))
-                    {
-                        var stockSerie = this.StockDictionary[stockName];
-
-                        Groups newGroup = stockSerie.StockGroup;
-                        if (this.selectedGroup != newGroup)
-                        {
-                            this.selectedGroup = newGroup;
-
-                            foreach (ToolStripMenuItem groupSubMenuItem in this.stockFilterMenuItem.DropDownItems)
-                            {
-                                groupSubMenuItem.Checked = groupSubMenuItem.Text == selectedGroup.ToString();
-                            }
-
-                            InitialiseStockCombo(true);
-                        }
-                    }
-                    else
-                    {
-                        this.stockNameComboBox.Items.Add(stockName);
-                    }
-                }
-
                 this.repaintSuspended = true;
                 this.ViewModel.BarDuration = barDuration;
                 this.repaintSuspended = false;
-
-                this.stockNameComboBox.SelectedIndexChanged -= StockNameComboBox_SelectedIndexChanged;
-                this.stockNameComboBox.Text = stockName;
-                this.stockNameComboBox.SelectedIndexChanged += new EventHandler(StockNameComboBox_SelectedIndexChanged);
 
                 StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
                 this.ChangeZoom(startIndex, endIndex);
@@ -1605,34 +1461,6 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = text;
         }
 
-        private void InitialiseStockCombo(bool setCurrentStock)
-        {
-            // Initialise Combo values
-            stockNameComboBox.Items.Clear();
-            stockNameComboBox.SelectedItem = string.Empty;
-
-            var stocks = StockDictionary.Values.Where(s => s.BelongsToGroup(this.selectedGroup)).Select(s => s.StockName);
-            foreach (string stockName in stocks)
-            {
-                if (StockDictionary.Keys.Contains(stockName))
-                {
-                    StockSerie stockSerie = StockDictionary[stockName];
-                    stockNameComboBox.Items.Add(stockName);
-                }
-            }
-            // 
-            if (setCurrentStock && stockNameComboBox.Items.Count != 0)
-            {
-                stockNameComboBox.SelectedIndex = 0;
-                if (!string.IsNullOrEmpty(stockNameComboBox.Items[0].ToString()))
-                {
-                    this.CurrentStockSerie = this.StockDictionary[stockNameComboBox.SelectedItem.ToString()];
-
-                    this.ViewModel.Instrument = StockDictionary.Instruments[stockNameComboBox.SelectedItem.ToString()];
-                }
-            }
-        }
-
         public void OnNeedReinitialise(bool resetDrawingButtons)
         {
             using (new MethodLogger(this))
@@ -1642,46 +1470,18 @@ namespace StockAnalyzerApp
                 {
                     ResetDrawingButtons();
                 }
-                if (stockNameComboBox.SelectedItem != null && !string.IsNullOrEmpty(stockNameComboBox.SelectedItem.ToString()))
+
+                if (endIndex == 0 || endIndex > (CurrentStockSerie.Count - 1))
                 {
-                    // Set the new selected serie
-                    if (CurrentStockSerie == null || CurrentStockSerie.StockName != stockNameComboBox.SelectedItem.ToString())
-                    {
-                        CurrentStockSerie = StockDictionary[stockNameComboBox.SelectedItem.ToString()];
-                    }
-
-                    if (endIndex == 0 || endIndex > (CurrentStockSerie.Count - 1))
-                    {
-                        this.ResetZoom();
-                    }
-
-                    // Refresh all components
-                    RefreshGraph();
+                    this.ResetZoom();
                 }
+
+                // Refresh all components
+                RefreshGraph();
             }
         }
 
         #region STOCK and PORTFOLIO selection tool bar
-
-        private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(this.searchCombo.Text) && !stockNameComboBox.SelectedItem.ToString().ToUpper().Contains(this.searchCombo.Text.ToUpper()))
-                this.searchCombo.Text = "";
-
-            StockSerie selectedSerie = null;
-            if (this.StockDictionary.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
-            {
-                selectedSerie = StockDictionary[stockNameComboBox.SelectedItem.ToString()];
-            }
-            else
-            {
-                throw new ApplicationException("Data for " + stockNameComboBox.SelectedItem.ToString() + "does not exist");
-            }
-            // Set the new selected serie
-            CurrentStockSerie = selectedSerie;
-
-            this.ViewModel.Instrument = StockDictionary.Instruments[stockNameComboBox.SelectedItem.ToString()];
-        }
 
         private void downloadBtn_Click(object sender, EventArgs e)
         {
@@ -2389,21 +2189,6 @@ namespace StockAnalyzerApp
             {
                 SaveAnalysis(this.ViewModel.AnalysisFile);
             }
-
-            // Remove from current combo list.
-            int selectedIndex = this.stockNameComboBox.SelectedIndex;
-            if (selectedIndex != -1)
-            {
-                this.stockNameComboBox.Items.RemoveAt(selectedIndex);
-                if (selectedIndex < this.stockNameComboBox.Items.Count - 1)
-                {
-                    this.stockNameComboBox.SelectedIndex = selectedIndex;
-                }
-                else
-                {
-                    this.stockNameComboBox.SelectedIndex = this.stockNameComboBox.Items.Count - 1;
-                }
-            }
         }
 
         private void saxoTurboButton_Click(object sender, EventArgs e)
@@ -2485,60 +2270,6 @@ namespace StockAnalyzerApp
 
         #region VIEW MENU HANDLERS
 
-        private void CreateGroupMenuItem()
-        {
-            if (!Enum.TryParse(Settings.Default.SelectedGroup, out this.selectedGroup))
-            {
-                this.selectedGroup = Groups.INDICES;
-                Settings.Default.SelectedGroup = Groups.INDICES.ToString();
-                Settings.Default.Save();
-            }
-
-            // Clean existing menus
-            this.stockFilterMenuItem.DropDownItems.Clear();
-
-            List<ToolStripItem> groupMenuItems = new List<ToolStripItem>();
-            ToolStripMenuItem groupSubMenuItem;
-
-            var validGroups = this.StockDictionary.GetValidGroups().Select(g => g.ToString());
-            bool selectedGroupFound = false;
-            foreach (string groupName in validGroups)
-            {
-                // Create group menu items
-                groupSubMenuItem = new ToolStripMenuItem(groupName);
-                groupSubMenuItem.Click += new EventHandler(groupSubMenuItem_Click);
-                if (groupName == this.selectedGroup.ToString())
-                {
-                    groupSubMenuItem.Checked = true;
-                    selectedGroupFound = true;
-                }
-                else
-                {
-                    groupSubMenuItem.Checked = false;
-                }
-                groupMenuItems.Add(groupSubMenuItem);
-            }
-            if (!selectedGroupFound)
-            {
-                // Set default group
-                ((ToolStripMenuItem)groupMenuItems[0]).Checked = true;
-                this.selectedGroup =
-                   (Groups)Enum.Parse(typeof(Groups), groupMenuItems[0].ToString());
-                Settings.Default.SelectedGroup = this.selectedGroup.ToString();
-                Settings.Default.Save();
-            }
-
-            this.stockFilterMenuItem.DropDownItems.AddRange(groupMenuItems.ToArray());
-        }
-
-        private void groupSubMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.Default.SelectedGroup = sender.ToString();
-            Settings.Default.Save();
-
-            this.OnSelectedStockGroupChanged((Groups)Enum.Parse(typeof(Groups), sender.ToString()));
-        }
-
         #region MENU CREATION
         private void CreateSecondarySerieMenuItem()
         {
@@ -2577,7 +2308,6 @@ namespace StockAnalyzerApp
 
         #endregion
 
-
         #region generate new series
 
         private void AddNewSerie(StockSerie newSerie)
@@ -2587,13 +2317,6 @@ namespace StockAnalyzerApp
                 StockDictionary.Remove(newSerie.StockName);
             }
             StockDictionary.Add(newSerie.StockName, newSerie);
-
-            if (!stockNameComboBox.Items.Contains(newSerie.StockName))
-            {
-                stockNameComboBox.Items.Insert(stockNameComboBox.Items.IndexOf(this.CurrentStockSerie.StockName) + 1,
-                   newSerie.StockName);
-            }
-            stockNameComboBox.SelectedIndex = stockNameComboBox.Items.IndexOf(newSerie.StockName);
 
             this.StockAnalyzerForm_StockSerieChanged(newSerie, false);
         }
@@ -2676,7 +2399,6 @@ namespace StockAnalyzerApp
                         break;
                     }
                     SetDurationForStockGroup(newGroup);
-                    InitialiseStockCombo(true);
 
                     changingGroup = false;
                     ApplyTheme();
@@ -3493,7 +3215,7 @@ namespace StockAnalyzerApp
             const int WM_KEYDOWN = 0x100;
             const int WM_SYSKEYDOWN = 0x104;
 
-            if (this.stockNameComboBox.Focused || this.themeComboBox.Focused || this.barDurationComboBox.Focused)
+            if (this.themeComboBox.Focused || this.barDurationComboBox.Focused)
             { return false; }
 
             if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_SYSKEYDOWN))
@@ -4897,9 +4619,7 @@ namespace StockAnalyzerApp
             {
                 var dataProvider = (IStockDataProvider)configDialog;
                 dataProvider.InitDictionary(this.StockDictionary, true);
-                this.CreateGroupMenuItem();
                 this.CreateSecondarySerieMenuItem();
-                this.InitialiseStockCombo(true);
             }
         }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -5015,9 +4735,7 @@ namespace StockAnalyzerApp
             if (dataProvider.ShowDialog(saxoId) == DialogResult.OK)
             {
                 dataProvider.InitDictionary(this.StockDictionary, true);
-                this.CreateGroupMenuItem();
                 this.CreateSecondarySerieMenuItem();
-                this.InitialiseStockCombo(true);
             }
         }
 

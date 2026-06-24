@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockClasses
         static private SortedDictionary<string, StockInstrument> InitializeInstruments()
         {
             var instruments = new SortedDictionary<string, StockInstrument>();
-            foreach (var serie in StockDictionary.Instance.Values)
+            foreach (var serie in Instance.Values)
             {
                 var instrument = new StockInstrument(serie);
                 instruments[instrument.Id] = instrument;

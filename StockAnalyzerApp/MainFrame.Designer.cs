@@ -122,7 +122,6 @@ namespace StockAnalyzerApp
             this.refreshPortfolioBtn = new System.Windows.Forms.ToolStripButton();
             this.portfolioStatusLbl = new System.Windows.Forms.ToolStripStatusLabel();
             this.browseToolStrip = new System.Windows.Forms.ToolStrip();
-            this.stockNameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.barDurationComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.downloadBtn = new System.Windows.Forms.ToolStripButton();
             this.searchCombo = new System.Windows.Forms.ToolStripComboBox();
@@ -963,7 +962,6 @@ namespace StockAnalyzerApp
             this.rewindBtn,
             this.fastForwardBtn,
             this.copyIsinBtn,
-            this.stockNameComboBox,
             this.barDurationComboBox,
             this.downloadBtn,
             this.searchCombo,
@@ -981,12 +979,6 @@ namespace StockAnalyzerApp
             this.browseToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.browseToolStrip.Size = new System.Drawing.Size(517, 27);
             this.browseToolStrip.TabIndex = 0;
-            // 
-            // stockNameComboBox
-            // 
-            this.stockNameComboBox.Name = "stockNameComboBox";
-            this.stockNameComboBox.Size = new System.Drawing.Size(250, 27);
-            this.stockNameComboBox.SelectedIndexChanged += new System.EventHandler(this.StockNameComboBox_SelectedIndexChanged);
             // 
             // barDurationComboBox
             // 
@@ -1495,7 +1487,6 @@ namespace StockAnalyzerApp
         private CustomControl.GraphControls.GraphRangedControl graphIndicator2Control;
         private CustomControl.GraphControls.GraphRangedControl graphIndicator3Control;
         private CustomControl.GraphControls.GraphVolumeControl graphVolumeControl;
-        private ToolStripComboBox stockNameComboBox;
         private ToolStripComboBox barDurationComboBox;
         private ToolStripMenuItem fileMenuItem;
         private ToolStripMenuItem helpMenuItem;

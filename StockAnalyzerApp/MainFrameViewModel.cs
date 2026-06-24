@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzerApp.StockData;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
@@ -61,6 +62,7 @@ namespace StockAnalyzerApp
         public bool IsHistoryActive { get; set; } = true;
 
         static MainFrameViewModel instance = new MainFrameViewModel();
+
         public static MainFrameViewModel Instance => instance;
 
         internal void AddHistory(string stockName, string theme)

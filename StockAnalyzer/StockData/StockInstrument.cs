@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-
+using System.Diagnostics;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData;
-using Telerik.Windows.Controls.Data.CardView;
 
 namespace StockAnalyzerApp.StockData
 {
+    [DebuggerDisplay("{Id}")]
     public class StockInstrument
     {
         public string Id { get; set; }

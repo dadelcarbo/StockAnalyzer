@@ -70,7 +70,24 @@ namespace StockAnalyzerSettings.Properties {
                 this["SelectedGroup"] = value;
             }
         }
-        
+
+
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CAC 40")]
+        public string LastInstrument
+        {
+            get
+            {
+                return ((string)(this["LastInstrument"]));
+            }
+            set
+            {
+                this["LastInstrument"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
