@@ -62,10 +62,9 @@
                     </StackPanel>
                     <telerik:RadGridView FontSize="9" Name="gridView" Grid.Row="1" Margin="1,1,1,1" ShowGroupPanel="True" RowIndicatorVisibility="Collapsed"
                              ItemsSource="{Binding Lines}" IsReadOnly="True" AutoGenerateColumns="False"
-                             SelectionChanged="RadGridView_SelectionChanged" FrozenColumnCount="5" Grid.ColumnSpan="2">
+                             SelectionChanged="RadGridView_SelectionChanged" FrozenColumnCount="4" Grid.ColumnSpan="2">
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn Header="Excluded" DataMemberBinding="{Binding StockAnalysis.Excluded}"/>
-                            <telerik:GridViewDataColumn Header="Intraday" DataMemberBinding="{Binding Intraday}"/>
                             <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding StockGroup}"/>
 
                             <telerik:GridViewDataColumn Header="ISIN" DataMemberBinding="{Binding ISIN}"/>

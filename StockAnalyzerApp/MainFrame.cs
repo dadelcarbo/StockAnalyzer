@@ -1278,19 +1278,19 @@ namespace StockAnalyzerApp
 
                 #region Set Window Title
                 string id;
-                if (CurrentStockSerie.Symbol == ViewModel.Instrument.DisplayName)
+                if (ViewModel.Instrument.StockSerie.Symbol == ViewModel.Instrument.DisplayName)
                 {
-                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.Symbol;
+                    id = ViewModel.Instrument.DisplayName + "-" + ViewModel.Instrument.DisplayName;
                 }
                 else
                 {
-                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.Symbol + " - " + ViewModel.Instrument.DisplayName;
+                    id = ViewModel.Instrument.Group + "-" + ViewModel.Instrument.StockSerie.Symbol + " - " + ViewModel.Instrument.DisplayName;
                 }
-                if (!string.IsNullOrWhiteSpace(this.CurrentStockSerie.ISIN))
+                if (!string.IsNullOrWhiteSpace(this.ViewModel.Instrument.Isin))
                 {
-                    id += " - " + this.CurrentStockSerie.ISIN;
+                    id += " - " + this.ViewModel.Instrument.Isin;
                 }
-                id += " - " + this.CurrentStockSerie.DataProvider;
+                id += " - " + ViewModel.Instrument.DataProvider;
                 this.Text = "Ultimate Chartist - " + this.ViewModel.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
