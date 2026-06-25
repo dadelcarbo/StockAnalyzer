@@ -11,6 +11,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
@@ -43,10 +44,8 @@ using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -60,7 +59,6 @@ using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
-using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 using Match = System.Text.RegularExpressions.Match;
 
@@ -115,24 +113,8 @@ namespace StockAnalyzerApp
 
         public GraphCloseControl GraphCloseControl => this.graphCloseControl;
 
-
         private StockSerie currentStockSerie = null;
-
-        public StockSerie CurrentStockSerie
-        {
-            get { return currentStockSerie; }
-            set
-            {
-                if (this.StockSerieChanged != null)
-                {
-                    this.StockSerieChanged(value, false);
-                }
-                else
-                {
-                    currentStockSerie = value;
-                }
-            }
-        }
+        private StockSerie CurrentStockSerie => currentStockSerie;
 
         public event OnStockSerieChangedHandler StockSerieChanged;
 
@@ -201,7 +183,6 @@ namespace StockAnalyzerApp
         public StockAnalyzerForm()
         {
             InitializeComponent();
-
 
             this.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.Controls.Clear();
@@ -292,7 +273,7 @@ namespace StockAnalyzerApp
             switch (e.PropertyName)
             {
                 case "BarDuration":
-                    OnBarDurationChanged();
+                    this.ApplyTheme();
                     break;
                 case "Instrument":
                     OnInstrumentChanged();
@@ -310,7 +291,15 @@ namespace StockAnalyzerApp
         private void OnInstrumentChanged()
         {
             StockLog.Write($"Instrument changed to {this.ViewModel.Instrument?.DisplayName}");
-            this.CurrentStockSerie = this.ViewModel.Instrument?.StockSerie;
+
+            if (this.StockSerieChanged != null)
+            {
+                this.StockSerieChanged(this.ViewModel.Instrument?.StockSerie, false);
+            }
+            else
+            {
+                currentStockSerie = this.ViewModel.Instrument?.StockSerie;
+            }
 
             Settings.Default.LastInstrument = this.ViewModel.Instrument.Id;
         }
@@ -339,7 +328,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        private void OnBarDurationChanged()
+        private void OnBarDurationChanged() // Deprecated
         {
             if (this.currentStockSerie == null || !this.currentStockSerie.Initialise())
                 return;
@@ -360,7 +349,6 @@ namespace StockAnalyzerApp
                     return;
                 }
 
-                this.ApplyTheme();
             }
         }
         #endregion
@@ -1290,13 +1278,13 @@ namespace StockAnalyzerApp
 
                 #region Set Window Title
                 string id;
-                if (CurrentStockSerie.Symbol == CurrentStockSerie.StockName)
+                if (CurrentStockSerie.Symbol == ViewModel.Instrument.DisplayName)
                 {
                     id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.Symbol;
                 }
                 else
                 {
-                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.Symbol + " - " + CurrentStockSerie.StockName;
+                    id = CurrentStockSerie.StockGroup + "-" + CurrentStockSerie.Symbol + " - " + ViewModel.Instrument.DisplayName;
                 }
                 if (!string.IsNullOrWhiteSpace(this.CurrentStockSerie.ISIN))
                 {
@@ -1506,7 +1494,7 @@ namespace StockAnalyzerApp
                     if (showSplash)
                     {
                         StockSplashScreen.FadeInOutSpeed = 0.25;
-                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.currentStockSerie.StockName;
+                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.ViewModel.Instrument.DisplayName;
                         StockSplashScreen.ProgressVal = 0;
                         StockSplashScreen.ProgressMax = 100;
                         StockSplashScreen.ProgressMin = 0;
@@ -1556,7 +1544,7 @@ namespace StockAnalyzerApp
                         return;
                     }
                     StockSplashScreen.FadeInOutSpeed = 0.25;
-                    StockSplashScreen.ProgressText = "Downloading " + this.selectedGroup + " - " + this.currentStockSerie.StockName;
+                    StockSplashScreen.ProgressText = "Downloading " + this.selectedGroup + " - " + this.ViewModel.Instrument.DisplayName;
 
                     var stockSeries =
                        this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
@@ -1612,7 +1600,7 @@ namespace StockAnalyzerApp
                     if (showSplash)
                     {
                         StockSplashScreen.FadeInOutSpeed = 0.25;
-                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.currentStockSerie.StockName;
+                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.ViewModel.Instrument.DisplayName;
                         StockSplashScreen.ProgressVal = 0;
                         StockSplashScreen.ProgressMax = 100;
                         StockSplashScreen.ProgressMin = 0;
@@ -1651,7 +1639,7 @@ namespace StockAnalyzerApp
                 {
                     StockSplashScreen.FadeInOutSpeed = 0.25;
                     StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                                                     this.currentStockSerie.StockName;
+                                                     this.ViewModel.Instrument.DisplayName;
 
                     var stockSeries =
                        this.StockDictionary.Values.Where(
@@ -2203,9 +2191,9 @@ namespace StockAnalyzerApp
                 Clipboard.SetText(this.currentStockSerie.ISIN);
                 return;
             }
-            if (!string.IsNullOrEmpty(this.currentStockSerie.StockName))
+            if (!string.IsNullOrEmpty(this.ViewModel.Instrument.DisplayName))
             {
-                Clipboard.SetText(this.currentStockSerie.StockName);
+                Clipboard.SetText(this.ViewModel.Instrument.DisplayName);
                 return;
             }
         }
@@ -3727,8 +3715,9 @@ namespace StockAnalyzerApp
 
         public void ApplyTheme()
         {
-            if (this.currentStockSerie == null || !GraphControl.IsStarted)
+            if (this.ViewModel.Instrument == null || !GraphControl.IsStarted || this.ViewModel.Theme == null)
                 return;
+
             using (new MethodLogger(this, showTimerDebug))
             {
                 using (new StockSerieLocker(this.currentStockSerie))
@@ -3737,43 +3726,30 @@ namespace StockAnalyzerApp
                     {
                         this.Cursor = Cursors.WaitCursor;
 
-                        StockLog.Write($"Apply theme {this.CurrentStockSerie?.StockName}-{this.ViewModel.BarDuration}-{this.ViewModel.Theme}");
+                        StockLog.Write($"Apply theme {this.ViewModel.Instrument.DisplayName}-{this.ViewModel.BarDuration}-{this.ViewModel.Theme}");
 
-                        if (this.ViewModel.Theme == null || this.CurrentStockSerie == null) return;
-                        if (!this.CurrentStockSerie.IsInitialised)
+                        // Get DataSerie for bar duration
+                        var dataSerie = StockDictionary.GetDataSerie(ViewModel.Instrument.DisplayName, this.ViewModel.BarDuration);
+                        if (dataSerie == null || dataSerie.Count == 0)
                         {
-                            this.statusLabel.Text = ("Loading data...");
-                            this.Refresh();
-                        }
-                        if (!this.CurrentStockSerie.Initialise() || this.CurrentStockSerie.Count == 0)
-                        {
-                            this.DeactivateGraphControls("Data for " + this.CurrentStockSerie.StockName + " cannot be initialised");
+                            this.DeactivateGraphControls("Data for " + this.ViewModel.Instrument.DisplayName + " cannot be initialised");
                             return;
                         }
 
-                        // Set bar duration
-                        this.CurrentStockSerie.BarDuration = this.ViewModel.BarDuration;
                         // Delete transient drawing created by alert Detection
                         if (this.CurrentStockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
                         {
                             this.CurrentStockSerie.ResetIndicatorCache();
                         }
 
-                        if (this.CurrentStockSerie.Count < MIN_BAR_DISPLAY)
+                        if (dataSerie.Count < MIN_BAR_DISPLAY)
                         {
                             this.DeactivateGraphControls("Not enough data to display...");
                             return;
                         }
 
                         // Add to browsing history
-                        this.ViewModel.AddHistory(this.CurrentStockSerie.StockName, this.ViewModel.Theme);
-
-                        // Build curve list from definition
-                        if (!this.themeDictionary.ContainsKey(this.ViewModel.Theme))
-                        {
-                            // LoadTheme
-                            LoadCurveTheme(this.ViewModel.Theme);
-                        }
+                        this.ViewModel.AddHistory(this.ViewModel.Instrument.DisplayName, this.ViewModel.Theme);
 
                         // Force resetting the secondary serie.
                         if (themeDictionary[this.ViewModel.Theme]["CloseGraph"].FindIndex(s => s.StartsWith("SECONDARY")) == -1)
@@ -3913,7 +3889,7 @@ namespace StockAnalyzerApp
                                             case "TRAIL":
                                             case "INDICATOR":
                                                 {
-                                                    IStockIndicator stockIndicator = (IStockIndicator)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                    IStockIndicator stockIndicator = (IStockIndicator)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                                     if (stockIndicator != null)
                                                     {
                                                         if (entry.ToUpper() != "CLOSEGRAPH")
@@ -3939,7 +3915,7 @@ namespace StockAnalyzerApp
                                                 break;
                                             case "CLOUD":
                                                 {
-                                                    var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                    var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                                     if (stockCloud != null)
                                                     {
                                                         curveList.Cloud = stockCloud;
@@ -3948,32 +3924,25 @@ namespace StockAnalyzerApp
                                                 break;
                                             case "AUTODRAWING":
                                                 {
-                                                    IStockAutoDrawing autoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                                    IStockAutoDrawing autoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                                     curveList.AutoDrawing = autoDrawing;
                                                 }
                                                 break;
                                             case "DECORATOR":
                                                 {
-                                                    IStockDecorator decorator =
-                                                        (IStockDecorator)
-                                                            StockViewableItemsManager.GetViewableItem(line,
-                                                                this.CurrentStockSerie);
+                                                    IStockDecorator decorator = (IStockDecorator)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                                     curveList.Decorator = decorator;
                                                     this.GraphCloseControl.CurveList.ShowMes.Add(decorator);
                                                 }
                                                 break;
                                             case "TRAILSTOP":
                                                 {
-                                                    IStockTrailStop trailStop =
-                                                        (IStockTrailStop)
-                                                            StockViewableItemsManager.GetViewableItem(line,
-                                                                this.CurrentStockSerie);
+                                                    IStockTrailStop trailStop = (IStockTrailStop)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                                     curveList.TrailStop = trailStop;
                                                 }
                                                 break;
                                             case "LINE":
-                                                horizontalLines.Add(new HLine(float.Parse(fields[1]),
-                                                    GraphCurveType.PenFromString(fields[2])));
+                                                horizontalLines.Add(new HLine(float.Parse(fields[1]), GraphCurveType.PenFromString(fields[2])));
                                                 break;
                                             default:
                                                 continue;
@@ -4010,8 +3979,7 @@ namespace StockAnalyzerApp
                                     {
                                         this.CurrentStockSerie.StockAnalysis.DrawingItems.Add(this.CurrentStockSerie.BarDuration, new StockDrawingItems());
                                     }
-                                    graphControl.Initialize(curveList, horizontalLines,
-                                        StockDictionary.GetDataSerie(currentStockSerie.StockName, this.ViewModel.BarDuration),
+                                    graphControl.Initialize(curveList, horizontalLines, dataSerie,
                                         CurrentStockSerie.StockAnalysis.DrawingItems[this.CurrentStockSerie.BarDuration],
                                         startIndex, endIndex);
                                 }
@@ -4030,7 +3998,7 @@ namespace StockAnalyzerApp
 
                         if (this.currentStockSerie.BelongsToGroup(Groups.BREADTH))
                         {
-                            string[] fields = this.currentStockSerie.StockName.Split('.');
+                            string[] fields = this.ViewModel.Instrument.DisplayName.Split('.');
                             if (fields.Length > 1 && this.StockDictionary.ContainsKey(fields[1]))
                             {
                                 this.graphCloseControl.SecondaryFloatSerie = this.CurrentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
@@ -4148,21 +4116,23 @@ namespace StockAnalyzerApp
             if (!Directory.Exists(folderName))
             {
                 Directory.CreateDirectory(folderName);
-            }
 
-            while (themeComboBox.Items.Count == 0)
-            {
-                foreach (string themeName in Directory.EnumerateFiles(folderName, "*.thm"))
-                {
-                    themeComboBox.Items.Add(themeName.Split('\\').Last().Replace(".thm", ""));
-                }
-                if (themeComboBox.Items.Count == 0)
+                var themeFiles = Directory.EnumerateFiles(folderName, "*.thm");
+                if (themeFiles.Count() == 0)
                 {
                     // Create a default empty theme
                     string emptyTheme = "#ScrollGraph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|Line\r\nDATA|CLOSE|1:255:0:0:0:Solid|True\r\n#CloseGraph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|Line\r\nDATA|CLOSE|1:255:0:0:0:Solid|True\r\nSECONDARY|NONE\r\n#Indicator1Graph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart\r\n#Indicator2Graph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart\r\n#Indicator3Graph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart\r\n#VolumeGraph\r\nGRAPH|255:255:255:224|255:255:224:96|True|255:211:211:211|BarChart";
                     using StreamWriter tw = new StreamWriter(folderName + @"\\" + Localisation.UltimateChartistStrings.ThemeEmpty + ".thm");
                     tw.Write(emptyTheme);
                 }
+            }
+
+            foreach (string themeFileName in Directory.EnumerateFiles(folderName, "*.thm"))
+            {
+                var themeName = Path.GetFileNameWithoutExtension(themeFileName);
+                themeComboBox.Items.Add(themeName);
+
+                LoadCurveTheme(themeName);
             }
 
             //
@@ -4192,8 +4162,6 @@ namespace StockAnalyzerApp
                     themeComboBox.SelectedItem = themeComboBox.Items[0];
                 }
             }
-            // Load current theme
-            LoadCurveTheme(this.ViewModel.Theme);
 
             themeComboBox.Items.Add(WORK_THEME);
             // Create working theme from selected theme
@@ -4597,7 +4565,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                Clipboard.SetText(currentStockSerie.StockName);
+                Clipboard.SetText(ViewModel.Instrument.DisplayName);
             }
             Process.Start(url);
         }
@@ -4624,7 +4592,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                string url = $"https://finance.yahoo.com/lookup/?s={this.currentStockSerie.StockName}";
+                string url = $"https://finance.yahoo.com/lookup/?s={this.ViewModel.Instrument.DisplayName}";
                 Process.Start(url);
             }
         }

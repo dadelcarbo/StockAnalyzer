@@ -176,7 +176,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
 
                 // Set the bar duration
-                currentStockSerie.BarDuration = (BarDuration)this.durationComboBox.SelectedItem;
+                var dataSerie = StockDictionary.Instruments[currentStockSerie.StockName].GetDataSerie((BarDuration)this.durationComboBox.SelectedItem);
 
                 this.StartIndex = Math.Max(0, currentStockSerie.Count - Settings.Default.DefaultBarNumber);
                 this.EndIndex = currentStockSerie.Count - 1;
@@ -291,10 +291,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                     case "TRAIL":
                                     case "INDICATOR":
                                         {
-                                            IStockIndicator stockIndicator =
-                                                (IStockIndicator)
-                                                    StockViewableItemsManager.GetViewableItem(line,
-                                                        currentStockSerie);
+                                            IStockIndicator stockIndicator = (IStockIndicator)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                             if (stockIndicator != null)
                                             {
                                                 if (entry.ToUpper() != "CLOSEGRAPH")
@@ -323,7 +320,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                         break;
                                     case "CLOUD":
                                         {
-                                            var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                            var stockCloud = (IStockCloud)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                             if (stockCloud != null)
                                             {
                                                 curveList.Cloud = stockCloud;
@@ -332,23 +329,20 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                                         break;
                                     case "AUTODRAWING":
                                         {
-                                            IStockAutoDrawing autoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line, this.CurrentStockSerie);
+                                            IStockAutoDrawing autoDrawing = (IStockAutoDrawing)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                             curveList.AutoDrawing = autoDrawing;
                                         }
                                         break;
                                     case "DECORATOR":
                                         {
-                                            IStockDecorator decorator = (IStockDecorator)StockViewableItemsManager.GetViewableItem(line, currentStockSerie);
+                                            IStockDecorator decorator = (IStockDecorator)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                             curveList.Decorator = decorator;
                                             this.graphCloseControl.CurveList.ShowMes.Add(decorator);
                                         }
                                         break;
                                     case "TRAILSTOP":
                                         {
-                                            IStockTrailStop trailStop =
-                                                (IStockTrailStop)
-                                                    StockViewableItemsManager.GetViewableItem(line,
-                                                        currentStockSerie);
+                                            IStockTrailStop trailStop = (IStockTrailStop)StockViewableItemsManager.GetViewableItem(line, dataSerie);
                                             curveList.TrailStop = trailStop;
                                         }
                                         break;
@@ -391,7 +385,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                             {
                                 currentStockSerie.StockAnalysis.DrawingItems.Add(currentStockSerie.BarDuration, new StockDrawingItems());
                             }
-                            graphControl.Initialize(curveList, horizontalLines, 
+                            graphControl.Initialize(curveList, horizontalLines,
                                 StockDictionary.GetDataSerie(currentStockSerie.StockName, (BarDuration)this.durationComboBox.SelectedItem),
                                 currentStockSerie.StockAnalysis.DrawingItems[currentStockSerie.BarDuration],
                                 startIndex, endIndex);

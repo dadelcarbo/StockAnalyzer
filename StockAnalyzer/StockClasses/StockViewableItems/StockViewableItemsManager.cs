@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockDrawing;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
 
         static public IStockViewableSeries GetViewableItem(string fullString)
         {
-            return GetViewableItem(fullString, null);
+            return GetViewableItem(fullString, (DataSerie)null);
         }
 
         static public bool Supports(string fullString)
@@ -41,6 +42,143 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
                 default:
                     return false;
             }
+        }
+
+
+
+        static public IStockViewableSeries GetViewableItem(string fullString, DataSerie dataSerie)
+        {
+            if (string.IsNullOrEmpty(fullString))
+                return null;
+            string[] fields = fullString.Split('|');
+            if (fields.Length < 2 || string.IsNullOrEmpty(fields[1]))
+                return null;
+            int offset = 2;
+            IStockViewableSeries viewableSerie = null;
+            switch (fields[0].ToUpper())
+            {
+                case "INDICATOR":
+                    if (dataSerie == null)
+                    {
+                        viewableSerie = StockIndicatorManager.CreateIndicator(fields[1]);
+                    }
+                    else
+                    {
+                        viewableSerie = dataSerie.GetIndicator(fields[1]);
+                    }
+                    offset = 2;
+                    break;
+                case "CLOUD":
+                    if (dataSerie == null)
+                    {
+                        viewableSerie = StockCloudManager.CreateCloud(fields[1]);
+                    }
+                    else
+                    {
+                        viewableSerie = dataSerie.GetCloud(fields[1]);
+                    }
+                    offset = 2;
+                    break;
+                case "AUTODRAWING":
+                    if (dataSerie == null)
+                    {
+                        viewableSerie = StockAutoDrawingManager.CreateAutoDrawing(fields[1]);
+                    }
+                    else
+                    {
+                        viewableSerie = dataSerie.GetAutoDrawing(fields[1]);
+                    }
+                    offset = 2;
+                    break;
+                case "TRAILSTOP":
+                    if (dataSerie == null)
+                    {
+                        viewableSerie = StockTrailStopManager.CreateTrailStop(fields[1]);
+                    }
+                    else
+                    {
+                        viewableSerie = dataSerie.GetTrailStop(fields[1]);
+                    }
+                    offset = 2;
+                    break;
+                case "DECORATOR":
+                    if (dataSerie == null)
+                    {
+                        viewableSerie = StockDecoratorManager.CreateDecorator(fields[1], fields[2]);
+                    }
+                    else
+                    {
+                        viewableSerie = dataSerie.GetDecorator(fields[1], fields[2]);
+                    }
+                    offset = 3;
+                    break;
+                case "TRAIL":
+                    if (dataSerie == null)
+                    {
+                        viewableSerie = StockTrailManager.CreateTrail(fields[1], fields[2]);
+                    }
+                    else
+                    {
+                        viewableSerie = dataSerie.GetTrail(fields[1], fields[2]);
+                    }
+                    offset = 3;
+                    break;
+                default:
+                    return null;
+            }
+
+            if (viewableSerie != null)
+            {
+                int index = 0;
+                for (int i = 0; i < viewableSerie.SeriesCount; i++)
+                {
+                    index = 2 * i + offset;
+                    if (index < fields.Length)
+                    {
+                        viewableSerie.SeriePens[i] = GraphCurveType.PenFromString(fields[index]);
+                        viewableSerie.SerieVisibility[i] = bool.Parse(fields[index + 1]);
+                    }
+                    else
+                    {
+                        viewableSerie.SerieVisibility[i] = true;
+                    }
+                }
+                if (viewableSerie is IStockIndicator)
+                {
+                    var indicator = (IStockIndicator)viewableSerie;
+                    if (indicator?.Areas != null)
+                    {
+                        foreach (var area in indicator.Areas)
+                        {
+                            index += 2;
+                            if (index < fields.Length)
+                            {
+                                area.Color = GraphCurveType.ColorFromString(fields[index]);
+                                area.Visibility = bool.Parse(fields[index + 1]);
+                            }
+                        }
+                    }
+                }
+                if (fields[0].ToUpper() == "DECORATOR")
+                {
+                    offset += viewableSerie.SeriesCount * 2;
+                    IStockDecorator decorator = viewableSerie as IStockDecorator;
+                    for (int i = 0; i < decorator.EventCount; i++)
+                    {
+                        index = 2 * i + offset;
+                        if (index < fields.Length)
+                        {
+                            decorator.EventPens[i] = GraphCurveType.PenFromString(fields[index]);
+                            decorator.EventVisibility[i] = bool.Parse(fields[index + 1]);
+                        }
+                        else
+                        {
+                            decorator.EventVisibility[i] = true;
+                        }
+                    }
+                }
+            }
+            return viewableSerie;
         }
 
         static public IStockViewableSeries GetViewableItem(string fullString, StockSerie stockSerie)
