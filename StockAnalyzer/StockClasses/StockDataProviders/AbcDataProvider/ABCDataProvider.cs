@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using static StockAnalyzer.StockClasses.StockSerie;
 
 using HtmlAgilityPack;
+using StockAnalyzerApp.StockData;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
@@ -1569,11 +1570,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         }
         #endregion
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
         {
-            if (stockSerie.ABCName != null)
+            if (stockInstrument.StockSerie.ABCName != null)
             {
-                string url = $"https://www.abcbourse.com/graphes/display.aspx?s={stockSerie.ABCName}";
+                string url = $"https://www.abcbourse.com/graphes/display.aspx?s={stockInstrument.StockSerie.ABCName}";
                 Process.Start(url);
             }
         }

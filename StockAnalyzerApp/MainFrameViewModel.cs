@@ -19,11 +19,56 @@ namespace StockAnalyzerApp
             MainFrameViewModel.NotificationSuspended = false;
         }
     }
+
+    public class ContextPersister : IDisposable
+    {
+        public ContextPersister()
+        {
+            MainFrameViewModel.Instance.SaveContext();
+            MainFrameViewModel.Instance.IsHistoryActive = false;
+        }
+        public void Dispose()
+        {
+            MainFrameViewModel.Instance.RestoreContext();
+            MainFrameViewModel.Instance.IsHistoryActive = true;
+        }
+    }
+
+    public struct Context
+    {
+        public bool IsSaved;
+        public BarDuration BarDuration;
+        public string Theme;
+        public StockInstrument Instrument;
+    }
+
     public class MainFrameViewModel : NotifyPropertyChangedBase
     {
         private MainFrameViewModel() { }
 
         static public bool NotificationSuspended { get; set; } = false;
+
+        #region Context helper
+
+        private Context context;
+        public void SaveContext()
+        {
+            context.BarDuration = barDuration;
+            context.Theme = theme;
+            context.Instrument = Instrument;
+            context.IsSaved = true;
+        }
+        public void RestoreContext()
+        {
+            if (!context.IsSaved)
+                return;
+            this.SetBarDuration(context.BarDuration, false);
+            this.SetTheme(context.Theme, false);
+            this.Instrument = context.Instrument;
+            context.IsSaved = false;
+        }
+        #endregion
+
 
         #region Bar Duration
         private BarDuration barDuration;
@@ -63,7 +108,7 @@ namespace StockAnalyzerApp
 
         #endregion
 
-        #region StockSerie
+        #region Instrument
         StockInstrument instrument;
         public StockInstrument Instrument { get { return instrument; } set { SetProperty(ref instrument, value); } }
         #endregion

@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -317,9 +318,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
         public override string DisplayName => "Bourso Intraday";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
         {
-            string url = $"https://finance.yahoo.com/quote/{stockSerie.Symbol}";
+            string url = $"https://finance.yahoo.com/quote/{stockInstrument.StockSerie.Symbol}";
             Process.Start(url);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockData;
 
 namespace StockAnalyzerApp.StockData
@@ -13,6 +14,7 @@ namespace StockAnalyzerApp.StockData
         public string Isin { get; set; }
         public string Ticker { get; set; }
         public Groups Group { get; set; }
+        public StockDataProvider DataProvider { get; set; }
         public long SaxoId => StockSerie?.SaxoId ?? 0;
 
         public StockSerie StockSerie { get; set; }
@@ -25,6 +27,7 @@ namespace StockAnalyzerApp.StockData
             this.DisplayName = serie.StockName;
             this.Isin = serie.ISIN;
             this.Ticker = serie.Symbol;
+            this.DataProvider = serie.DataProvider;
 
             this.Group = serie.StockGroup;
         }

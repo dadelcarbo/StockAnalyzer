@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -388,9 +389,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override string DisplayName => "Saxo Turbos";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void  OpenInDataProvider(StockInstrument stockInstrument)
         {
-            Process.Start($"https://fr-be.structured-products.saxo/products/{stockSerie.ISIN}");
+            Process.Start($"https://fr-be.structured-products.saxo/products/{stockInstrument.Isin}");
         }
 
         public override bool RemoveEntry(StockSerie stockSerie)

@@ -43,6 +43,7 @@ using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -645,9 +646,7 @@ namespace StockAnalyzerApp
             Settings.Default.ShowOrders = false;
             Settings.Default.ShowPositions = false;
 
-            var currentStockSerie = this.CurrentStockSerie;
-            var currentBarDuration = this.ViewModel.BarDuration;
-            var currentTheme = this.ViewModel.Theme;
+            using var cs = new ContextPersister();
 
             try
             {
@@ -736,10 +735,6 @@ namespace StockAnalyzerApp
                 GraphControl.GeneratingReport = false;
                 Settings.Default.ShowOrders = showOrders;
                 Settings.Default.ShowPositions = showPositions;
-
-                this.CurrentStockSerie = currentStockSerie;
-                this.ViewModel.BarDuration = currentBarDuration;
-                this.ViewModel.Theme = currentTheme;
             }
         }
 
@@ -2797,11 +2792,9 @@ namespace StockAnalyzerApp
             }
 
             this.Portfolio = portfolio;
-            StockSerie previousStockSerie = this.CurrentStockSerie;
-            string previousTheme = this.ViewModel.Theme;
-            BarDuration previousBarDuration = previousStockSerie.BarDuration;
 
-            this.ViewModel.IsHistoryActive = false;
+            using var p = new ContextPersister();
+
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
             string positionHtml = portfolio.GeneratePositionHtml();
@@ -2819,11 +2812,6 @@ namespace StockAnalyzerApp
                 }
                 Process.Start(fileName);
             }
-            this.ViewModel.IsHistoryActive = true;
-            OnSelectedStockChanged(previousStockSerie.StockName, true);
-            this.ViewModel.Theme = previousTheme;
-            this.ViewModel.BarDuration = previousBarDuration;
-            this.ViewModel.IsHistoryActive = true;
         }
         public void GenerateAlertReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
         {
@@ -2832,7 +2820,7 @@ namespace StockAnalyzerApp
             alertDefs ??= StockAlertDef.AlertDefs.Where(a => a.BarDuration == duration && a.InReport).OrderBy(a => a.Rank).ToList();
             if (alertDefs.Count == 0)
                 return;
-            this.ViewModel.IsHistoryActive = false;
+
             string timeFrame = duration.ToString();
             string folderName = Path.Combine(Folders.Report, timeFrame);
 
@@ -2842,92 +2830,93 @@ namespace StockAnalyzerApp
                 return;
             var htmlReportTemplate = File.ReadAllText(Folders.ReportTemplate);
 
-            StockSerie previousStockSerie = this.CurrentStockSerie;
-            string previousTheme = this.ViewModel.Theme;
-            BarDuration previousBarDuration = previousStockSerie.BarDuration;
-
-            string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
-            string htmlBody = $"<h1 style=\"text-align: center;\">{duration} Report - {DateTime.Today.ToShortDateString()} {DateTime.Now.ToShortTimeString()}</h1>";
-
-            #region Report Alerts
-
-            var previousState = this.WindowState;
-            var previousSize = this.Size;
-            this.Size = new Size(600, 600);
-            this.WindowState = FormWindowState.Normal;
-
-            int nbLeaders = 40;
-            StockSplashScreen.FadeInOutSpeed = 0.25;
-            StockSplashScreen.ProgressVal = 0;
-            StockSplashScreen.ShowSplashScreen();
-
-            string htmlAlerts = string.Empty;
-            foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group && a.Title != "Watchlist"))
+            using var cp = new ContextPersister();
+            try
             {
-                htmlAlerts += GenerateAlertTable(alertDef, nbLeaders);
-            }
-            htmlBody += htmlAlerts;
 
-            // Generate EURO_A Summation Index
-            if (StockDictionary.ContainsKey("McClellanSum.EURO_A"))
+                string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
+                string htmlBody = $"<h1 style=\"text-align: center;\">{duration} Report - {DateTime.Today.ToShortDateString()} {DateTime.Now.ToShortTimeString()}</h1>";
+
+                #region Report Alerts
+
+                var previousState = this.WindowState;
+                var previousSize = this.Size;
+                this.Size = new Size(600, 600);
+                this.WindowState = FormWindowState.Normal;
+
+                int nbLeaders = 40;
+                StockSplashScreen.FadeInOutSpeed = 0.25;
+                StockSplashScreen.ProgressVal = 0;
+                StockSplashScreen.ShowSplashScreen();
+
+                string htmlAlerts = string.Empty;
+                foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group && a.Title != "Watchlist"))
+                {
+                    htmlAlerts += GenerateAlertTable(alertDef, nbLeaders);
+                }
+                htmlBody += htmlAlerts;
+
+                // Generate EURO_A Summation Index
+                if (StockDictionary.ContainsKey("McClellanSum.EURO_A"))
+                {
+                    this.Size = new Size(950, 800);
+
+                    var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments["McClellanSum.EURO_A"], "EUROA_SUM", false, BarDuration.Daily, 770);
+                    htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
+                }
+
+                #region Report embedded definitions
+
+                // Find Pattern
+                string pattern = @"§§.*?§§";
+
+                // Instantiate the regular expression object.
+                Regex regex = new Regex(pattern);
+
+                // Match the regular expression pattern against the input string.
+                MatchCollection matches = regex.Matches(htmlReportTemplate);
+
+                foreach (Match match in matches)
+                {
+                    var fields = match.Value.Replace("§§", "").Split('|');
+                    var stockName = fields[0];
+                    var barDuration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
+                    var theme = fields[2];
+                    var nbBars = int.Parse(fields[3]);
+                    if (!StockDictionary.ContainsKey(stockName))
+                        continue;
+                    var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments[stockName], theme, true, barDuration, nbBars);
+                    string data = $"\r\n    <h3>{stockName}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+
+                    htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
+                }
+                #endregion
+
+                StockSplashScreen.CloseForm(true);
+                #endregion
+
+                this.Size = previousSize;
+                this.WindowState = previousState;
+
+
+                var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", $"{duration} Report").Replace("%HTML_BODY%", htmlBody);
+                using (StreamWriter sw = new StreamWriter(fileName))
+                {
+                    sw.Write(htmlReport);
+                }
+
+                Process.Start(fileName);
+            }
+            catch (Exception ex)
             {
-                this.Size = new Size(950, 800);
-
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments["McClellanSum.EURO_A"], "EUROA_SUM", false, BarDuration.Daily, 770);
-                htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
+                StockAnalyzerException.MessageBox(ex);
             }
-
-            #region Report embedded definitions
-
-            // Find Pattern
-            string pattern = @"§§.*?§§";
-
-            // Instantiate the regular expression object.
-            Regex regex = new Regex(pattern);
-
-            // Match the regular expression pattern against the input string.
-            MatchCollection matches = regex.Matches(htmlReportTemplate);
-
-            foreach (Match match in matches)
-            {
-                var fields = match.Value.Replace("§§", "").Split('|');
-                var stockName = fields[0];
-                var barDuration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
-                var theme = fields[2];
-                var nbBars = int.Parse(fields[3]);
-                if (!StockDictionary.ContainsKey(stockName))
-                    continue;
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments[stockName], theme, true, barDuration, nbBars);
-                string data = $"\r\n    <h3>{stockName}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
-
-                htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
-            }
-            #endregion
-
-            StockSplashScreen.CloseForm(true);
-            #endregion
-
-            this.Size = previousSize;
-            this.WindowState = previousState;
-
-
-            var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", $"{duration} Report").Replace("%HTML_BODY%", htmlBody);
-            using (StreamWriter sw = new StreamWriter(fileName))
-            {
-                sw.Write(htmlReport);
-            }
-
-            Process.Start(fileName);
-
-            OnSelectedStockChanged(previousStockSerie.StockName, true);
-            this.ViewModel.Theme = previousTheme;
-            this.ViewModel.BarDuration = previousBarDuration;
-            this.ViewModel.IsHistoryActive = true;
         }
 
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
         const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
         const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h3><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
+
         private string GenerateAlertTable(StockAlertDef alertDef, int nbStocks)
         {
             return GenerateReportTable(alertDef, nbStocks);
@@ -4620,7 +4609,7 @@ namespace StockAnalyzerApp
             {
                 return;
             }
-            dataProvider.OpenInDataProvider(this.CurrentStockSerie);
+            dataProvider.OpenInDataProvider(this.ViewModel.Instrument);
         }
         internal void OpenInYahoo()
         {

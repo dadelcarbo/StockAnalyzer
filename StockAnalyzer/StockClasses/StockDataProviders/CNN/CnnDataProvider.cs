@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Diagnostics;
 using System.Text.Json;
+using StockAnalyzerApp.StockData;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 {
@@ -169,7 +170,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 
         public override string DisplayName => "Cnn";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void  OpenInDataProvider(StockInstrument stockInstrument)
         {
             Process.Start("https://edition.cnn.com/markets/fear-and-greed");
         }

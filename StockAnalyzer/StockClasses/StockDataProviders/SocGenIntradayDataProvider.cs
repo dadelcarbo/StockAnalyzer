@@ -2,6 +2,7 @@
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -244,9 +245,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override string DisplayName => "SocGen Intraday";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void  OpenInDataProvider(StockInstrument stockInstrument)
         {
-            var url = $"https://bourse.societegenerale.fr/product-details/{stockSerie.Symbol.ToLower()}";
+            var url = $"https://bourse.societegenerale.fr/product-details/{stockInstrument.StockSerie.Symbol.ToLower()}";
             Process.Start(url);
         }
         public override void ApplyTrimBefore(StockSerie stockSerie, DateTime date)

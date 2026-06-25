@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -247,9 +248,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bnp
 
         public override string DisplayName => "Bnp Intraday";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
         {
-            Process.Start($"https://www.produitsdebourse.bnpparibas.fr/products/{stockSerie.ISIN}");
+            Process.Start($"https://www.produitsdebourse.bnpparibas.fr/products/{stockInstrument.Isin}");
         }
 
         public override void ApplyTrimBefore(StockSerie stockSerie, DateTime date)

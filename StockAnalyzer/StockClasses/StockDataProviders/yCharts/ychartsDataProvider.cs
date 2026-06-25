@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.yCharts;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Diagnostics;
@@ -223,7 +224,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override string DisplayName => "yCharts";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void  OpenInDataProvider(StockInstrument stockInstrument)
         {
             Process.Start($"https://ycharts.com/");
         }

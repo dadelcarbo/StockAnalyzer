@@ -1,3 +1,4 @@
+using StockAnalyzerApp.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -39,7 +40,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         bool ForceDownloadData(StockSerie stockSerie);
         bool DownloadIntradayData(StockSerie stockSerie);
         void InitDictionary(StockDictionary stockDictionary, bool download);
-        void OpenInDataProvider(StockSerie stockSerie);
+        void OpenInDataProvider(StockInstrument stockInstrument);
         /// <summary>
         /// Return true if removed, otherwise need to exclude
         /// </summary>

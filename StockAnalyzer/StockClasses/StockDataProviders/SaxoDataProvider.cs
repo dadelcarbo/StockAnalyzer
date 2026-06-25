@@ -2,6 +2,7 @@
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System.IO;
 using System.Windows.Forms;
@@ -99,7 +100,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override string DisplayName => "Saxo";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void  OpenInDataProvider(StockInstrument stockInstrument)
         {
             //Process.Start($"https://fr-be.structured-products.saxo/products/{stockSerie.ISIN}");
         }

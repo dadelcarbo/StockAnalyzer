@@ -5,6 +5,7 @@ using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
@@ -450,7 +451,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
         #endregion
 
-        public virtual void OpenInDataProvider(StockSerie stockSerie)
+        public virtual void OpenInDataProvider(StockInstrument stockInstrument)
         {
             MessageBox.Show($"Open in {this.GetType().Name.Replace("DataProvider", "")} not implemeted", "Error", MessageBoxButton.OK);
         }

@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
+using StockAnalyzer.StockData;
 using System;
 using System.Linq;
 using System.Windows;
@@ -28,10 +29,10 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
 
         private void ApplySplitButton_Click(object sender, RoutedEventArgs e)
         {
-            var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
+            var dataProvider = StockDataProviderBase.GetDataProvider(MainFrameViewModel.Instance.Instrument.DataProvider);
             if (dataProvider == null) { return; }
 
-            dataProvider.AddSplit(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.SplitDate, Before, After);
+            dataProvider.AddSplit(MainFrameViewModel.Instance.Instrument.StockSerie, this.SplitDate, Before, After);
 
             StockAnalyzerForm.MainFrame.ApplyTheme();
 
@@ -44,7 +45,7 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
         {
             if (AllGroupSeries)
             {
-                foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.StockGroup == StockAnalyzerForm.MainFrame.CurrentStockSerie.StockGroup))
+                foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.StockGroup == MainFrameViewModel.Instance.Instrument.StockSerie.StockGroup))
                 {
                     var dataProvider = StockDataProviderBase.GetDataProvider(stockSerie.DataProvider);
                     if (dataProvider == null) { continue; }
@@ -53,9 +54,9 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
             }
             else
             {
-                var dataProvider = StockDataProviderBase.GetDataProvider(StockAnalyzerForm.MainFrame.CurrentStockSerie.DataProvider);
+                var dataProvider = StockDataProviderBase.GetDataProvider(MainFrameViewModel.Instance.Instrument.StockSerie.DataProvider);
                 if (dataProvider == null) { return; }
-                dataProvider.ApplyTrimBefore(StockAnalyzerForm.MainFrame.CurrentStockSerie, this.TrimBeforeDate);
+                dataProvider.ApplyTrimBefore(MainFrameViewModel.Instance.Instrument.StockSerie, this.TrimBeforeDate);
             }
             StockAnalyzerForm.MainFrame.ApplyTheme();
 

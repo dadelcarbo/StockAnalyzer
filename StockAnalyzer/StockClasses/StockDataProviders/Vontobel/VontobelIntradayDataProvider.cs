@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -256,9 +257,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
 
         public override string DisplayName => "Vontobel Intraday";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void  OpenInDataProvider(StockInstrument stockInstrument)
         {
-            Process.Start($"https://markets.vontobel.com/fr-fr/produits/leverage/leverage-short/{stockSerie.ISIN}");
+            Process.Start($"https://markets.vontobel.com/fr-fr/produits/leverage/leverage-short/{stockInstrument.Isin}");
         }
 
         public override void ApplyTrimBefore(StockSerie stockSerie, DateTime date)

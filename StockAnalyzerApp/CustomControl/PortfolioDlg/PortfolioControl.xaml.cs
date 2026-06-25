@@ -130,7 +130,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
         }
         private void SelectionChanged(string stockName, string isin, BarDuration? duration = null, string theme = null)
         {
-            if (StockAnalyzerForm.MainFrame.CurrentStockSerie.StockName == stockName)
+            if (MainFrameViewModel.Instance.Instrument?.DisplayName == stockName)
                 return;
 
             var stockSerie = StockDictionary.GetSerie(stockName, isin);

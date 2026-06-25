@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Diagnostics;
@@ -388,9 +389,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override string DisplayName => "Yahoo";
 
-        public override void OpenInDataProvider(StockSerie stockSerie)
+        public override void  OpenInDataProvider(StockInstrument stockInstrument)
         {
-            Process.Start($"https://finance.yahoo.com/quote/{stockSerie.Symbol}");
+            Process.Start($"https://finance.yahoo.com/quote/{stockInstrument.StockSerie.Symbol}");
         }
 
         public static YahooSearchResult SearchFromYahoo(string search)

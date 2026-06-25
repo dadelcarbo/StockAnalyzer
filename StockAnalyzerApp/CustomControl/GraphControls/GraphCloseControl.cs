@@ -1097,9 +1097,9 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
 #if DEBUG
-            if (StockAnalyzerForm.MainFrame.CurrentStockSerie != null && StockAnalyzerForm.MainFrame.CurrentStockSerie.IsInitialised && StockAnalyzerForm.MainFrame.CurrentStockSerie.LastIndex == this.lastMouseIndex)
+            if (dataSerie.LastIndex == this.lastMouseIndex)
             {
-                value += BuildTabbedString("COMPLETE", StockAnalyzerForm.MainFrame.CurrentStockSerie.ValueArray[this.lastMouseIndex].IsComplete.ToString(), 12) + "\r\n";
+                value += BuildTabbedString("COMPLETE", dataSerie.LastValue.IsComplete.ToString(), 12) + "\r\n";
             }
             value += "\r\n" + BuildTabbedString("Index", this.lastMouseIndex.ToString(), 12);
 #endif 
