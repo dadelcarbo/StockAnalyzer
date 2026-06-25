@@ -75,7 +75,6 @@ namespace StockAnalyzerApp
             this.drawingDialogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.logSerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockSplitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -368,8 +367,7 @@ namespace StockAnalyzerApp
             this.multipleTimeFrameViewMenuItem,
             this.drawingDialogMenuItem,
             this.toolStripSeparator15,
-            this.secondarySerieMenuItem,
-            this.logSerieMenuItem});
+            this.secondarySerieMenuItem});
             this.viewMenuItem.Name = "viewMenuItem";
             this.viewMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewMenuItem.Text = "View";
@@ -540,13 +538,6 @@ namespace StockAnalyzerApp
             this.secondarySerieMenuItem.Name = "secondarySerieMenuItem";
             this.secondarySerieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.secondarySerieMenuItem.Text = "Secondary Serie";
-            // 
-            // logSerieMenuItem
-            // 
-            this.logSerieMenuItem.Name = "logSerieMenuItem";
-            this.logSerieMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.logSerieMenuItem.Text = "Log Serie";
-            this.logSerieMenuItem.Click += new System.EventHandler(this.logSerieMenuItem_Click);
             // 
             // analysisMenuItem
             // 
@@ -1541,7 +1532,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem drawingDialogMenuItem;
         private ToolStripMenuItem hideIndicatorsStockMenuItem;
         private ToolStripSeparator toolStripSeparator10;
-        private ToolStripMenuItem logSerieMenuItem;
         private ToolStripSeparator toolStripSeparator11;
         private ToolStripSeparator toolStripSeparator12;
         private ToolStripDropDownButton AddToWatchListToolStripDropDownButton;

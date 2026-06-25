@@ -2753,30 +2753,6 @@ namespace StockAnalyzer.StockClasses
         }
         #endregion
         #region Generate related series
-        public StockSerie GenerateLogStockSerie()
-        {
-            string stockName = this.StockName + "_LOG";
-            StockSerie stockSerie = new StockSerie(stockName, stockName, this.StockGroup, StockDataProvider.Generated, this.DataSource.Duration);
-            stockSerie.IsPortfolioSerie = this.IsPortfolioSerie;
-
-            float scaleFactor = 1.0f;
-            if (this.GetSerie(StockDataType.LOW).Min() < 1.0f)
-            {
-                scaleFactor = 0.5f / this.GetSerie(StockDataType.LOW).Min();
-            }
-
-            // Calculate ratio foreach values
-            StockDailyValue newValue = null;
-            foreach (StockDailyValue value1 in this.Values)
-            {
-                newValue = new StockDailyValue((float)Math.Log(value1.OPEN * scaleFactor, Math.E), (float)Math.Log(value1.HIGH * scaleFactor, Math.E), (float)Math.Log(value1.LOW * scaleFactor, Math.E), (float)Math.Log(value1.CLOSE * scaleFactor, Math.E), value1.VOLUME, value1.DATE);
-                stockSerie.Add(value1.DATE, newValue);
-            }
-
-            // Initialise the serie
-            stockSerie.Initialise();
-            return stockSerie;
-        }
 
         public List<StockDailyValue> GenerateSerieForTimeSpan(List<StockDailyValue> dailyValueList, BarDuration timeSpan)
         {

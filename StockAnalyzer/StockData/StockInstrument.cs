@@ -12,6 +12,7 @@ namespace StockAnalyzerApp.StockData
         public string Id { get; set; }
         public string DisplayName { get; set; }
         public string Isin { get; set; }
+        public string Symbol { get; set; }
         public string Ticker { get; set; }
         public Groups Group { get; set; }
         public StockDataProvider DataProvider { get; set; }
@@ -28,6 +29,7 @@ namespace StockAnalyzerApp.StockData
             this.Isin = serie.ISIN;
             this.Ticker = serie.Symbol;
             this.DataProvider = serie.DataProvider;
+            this.Symbol = serie.Symbol;
 
             this.Group = serie.StockGroup;
         }
@@ -56,6 +58,12 @@ namespace StockAnalyzerApp.StockData
                     return null;
             }
             return cache[duration];
+        }
+
+
+        public bool BelongsToGroup(Groups group)
+        {
+            return this.StockSerie.BelongsToGroup(group);
         }
     }
 }
