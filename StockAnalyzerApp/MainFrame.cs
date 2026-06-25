@@ -59,6 +59,7 @@ using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
+using Telerik.Windows.Controls;
 using Telerik.Windows.Data;
 using Match = System.Text.RegularExpressions.Match;
 
@@ -316,8 +317,6 @@ namespace StockAnalyzerApp
 
         #region BAR DURATION MANAGEMENT
 
-        private bool barDurationChangeFromUI = false;
-
         private void InitialiseBarDurationComboBox()
         {
             this.barDurationComboBox.Items.Clear();
@@ -335,18 +334,12 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                this.barDurationChangeFromUI = true;
-                ViewModel.SetBarDuration((BarDuration)barDurationComboBox.SelectedItem, true);
-                this.barDurationChangeFromUI = false;
+                this.ViewModel.BarDuration = (BarDuration)barDurationComboBox.SelectedItem;
             }
         }
 
         private void OnBarDurationChanged()
         {
-            if (!barDurationChangeFromUI)
-            {
-                this.barDurationComboBox.SelectedItem = this.ViewModel.BarDuration;
-            }
             if (this.currentStockSerie == null || !this.currentStockSerie.Initialise())
                 return;
             if (this.CurrentStockSerie.BarDuration != this.ViewModel.BarDuration)
@@ -365,10 +358,8 @@ namespace StockAnalyzerApp
                     this.DeactivateGraphControls("Not enough data to display...");
                     return;
                 }
-                if (!repaintSuspended)
-                {
-                    this.ApplyTheme();
-                }
+
+                this.ApplyTheme();
             }
         }
         #endregion
@@ -1219,30 +1210,36 @@ namespace StockAnalyzerApp
                 }
             }
         }
+
+        private void SetThemeCombo(string theme)
+        {
+            this.themeComboBox.SelectedIndexChanged -= themeComboBox_SelectedIndexChanged;
+            this.themeComboBox.SelectedItem = theme;
+            this.themeComboBox.SelectedIndexChanged += themeComboBox_SelectedIndexChanged;
+        }
+
+        private void SetBarDurationCombo(BarDuration barDuration)
+        {
+            this.barDurationComboBox.SelectedIndexChanged -= this.BarDurationChanged;
+            this.barDurationComboBox.SelectedItem = barDuration;
+            this.barDurationComboBox.SelectedIndexChanged += this.BarDurationChanged;
+        }
+
         public void OnSelectedStockAndDurationAndThemeChanged(string stockName, BarDuration barDuration, string theme, bool activate)
         {
             using (new MethodLogger(this))
             {
-                this.repaintSuspended = true;
-                this.ViewModel.BarDuration = barDuration;
-                this.repaintSuspended = false;
+                this.ViewModel.SetBarDuration(barDuration, false);
+                this.SetBarDurationCombo(barDuration);
 
-                if (!string.IsNullOrEmpty(theme))
+                if (string.IsNullOrEmpty(theme) || !themeDictionary.ContainsKey(theme))
                 {
-                    this.themeComboBox.SelectedIndexChanged -= themeComboBox_SelectedIndexChanged;
-                    this.currentTheme = theme;
-                    this.themeComboBox.SelectedItem = theme;
-                    this.themeComboBox.SelectedIndexChanged += themeComboBox_SelectedIndexChanged;
+                    theme = EMPTY_THEME;
                 }
-                else
-                {
-                    this.themeComboBox.SelectedIndexChanged -= themeComboBox_SelectedIndexChanged;
-                    this.currentTheme = EMPTY_THEME;
-                    this.themeComboBox.SelectedItem = EMPTY_THEME;
-                    this.themeComboBox.SelectedIndexChanged += themeComboBox_SelectedIndexChanged;
-                }
+                this.SetThemeCombo(theme);
+                this.ViewModel.SetTheme(theme, false);
 
-                StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
+                this.ViewModel.Instrument = StockDictionary.Instruments[stockName];
 
                 if (activate)
                 {
@@ -1254,9 +1251,10 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                this.ViewModel.BarDuration = barDuration;
+                this.ViewModel.SetBarDuration(barDuration, false);
+                this.SetBarDurationCombo(barDuration);
 
-                StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
+                this.ViewModel.Instrument = StockDictionary.Instruments[stockName];
 
                 if (activate)
                 {
@@ -1269,11 +1267,11 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                this.repaintSuspended = true;
-                this.ViewModel.BarDuration = barDuration;
-                this.repaintSuspended = false;
+                this.ViewModel.SetBarDuration(barDuration, false);
+                this.SetBarDurationCombo(barDuration);
 
-                StockAnalyzerForm_StockSerieChanged(this.StockDictionary[stockName], true);
+                this.ViewModel.Instrument = StockDictionary.Instruments[stockName];
+
                 this.ChangeZoom(startIndex, endIndex);
 
                 if (activate)
@@ -1357,7 +1355,7 @@ namespace StockAnalyzerApp
                 }
 
                 // Set the default theme checkstate
-                if (this.currentStockSerie.StockAnalysis != null && this.currentStockSerie.StockAnalysis.Theme == currentTheme)
+                if (this.currentStockSerie.StockAnalysis != null && this.currentStockSerie.StockAnalysis.Theme == this.ViewModel.Theme)
                 {
                     this.defaultThemeStripButton.CheckState = CheckState.Checked;
                 }
@@ -2092,18 +2090,16 @@ namespace StockAnalyzerApp
 
         public string GetStockSnapshotAsHtml(StockInstrument instrument, string theme, bool mainGraphOnly, BarDuration duration, int nbBars = 0)
         {
-            this.barDurationChangeFromUI = true;
             this.ViewModel.SetBarDuration(duration, false);
             this.ViewModel.Instrument = instrument;
-            this.barDurationChangeFromUI = false;
 
             if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
             {
-                this.CurrentTheme = theme;
+                this.ViewModel.Theme = theme;
             }
             else
             {
-                this.CurrentTheme = EMPTY_THEME;
+                this.ViewModel.Theme = EMPTY_THEME;
             }
             if (nbBars > 0)
             {
@@ -2651,7 +2647,7 @@ namespace StockAnalyzerApp
             this.WindowState = FormWindowState.Normal;
             this.Size = new Size(600, 600);
 
-            var previousTheme = MainFrameViewModel.Instance.Theme;
+            var previousTheme = this.ViewModel.Theme;
 
             string reportBody = html;
             foreach (var position in positions)
@@ -2788,7 +2784,7 @@ namespace StockAnalyzerApp
 
             StockAnalyzerForm.MainFrame.WindowState = previousState;
             StockAnalyzerForm.MainFrame.Size = previousSize;
-            StockAnalyzerForm.MainFrame.CurrentTheme = previousTheme;
+            this.ViewModel.Theme = previousTheme;
 
             return reportBody;
         }
@@ -2802,7 +2798,7 @@ namespace StockAnalyzerApp
 
             this.Portfolio = portfolio;
             StockSerie previousStockSerie = this.CurrentStockSerie;
-            string previousTheme = this.CurrentTheme;
+            string previousTheme = this.ViewModel.Theme;
             BarDuration previousBarDuration = previousStockSerie.BarDuration;
 
             this.ViewModel.IsHistoryActive = false;
@@ -2825,7 +2821,7 @@ namespace StockAnalyzerApp
             }
             this.ViewModel.IsHistoryActive = true;
             OnSelectedStockChanged(previousStockSerie.StockName, true);
-            this.CurrentTheme = previousTheme;
+            this.ViewModel.Theme = previousTheme;
             this.ViewModel.BarDuration = previousBarDuration;
             this.ViewModel.IsHistoryActive = true;
         }
@@ -2847,7 +2843,7 @@ namespace StockAnalyzerApp
             var htmlReportTemplate = File.ReadAllText(Folders.ReportTemplate);
 
             StockSerie previousStockSerie = this.CurrentStockSerie;
-            string previousTheme = this.CurrentTheme;
+            string previousTheme = this.ViewModel.Theme;
             BarDuration previousBarDuration = previousStockSerie.BarDuration;
 
             string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
@@ -2924,7 +2920,7 @@ namespace StockAnalyzerApp
             Process.Start(fileName);
 
             OnSelectedStockChanged(previousStockSerie.StockName, true);
-            this.CurrentTheme = previousTheme;
+            this.ViewModel.Theme = previousTheme;
             this.ViewModel.BarDuration = previousBarDuration;
             this.ViewModel.IsHistoryActive = true;
         }
@@ -3001,7 +2997,7 @@ namespace StockAnalyzerApp
                 </thead>
                 <tbody>";
 
-                this.CurrentTheme = alertDef.Theme;
+                this.ViewModel.Theme = alertDef.Theme;
                 foreach (var alertValue in alertValues.OrderByDescending(l => l.Speed).Take(nbStocks))
                 {
                     var instrument = StockDictionary.Instruments[alertValue.StockSerie.StockName];
@@ -3103,7 +3099,7 @@ namespace StockAnalyzerApp
             if (this.currentStockSerie == null) return;
             if (stockScannerDlg == null)
             {
-                stockScannerDlg = new StockScannerDlg(StockDictionary, this.selectedGroup, this.CurrentStockSerie.BarDuration, this.currentTheme);
+                stockScannerDlg = new StockScannerDlg(StockDictionary, this.selectedGroup, this.CurrentStockSerie.BarDuration, this.ViewModel.Theme);
                 stockScannerDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
                 stockScannerDlg.FormClosing += new FormClosingEventHandler(delegate
                 {
@@ -3334,7 +3330,7 @@ namespace StockAnalyzerApp
             ClearSecondarySerieMenu();
 
             Dictionary<string, List<string>> dico;
-            if (this.CurrentTheme == WORK_THEME)
+            if (this.ViewModel.Theme == WORK_THEME)
             {
                 dico = this.themeDictionary[WORK_THEME];
             }
@@ -3342,7 +3338,7 @@ namespace StockAnalyzerApp
             {
                 // Create a dico copy
                 dico = new Dictionary<string, List<string>>();
-                foreach (KeyValuePair<string, List<string>> entry in this.themeDictionary[this.CurrentTheme])
+                foreach (KeyValuePair<string, List<string>> entry in this.themeDictionary[this.ViewModel.Theme])
                 {
                     dico.Add(entry.Key, entry.Value.Select(item => item).ToList());
                 }
@@ -3435,11 +3431,11 @@ namespace StockAnalyzerApp
             }
 
             // Switch to working theme
-            if (this.currentTheme != WORK_THEME)
+            if (this.ViewModel.Theme != WORK_THEME)
             {
                 // Create a dico copy
                 Dictionary<string, List<string>> dico = new Dictionary<string, List<string>>();
-                foreach (KeyValuePair<string, List<string>> entry in this.themeDictionary[this.CurrentTheme])
+                foreach (KeyValuePair<string, List<string>> entry in this.themeDictionary[this.ViewModel.Theme])
                 {
                     dico.Add(entry.Key, entry.Value.Select(item => item).ToList());
                 }
@@ -3463,7 +3459,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                this.CurrentTheme = WORK_THEME;
+                this.ViewModel.Theme = WORK_THEME;
                 this.ApplyTheme();
             }
         }
@@ -3471,36 +3467,13 @@ namespace StockAnalyzerApp
         #region THEME MANAGEMENT
 
         public IEnumerable<string> Themes => themeComboBox.Items.OfType<string>().Where(t => !t.Contains("*"));
-        private string currentTheme;
-        public string CurrentTheme
-        {
-            get { return currentTheme; }
-            set
-            {
-                if (themeComboBox.SelectedItem.ToString() != value || value == WORK_THEME)
-                {
-                    if (themeComboBox.Items.Contains(value))
-                    {
-                        themeComboBox.SelectedItem = value;
-                        currentTheme = value;
-                        this.ViewModel.Theme = value;
-                    }
-                }
-                else
-                {
-                    if (currentTheme != value)
-                    {
-                        currentTheme = value;
-                        this.ViewModel.Theme = value;
-                    }
-                }
-            }
-        }
+
+
         public void SetThemeFromIndicator(string fullName)
         {
             using (new MethodLogger(this))
             {
-                if (this.themeDictionary.ContainsKey(this.currentTheme) && this.themeDictionary[this.currentTheme].Values.Any(v => v.Any(vv => vv.Contains(fullName))))
+                if (this.themeDictionary.ContainsKey(this.ViewModel.Theme) && this.themeDictionary[this.ViewModel.Theme].Values.Any(v => v.Any(vv => vv.Contains(fullName))))
                 {
                     return;
                 }
@@ -3676,7 +3649,7 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                StockIndicatorSelectorDlg indicatorSelectorDialog = new StockIndicatorSelectorDlg(this.themeDictionary[this.CurrentTheme]) { StartPosition = FormStartPosition.CenterScreen };
+                StockIndicatorSelectorDlg indicatorSelectorDialog = new StockIndicatorSelectorDlg(this.themeDictionary[this.ViewModel.Theme]) { StartPosition = FormStartPosition.CenterScreen };
                 indicatorSelectorDialog.ThemeEdited += new OnThemeEditedHandler(indicatorSelectorDialog_ThemeEdited);
 
                 if (indicatorSelectorDialog.ShowDialog() == DialogResult.OK)
@@ -3695,7 +3668,7 @@ namespace StockAnalyzerApp
                 else
                 {
                     // Revert to selected theme
-                    this.CurrentTheme = this.themeComboBox.SelectedItem.ToString();
+                    this.ViewModel.Theme = this.themeComboBox.SelectedItem.ToString();
                 }
                 //
                 OnNeedReinitialise(false);
@@ -3705,7 +3678,7 @@ namespace StockAnalyzerApp
         {
             // Apply new working theme
             this.themeDictionary[WORK_THEME] = themeDico;
-            this.CurrentTheme = WORK_THEME;
+            this.ViewModel.Theme = WORK_THEME;
         }
         public delegate void OnStrategyChangedHandler(string currentStrategy);
         public delegate void OnThemeChangedHandler(string currentTheme);
@@ -3714,11 +3687,11 @@ namespace StockAnalyzerApp
 
         public Dictionary<string, List<string>> GetCurrentTheme()
         {
-            if (!this.themeDictionary.ContainsKey(this.CurrentTheme))
+            if (!this.themeDictionary.ContainsKey(this.ViewModel.Theme))
                 // LoadTheme
-                if (!LoadCurveTheme(currentTheme))
+                if (!LoadCurveTheme(this.ViewModel.Theme))
                     return null;
-            return this.themeDictionary[this.CurrentTheme];
+            return this.themeDictionary[this.ViewModel.Theme];
         }
         public Dictionary<string, List<string>> GetTheme(string themeName)
         {
@@ -3751,7 +3724,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                if (this.currentStockSerie?.StockAnalysis?.Theme == currentTheme)
+                if (this.currentStockSerie?.StockAnalysis?.Theme == this.ViewModel.Theme)
                 {
                     this.defaultThemeStripButton.CheckState = CheckState.Checked;
                 }
@@ -3763,7 +3736,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private bool repaintSuspended = false;
         public void ApplyTheme()
         {
             if (this.currentStockSerie == null || !GraphControl.IsStarted)
@@ -3776,9 +3748,9 @@ namespace StockAnalyzerApp
                     {
                         this.Cursor = Cursors.WaitCursor;
 
-                        StockLog.Write($"Apply theme {this.CurrentStockSerie?.StockName}-{this.ViewModel.BarDuration}-{this.CurrentTheme}");
+                        StockLog.Write($"Apply theme {this.CurrentStockSerie?.StockName}-{this.ViewModel.BarDuration}-{this.ViewModel.Theme}");
 
-                        if (this.CurrentTheme == null || this.CurrentStockSerie == null) return;
+                        if (this.ViewModel.Theme == null || this.CurrentStockSerie == null) return;
                         if (!this.CurrentStockSerie.IsInitialised)
                         {
                             this.statusLabel.Text = ("Loading data...");
@@ -3805,31 +3777,31 @@ namespace StockAnalyzerApp
                         }
 
                         // Add to browsing history
-                        this.ViewModel.AddHistory(this.CurrentStockSerie.StockName, this.CurrentTheme);
+                        this.ViewModel.AddHistory(this.CurrentStockSerie.StockName, this.ViewModel.Theme);
 
                         // Build curve list from definition
-                        if (!this.themeDictionary.ContainsKey(currentTheme))
+                        if (!this.themeDictionary.ContainsKey(this.ViewModel.Theme))
                         {
                             // LoadTheme
-                            LoadCurveTheme(currentTheme);
+                            LoadCurveTheme(this.ViewModel.Theme);
                         }
 
                         // Force resetting the secondary serie.
-                        if (themeDictionary[currentTheme]["CloseGraph"].FindIndex(s => s.StartsWith("SECONDARY")) == -1)
+                        if (themeDictionary[this.ViewModel.Theme]["CloseGraph"].FindIndex(s => s.StartsWith("SECONDARY")) == -1)
                         {
                             if (this.graphCloseControl.SecondaryFloatSerie != null)
                             {
-                                themeDictionary[currentTheme]["CloseGraph"].Add("SECONDARY|" + this.graphCloseControl.SecondaryFloatSerie.Name);
+                                themeDictionary[this.ViewModel.Theme]["CloseGraph"].Add("SECONDARY|" + this.graphCloseControl.SecondaryFloatSerie.Name);
                             }
                             else
                             {
-                                themeDictionary[currentTheme]["CloseGraph"].Add("SECONDARY|NONE");
+                                themeDictionary[this.ViewModel.Theme]["CloseGraph"].Add("SECONDARY|NONE");
                             }
                         }
 
                         GraphCurveTypeList curveList;
                         bool skipEntry = false;
-                        foreach (string entry in themeDictionary[currentTheme].Keys)
+                        foreach (string entry in themeDictionary[this.ViewModel.Theme].Keys)
                         {
                             if (entry.ToUpper().EndsWith("GRAPH"))
                             {
@@ -3879,7 +3851,7 @@ namespace StockAnalyzerApp
                                 {
                                     List<HLine> horizontalLines = new List<HLine>();
 
-                                    foreach (string line in this.themeDictionary[currentTheme][entry])
+                                    foreach (string line in this.themeDictionary[this.ViewModel.Theme][entry])
                                     {
                                         string[] fields = line.Split('|');
                                         switch (fields[0].ToUpper())
@@ -4057,8 +4029,8 @@ namespace StockAnalyzerApp
                                 catch (Exception exception)
                                 {
                                     StockAnalyzerException.MessageBox(exception);
-                                    StockLog.Write("Exception loading theme: " + this.currentTheme);
-                                    foreach (string line in this.themeDictionary[currentTheme][entry])
+                                    StockLog.Write("Exception loading theme: " + this.ViewModel.Theme);
+                                    foreach (string line in this.themeDictionary[this.ViewModel.Theme][entry])
                                     {
                                         StockLog.Write(line);
                                     }
@@ -4153,17 +4125,17 @@ namespace StockAnalyzerApp
         {
             try
             {
-                if (this.CurrentTheme != themeComboBox.SelectedItem.ToString())
+                if (this.ViewModel.Theme != themeComboBox.SelectedItem.ToString())
                 {
-                    this.CurrentTheme = themeComboBox.SelectedItem.ToString();
+                    this.ViewModel.Theme = themeComboBox.SelectedItem.ToString();
 
-                    if (this.CurrentTheme != WORK_THEME)
+                    if (this.ViewModel.Theme != WORK_THEME)
                     {
                         Settings.Default.SelectedTheme = themeComboBox.SelectedItem.ToString();
                         Settings.Default.Save();
                     }
 
-                    this.ViewModel.Theme = this.CurrentTheme;
+                    this.ViewModel.Theme = this.ViewModel.Theme;
                 }
             }
             catch (Exception exception)
@@ -4232,7 +4204,7 @@ namespace StockAnalyzerApp
                 }
             }
             // Load current theme
-            LoadCurveTheme(currentTheme);
+            LoadCurveTheme(this.ViewModel.Theme);
 
             themeComboBox.Items.Add(WORK_THEME);
             // Create working theme from selected theme
@@ -4246,10 +4218,10 @@ namespace StockAnalyzerApp
         private void SaveCurveTheme(string fileName)
         {
             using StreamWriter sr = new StreamWriter(fileName);
-            foreach (string entry in themeDictionary[this.CurrentTheme].Keys)
+            foreach (string entry in themeDictionary[this.ViewModel.Theme].Keys)
             {
                 sr.WriteLine("#" + entry);
-                foreach (string line in themeDictionary[this.CurrentTheme][entry])
+                foreach (string line in themeDictionary[this.ViewModel.Theme][entry])
                 {
                     sr.WriteLine(line);
                 }
@@ -4307,14 +4279,14 @@ namespace StockAnalyzerApp
 
         void defaultThemeStripButton_Click(object sender, EventArgs e)
         {
-            if (this.CurrentTheme == WORK_THEME)
+            if (this.ViewModel.Theme == WORK_THEME)
             {
                 this.saveThemeMenuItem_Click(sender, e);
-                if (this.CurrentTheme == WORK_THEME)
+                if (this.ViewModel.Theme == WORK_THEME)
                 {
                     return;
                 }
-                this.currentStockSerie.StockAnalysis.Theme = this.currentTheme;
+                this.currentStockSerie.StockAnalysis.Theme = this.ViewModel.Theme;
                 this.defaultThemeStripButton.CheckState = CheckState.Checked;
             }
             else if (this.defaultThemeStripButton.CheckState == CheckState.Checked)
@@ -4324,20 +4296,20 @@ namespace StockAnalyzerApp
             }
             else
             {
-                this.currentStockSerie.StockAnalysis.Theme = this.currentTheme;
+                this.currentStockSerie.StockAnalysis.Theme = this.ViewModel.Theme;
                 this.defaultThemeStripButton.CheckState = CheckState.Checked;
             }
             SaveAnalysis(this.ViewModel.AnalysisFile);
         }
         void deleteThemeStripButton_Click(object sender, EventArgs e)
         {
-            if (this.CurrentTheme == WORK_THEME)
+            if (this.ViewModel.Theme == WORK_THEME)
             {
                 return;
             }
 
             // delete theme file
-            string fileName = Path.Combine(Folders.Theme, CurrentTheme + ".thm");
+            string fileName = Path.Combine(Folders.Theme, this.ViewModel.Theme + ".thm");
             if (File.Exists(fileName))
             {
                 File.Delete(fileName);
@@ -4345,13 +4317,13 @@ namespace StockAnalyzerApp
 
             foreach (StockSerie stockSerie in this.StockDictionary.Values)
             {
-                if (stockSerie.StockAnalysis.Theme == this.CurrentTheme)
+                if (stockSerie.StockAnalysis.Theme == this.ViewModel.Theme)
                 {
                     stockSerie.StockAnalysis.Theme = string.Empty;
                 }
             }
 
-            this.themeComboBox.Items.Remove(this.CurrentTheme);
+            this.themeComboBox.Items.Remove(this.ViewModel.Theme);
             if (this.CurrentStockSerie.StockAnalysis.Theme != string.Empty)
             {
                 this.themeComboBox.SelectedItem = this.CurrentStockSerie.StockAnalysis.Theme;
@@ -4467,7 +4439,7 @@ namespace StockAnalyzerApp
                 // Apply the them of the loaded analysis file if any
                 if (this.currentStockSerie != null && this.currentStockSerie.StockAnalysis.Theme != string.Empty)
                 {
-                    this.CurrentTheme = this.currentStockSerie.StockAnalysis.Theme;
+                    this.ViewModel.Theme = this.currentStockSerie.StockAnalysis.Theme;
                 }
             }
         }

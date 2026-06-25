@@ -49,6 +49,18 @@ namespace StockAnalyzerApp
         private string theme;
         public string Theme { get { return theme; } set { SetProperty(ref theme, value); } }
 
+        public void SetTheme(string newTheme, bool notifyPropertyChanged)
+        {
+            if (notifyPropertyChanged)
+            {
+                this.Theme = newTheme;
+            }
+            else
+            {
+                this.theme = newTheme;
+            }
+        }
+
         #endregion
 
         #region StockSerie
