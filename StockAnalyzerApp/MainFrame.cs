@@ -329,9 +329,8 @@ namespace StockAnalyzerApp
                     return;
                 }
 
-                this.currentStockSerie = this.ViewModel.Instrument.StockSerie;
+                // this.currentStockSerie = this.ViewModel.Instrument.StockSerie;
 
-                ResetZoom();
 
                 ApplyTheme();
             }
@@ -2023,8 +2022,8 @@ namespace StockAnalyzerApp
         #region ANALYSYS TOOLBAR HANDLERS
         private void excludeButton_Click(object sender, EventArgs e)
         {
-            var dp = StockDataProviderBase.GetDataProvider(CurrentStockSerie.DataProvider);
-            var handled = dp.RemoveEntry(CurrentStockSerie);
+            var dp = StockDataProviderBase.GetDataProvider(this.ViewModel.Instrument.DataProvider);
+            var handled = dp.RemoveEntry(this.ViewModel.Instrument.StockSerie);
             // Flag as excluded
             CurrentStockSerie.StockAnalysis.Excluded = true;
             if (!handled)
@@ -3852,16 +3851,8 @@ namespace StockAnalyzerApp
                     }
                 }
 
-                var collapsedState1 = this.graphList.Select(g => g.IsCollapsed).ToList();
-
                 // Reinitialise zoom
                 ResetZoom();
-
-                var collapsedState2 = this.graphList.Select(g => g.IsCollapsed).ToList();
-                var needCollapseReset = !collapsedState1.SequenceEqual(collapsedState2);
-                if (needCollapseReset)
-                    indicatorLayoutPanel.SetRows(this.graphList);
-
                 indicatorLayoutPanel.BackColor = ColorManager.GetColor("Graph.Background");
             }
 
