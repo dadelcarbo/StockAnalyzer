@@ -329,6 +329,10 @@ namespace StockAnalyzerApp
                     return;
                 }
 
+                this.currentStockSerie = this.ViewModel.Instrument.StockSerie;
+
+                ResetZoom();
+
                 ApplyTheme();
             }
 
@@ -1051,21 +1055,20 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (this.CurrentStockSerie == null || this.CurrentStockSerie.Count == 0 ||
-                    this.CurrentStockSerie.IsInitialised == false)
+                var dataSerie = ViewModel.Instrument.GetDataSerie(ViewModel.BarDuration);
+                if (dataSerie == null || dataSerie.Count == 0)
                 {
-                    startIndex = 0;
-                    endIndex = 0;
+                    startIndex = -1;
+                    endIndex = -1;
                 }
                 else
                 {
-                    var DataSerie = ViewModel.Instrument.GetDataSerie(ViewModel.BarDuration);
                     int nbBars = NbBars;
-                    if (DataSerie.Count > 1 && DataSerie.Count - 1 - nbBars < 0) // Previous serie was longer
+                    if (dataSerie.Count > 1 && dataSerie.Count - 1 - nbBars < 0) // Previous serie was longer
                     {
-                        nbBars = DataSerie.Count - 1;
+                        nbBars = dataSerie.Count - 1;
                     }
-                    ChangeZoom(Math.Max(0, DataSerie.Count - 1 - nbBars), DataSerie.Count - 1);
+                    ChangeZoom(Math.Max(0, dataSerie.Count - 1 - nbBars), dataSerie.Count - 1);
                 }
             }
         }
@@ -3639,7 +3642,7 @@ namespace StockAnalyzerApp
                                 if (this.ViewModel.Instrument.StockSerie.HasVolume)
                                 {
                                     graphControl = this.graphVolumeControl;
-                                    curveList.Add(new GraphCurveType(this.ViewModel.Instrument.StockSerie.GetSerie(StockDataType.EXCHANGED), Pens.Green, true));
+                                    curveList.Add(new GraphCurveType(dataSerie.GetSerie(StockDataType.EXCHANGED), Pens.Green, true));
                                 }
                                 else
                                 {
@@ -3726,7 +3729,7 @@ namespace StockAnalyzerApp
                                     case "DATA":
                                         curveList.Add(
                                             new GraphCurveType(
-                                                this.ViewModel.Instrument.StockSerie.GetSerie(
+                                                dataSerie.GetSerie(
                                                     (StockDataType)Enum.Parse(typeof(StockDataType), fields[1])),
                                          fields[2], bool.Parse(fields[3])));
                                         break;
@@ -3795,7 +3798,7 @@ namespace StockAnalyzerApp
                             if (curveList.FindIndex(c => c.DataSerie.Name == "CLOSE") < 0)
                             {
                                 curveList.Insert(0,
-                                    new GraphCurveType(this.ViewModel.Instrument.StockSerie.GetSerie(StockDataType.CLOSE), Pens.Black,
+                                    new GraphCurveType(dataSerie.GetSerie(StockDataType.CLOSE), Pens.Black,
                                         false));
                             }
                             if (graphControl == this.graphCloseControl)
@@ -3803,19 +3806,19 @@ namespace StockAnalyzerApp
                                 if (curveList.FindIndex(c => c.DataSerie.Name == "LOW") < 0)
                                 {
                                     curveList.Insert(0,
-                                        new GraphCurveType(this.ViewModel.Instrument.StockSerie.GetSerie(StockDataType.LOW), Pens.Black,
+                                        new GraphCurveType(dataSerie.GetSerie(StockDataType.LOW), Pens.Black,
                                             true));
                                 }
                                 if (curveList.FindIndex(c => c.DataSerie.Name == "HIGH") < 0)
                                 {
                                     curveList.Insert(0,
-                                        new GraphCurveType(this.ViewModel.Instrument.StockSerie.GetSerie(StockDataType.HIGH), Pens.Black,
+                                        new GraphCurveType(dataSerie.GetSerie(StockDataType.HIGH), Pens.Black,
                                             true));
                                 }
                                 if (curveList.FindIndex(c => c.DataSerie.Name == "OPEN") < 0)
                                 {
                                     curveList.Insert(0,
-                                        new GraphCurveType(this.ViewModel.Instrument.StockSerie.GetSerie(StockDataType.OPEN), Pens.Black,
+                                        new GraphCurveType(dataSerie.GetSerie(StockDataType.OPEN), Pens.Black,
                                             false));
                                 }
                             }
