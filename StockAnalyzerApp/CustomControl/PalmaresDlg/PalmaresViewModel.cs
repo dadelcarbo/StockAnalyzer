@@ -664,7 +664,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Lines.Add(new PalmaresLine
                     {
                         Match = match,
-                        //Sector = stockSerie.SectorId == 0 ? null : ABCDataProvider.SectorCodes.FirstOrDefault(s => s.Code == stockSerie.SectorId)?.Sector,
                         Group = stockSerie.StockGroup.ToString(),
                         Symbol = stockSerie.Symbol,
                         Name = stockSerie.StockName,

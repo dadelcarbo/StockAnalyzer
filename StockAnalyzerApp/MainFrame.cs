@@ -2031,10 +2031,10 @@ namespace StockAnalyzerApp
 
         private void saxoTurboButton_Click(object sender, EventArgs e)
         {
-            if (currentStockSerie.SaxoId <= 0)
+            if (this.ViewModel.Instrument.SaxoId <= 0)
                 return;
 
-            OpenSaxoIntradyConfigDlg(currentStockSerie.SaxoId);
+            OpenSaxoIntradyConfigDlg(this.ViewModel.Instrument.SaxoId);
         }
         #endregion
 

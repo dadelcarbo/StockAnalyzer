@@ -16,7 +16,7 @@ namespace StockAnalyzerApp.StockData
         public string Ticker { get; set; }
         public Groups Group { get; set; }
         public StockDataProvider DataProvider { get; set; }
-        public long SaxoId => StockSerie?.SaxoId ?? 0;
+        public long SaxoId { get; set; }
 
         public StockSerie StockSerie { get; set; }
 
@@ -30,6 +30,7 @@ namespace StockAnalyzerApp.StockData
             this.Ticker = serie.Symbol;
             this.DataProvider = serie.DataProvider;
             this.Symbol = serie.Symbol;
+            this.SaxoId = serie.SaxoId;
 
             this.Group = serie.StockGroup;
         }
