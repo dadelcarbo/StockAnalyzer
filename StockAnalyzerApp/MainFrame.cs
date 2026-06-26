@@ -570,6 +570,16 @@ namespace StockAnalyzerApp
                 }
             }
 
+            this.ViewModel.SetBarDuration(BarDuration.Daily, false);
+            if (StockDictionary.Instruments.TryGetValue(Settings.Default.LastInstrument, out var lastInstrument))
+            {
+                this.ViewModel.Instrument = lastInstrument;
+            }
+            else
+            {
+                this.ViewModel.Instrument = StockDictionary.Instruments["CAC40"];
+            }
+
             if (Settings.Default.GenerateDailyReport)
             {
                 // Generate Template and watchlist reports
@@ -610,12 +620,6 @@ namespace StockAnalyzerApp
             }
 
             searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.Analysis.Excluded).Select(p => p.Key).ToArray());
-
-            if (StockDictionary.Instruments.TryGetValue(Settings.Default.LastInstrument, out var lastInstrument))
-            {
-                this.ViewModel.BarDuration = BarDuration.Daily;
-                this.ViewModel.Instrument = lastInstrument;
-            }
 
             // Ready to start
             StockSplashScreen.CloseForm(true);
