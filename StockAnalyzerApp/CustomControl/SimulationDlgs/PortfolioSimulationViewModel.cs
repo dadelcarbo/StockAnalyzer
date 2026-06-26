@@ -22,7 +22,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.performText = "Perform";
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
             this.Duration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration;
-            this.Group = StockAnalyzerForm.MainFrame.Group;
+            this.Group = StockAnalyzerForm.MainFrame.ViewModel.Instrument.Group;
             this.PositionManagement = new PositionManagement()
             {
                 MaxPositions = 10,

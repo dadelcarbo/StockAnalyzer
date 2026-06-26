@@ -151,10 +151,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        private Groups selectedGroup;
-        public Groups Group => selectedGroup;
-
-
         private static int NbBars { get; set; }
 
         private int startIndex = 0;
@@ -613,7 +609,7 @@ namespace StockAnalyzerApp
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
 
-            searchCombo.Items.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
+            searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.Analysis.Excluded).Select(p => p.Key).ToArray());
 
             if (StockDictionary.Instruments.TryGetValue(Settings.Default.LastInstrument, out var lastInstrument))
             {
@@ -1317,19 +1313,13 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (this.currentStockSerie == null) return;
+
+                // Refresh all components
+                RefreshGraph();
                 if (resetDrawingButtons)
                 {
                     ResetDrawingButtons();
                 }
-
-                if (endIndex == 0 || endIndex > (CurrentStockSerie.Count - 1))
-                {
-                    this.ResetZoom();
-                }
-
-                // Refresh all components
-                RefreshGraph();
             }
         }
 
@@ -1409,15 +1399,15 @@ namespace StockAnalyzerApp
             {
                 try
                 {
-                    if (MessageBox.Show($"Are you sure you want to force downloading the full group {this.selectedGroup} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    if (MessageBox.Show($"Are you sure you want to force downloading the full group {this.ViewModel.Instrument.Group} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     {
                         return;
                     }
                     StockSplashScreen.FadeInOutSpeed = 0.25;
-                    StockSplashScreen.ProgressText = "Downloading " + this.selectedGroup + " - " + this.ViewModel.Instrument.DisplayName;
+                    StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
 
                     var stockSeries =
-                       this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
+                       this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
 
                     StockSplashScreen.ProgressVal = 0;
                     StockSplashScreen.ProgressMax = stockSeries.Count();
@@ -1426,7 +1416,7 @@ namespace StockAnalyzerApp
 
                     foreach (var stockSerie in stockSeries)
                     {
-                        StockSplashScreen.ProgressText = "Downloading " + this.selectedGroup + " - " + stockSerie.StockName;
+                        StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + stockSerie.StockName;
                         StockDataProviderBase.ForceDownloadSerieData(stockSerie);
 
                         //try
@@ -1479,6 +1469,7 @@ namespace StockAnalyzerApp
 
                     if (StockDataProviderBase.DownloadSerieData(this.ViewModel.Instrument.StockSerie))
                     {
+                        this.ViewModel.Instrument.ClearCache();
                         this.ViewModel.Instrument.StockSerie.Dividend.DownloadFromYahoo(this.ViewModel.Instrument.StockSerie);
                         if (this.ViewModel.Instrument.StockSerie.Initialise())
                         {
@@ -1500,61 +1491,40 @@ namespace StockAnalyzerApp
         }
         private void DownloadStockGroup()
         {
-            if (this.currentStockSerie != null)
+            if (this.ViewModel.Instrument != null)
             {
                 try
                 {
                     StockSplashScreen.FadeInOutSpeed = 0.25;
-                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " +
-                                                     this.ViewModel.Instrument.DisplayName;
+                    StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
 
-                    var stockSeries =
-                       this.StockDictionary.Values.Where(
-                          s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.selectedGroup));
+                    var instruments = StockDictionary.Instruments.Values.Where(s => !s.Analysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
 
                     StockSplashScreen.ProgressVal = 0;
-                    StockSplashScreen.ProgressMax = stockSeries.Count();
+                    StockSplashScreen.ProgressMax = instruments.Count();
                     StockSplashScreen.ProgressMin = 0;
                     StockSplashScreen.ShowSplashScreen();
 
-                    foreach (var stockSerie in stockSeries)
+                    foreach (var instrument in instruments)
                     {
-                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + stockSerie.StockName;
-                        using (new StockSerieLocker(stockSerie))
-                        {
-                            StockDataProviderBase.DownloadSerieData(stockSerie);
-                        }
-                        try
-                        {
-                            StockSplashScreen.ProgressText = "Downloading Dividend " + stockSerie.StockGroup + " - " + stockSerie.StockName;
-                            this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie);
-                        }
-                        catch (Exception ex)
-                        {
-                            StockLog.Write(ex);
-                        }
+                        StockSplashScreen.ProgressText = "Downloading " + instrument.Group + " - " + instrument.DisplayName;
+
+                        StockDataProviderBase.DownloadSerieData(instrument.StockSerie);
+                        instrument.ClearCache();
 
                         StockSplashScreen.ProgressVal++;
-                    }
-
-                    this.SaveAnalysis(this.ViewModel.AnalysisFile);
-
-                    if (this.currentStockSerie.Initialise())
-                    {
-                        this.ApplyTheme();
-                    }
-                    else
-                    {
-                        this.DeactivateGraphControls("Unable to download selected stock data...");
                     }
                 }
                 catch (Exception ex)
                 {
                     StockLog.Write(ex);
                 }
-
-                StockSplashScreen.CloseForm(true);
             }
+            else
+            {
+                this.DeactivateGraphControls("Unable to download selected stock data...");
+            }
+            StockSplashScreen.CloseForm(true);
         }
 
         #endregion
@@ -2022,7 +1992,7 @@ namespace StockAnalyzerApp
             var dp = StockDataProviderBase.GetDataProvider(this.ViewModel.Instrument.DataProvider);
             var handled = dp.RemoveEntry(this.ViewModel.Instrument.StockSerie);
             // Flag as excluded
-            CurrentStockSerie.StockAnalysis.Excluded = true;
+            this.ViewModel.Instrument.StockSerie.StockAnalysis.Excluded = true;
             if (!handled)
             {
                 SaveAnalysis(this.ViewModel.AnalysisFile);
@@ -2154,7 +2124,7 @@ namespace StockAnalyzerApp
             {
                 palmaresDlg = new PalmaresDlg() { StartPosition = FormStartPosition.CenterScreen };
                 palmaresDlg.palmaresControl1.ViewModel.BarDuration = BarDuration.Daily;
-                palmaresDlg.palmaresControl1.ViewModel.Group = this.Group;
+                palmaresDlg.palmaresControl1.ViewModel.Group = this.ViewModel.Instrument.Group;
 
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
                 palmaresDlg.palmaresControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
@@ -2181,7 +2151,7 @@ namespace StockAnalyzerApp
             {
                 instrumentsDlg = new InstrumentDlg() { StartPosition = FormStartPosition.CenterScreen };
 
-                instrumentsDlg.instrumentsControl1.ViewModel.Group = this.Group;
+                instrumentsDlg.instrumentsControl1.ViewModel.Group = this.ViewModel.Instrument.Group;
 
                 instrumentsDlg.FormClosing += new FormClosingEventHandler(instrumentsDlg_FormClosing);
                 instrumentsDlg.instrumentsControl1.SelectedStockChanged += OnSelectedStockChanged;
@@ -2922,7 +2892,7 @@ namespace StockAnalyzerApp
             if (this.currentStockSerie == null) return;
             if (stockScannerDlg == null)
             {
-                stockScannerDlg = new StockScannerDlg(StockDictionary, this.selectedGroup, this.CurrentStockSerie.BarDuration, this.ViewModel.Theme);
+                stockScannerDlg = new StockScannerDlg(StockDictionary, this.ViewModel.Instrument.Group, this.ViewModel.BarDuration, this.ViewModel.Theme);
                 stockScannerDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
                 stockScannerDlg.FormClosing += new FormClosingEventHandler(delegate
                 {
@@ -3089,7 +3059,7 @@ namespace StockAnalyzerApp
         void multipleTimeFrameViewMenuItem_Click(object sender, EventArgs e)
         {
             MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg() { StartPosition = FormStartPosition.CenterScreen };
-            mtg.Initialize(this.selectedGroup, this.currentStockSerie);
+            mtg.Initialize(this.ViewModel.Instrument.Group, this.currentStockSerie);
             mtg.WindowState = FormWindowState.Maximized;
             mtg.Show();
         }
@@ -3323,7 +3293,7 @@ namespace StockAnalyzerApp
         {
             if (bestTrendDlg == null)
             {
-                bestTrendDlg = new BestTrendDlg(this.selectedGroup.ToString(), this.ViewModel.BarDuration);
+                bestTrendDlg = new BestTrendDlg(this.ViewModel.Instrument.Group.ToString(), this.ViewModel.BarDuration);
                 bestTrendDlg.Disposed += bestrendDialog_Disposed;
                 bestTrendDlg.bestTrend1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
                 bestTrendDlg.Show();
@@ -3366,7 +3336,7 @@ namespace StockAnalyzerApp
         {
             if (marketReplayDlg == null)
             {
-                marketReplayDlg = new MarketReplayDlg(this.selectedGroup, this.ViewModel.BarDuration);
+                marketReplayDlg = new MarketReplayDlg(this.ViewModel.Instrument.Group, this.ViewModel.BarDuration);
                 marketReplayDlg.Disposed += marketReplayDlg_Disposed;
                 this.graphCloseControl.StopChanged += marketReplayDlg.OnStopValueChanged;
                 marketReplayDlg.Show();
@@ -3392,7 +3362,7 @@ namespace StockAnalyzerApp
                 stockAlertManagerViewModel = new StockAlertManagerViewModel()
                 {
                     StockName = this.ViewModel.Instrument?.DisplayName,
-                    Group = StockAnalyzerForm.MainFrame.Group,
+                    Group = this.ViewModel.Instrument.Group,
                     BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
                     IndicatorNames = StockAnalyzerForm.MainFrame.GetIndicatorsFromCurrentTheme().Append(string.Empty)
                 };

@@ -31,7 +31,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             EntryTarget = EntryTargets.FirstOrDefault();
 
             this.BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration;
-            this.Group = StockAnalyzerForm.MainFrame.Group;
+            this.Group = StockAnalyzerForm.MainFrame.ViewModel.Instrument.Group;
         }
         public Array Groups => Enum.GetValues(typeof(Groups));
         public Groups Group { get; set; }
