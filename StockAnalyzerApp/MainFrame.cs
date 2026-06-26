@@ -1464,32 +1464,29 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (this.currentStockSerie != null)
+                if (this.ViewModel.Instrument?.StockSerie != null)
                 {
                     this.Cursor = Cursors.WaitCursor;
                     if (showSplash)
                     {
                         StockSplashScreen.FadeInOutSpeed = 0.25;
-                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.ViewModel.Instrument.DisplayName;
+                        StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.StockSerie.StockGroup + " - " + this.ViewModel.Instrument.DisplayName;
                         StockSplashScreen.ProgressVal = 0;
                         StockSplashScreen.ProgressMax = 100;
                         StockSplashScreen.ProgressMin = 0;
                         StockSplashScreen.ShowSplashScreen();
                     }
 
-                    using (new StockSerieLocker(currentStockSerie))
+                    if (StockDataProviderBase.DownloadSerieData(this.ViewModel.Instrument.StockSerie))
                     {
-                        if (StockDataProviderBase.DownloadSerieData(this.currentStockSerie))
+                        this.ViewModel.Instrument.StockSerie.Dividend.DownloadFromYahoo(this.ViewModel.Instrument.StockSerie);
+                        if (this.ViewModel.Instrument.StockSerie.Initialise())
                         {
-                            this.CurrentStockSerie.Dividend.DownloadFromYahoo(this.CurrentStockSerie);
-                            if (this.currentStockSerie.Initialise())
-                            {
-                                this.ApplyTheme();
-                            }
-                            else
-                            {
-                                this.DeactivateGraphControls("Unable to download selected stock data...");
-                            }
+                            this.ApplyTheme();
+                        }
+                        else
+                        {
+                            this.DeactivateGraphControls("Unable to download selected stock data...");
                         }
                     }
 
@@ -3851,8 +3848,17 @@ namespace StockAnalyzerApp
                     }
                 }
 
-                // Reinitialise zoom
+                // Reinitialise zoom and hide useless indcators panels
+                var collapsedState1 = this.graphList.Select(g => g.IsCollapsed).ToList();
+
                 ResetZoom();
+
+                var collapsedState2 = this.graphList.Select(g => g.IsCollapsed).ToList();
+                var needCollapseReset = !collapsedState1.SequenceEqual(collapsedState2);
+                if (needCollapseReset)
+                    indicatorLayoutPanel.SetRows(this.graphList);
+
+
                 indicatorLayoutPanel.BackColor = ColorManager.GetColor("Graph.Background");
             }
 
