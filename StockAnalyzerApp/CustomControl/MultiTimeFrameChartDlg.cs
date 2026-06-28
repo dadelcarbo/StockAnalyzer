@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.CustomControl.GraphControls;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Data;
 using System.Linq;
@@ -29,10 +30,10 @@ namespace StockAnalyzerApp.CustomControl
             this.fullGraphUserControl3.OnMouseDateChanged += fullGraphUserControl2.MouseDateChanged;
         }
 
-        public void Initialize(Groups group, StockSerie stockSerie)
+        public void Initialize(StockInstrument instrument)
         {
-            this.selectedGroup = group;
-            this.CurrentStockSerie = stockSerie;
+            this.selectedGroup = instrument.Group;
+            this.Instrument = instrument;
 
             switch (this.selectedGroup)
             {
@@ -47,27 +48,27 @@ namespace StockAnalyzerApp.CustomControl
         public void ApplyTheme(string theme)
         {
             using MethodLogger ml = new MethodLogger(this);
-            this.fullGraphUserControl1.CurrentStockSerie = currentStockSerie;
+            this.fullGraphUserControl1.Instrument = instrument;
             this.fullGraphUserControl1.ApplyTheme(theme);
-            this.fullGraphUserControl2.CurrentStockSerie = currentStockSerie;
+            this.fullGraphUserControl2.Instrument = instrument;
             this.fullGraphUserControl2.ApplyTheme(theme);
-            this.fullGraphUserControl3.CurrentStockSerie = currentStockSerie;
+            this.fullGraphUserControl3.Instrument = instrument;
             this.fullGraphUserControl3.ApplyTheme(theme);
         }
 
         private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            StockSerie selectedSerie = null;
-            if (StockDictionary.Instance.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
+            StockInstrument instrument = null;
+            if (StockDictionary.Instruments.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
             {
-                selectedSerie = StockDictionary.Instance[stockNameComboBox.SelectedItem.ToString()];
+                instrument = StockDictionary.Instruments[stockNameComboBox.SelectedItem.ToString()];
             }
             else
             {
                 throw new ApplicationException("Data for " + stockNameComboBox.SelectedItem.ToString() + "does not exist");
             }
             // Set the new selected serie
-            CurrentStockSerie = selectedSerie;
+            Instrument = instrument;
         }
 
         private void InitialiseStockCombo()
@@ -85,26 +86,26 @@ namespace StockAnalyzerApp.CustomControl
                     stockNameComboBox.Items.Add(stockName);
                 }
             }
-            stockNameComboBox.SelectedItem = this.currentStockSerie.StockName;
+            stockNameComboBox.SelectedItem = this.instrument.DisplayName;
         }
 
-        private StockSerie currentStockSerie;
-        public StockSerie CurrentStockSerie
+        private StockInstrument instrument;
+        public StockInstrument Instrument
         {
-            get { return currentStockSerie; }
+            get { return instrument; }
             set
             {
-                if (currentStockSerie != value)
+                if (instrument != value)
                 {
-                    currentStockSerie = value;
+                    instrument = value;
                     this.ApplyTheme(null);
                 }
             }
         }
 
-        public void SetSerieAndTheme(StockSerie stockSerie, string theme)
+        public void SetSerieAndTheme(StockInstrument instrument, string theme)
         {
-            currentStockSerie = stockSerie;
+            this.instrument = instrument;
             this.ApplyTheme(theme);
         }
     }

@@ -56,7 +56,7 @@ namespace StockAnalyzerApp.CustomControl
             // 
             // fullGraphUserControl1
             // 
-            this.fullGraphUserControl1.CurrentStockSerie = null;
+            this.fullGraphUserControl1.Instrument = null;
             this.fullGraphUserControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fullGraphUserControl1.EndIndex = 0;
             this.fullGraphUserControl1.Location = new System.Drawing.Point(3, 3);
@@ -67,7 +67,7 @@ namespace StockAnalyzerApp.CustomControl
             // 
             // fullGraphUserControl2
             // 
-            this.fullGraphUserControl2.CurrentStockSerie = null;
+            this.fullGraphUserControl2.Instrument = null;
             this.fullGraphUserControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fullGraphUserControl2.EndIndex = 0;
             this.fullGraphUserControl2.Location = new System.Drawing.Point(248, 3);
@@ -78,7 +78,7 @@ namespace StockAnalyzerApp.CustomControl
             // 
             // fullGraphUserControl3
             // 
-            this.fullGraphUserControl3.CurrentStockSerie = null;
+            this.fullGraphUserControl3.Instrument = null;
             this.fullGraphUserControl3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fullGraphUserControl3.EndIndex = 0;
             this.fullGraphUserControl3.Location = new System.Drawing.Point(493, 3);

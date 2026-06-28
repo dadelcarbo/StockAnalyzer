@@ -15,40 +15,40 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeInt(0, 500) };
 
-        public override void ApplyTo(DataSerie stockSerie)
+        public override void ApplyTo(DataSerie dataSerie)
         {
-            if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+            if (!dataSerie.Instrument.StockAnalysis.DrawingItems.ContainsKey(dataSerie.BarDuration))
             {
-                stockSerie.StockAnalysis.DrawingItems.Add(stockSerie.BarDuration, new StockDrawingItems());
+                dataSerie.Instrument.StockAnalysis.DrawingItems.Add(dataSerie.BarDuration, new StockDrawingItems());
             }
             else
             {
-                stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].RemoveAll(di => !di.IsPersistent);
+                dataSerie.Instrument.StockAnalysis.DrawingItems[dataSerie.BarDuration].RemoveAll(di => !di.IsPersistent);
             }
             var period = (int)this.parameters[0];
             var rightHigherLow = (bool)this.parameters[1];
             var trailPeriod = (int)this.parameters[2];
             float alpha = 2.0f / (float)(trailPeriod + 1);
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            FloatSerie lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            FloatSerie closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie lowSerie = dataSerie.GetSerie(StockDataType.LOW);
 
-            this.series[0] = new FloatSerie(stockSerie.Count, SerieNames[0], float.NaN);
+            this.series[0] = new FloatSerie(dataSerie.Count, SerieNames[0], float.NaN);
             this.series[0].Name = this.SerieNames[0];
-            this.series[1] = new FloatSerie(stockSerie.Count, SerieNames[1], float.NaN);
+            this.series[1] = new FloatSerie(dataSerie.Count, SerieNames[1], float.NaN);
             this.series[1].Name = this.SerieNames[1];
 
             // Detecting events
-            this.CreateEventSeries(stockSerie.Count);
+            this.CreateEventSeries(dataSerie.Count);
             var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenUp")];
             var brokenDownEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenDown")];
             var bullEvents = this.Events[Array.IndexOf(this.EventNames, "Bullish")];
 
-            var bodyHighSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            var bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+            var bodyHighSerie = dataSerie.GetSerie(StockDataType.CLOSE);
+            var bodyLowSerie = dataSerie.GetSerie(StockDataType.BODYLOW);
 
             bool isBull = false;
             float trailStop = float.NaN;
-            for (int i = period * 2; i < stockSerie.Count; i++)
+            for (int i = period * 2; i < dataSerie.Count; i++)
             {
                 if (isBull) // Trail Stop
                 {
@@ -75,13 +75,13 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops
                         brokenUpEvents[i] = bullEvents[i] = true;
 
                         cupHandle.IsPersistent = false;
-                        stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Add(cupHandle);
+                        dataSerie.Instrument.StockAnalysis.DrawingItems[dataSerie.BarDuration].Add(cupHandle);
                     }
                 }
             }
 
             // Generate events
-            this.GenerateEvents(stockSerie, this.series[0], this.series[1]);
+            this.GenerateEvents(dataSerie, this.series[0], this.series[1]);
         }
     }
 }

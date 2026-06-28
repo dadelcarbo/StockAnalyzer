@@ -26,7 +26,6 @@ namespace StockAnalyzer.StockData
             this.StockName = instrument.DisplayName;
             this.BarDuration = barDuration;
             this.Values = values;
-            this.StockAnalysis = new StockAnalysis();
 
             ResetAllCache();
         }
@@ -60,8 +59,6 @@ namespace StockAnalyzer.StockData
         public int Count => Values == null ? 0 : Values.Length;
 
         public bool HasVolume { get; private set; }
-
-        public StockAnalysis StockAnalysis { get; set; }
 
         public StockDividend Dividend => null; // TODO: Implement dividend retrieval logic
 
@@ -1531,13 +1528,13 @@ namespace StockAnalyzer.StockData
                 List<Line2DBase> supportList = new List<Line2DBase>();
                 List<Line2DBase> resistanceList = new List<Line2DBase>();
 
-                if (this.StockAnalysis.DrawingItems.ContainsKey(this.BarDuration))
+                if (Instrument.StockAnalysis.DrawingItems.ContainsKey(this.BarDuration))
                 {
-                    this.StockAnalysis.DrawingItems[this.BarDuration].Clear();
+                    Instrument.StockAnalysis.DrawingItems[this.BarDuration].Clear();
                 }
                 else
                 {
-                    this.StockAnalysis.DrawingItems.Add(this.BarDuration, new StockDrawingItems());
+                    Instrument.StockAnalysis.DrawingItems.Add(this.BarDuration, new StockDrawingItems());
                 }
 
                 int j, pivotIndex;
@@ -1552,7 +1549,7 @@ namespace StockAnalyzer.StockData
                         if (closeSerie[i] > latestResistanceLine.ValueAtX(i))
                         {
                             // Down trend line has been broken
-                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine.Cut(i, true));
+                            Instrument.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine.Cut(i, true));
                             resistanceList.Remove(latestResistanceLine);
                             latestResistanceLine = null;
                             events[(int)TLEvent.ResistanceBroken][i] = true;
@@ -1569,7 +1566,7 @@ namespace StockAnalyzer.StockData
                         if (closeSerie[i] < latestSupportLine.ValueAtX(i))
                         {
                             // Up trend line has been broken
-                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine.Cut(i, true));
+                            Instrument.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine.Cut(i, true));
                             supportList.Remove(latestSupportLine);
                             latestSupportLine = null;
                             events[(int)TLEvent.SupportBroken][i] = true;
@@ -1704,11 +1701,11 @@ namespace StockAnalyzer.StockData
                 }
                 if (latestSupportLine != null)
                 {
-                    this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine);
+                    Instrument.StockAnalysis.DrawingItems[this.BarDuration].Add(latestSupportLine);
                 }
                 if (latestResistanceLine != null)
                 {
-                    this.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine);
+                    Instrument.StockAnalysis.DrawingItems[this.BarDuration].Add(latestResistanceLine);
                 }
             }
             catch (Exception e)
@@ -1761,13 +1758,13 @@ namespace StockAnalyzer.StockData
                 rangingSerie[0] = trendStatus == DowEvent.Ranging;
 
                 // Do drawing Items cleanup
-                if (this.StockAnalysis.DrawingItems.ContainsKey(this.BarDuration))
+                if (Instrument.StockAnalysis.DrawingItems.ContainsKey(this.BarDuration))
                 {
-                    this.StockAnalysis.DrawingItems[this.BarDuration].Clear();
+                    Instrument.StockAnalysis.DrawingItems[this.BarDuration].Clear();
                 }
                 else
                 {
-                    this.StockAnalysis.DrawingItems.Add(this.BarDuration, new StockDrawingItems());
+                    Instrument.StockAnalysis.DrawingItems.Add(this.BarDuration, new StockDrawingItems());
                 }
 
                 // Start Creating lines
@@ -1778,8 +1775,8 @@ namespace StockAnalyzer.StockData
                     {
                         // Find previous Low value
                         for (j = i; j > latestSupportLine.Point2.X && lowSerie[j] != supportSerie[i]; j--) ;
-                        this.StockAnalysis.DrawingItems[this.BarDuration].Add(newLine = new Segment2D(latestSupportLine.Point2.X, latestSupportLine.Point2.Y, j, lowSerie[j]));
-                        this.StockAnalysis.DrawingItems[this.BarDuration].Add(bullet = new Bullet2D(newLine.Point2, 3));
+                        Instrument.StockAnalysis.DrawingItems[this.BarDuration].Add(newLine = new Segment2D(latestSupportLine.Point2.X, latestSupportLine.Point2.Y, j, lowSerie[j]));
+                        Instrument.StockAnalysis.DrawingItems[this.BarDuration].Add(bullet = new Bullet2D(newLine.Point2, 3));
 
                         latestSupportLine = newLine;
 
@@ -1815,8 +1812,8 @@ namespace StockAnalyzer.StockData
                         {
                             // Find previous Low value
                             for (j = i; j > latestResistanceLine.Point2.X && highSerie[j] != resistanceSerie[i]; j--) ;
-                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(newLine = new Segment2D(latestResistanceLine.Point2.X, latestResistanceLine.Point2.Y, j, highSerie[j]));
-                            this.StockAnalysis.DrawingItems[this.BarDuration].Add(bullet = new Bullet2D(newLine.Point2, 3));
+                            Instrument.StockAnalysis.DrawingItems[this.BarDuration].Add(newLine = new Segment2D(latestResistanceLine.Point2.X, latestResistanceLine.Point2.Y, j, highSerie[j]));
+                            Instrument.StockAnalysis.DrawingItems[this.BarDuration].Add(bullet = new Bullet2D(newLine.Point2, 3));
 
                             latestResistanceLine = newLine;
                             // Set trend Status

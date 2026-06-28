@@ -32,24 +32,24 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             }
         }
 
-        public override void ApplyTo(DataSerie stockSerie)
+        public override void ApplyTo(DataSerie dataSerie)
         {
-            this.CreateEventSeries(stockSerie.Count);
+            this.CreateEventSeries(dataSerie.Count);
 
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
             for (int i = 0; i < closeSerie.Count; i++)
             {
                 this.eventSeries[2][i] = true;
             }
-            this.eventSeries[2][closeSerie.Count - 1] = stockSerie.LastValue.IsComplete;
+            this.eventSeries[2][closeSerie.Count - 1] = dataSerie.LastValue.IsComplete;
 
-            if (!stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+            if (!dataSerie.Instrument.StockAnalysis.DrawingItems.ContainsKey(dataSerie.BarDuration))
                 return;
 
             // Detecting events
             for (int i = 2; i < closeSerie.Count; i++)
             {
-                foreach (DrawingItem di in stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration])
+                foreach (DrawingItem di in dataSerie.Instrument.StockAnalysis.DrawingItems[dataSerie.BarDuration])
                 {
                     Line2DBase line = di as Line2DBase;
 

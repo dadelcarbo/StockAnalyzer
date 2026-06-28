@@ -26,21 +26,21 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override Pen[] SeriePens => new Pen[] { };
 
-        public override void ApplyTo(DataSerie stockSerie)
+        public override void ApplyTo(DataSerie dataSerie)
         {
             // Detecting events
-            this.CreateEventSeries(stockSerie.Count);
-            FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            this.CreateEventSeries(dataSerie.Count);
+            FloatSerie closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
 
-            if (stockSerie.StockAnalysis.DrawingItems.ContainsKey(stockSerie.BarDuration))
+            if (dataSerie.Instrument.StockAnalysis.DrawingItems.ContainsKey(dataSerie.BarDuration))
             {
-                var drawingItems = stockSerie.StockAnalysis.DrawingItems[stockSerie.BarDuration].Where(di => di.IsPersistent && di is Line2DBase).ToList();
-                this.Events[2][stockSerie.LastIndex] = drawingItems.Count > 0;
-                this.Events[2][stockSerie.LastCompleteIndex] = drawingItems.Count > 0;
+                var drawingItems = dataSerie.Instrument.StockAnalysis.DrawingItems[dataSerie.BarDuration].Where(di => di.IsPersistent && di is Line2DBase).ToList();
+                this.Events[2][dataSerie.LastIndex] = drawingItems.Count > 0;
+                this.Events[2][dataSerie.LastCompleteIndex] = drawingItems.Count > 0;
 
                 foreach (Line2DBase item in drawingItems)
                 {
-                    for (int i = (int)Math.Max(item.Point1.X, item.Point2.X); i < stockSerie.Count; i++)
+                    for (int i = (int)Math.Max(item.Point1.X, item.Point2.X); i < dataSerie.Count; i++)
                     {
                         if (i < 1)
                             continue;

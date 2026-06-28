@@ -163,7 +163,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
             if (mtg != null)
             {
-                mtg.SetSerieAndTheme(StockDictionary.Instance[line.Name], this.ViewModel.Theme);
+                mtg.SetSerieAndTheme(StockDictionary.Instruments[line.Name], this.ViewModel.Theme);
             }
 
             this.Form.TopMost = true;

@@ -17,7 +17,7 @@ namespace StockAnalyzerApp.StockData
         public Groups Group { get; set; }
         public StockDataProvider DataProvider { get; set; }
         public long SaxoId { get; set; }
-        public StockAnalysis Analysis { get; set; }
+        public StockAnalysis StockAnalysis { get; set; }
 
         public StockSerie StockSerie { get; set; }
 
@@ -34,7 +34,7 @@ namespace StockAnalyzerApp.StockData
             this.SaxoId = serie.SaxoId;
 
             this.Group = serie.StockGroup;
-            this.Analysis = serie.StockAnalysis;
+            this.StockAnalysis = serie.StockAnalysis;
         }
 
         private SortedDictionary<BarDuration, DataSerie> cache = new SortedDictionary<BarDuration, DataSerie>();

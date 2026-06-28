@@ -619,7 +619,7 @@ namespace StockAnalyzerApp
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
 
-            searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.Analysis.Excluded).Select(p => p.Key).ToArray());
+            searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
 
             // Ready to start
             StockSplashScreen.CloseForm(true);
@@ -1352,90 +1352,30 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (this.currentStockSerie != null)
+                this.Cursor = Cursors.WaitCursor;
+                if (showSplash)
                 {
-                    this.Cursor = Cursors.WaitCursor;
-                    if (showSplash)
-                    {
-                        StockSplashScreen.FadeInOutSpeed = 0.25;
-                        StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.ViewModel.Instrument.DisplayName;
-                        StockSplashScreen.ProgressVal = 0;
-                        StockSplashScreen.ProgressMax = 100;
-                        StockSplashScreen.ProgressMin = 0;
-                        StockSplashScreen.ShowSplashScreen();
-                    }
-
-                    if (StockDataProviderBase.ForceDownloadSerieData(this.currentStockSerie))
-                    {
-                        if (this.currentStockSerie.BelongsToGroup(Groups.CACALL))
-                        {
-                            try
-                            {
-                                ABCDataProvider.DownloadAgenda(this.currentStockSerie);
-                            }
-                            catch (Exception ex)
-                            {
-                                StockLog.Write(ex);
-                            }
-                        }
-
-                        if (this.currentStockSerie.Initialise())
-                        {
-                            this.ApplyTheme();
-                        }
-                        else
-                        {
-                            this.DeactivateGraphControls("Unable to download selected stock data...");
-                        }
-                    }
-
-                    if (showSplash)
-                    {
-                        StockSplashScreen.CloseForm(true);
-                    }
-                    this.Cursor = Cursors.Arrow;
-                }
-            }
-        }
-        private void ForceDownloadStockGroup()
-        {
-            if (this.currentStockSerie != null)
-            {
-                try
-                {
-                    if (MessageBox.Show($"Are you sure you want to force downloading the full group {this.ViewModel.Instrument.Group} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    {
-                        return;
-                    }
                     StockSplashScreen.FadeInOutSpeed = 0.25;
-                    StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
-
-                    var stockSeries =
-                       this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
-
+                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.ViewModel.Instrument.DisplayName;
                     StockSplashScreen.ProgressVal = 0;
-                    StockSplashScreen.ProgressMax = stockSeries.Count();
+                    StockSplashScreen.ProgressMax = 100;
                     StockSplashScreen.ProgressMin = 0;
                     StockSplashScreen.ShowSplashScreen();
+                }
 
-                    foreach (var stockSerie in stockSeries)
+                if (StockDataProviderBase.ForceDownloadSerieData(this.currentStockSerie))
+                {
+                    if (this.currentStockSerie.BelongsToGroup(Groups.CACALL))
                     {
-                        StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + stockSerie.StockName;
-                        StockDataProviderBase.ForceDownloadSerieData(stockSerie);
-
-                        //try
-                        //{
-                        //StockSplashScreen.ProgressText = "Downloading Dividend " + selectedGroup + " - " + stockSerie.StockName;
-                        //this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie, true);
-                        //}
-                        //catch (Exception ex)
-                        //{
-                        //    StockLog.Write(ex);
-                        //}
-                        StockSplashScreen.ProgressVal++;
+                        try
+                        {
+                            ABCDataProvider.DownloadAgenda(this.currentStockSerie);
+                        }
+                        catch (Exception ex)
+                        {
+                            StockLog.Write(ex);
+                        }
                     }
-
-                    this.SaveAnalysis(this.ViewModel.AnalysisFile);
 
                     if (this.currentStockSerie.Initialise())
                     {
@@ -1446,13 +1386,67 @@ namespace StockAnalyzerApp
                         this.DeactivateGraphControls("Unable to download selected stock data...");
                     }
                 }
-                catch (Exception ex)
+
+                if (showSplash)
                 {
-                    StockLog.Write(ex);
+                    StockSplashScreen.CloseForm(true);
+                }
+                this.Cursor = Cursors.Arrow;
+            }
+        }
+        private void ForceDownloadStockGroup()
+        {
+            try
+            {
+                if (MessageBox.Show($"Are you sure you want to force downloading the full group {this.ViewModel.Instrument.Group} ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+                StockSplashScreen.FadeInOutSpeed = 0.25;
+                StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
+
+                var stockSeries =
+                   this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
+
+                StockSplashScreen.ProgressVal = 0;
+                StockSplashScreen.ProgressMax = stockSeries.Count();
+                StockSplashScreen.ProgressMin = 0;
+                StockSplashScreen.ShowSplashScreen();
+
+                foreach (var stockSerie in stockSeries)
+                {
+                    StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + stockSerie.StockName;
+                    StockDataProviderBase.ForceDownloadSerieData(stockSerie);
+
+                    //try
+                    //{
+                    //StockSplashScreen.ProgressText = "Downloading Dividend " + selectedGroup + " - " + stockSerie.StockName;
+                    //this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie, true);
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    StockLog.Write(ex);
+                    //}
+                    StockSplashScreen.ProgressVal++;
                 }
 
-                StockSplashScreen.CloseForm(true);
+                this.SaveAnalysis(this.ViewModel.AnalysisFile);
+
+                if (this.currentStockSerie.Initialise())
+                {
+                    this.ApplyTheme();
+                }
+                else
+                {
+                    this.DeactivateGraphControls("Unable to download selected stock data...");
+                }
             }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+
+            StockSplashScreen.CloseForm(true);
         }
         private void DownloadStock(bool showSplash)
         {
@@ -1502,7 +1496,7 @@ namespace StockAnalyzerApp
                     StockSplashScreen.FadeInOutSpeed = 0.25;
                     StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
 
-                    var instruments = StockDictionary.Instruments.Values.Where(s => !s.Analysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
+                    var instruments = StockDictionary.Instruments.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
 
                     StockSplashScreen.ProgressVal = 0;
                     StockSplashScreen.ProgressMax = instruments.Count();
@@ -1820,8 +1814,6 @@ namespace StockAnalyzerApp
 
         private void saveAnalysisToolStripButton_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
-
             Cursor currentCursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
 
@@ -1846,7 +1838,6 @@ namespace StockAnalyzerApp
 
         public void SaveAnalysis(string analysisFileName)
         {
-            if (this.currentStockSerie == null) return;
             string tmpFileName = analysisFileName + ".tmp";
             bool success = true;
             // Save stock analysis to XML
@@ -2025,11 +2016,9 @@ namespace StockAnalyzerApp
 
         private void copyIsinBtn_Click(object sender, EventArgs e)
         {
-            if (this.CurrentStockSerie == null)
-                return;
-            if (!string.IsNullOrEmpty(this.currentStockSerie.ISIN))
+            if (!string.IsNullOrEmpty(this.ViewModel.Instrument?.Isin))
             {
-                Clipboard.SetText(this.currentStockSerie.ISIN);
+                Clipboard.SetText(this.ViewModel.Instrument?.Isin);
                 return;
             }
             if (!string.IsNullOrEmpty(this.ViewModel.Instrument.DisplayName))
@@ -2045,7 +2034,6 @@ namespace StockAnalyzerApp
 
         private void Rewind(int step)
         {
-            if (this.currentStockSerie == null) return;
             if (startIndex > step)
             {
                 ChangeZoom(startIndex - step, endIndex - step);
@@ -2061,8 +2049,7 @@ namespace StockAnalyzerApp
 
         private void Forward(int step)
         {
-            if (this.currentStockSerie == null) return;
-            int max = CurrentStockSerie.Count - 1;
+            int max = this.ViewModel.Instrument.GetDataSerie(this.ViewModel.BarDuration).LastIndex;
             if (endIndex != max)
             {
                 if (endIndex + step > max)
@@ -2863,7 +2850,8 @@ namespace StockAnalyzerApp
         WatchListDlg watchlistDlg = null;
         private void manageWatchlistsMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null || StockWatchList.WatchLists == null) return;
+            if (StockWatchList.WatchLists == null)
+                return;
 
             if (watchlistDlg == null)
             {
@@ -2893,7 +2881,6 @@ namespace StockAnalyzerApp
         private StockScannerDlg stockScannerDlg = null;
         private void stockScannerMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
             if (stockScannerDlg == null)
             {
                 stockScannerDlg = new StockScannerDlg(StockDictionary, this.ViewModel.Instrument.Group, this.ViewModel.BarDuration, this.ViewModel.Theme);
@@ -2925,7 +2912,6 @@ namespace StockAnalyzerApp
 
         private void scriptEditorMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
             ScriptDlg scriptEditor = new ScriptDlg() { StartPosition = FormStartPosition.CenterScreen };
             scriptEditor.Show();
         }
@@ -2944,9 +2930,8 @@ namespace StockAnalyzerApp
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (searchCombo.Focused) return false;
-
-            if (this.currentStockSerie == null) return false;
+            if (searchCombo.Focused)
+                return false;
 
             const int WM_KEYDOWN = 0x100;
             const int WM_SYSKEYDOWN = 0x104;
@@ -3063,7 +3048,7 @@ namespace StockAnalyzerApp
         void multipleTimeFrameViewMenuItem_Click(object sender, EventArgs e)
         {
             MultiTimeFrameChartDlg mtg = new MultiTimeFrameChartDlg() { StartPosition = FormStartPosition.CenterScreen };
-            mtg.Initialize(this.ViewModel.Instrument.Group, this.currentStockSerie);
+            mtg.Initialize(this.ViewModel.Instrument);
             mtg.WindowState = FormWindowState.Maximized;
             mtg.Show();
         }
