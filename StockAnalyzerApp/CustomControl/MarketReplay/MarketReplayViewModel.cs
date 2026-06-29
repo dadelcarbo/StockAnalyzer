@@ -5,6 +5,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockPortfolio;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -422,7 +423,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             CopyReferenceValues(referenceSerieIndex + 1);
 
-            StockDictionary.Instance.Add(name, replaySerie);
+            StockDictionary.Instruments.Add(name, new StockInstrument(replaySerie));
 
             this.SelectedStockChanged(name, true);
 
