@@ -21,7 +21,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.tradeMenu = new System.Windows.Forms.MenuItem();
             this.sellMenu = new System.Windows.Forms.MenuItem();
             this.cancelMenu = new System.Windows.Forms.MenuItem();
-            this.agendaMenu = new MenuItem();
             this.openInZBMenu = new MenuItem();
             this.openInTradingViewMenu = new MenuItem();
             this.openInDataProvider = new MenuItem();
@@ -29,7 +28,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.openSaxoIntradyConfigDlg = new MenuItem();
             this.separator1 = new MenuItem();
             this.separator2 = new MenuItem();
-            this.separator3 = new MenuItem();
             // 
             // contextMenu
             // 
@@ -41,8 +39,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator1,
             this.addAlertMenu,
             this.separator2,
-            this.agendaMenu,
-            this.separator3,
             this.openInDataProvider,
             this.openInZBMenu,
             this.openInTradingViewMenu,
@@ -89,17 +85,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.separator2.Index = index++;
             this.separator2.Text = "-";
             // 
-            // agendaMenu
-            // 
-            this.agendaMenu.Index = index++;
-            this.agendaMenu.Text = "Agenda";
-            this.agendaMenu.Click += new System.EventHandler(this.agendaMenu_Click);
-            // 
-            // separator3
-            // 
-            this.separator3.Index = index++;
-            this.separator3.Text = "-";
-            // 
             // openInDataProvider
             // 
             this.openInDataProvider.Index = index++;
@@ -144,8 +129,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         private MenuItem cancelMenu;
         private MenuItem separator1;
         private MenuItem separator2;
-        private MenuItem separator3;
-        private MenuItem agendaMenu;
         private MenuItem openInZBMenu;
         private MenuItem openInTradingViewMenu;
         private MenuItem openInDataProvider;

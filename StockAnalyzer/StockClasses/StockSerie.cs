@@ -119,54 +119,6 @@ namespace StockAnalyzer.StockClasses
         public Groups StockGroup { get; private set; }
         public StockAnalysis StockAnalysis { get; set; }
 
-        #region StockAgenda
-        private StockAgenda agenda;
-        public StockAgenda Agenda
-        {
-            get
-            {
-                agenda ??= LoadAgenda();
-                return agenda;
-            }
-            set { agenda = value; }
-        }
-
-        private StockDividend dividend;
-
-        public StockDividend Dividend => dividend ??= new StockDividend(this);
-        private StockAgenda LoadAgenda()
-        {
-            StockAgenda stockAgenda = null;
-            if (this.BelongsToGroup(Groups.CACALL))
-            {
-                string path = Folders.AgendaFolder;
-                string fileName = path + @"\" + this.Symbol + "_" + this.StockGroup + ".xml";
-                if (File.Exists(fileName))
-                {
-                    using FileStream fs = new FileStream(fileName, FileMode.Open);
-                    System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
-                    settings.IgnoreWhitespace = true;
-                    System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(fs, settings);
-                    XmlSerializer serializer = new XmlSerializer(typeof(StockAgenda));
-                    stockAgenda = (StockAgenda)serializer.Deserialize(xmlReader);
-                }
-            }
-            return stockAgenda;
-        }
-        public void SaveAgenda()
-        {
-            if (this.Agenda == null) return;
-            string path = Folders.AgendaFolder;
-            string fileName = path + @"\" + this.Symbol + "_" + this.StockGroup + ".xml";
-            using FileStream fs = new FileStream(fileName, FileMode.Create);
-            System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
-            settings.Indent = true;
-            System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(fs, settings);
-            XmlSerializer serializer = new XmlSerializer(typeof(StockAgenda));
-            serializer.Serialize(xmlWriter, this.Agenda);
-        }
-
-        #endregion
 
         public bool IsPortfolioSerie { get; set; }
         public int LastIndex => this.ValueArray.Length - 1;

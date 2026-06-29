@@ -60,9 +60,6 @@ namespace StockAnalyzer.StockData
 
         public bool HasVolume { get; private set; }
 
-        public StockDividend Dividend => null; // TODO: Implement dividend retrieval logic
-
-
         public FloatSerie[] ValueSeries { get; set; }
         public FloatSerie GetSerie(StockDataType dataType)
         {

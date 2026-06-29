@@ -41,7 +41,6 @@
             // 
             // graphCloseControl
             // 
-            this.graphCloseControl.Agenda = null;
             this.graphCloseControl.ChartMode = GraphChartMode.Line;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;

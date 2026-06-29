@@ -66,9 +66,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected bool ShowOrders => Settings.Default.ShowOrders;
         protected bool ShowPositions => Settings.Default.ShowPositions;
         protected bool ShowEventMarker => Settings.Default.ShowEventMarquee;
-        protected bool ShowDividend => Settings.Default.ShowDividend;
-
-        protected AgendaEntryType ShowAgenda => (AgendaEntryType)Enum.Parse(typeof(AgendaEntryType), Settings.Default.ShowAgenda);
         protected bool ShowIndicatorDiv => Settings.Default.ShowIndicatorDiv;
         protected bool ShowIndicatorText => Settings.Default.ShowIndicatorText;
 
@@ -96,8 +93,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
         }
-        public StockAgenda Agenda { get; set; }
-        public StockDividend Dividends { get; set; }
 
         // Secondary serie management
         protected Matrix matrixSecondaryScreenToValue;
@@ -715,36 +710,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 }
             }
 
-            #endregion
-
-            #region Display comment marquee
-            if (this.Agenda != null && this.ShowAgenda != AgendaEntryType.No)
-            {
-                var startDate = this.dataSerie.DateSerie[StartIndex];
-                var endDate = this.dataSerie.DateSerie[EndIndex];
-                foreach (var agendaEntry in this.Agenda.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
-                {
-                    if (agendaEntry.IsOfType(this.ShowAgenda))
-                    {
-                        int index = this.IndexOf(agendaEntry.Date, this.StartIndex, this.EndIndex);
-
-                        PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
-                        aGraphic.FillPolygon(ColorManager.GetBrush("Graph.Marker"), marqueePoints);
-                    }
-                }
-            }
-            if (this.ShowDividend && this.Dividends != null && this.Dividends.Entries.Count > 0)
-            {
-                var startDate = this.dataSerie.DateSerie[StartIndex];
-                var endDate = this.dataSerie.DateSerie[EndIndex];
-                foreach (var dividendEntry in this.Dividends.Entries.Where(a => a.Date >= startDate && a.Date <= endDate))
-                {
-                    int index = this.IndexOf(dividendEntry.Date, this.StartIndex, this.EndIndex);
-
-                    PointF[] marqueePoints = GetCommentMarqueePointsAtIndex(index);
-                    aGraphic.FillPolygon(ColorManager.GetBrush("Graph.Marker"), marqueePoints);
-                }
-            }
             #endregion
 
             #region Draw orders
@@ -1557,48 +1522,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     mousePoint.X -= 100.0f;
                 }
                 this.DrawString(this.foregroundGraphic, eventTypeString, axisFont, TextForegroundBrush, TextBackgroundBrush, mousePoint, true);
-            }
-            #endregion
-            #region Display Agenda Text
-            if (mouseOverThis && this.ShowAgenda != AgendaEntryType.No && this.Agenda != null &&
-                 (mousePoint.Y <= this.GraphRectangle.Bottom) &&
-                 (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
-            {
-                int i = this.RoundToIndex(mousePoint);
-                DateTime agendaDate1 = this.dataSerie.DateSerie[Math.Max(StartIndex, i - 1)];
-                DateTime agendaDate2 = this.dataSerie.DateSerie[Math.Min(EndIndex, i + 1)];
-                var agendaEntry = this.Agenda.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2 && a.IsOfType(this.ShowAgenda));
-                if (agendaEntry != null)
-                {
-                    string eventText = agendaEntry.Event.Replace("\n", " ") + Environment.NewLine;
-                    eventText += "Date : " + agendaEntry.Date.ToShortDateString();
-                    Size size = TextRenderer.MeasureText(eventText, axisFont);
-                    this.DrawString(this.foregroundGraphic, eventText, axisFont, TextForegroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
-                }
-            }
-            #endregion
-            #region Display Dividend Text
-            if (mouseOverThis && this.ShowDividend &&
-                this.Dividends != null && this.Dividends.Entries.Count > 0 &&
-                 (mousePoint.Y <= this.GraphRectangle.Bottom) &&
-                 (mousePoint.Y >= this.GraphRectangle.Bottom - (EVENT_MARQUEE_SIZE * 3)))
-            {
-                int i = this.RoundToIndex(mousePoint);
-                DateTime agendaDate1 = this.dataSerie.DateSerie[Math.Max(StartIndex, i - 1)];
-                DateTime agendaDate2 = this.dataSerie.DateSerie[Math.Min(EndIndex, i + 1)];
-                var dividendEntry = this.Dividends.Entries.FirstOrDefault(a => a.Date >= agendaDate1 && a.Date <= agendaDate2);
-                if (dividendEntry != null)
-                {
-                    var coupon = dividendEntry.Dividend;
-                    float yield = coupon / closeCurveType.DataSerie[i];
-                    var eventText = "Dividende";
-                    eventText += Environment.NewLine + "Date: " + dividendEntry.Date.ToShortDateString();
-                    eventText += Environment.NewLine + "Coupon: " + dividendEntry.Dividend.ToString();
-                    eventText += Environment.NewLine + "Rendement: " + yield.ToString("P2");
-
-                    Size size = TextRenderer.MeasureText(eventText, axisFont);
-                    this.DrawString(this.foregroundGraphic, eventText, axisFont, TextForegroundBrush, Math.Max(mousePoint.X - size.Width, this.GraphRectangle.Left + 5), mousePoint.Y - size.Height, true);
-                }
             }
             #endregion
 
@@ -2589,10 +2512,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             StockAnalyzerForm.MainFrame.Portfolio.SaxoCancelOpenOrder(order.Id);
             this.BackgroundDirty = true;
             PaintGraph();
-        }
-        void agendaMenu_Click(object sender, EventArgs e)
-        {
-            StockAnalyzerForm.MainFrame.ShowAgenda();
         }
         void openInZBMenu_Click(object sender, EventArgs e)
         {

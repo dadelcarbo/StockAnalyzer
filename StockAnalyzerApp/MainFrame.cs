@@ -19,7 +19,6 @@ using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockPortfolio.AutoTrade;
 using StockAnalyzerApp.CustomControl;
-using StockAnalyzerApp.CustomControl.AgendaDlg;
 using StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog;
 using StockAnalyzerApp.CustomControl.AutoTradeDlg;
 using StockAnalyzerApp.CustomControl.ColorPalette;
@@ -108,8 +107,8 @@ namespace StockAnalyzerApp
 
         public GraphCloseControl GraphCloseControl => this.graphCloseControl;
 
-        private StockSerie currentStockSerie = null;
-        private StockSerie CurrentStockSerie => currentStockSerie;
+        private StockSerie currentStockSerie2 = null;
+        private StockSerie CurrentStockSerie => currentStockSerie2;
 
         private StockPortfolio portfolio;
         public StockPortfolio Portfolio
@@ -505,8 +504,6 @@ namespace StockAnalyzerApp
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
-
-            CreateAgendaMenuItem();
 
             // Update dynamic menu
             InitialiseBarDurationComboBox();
@@ -1356,35 +1353,20 @@ namespace StockAnalyzerApp
                 if (showSplash)
                 {
                     StockSplashScreen.FadeInOutSpeed = 0.25;
-                    StockSplashScreen.ProgressText = "Downloading " + this.currentStockSerie.StockGroup + " - " + this.ViewModel.Instrument.DisplayName;
+                    StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
                     StockSplashScreen.ProgressVal = 0;
                     StockSplashScreen.ProgressMax = 100;
                     StockSplashScreen.ProgressMin = 0;
                     StockSplashScreen.ShowSplashScreen();
                 }
 
-                if (StockDataProviderBase.ForceDownloadSerieData(this.currentStockSerie))
+                if (!StockDataProviderBase.ForceDownloadSerieData(this.ViewModel.Instrument.StockSerie))
                 {
-                    if (this.currentStockSerie.BelongsToGroup(Groups.CACALL))
-                    {
-                        try
-                        {
-                            ABCDataProvider.DownloadAgenda(this.currentStockSerie);
-                        }
-                        catch (Exception ex)
-                        {
-                            StockLog.Write(ex);
-                        }
-                    }
-
-                    if (this.currentStockSerie.Initialise())
-                    {
-                        this.ApplyTheme();
-                    }
-                    else
-                    {
-                        this.DeactivateGraphControls("Unable to download selected stock data...");
-                    }
+                    this.DeactivateGraphControls("Unable to download selected stock data...");
+                }
+                else
+                {
+                    this.ViewModel.Instrument.ClearCache();
                 }
 
                 if (showSplash)
@@ -1418,31 +1400,14 @@ namespace StockAnalyzerApp
                     StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + stockSerie.StockName;
                     StockDataProviderBase.ForceDownloadSerieData(stockSerie);
 
-                    //try
-                    //{
-                    //StockSplashScreen.ProgressText = "Downloading Dividend " + selectedGroup + " - " + stockSerie.StockName;
-                    //this.CurrentStockSerie.Dividend.DownloadFromYahoo(stockSerie, true);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    StockLog.Write(ex);
-                    //}
                     StockSplashScreen.ProgressVal++;
                 }
 
                 this.SaveAnalysis(this.ViewModel.AnalysisFile);
-
-                if (this.currentStockSerie.Initialise())
-                {
-                    this.ApplyTheme();
-                }
-                else
-                {
-                    this.DeactivateGraphControls("Unable to download selected stock data...");
-                }
             }
             catch (Exception ex)
             {
+                this.DeactivateGraphControls("Unable to download selected stock data...");
                 StockLog.Write(ex);
             }
 
@@ -1468,15 +1433,15 @@ namespace StockAnalyzerApp
                     if (StockDataProviderBase.DownloadSerieData(this.ViewModel.Instrument.StockSerie))
                     {
                         this.ViewModel.Instrument.ClearCache();
-                        this.ViewModel.Instrument.StockSerie.Dividend.DownloadFromYahoo(this.ViewModel.Instrument.StockSerie);
+
                         if (this.ViewModel.Instrument.StockSerie.Initialise())
                         {
                             this.ApplyTheme();
                         }
-                        else
-                        {
-                            this.DeactivateGraphControls("Unable to download selected stock data...");
-                        }
+                    }
+                    else
+                    {
+                        this.DeactivateGraphControls("Unable to download selected stock data...");
                     }
 
                     if (showSplash)
@@ -2188,14 +2153,6 @@ namespace StockAnalyzerApp
         private void showGridMenuItem_Click(object sender, EventArgs e)
         {
             Settings.Default.ShowGrid = this.showGridMenuItem.Checked;
-            Settings.Default.Save();
-            // Refresh the graphs
-            OnNeedReinitialise(false);
-        }
-
-        private void showDividendMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.Default.ShowDividend = this.showDividendMenuItem.Checked;
             Settings.Default.Save();
             // Refresh the graphs
             OnNeedReinitialise(false);
@@ -3183,15 +3140,9 @@ namespace StockAnalyzerApp
         private void secondarySerieMenuItem_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-            if (this.currentStockSerie == null)
-            {
-                menuItem.Checked = false;
-                ((ToolStripMenuItem)menuItem.OwnerItem).Checked = menuItem.Checked;
-                return;
-            }
 
             menuItem.Checked = !menuItem.Checked;
-            FloatSerie secondarySerie = this.currentStockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[sender.ToString()]);
+            FloatSerie secondarySerie = this.ViewModel.Instrument.StockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[sender.ToString()]);
             if (menuItem.Checked && secondarySerie == null)
             {
                 menuItem.Checked = false;
@@ -3506,7 +3457,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                if (this.currentStockSerie?.StockAnalysis?.Theme == this.ViewModel.Theme)
+                if (this.ViewModel.Instrument?.StockAnalysis?.Theme == this.ViewModel.Theme)
                 {
                     this.defaultThemeStripButton.CheckState = CheckState.Checked;
                 }
@@ -3578,8 +3529,6 @@ namespace StockAnalyzerApp
                         {
                             case "CLOSEGRAPH":
                                 graphControl = this.graphCloseControl;
-                                this.graphCloseControl.Agenda = this.ViewModel.Instrument.StockSerie.Agenda;
-                                this.graphCloseControl.Dividends = this.ViewModel.Instrument.StockSerie.Dividend;
                                 break;
                             case "SCROLLGRAPH":
                                 graphControl = this.graphScrollerControl;
@@ -4037,6 +3986,9 @@ namespace StockAnalyzerApp
 
         void defaultThemeStripButton_Click(object sender, EventArgs e)
         {
+            if (this.ViewModel.Instrument?.StockAnalysis == null)
+                return;
+
             if (this.ViewModel.Theme == WORK_THEME)
             {
                 this.saveThemeMenuItem_Click(sender, e);
@@ -4044,17 +3996,17 @@ namespace StockAnalyzerApp
                 {
                     return;
                 }
-                this.currentStockSerie.StockAnalysis.Theme = this.ViewModel.Theme;
+                this.ViewModel.Instrument.StockAnalysis.Theme = this.ViewModel.Theme;
                 this.defaultThemeStripButton.CheckState = CheckState.Checked;
             }
             else if (this.defaultThemeStripButton.CheckState == CheckState.Checked)
             {
-                this.currentStockSerie.StockAnalysis.Theme = string.Empty;
+                this.ViewModel.Instrument.StockAnalysis.Theme = string.Empty;
                 this.defaultThemeStripButton.CheckState = CheckState.Unchecked;
             }
             else
             {
-                this.currentStockSerie.StockAnalysis.Theme = this.ViewModel.Theme;
+                this.ViewModel.Instrument.StockAnalysis.Theme = this.ViewModel.Theme;
                 this.defaultThemeStripButton.CheckState = CheckState.Checked;
             }
             SaveAnalysis(this.ViewModel.AnalysisFile);
@@ -4073,11 +4025,11 @@ namespace StockAnalyzerApp
                 File.Delete(fileName);
             }
 
-            foreach (StockSerie stockSerie in this.StockDictionary.Values)
+            foreach (var instrument in StockDictionary.Instruments.Values)
             {
-                if (stockSerie.StockAnalysis.Theme == this.ViewModel.Theme)
+                if (instrument.StockAnalysis.Theme == this.ViewModel.Theme)
                 {
-                    stockSerie.StockAnalysis.Theme = string.Empty;
+                    instrument.StockAnalysis.Theme = string.Empty;
                 }
             }
 
@@ -4091,47 +4043,6 @@ namespace StockAnalyzerApp
                 this.themeComboBox.SelectedItem = this.themeComboBox.Items[0].ToString();
             }
         }
-        #endregion
-        #region SHOW AGENDA MENU HANDLERS
-
-        private void CreateAgendaMenuItem()
-        {
-            AgendaEntryType agendaEntryType = AgendaEntryType.No;
-            if (!Enum.TryParse(Settings.Default.ShowAgenda, out agendaEntryType))
-            {
-                Settings.Default.ShowAgenda = AgendaEntryType.No.ToString();
-            }
-
-            // Clean existing menus
-            this.showAgendaMenuItem.DropDownItems.Clear();
-
-            List<ToolStripItem> agendaMenuItems = new List<ToolStripItem>();
-            ToolStripMenuItem agendaSubMenuItem;
-
-            foreach (AgendaEntryType agendaType in Enum.GetValues(typeof(AgendaEntryType)))
-            {
-                // Create group menu items
-                agendaSubMenuItem = new ToolStripMenuItem(agendaType.ToString());
-                agendaSubMenuItem.Click += new EventHandler(agendaSubMenuItem_Click);
-                agendaSubMenuItem.Checked = (agendaType == agendaEntryType);
-
-                agendaMenuItems.Add(agendaSubMenuItem);
-            }
-            this.showAgendaMenuItem.DropDownItems.AddRange(agendaMenuItems.ToArray());
-        }
-
-        private void agendaSubMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.Default.ShowAgenda = sender.ToString();
-            Settings.Default.Save();
-
-            foreach (ToolStripMenuItem agendaSubMenuItem in this.showAgendaMenuItem.DropDownItems)
-            {
-                agendaSubMenuItem.Checked = agendaSubMenuItem.Text == Settings.Default.ShowAgenda;
-            }
-            this.OnNeedReinitialise(false);
-        }
-
         #endregion
 
 
@@ -4177,8 +4088,6 @@ namespace StockAnalyzerApp
         }
         private void loadAnalysisFileMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
-
             string folderName = Folders.PersonalFolder;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.DefaultExt = "ulc";
@@ -4194,23 +4103,19 @@ namespace StockAnalyzerApp
 
                 this.ViewModel.AnalysisFile = analysisFileName;
 
-                // Apply the them of the loaded analysis file if any
-                if (this.currentStockSerie != null && this.currentStockSerie.StockAnalysis.Theme != string.Empty)
+                // Apply the theme of the loaded analysis file if any
+                if (!string.IsNullOrEmpty(this.ViewModel.Instrument?.StockAnalysis?.Theme))
                 {
-                    this.ViewModel.Theme = this.currentStockSerie.StockAnalysis.Theme;
+                    this.ViewModel.Theme = this.ViewModel.Instrument?.StockAnalysis?.Theme;
                 }
             }
         }
         private void saveAnalysisFileMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
-
             this.SaveAnalysis(this.ViewModel.AnalysisFile);
         }
         private void saveAnalysisFileAsMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.currentStockSerie == null) return;
-
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.DefaultExt = "ulc";
             saveFileDialog.Filter = "Ultimate Chartist Analysis files (*.ulc)|*.ulc";
@@ -4330,39 +4235,21 @@ namespace StockAnalyzerApp
             OnNeedReinitialise(true);
         }
         #endregion
-        public void ShowAgenda()
-        {
-            if (this.currentStockSerie != null)
-            {
-                if (this.currentStockSerie.BelongsToGroup(Groups.CACALL))
-                {
-                    ABCDataProvider.DownloadAgenda(this.currentStockSerie);
-                }
-                if (this.currentStockSerie.Agenda != null)
-                {
-                    StockAgendaForm agendaForm = new StockAgendaForm(this.currentStockSerie);
-                    agendaForm.ShowDialog();
-                }
-                else
-                {
-                    MessageBox.Show("No agenda information for this stock", "Error");
-                }
-            }
-        }
+
         internal void OpenInZBMenu()
         {
-            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
+            if (string.IsNullOrWhiteSpace(this.ViewModel.Instrument?.Isin))
                 return;
             string url = "https://www.zonebourse.com/recherche/?q=%ISIN%";
-            url = url.Replace("%ISIN%", this.currentStockSerie.ISIN);
+            url = url.Replace("%ISIN%", this.ViewModel.Instrument.Isin);
             Process.Start(url);
         }
         internal void openInTradingViewMenu()
         {
             string url = $"https://www.tradingview.com/";
-            if (this.currentStockSerie.BelongsToGroup(Groups.PEA_EURONEXT))
+            if (this.ViewModel.Instrument.BelongsToGroup(Groups.PEA_EURONEXT))
             {
-                url = $"https://www.tradingview.com/symbols/EURONEXT-{this.currentStockSerie.Symbol}/financials-statistics-and-ratios/";
+                url = $"https://www.tradingview.com/symbols/EURONEXT-{this.ViewModel.Instrument.Symbol}/financials-statistics-and-ratios/";
             }
             else
             {
@@ -4382,10 +4269,10 @@ namespace StockAnalyzerApp
         }
         internal void OpenInYahoo()
         {
-            if (string.IsNullOrWhiteSpace(this.currentStockSerie.ISIN))
+            if (string.IsNullOrWhiteSpace(this.ViewModel.Instrument.Isin))
                 return;
 
-            YahooSearchResult searchResult = YahooDataProvider.SearchFromYahoo(this.currentStockSerie.ISIN);
+            YahooSearchResult searchResult = YahooDataProvider.SearchFromYahoo(this.ViewModel.Instrument.Isin);
             if (searchResult?.quotes != null && searchResult.quotes.Count > 0)
             {
                 string url = $"https://finance.yahoo.com/quote/{searchResult.quotes[0].symbol}/";

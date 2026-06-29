@@ -431,10 +431,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public static void CreateDirectories()
         {
-            if (!Directory.Exists(Folders.AgendaFolder))
-            {
-                Directory.CreateDirectory(Folders.AgendaFolder);
-            }
             if (!Directory.Exists(DataFolder + ABC_DAILY_FOLDER))
             {
                 Directory.CreateDirectory(DataFolder + ABC_DAILY_FOLDER);
@@ -1369,46 +1365,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
 
             return groupList != null && groupList.Contains(stockSerie.StockName);
-        }
-
-        static readonly string[] AK_SEPARATOR = new[] { " au " };
-
-        public static void DownloadAgenda(StockSerie stockSerie)
-        {
-            if (!stockSerie.BelongsToGroup(Groups.CACALL)) return;
-            if (stockSerie.Agenda == null)
-            {
-                stockSerie.Agenda = new StockAgenda();
-            }
-            else
-            {
-                if (stockSerie.Agenda.DownloadDate.AddMonths(1) > DateTime.Today)
-                    return;
-            }
-
-            try
-            {
-                var agendaItems = AbcClient.DownloadAgenda(stockSerie.AbcId);
-                if (agendaItems == null || agendaItems.Length == 0)
-                    return;
-
-                foreach (var item in agendaItems)
-                {
-                    DateTime date = DateTime.Parse(item.Item1.Split(AK_SEPARATOR, StringSplitOptions.None).Last());
-
-                    if (!stockSerie.Agenda.ContainsKey(date))
-                    {
-                        stockSerie.Agenda.Add(date, item.Item2, item.Item3);
-                    }
-                }
-                stockSerie.Agenda.DownloadDate = DateTime.Today;
-                stockSerie.Agenda.SortDescending();
-                stockSerie.SaveAgenda();
-            }
-            catch (AggregateException ex)
-            {
-                MessageBox.Show(ex.InnerExceptions.First().Message, "ABC Bourse Agenda download error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         #region Persistency

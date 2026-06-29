@@ -61,10 +61,8 @@ namespace StockAnalyzerApp
             this.showOrdersMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPositionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
-            this.showAgendaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showEventMarqueeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showGridMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showDividendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorDivMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showIndicatorTextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
@@ -356,8 +354,6 @@ namespace StockAnalyzerApp
             this.showOrdersMenuItem,
             this.showPositionsMenuItem,
             this.toolStripSeparator14,
-            this.showAgendaMenuItem,
-            this.showDividendMenuItem,
             this.showEventMarqueeMenuItem,
             this.showIndicatorDivMenuItem,
             this.showIndicatorTextMenuItem,
@@ -425,12 +421,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator14.Name = "toolStripSeparator14";
             this.toolStripSeparator14.Size = new System.Drawing.Size(230, 6);
             // 
-            // showAgendaMenuItem
-            // 
-            this.showAgendaMenuItem.Name = "showAgendaMenuItem";
-            this.showAgendaMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.showAgendaMenuItem.Text = "Show Agenda Entries";
-            // 
             // showEventMarqueeMenuItem
             // 
             this.showEventMarqueeMenuItem.Checked = true;
@@ -451,16 +441,6 @@ namespace StockAnalyzerApp
             this.showGridMenuItem.Size = new System.Drawing.Size(233, 22);
             this.showGridMenuItem.Text = "Show Grid";
             this.showGridMenuItem.Click += new System.EventHandler(this.showGridMenuItem_Click);
-            // 
-            // showDividendMenuItem
-            // 
-            this.showDividendMenuItem.Checked = true;
-            this.showDividendMenuItem.CheckOnClick = true;
-            this.showDividendMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.showDividendMenuItem.Name = "showDividendMenuItem";
-            this.showDividendMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.showDividendMenuItem.Text = "Show Dividends";
-            this.showDividendMenuItem.Click += new System.EventHandler(this.showDividendMenuItem_Click);
             // 
             // showIndicatorDivMenuItem
             // 
@@ -1279,7 +1259,6 @@ namespace StockAnalyzerApp
             // 
             // graphCloseControl
             // 
-            this.graphCloseControl.Agenda = null;
             this.graphCloseControl.ChartMode = CustomControl.GraphControls.GraphChartMode.Line;
             this.graphCloseControl.Cursor = System.Windows.Forms.Cursors.Cross;
             this.graphCloseControl.CurveList = null;
@@ -1503,7 +1482,6 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem showDrawingsMenuItem;
         private ToolStripMenuItem showEventMarqueeMenuItem;
         private ToolStripMenuItem showGridMenuItem;
-        private ToolStripMenuItem showDividendMenuItem;
         private ToolStripMenuItem showIndicatorDivMenuItem;
         private ToolStripMenuItem showIndicatorTextMenuItem;
         private ToolStripMenuItem analysisMenuItem;
@@ -1552,7 +1530,6 @@ namespace StockAnalyzerApp
         private ToolStripComboBox portfolioComboBox;
         private ToolStripButton refreshPortfolioBtn;
         private ToolStripStatusLabel portfolioStatusLbl;
-        private ToolStripMenuItem showAgendaMenuItem;
         private ToolStrip themeToolStrip;
         private ToolStripButton defaultThemeStripButton;
         private ToolStripButton deleteThemeStripButton;

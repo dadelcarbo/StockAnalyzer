@@ -435,7 +435,6 @@
     <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />
     <Compile Include="StockClasses\StockDataProviders\SocGenIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataSource.cs" />
-    <Compile Include="StockClasses\StockDividend.cs" />
     <Compile Include="StockClasses\StockDataProviders\PortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
@@ -490,7 +489,6 @@
       <DependentUpon>InvestingIntradayDataProviderConfigDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderBase.cs" />
-    <Compile Include="StockClasses\StockAgenda.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockText.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockViewableSeries.cs" />
@@ -531,7 +529,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockClouds\IStockCloud.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockClouds\StockCloudBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicatorMovingAvgBase.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ADJUSTED.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_XMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_NATR.cs" />
@@ -543,7 +540,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DURATIONEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GUPPY.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_MID.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_GR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_LOWEST.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_HIGHLOWBARS.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_STOKFBODY.cs" />
