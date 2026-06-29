@@ -22,56 +22,6 @@ namespace StockAnalyzerSettings.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EventAll")]
-        public string EventFilterMode {
-            get {
-                return ((string)(this["EventFilterMode"]));
-            }
-            set {
-                this["EventFilterMode"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data")]
-        public string InputDataFolder {
-            get {
-                return ((string)(this["InputDataFolder"]));
-            }
-            set {
-                this["InputDataFolder"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AnalysisFile {
-            get {
-                return ((string)(this["AnalysisFile"]));
-            }
-            set {
-                this["AnalysisFile"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("INDICES")]
-        public string SelectedGroup {
-            get {
-                return ((string)(this["SelectedGroup"]));
-            }
-            set {
-                this["SelectedGroup"] = value;
-            }
-        }
-
-
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -85,18 +35,6 @@ namespace StockAnalyzerSettings.Properties {
             set
             {
                 this["LastInstrument"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowSummaryOrders {
-            get {
-                return ((bool)(this["ShowSummaryOrders"]));
-            }
-            set {
-                this["ShowSummaryOrders"] = value;
             }
         }
         
@@ -121,18 +59,6 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["ShowPositions"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowDividend {
-            get {
-                return ((bool)(this["ShowDividend"]));
-            }
-            set {
-                this["ShowDividend"] = value;
             }
         }
         
@@ -211,18 +137,6 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["LoadStartYear"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int BarType {
-            get {
-                return ((int)(this["BarType"]));
-            }
-            set {
-                this["BarType"] = value;
             }
         }
         
@@ -337,18 +251,6 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MachineID {
-            get {
-                return ((string)(this["MachineID"]));
-            }
-            set {
-                this["MachineID"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1:255:0:0:0:Solid")]
         public string DrawingPen {
             get {
@@ -380,30 +282,6 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["DefaultBarNumber"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SupportShortSelling {
-            get {
-                return ((bool)(this["SupportShortSelling"]));
-            }
-            set {
-                this["SupportShortSelling"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2011-01-03")]
-        public global::System.DateTime StrategyStartDate {
-            get {
-                return ((global::System.DateTime)(this["StrategyStartDate"]));
-            }
-            set {
-                this["StrategyStartDate"] = value;
             }
         }
         
@@ -457,30 +335,6 @@ namespace StockAnalyzerSettings.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ShowAgenda {
-            get {
-                return ((string)(this["ShowAgenda"]));
-            }
-            set {
-                this["ShowAgenda"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowBarSmoothing {
-            get {
-                return ((bool)(this["ShowBarSmoothing"]));
-            }
-            set {
-                this["ShowBarSmoothing"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DownloadData {
             get {
@@ -488,18 +342,6 @@ namespace StockAnalyzerSettings.Properties {
             }
             set {
                 this["DownloadData"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2015-01-01")]
-        public global::System.DateTime DownloadStartDate {
-            get {
-                return ((global::System.DateTime)(this["DownloadStartDate"]));
-            }
-            set {
-                this["DownloadStartDate"] = value;
             }
         }
         

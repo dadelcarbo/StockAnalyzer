@@ -1,5 +1,6 @@
-﻿using StockAnalyzer.StockMath;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -20,15 +21,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
 
         public override string[] SerieNames => new string[] { "ADX(" + this.Parameters[0].ToString() + ")", "+DI", "-DI" };
-
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Black), new Pen(Color.Green), new Pen(Color.Red) };
-                return seriePens;
-            }
-        }
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main"), ColorManager.GetPen("Indicator.Fast"), ColorManager.GetPen("Indicator.Slow") };
 
         public override HLine[] HorizontalLines
         {

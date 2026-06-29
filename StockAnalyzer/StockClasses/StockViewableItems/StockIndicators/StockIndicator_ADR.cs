@@ -1,5 +1,6 @@
-﻿using StockAnalyzer.StockMath;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -15,14 +16,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "ADR(" + this.Parameters[0].ToString() + ")" };
 
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Blue) };
-                return seriePens;
-            }
-        }
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main") };
+
         public override HLine[] HorizontalLines => null;
 
         public override void ApplyTo(DataSerie stockSerie)

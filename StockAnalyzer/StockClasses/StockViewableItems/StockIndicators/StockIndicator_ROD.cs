@@ -1,5 +1,6 @@
-﻿using StockAnalyzer.StockMath;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 
@@ -14,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(0, 500), new ParamRangeFloat(0, 500) };
         public override string[] SerieNames => new string[] { $"ROD({this.Parameters[0]})" };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main") };
         public override string[] SerieFormats => serieFormats ??= new string[] { "P2" };
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine((float)this.parameters[1], new Pen(Color.Black) { Width = 2 }) };
