@@ -20,6 +20,8 @@ using static StockAnalyzer.StockClasses.StockSerie;
 
 using HtmlAgilityPack;
 using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
+using System.Runtime.CompilerServices;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
@@ -1650,6 +1652,159 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 File.WriteAllLines(excludeFileName, excludeList);
             }
             return false;
+        }
+
+        //public override DataSerie LoadData(StockInstrument instrument, BarDuration barDuration)
+        //{
+        //    switch (barDuration)
+        //    {
+        //        case BarDuration.Daily:
+        //            break;
+        //        case BarDuration.Weekly:
+        //            break;
+        //        case BarDuration.Monthly:
+        //            break;
+        //        default:
+        //            StockLog.Write($"Bar duration {barDuration} not supported for {this.GetType().Name}");
+        //            return null;
+        //    }
+        //    return null;
+        //}
+
+        //public override bool LoadDailyData(StockInstrument instrument)
+        //{
+        //    bool res = false;
+        //    StockLog.Write("Group: " + instrument.Group + " - " + instrument.DisplayName);
+
+        //    // Read from CSV files Archive + current year.
+        //    if (instrument.Count == 0)
+        //    {
+        //        res = this.LoadFromCSV(instrument);
+        //    }
+
+        //    // Load data that just has been downloaded
+        //    string abcGroup = GetABCGroup(instrument.StockGroup);
+        //    if (abcGroup != null)
+        //    {
+        //        // Group data is available only after download
+        //        LoadGroupData(abcGroup, instrument.StockGroup);
+        //    }
+        //    else
+        //    {
+        //        // Daily value is available only after download
+        //        string fileName = instrument.ISIN + "_" + instrument.Symbol + "_" + instrument.StockGroup.ToString() + ".csv";
+        //        res |= ParseCSVFile(instrument, Path.Combine(DataFolder + ABC_TMP_FOLDER, fileName));
+        //    }
+
+        //    this.ApplySplit(instrument.StockSerie);
+
+        //    return res;
+        //}
+
+        public DataSerie LoadFromCSV(StockInstrument instrument, bool loadArchive = true)
+        {
+            StockLog.Write($"Serie: {instrument.DisplayName}");
+            bool result = false;
+            string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
+            var lastArchiveDate = DateTime.MinValue;
+
+            var dailyValues = new List<StockDailyValue>();
+
+            if (loadArchive && File.Exists(fileName))
+            {
+                using (StreamReader sr = new StreamReader(fileName))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        string[] row = sr.ReadLine().Split(';');
+                        lastArchiveDate = DateTime.ParseExact(row[0], DATEFORMAT, usCulture);
+                        var value = new StockDailyValue(float.Parse(row[1], usCulture), float.Parse(row[2], usCulture), float.Parse(row[3], usCulture), float.Parse(row[4], usCulture), long.Parse(row[5]), lastArchiveDate);
+                        dailyValues.Add(value);
+                    }
+                }
+                result = true;
+            }
+
+            fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
+            DateTime lastDate = DateTime.MinValue;
+            if (File.Exists(fileName))
+            {
+                using (StreamReader sr = new StreamReader(fileName))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        string[] row = sr.ReadLine().Split(';');
+                        lastDate = DateTime.ParseExact(row[0], DATEFORMAT, usCulture);
+                        if (lastDate > lastArchiveDate)
+                        {
+                            var value = new StockDailyValue(float.Parse(row[1], usCulture), float.Parse(row[2], usCulture), float.Parse(row[3], usCulture), float.Parse(row[4], usCulture), long.Parse(row[5]), lastDate);
+                            dailyValues.Add(value);
+                        }
+                    }
+                }
+                result = true;
+            }
+            fileName = Path.Combine(DataFolder + ABC_TMP_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
+            if (File.Exists(fileName))
+            {
+                bool needSave = false;
+
+                using (StreamReader sr = new StreamReader(fileName))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        string[] row = sr.ReadLine().Split(';');
+                        var date = DateTime.ParseExact(row[1], "dd/MM/yy", frenchCulture);
+                        if (date > lastArchiveDate)
+                        {
+                            needSave = true;
+                            lastArchiveDate = date;
+                            var value = new StockDailyValue(float.Parse(row[2], frenchCulture), float.Parse(row[3], frenchCulture), float.Parse(row[4], frenchCulture), float.Parse(row[5], frenchCulture), long.Parse(row[6]), date);
+                            dailyValues.Add(value);
+                        }
+                    }
+                }
+                File.Delete(fileName);
+
+                if (loadArchive && needSave)
+                {
+                    SaveToCSV(instrument, dailyValues, lastArchiveDate < new DateTime(lastDate.Year, lastDate.Month, 1).AddMonths(-1));
+                }
+                result = true;
+            }
+
+            return new DataSerie(instrument, BarDuration.Daily, dailyValues.ToArray());
+        }
+
+        public void SaveToCSV(StockInstrument instrument, IEnumerable<StockDailyValue> dailyValues, bool forceArchive = true)
+        {
+            if (dailyValues.Count() == 0)
+                return;
+
+            string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
+            var lastDate = dailyValues.Last().DATE;
+            var pivotDate = DateTime.MinValue;
+            if (forceArchive || !File.Exists(fileName))
+            {
+                pivotDate = new DateTime(lastDate.Year, lastDate.Month, 1).AddDays(-1);
+                if (dailyValues.Any(v => v.DATE <= pivotDate))
+                {
+                    using StreamWriter sw = new StreamWriter(fileName);
+                    foreach (var value in dailyValues.Where(v => v.DATE <= pivotDate))
+                    {
+                        sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
+                    }
+                }
+            }
+
+            fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
+            using (StreamWriter sw = new StreamWriter(fileName))
+            {
+                foreach (var value in dailyValues.Where(v => v.DATE > pivotDate && v.IsComplete))
+                {
+                    sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
+                }
+            }
         }
     }
 }

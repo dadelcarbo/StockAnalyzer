@@ -1,9 +1,11 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
+﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.Bnp;
 using StockAnalyzer.StockClasses.StockDataProviders.CNN;
 using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
@@ -469,5 +471,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             return;
         }
+
+        public virtual DataSerie LoadData(StockInstrument instrument, BarDuration duration)
+        {
+            if (!instrument.StockSerie.Initialise())
+                return null;
+
+            try
+            {
+                instrument.StockSerie.BarDuration = duration;
+
+                var dataSerie = new DataSerie(instrument, duration, instrument.StockSerie.ValueArray);
+                return dataSerie;
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex.Message);
+            }
+
+            return null;
     }
+}
 }

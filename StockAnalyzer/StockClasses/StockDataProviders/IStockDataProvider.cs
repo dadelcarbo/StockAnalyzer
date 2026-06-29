@@ -1,3 +1,4 @@
+using StockAnalyzer.StockData;
 using StockAnalyzerApp.StockData;
 using System;
 
@@ -34,6 +35,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         string DisplayName { get; }
 
         bool SupportsIntradayDownload { get; }
+
+        DataSerie LoadData(StockInstrument instrument, BarDuration barDuration);
 
         bool LoadData(StockSerie stockSerie);
         bool DownloadDailyData(StockSerie stockSerie);

@@ -52,8 +52,11 @@ namespace StockAnalyzerApp.StockData
         {
             if (!cache.ContainsKey(duration))
             {
-                StockSerie.BarDuration = duration;
-                if (StockSerie.Count > 0)
+                var dp = StockDataProviderBase.GetDataProvider(this.DataProvider);
+
+                var dataSerie = dp.LoadData(this, duration);
+
+                if (dataSerie != null)
                 {
                     cache.Add(duration, new DataSerie(this, duration, StockSerie.ValueArray));
                 }
