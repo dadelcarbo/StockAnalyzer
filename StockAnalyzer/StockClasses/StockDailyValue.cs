@@ -1,6 +1,10 @@
-﻿using System;
+﻿using ExcelDataReader.Log;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
+using System;
 using System.Globalization;
 using System.IO;
+using System.IO.MemoryMappedFiles;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -198,5 +202,63 @@ namespace StockAnalyzer.StockClasses
 
         private bool isComplete = true;
         public bool IsComplete { get { return isComplete; } set { isComplete = value; } }
+
+        #region Serialization
+
+        // Updated size: 4 floats (16 bytes) + 2 longs (16 bytes) = 32 bytes
+        public const int SizeInBytes = 4 * sizeof(float) + 2 * sizeof(long);
+
+        // Serialize to a memory-mapped file (for ultra-fast access)
+        public static void SerializeToMemoryMappedFile(StockDailyValue[] data, string filePath)
+        {
+            long fileSize = data.Length * SizeInBytes;
+
+            using (var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Create, null, fileSize, MemoryMappedFileAccess.ReadWrite))
+            using (var accessor = mmf.CreateViewAccessor())
+            {
+                int i = 0;
+                foreach (var item in data)
+                {
+                    long offset = i++ * SizeInBytes;
+                    accessor.Write(offset, item.OPEN); offset += sizeof(float);
+                    accessor.Write(offset, item.HIGH); offset += sizeof(float);
+                    accessor.Write(offset, item.LOW); offset += sizeof(float);
+                    accessor.Write(offset, item.CLOSE); offset += sizeof(float);
+                    accessor.Write(offset, item.VOLUME); offset += sizeof(long);
+                    accessor.Write(offset, item.DATE.ToBinary()); offset += sizeof(long);
+                }
+            }
+        }
+
+        // Deserialize from a memory-mapped file
+        public static StockDailyValue[] DeserializeFromMemoryMappedFile(string filePath)
+        {
+            // Get the file size to calculate the count
+            long fileSize = new FileInfo(filePath).Length;
+            int count = (int)(fileSize / SizeInBytes);
+
+            var data = new StockDailyValue[count];
+
+            using (var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, null, 0, MemoryMappedFileAccess.Read))
+            using (var accessor = mmf.CreateViewAccessor())
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    long offset = i * SizeInBytes;
+
+                    data[i] = new StockDailyValue(
+                        accessor.ReadSingle(offset += sizeof(float)),
+                         accessor.ReadSingle(offset += sizeof(float)),
+                         accessor.ReadSingle(offset += sizeof(float)),
+                         accessor.ReadSingle(offset += sizeof(float)),
+                         accessor.ReadInt64(offset += sizeof(float)),
+                         DateTime.FromBinary(accessor.ReadInt64(offset += sizeof(long))));
+                }
+            }
+            return data;
+        }
     }
+
+
+    #endregion
 }

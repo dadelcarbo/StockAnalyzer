@@ -16,12 +16,8 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static StockAnalyzer.StockClasses.StockSerie;
-
-using HtmlAgilityPack;
 using StockAnalyzerApp.StockData;
 using StockAnalyzer.StockData;
-using System.Runtime.CompilerServices;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
@@ -657,6 +653,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             {
                 res = this.LoadFromCSV(stockSerie);
             }
+
+            var dailyValues = stockSerie.ValueArray;
+
+            string testFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".dat");
+            StockDailyValue.SerializeToMemoryMappedFile(dailyValues, testFileName);
+
+            var dailValues2 = StockDailyValue.DeserializeFromMemoryMappedFile(testFileName);
 
             // Load data that just has been downloaded
             string abcGroup = GetABCGroup(stockSerie.StockGroup);
