@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using StockAnalyzerApp.StockData;
 using StockAnalyzer.StockData;
+using FastBars;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
@@ -654,12 +655,11 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 res = this.LoadFromCSV(stockSerie);
             }
 
-            var dailyValues = stockSerie.ValueArray;
-
             string testFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".dat");
-            StockDailyValue.SerializeToMemoryMappedFile(dailyValues, testFileName);
-
-            var dailValues2 = StockDailyValue.DeserializeFromMemoryMappedFile(testFileName);
+            var dailyValues = stockSerie.ValueArray;
+            Persist1(testFileName, dailyValues);
+            var bars = dailyValues.Select(x => new StockBar { open = x.OPEN, high = x.HIGH, low = x.LOW, close = x.CLOSE, volume = x.VOLUME, dateTicks = x.DATE.ToBinary() }).ToArray();
+            Persist2(testFileName, bars);
 
             // Load data that just has been downloaded
             string abcGroup = GetABCGroup(stockSerie.StockGroup);
@@ -679,6 +679,40 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             return res;
         }
+
+        private static void Persist1(string fileName, StockDailyValue[] dailyValues)
+        {
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < 100; i++)
+            {
+                //StockDailyValue.SerializeToMemoryMappedFile(dailyValues, fileName);
+                var dailValues2 = StockDailyValue.DeserializeFromMemoryMappedFile(fileName);
+            }
+            StockLog.Write($"Persist 1: {sw.ElapsedMilliseconds}");
+        }
+        private static void Persist2(string fileName, StockBar[] bars)
+        {
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < 100; i++)
+            {
+                //StockBar.Serialize(fileName, bars);
+                var dailValues2 = StockBar.Deserialize(fileName);
+
+                var values = dailValues2.Select(v=> new StockDailyValue(v.open, v.high, v.low, v.close, v.volume, DateTime.FromBinary(v.dateTicks))).ToList();
+            }
+            StockLog.Write($"Persist 2: {sw.ElapsedMilliseconds}");
+        }
+        private void Persist3(StockSerie stockSerie, string fileName)
+        {
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < 100; i++)
+            {
+                stockSerie.Clear();
+                this.LoadFromCSV(stockSerie);
+            }
+            StockLog.Write($"Persist 3: {sw.ElapsedMilliseconds}");
+        }
+
         private void LoadGroupData(string abcGroup, Groups stockGroup)
         {
             StockLog.Write("Group: " + abcGroup);
