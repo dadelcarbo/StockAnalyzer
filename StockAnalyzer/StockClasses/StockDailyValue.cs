@@ -239,7 +239,7 @@ namespace StockAnalyzer.StockClasses
 
             var data = new StockDailyValue[count];
 
-            using (var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, null, 0, MemoryMappedFileAccess.Read))
+            using (var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, null, 0, MemoryMappedFileAccess.ReadWrite))
             using (var accessor = mmf.CreateViewAccessor())
             {
                 for (int i = 0; i < count; i++)
