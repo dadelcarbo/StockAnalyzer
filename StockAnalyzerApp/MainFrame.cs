@@ -309,6 +309,9 @@ namespace StockAnalyzerApp
                     this.Refresh();
                     this.Cursor = Cursors.WaitCursor;
                 }
+
+                this.InitialiseBarDurationComboBox();
+
                 var dataSerie = ViewModel.Instrument.GetDataSerie(this.ViewModel.BarDuration);
                 if (dataSerie == null || dataSerie.Count == 0)
                 {
@@ -335,10 +338,37 @@ namespace StockAnalyzerApp
 
         private void InitialiseBarDurationComboBox()
         {
-            this.barDurationComboBox.Items.Clear();
-            this.barDurationComboBox.Items.AddRange(StockBarDuration.BarDurationArray);
-            this.barDurationComboBox.SelectedIndex = 0;
-            this.ViewModel.BarDuration = BarDuration.Daily;
+            object[] durations = this.ViewModel?.Instrument == null ? StockBarDuration.BarDurationArray : this.ViewModel.Instrument.SupportedDurations.Cast<object>().ToArray();
+
+            bool needUpdate = false;
+            if (durations.Length == this.barDurationComboBox.Items.Count)
+            {
+                for (int i = 0; i < durations.Length; i++)
+                {
+                    if ((BarDuration)durations[i] != (BarDuration)this.barDurationComboBox.Items[i])
+                    {
+                        needUpdate = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                needUpdate = true;
+            }
+
+            if (needUpdate)
+            {
+                this.barDurationComboBox.Items.Clear();
+                this.barDurationComboBox.Items.AddRange(durations);
+                SetBarDurationCombo((BarDuration)durations[0]);
+            }
+
+            if (!durations.Contains(this.ViewModel.BarDuration))
+            {
+                SetBarDurationCombo((BarDuration)durations[0]);
+                this.ViewModel.SetBarDuration((BarDuration)durations[0], false);
+            }
         }
 
         /// <summary>

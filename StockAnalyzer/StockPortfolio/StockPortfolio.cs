@@ -90,7 +90,7 @@ namespace StockAnalyzer.StockPortfolio
         public float RiskFreeValue { get; set; }
 
         [JsonIgnore]
-        public float CAGR => (float)Math.Pow(TotalValue / InitialBalance, 365.0/ (LastSyncDate - CreationDate).Days) - 1.0f;
+        public float CAGR => (float)Math.Pow(TotalValue / InitialBalance, 365.0 / (LastSyncDate - CreationDate).Days) - 1.0f;
 
         public float DrawDown => (MaxValue - TotalValue) / MaxValue;
         public float MaxValue { get; set; }
@@ -484,7 +484,7 @@ namespace StockAnalyzer.StockPortfolio
             }
             var saxoSession = LoginService.SilentLogin(this.SaxoClientId, Folders.Portfolio, this.IsSaxoSimu);
             if (saxoSession == null)
-            { 
+            {
                 StockLog.Write($"Silent login failed for portfolio: {this.Name}");
                 return false;
             }
@@ -1231,10 +1231,10 @@ namespace StockAnalyzer.StockPortfolio
             {
                 html = HtmlHelper.GenerateHtmlTable(this.Positions, new List<Expression<Func<StockPosition, object>>>
                 {
-p => p.StockName,
-p=>p.ISIN,
-p=>p.EntryQty,
-p=>p.EntryValue
+                    p => p.StockName,
+                    p=>p.ISIN,
+                    p=>p.EntryQty,
+                    p=>p.EntryValue
                 });
             }
             return html;

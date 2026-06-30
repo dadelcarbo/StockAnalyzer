@@ -341,7 +341,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         var stockSerie = new StockSerie(row[2], row[1], Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
                         stockSerie.ISIN = row[1];
                         stockDictionary.Add(row[2], stockSerie);
-                        stockSerie.Underlying = row[0]; 
+                        stockSerie.Underlying = row[0];
 
                         if (RefSerie == null && download) // Check if provider is up to date by checking the reference serie
                         {
@@ -389,7 +389,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override string DisplayName => "Saxo Turbos";
 
-        public override void  OpenInDataProvider(StockInstrument stockInstrument)
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
         {
             Process.Start($"https://fr-be.structured-products.saxo/products/{stockInstrument.Isin}");
         }
@@ -411,5 +411,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
             stockSerie.IsInitialised = false;
         }
+
+        public override BarDuration[] SupportedDurations => new BarDuration[] { BarDuration.H_1, BarDuration.H_2, BarDuration.H_3, BarDuration.H_4 };
     }
 }

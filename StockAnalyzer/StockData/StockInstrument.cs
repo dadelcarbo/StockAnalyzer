@@ -73,6 +73,7 @@ namespace StockAnalyzerApp.StockData
             }
             return cache[duration];
         }
+        public BarDuration[] SupportedDurations => StockDataProviderBase.GetDataProvider(this.DataProvider)?.SupportedDurations;
 
         public bool BelongsToGroup(Groups group)
         {
