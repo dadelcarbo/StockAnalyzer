@@ -490,6 +490,13 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
 
             return null;
+        }
+
+        public bool SupportsDuration(BarDuration duration)
+        {
+            return SupportedDurations.Contains(duration);
+        }
+
+        public virtual BarDuration[] SupportedDurations => new BarDuration[] { BarDuration.Daily, BarDuration.Weekly, BarDuration.Monthly };
     }
-}
 }

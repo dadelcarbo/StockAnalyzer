@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
@@ -43,6 +44,7 @@ namespace StockAnalyzerApp.StockData
         {
             cache.Clear();
         }
+
         /// <summary>
         /// Return data from cache dictionnary
         /// </summary>
@@ -53,6 +55,12 @@ namespace StockAnalyzerApp.StockData
             if (!cache.ContainsKey(duration))
             {
                 var dp = StockDataProviderBase.GetDataProvider(this.DataProvider);
+
+                if (dp == null)
+                    throw new InvalidOperationException($"Data Provider {this.DataProvider} not found, cannot get data serie !");
+
+                if (!dp.SupportsDuration(duration))
+                    return null;
 
                 var dataSerie = dp.LoadData(this, duration);
 
@@ -65,7 +73,6 @@ namespace StockAnalyzerApp.StockData
             }
             return cache[duration];
         }
-
 
         public bool BelongsToGroup(Groups group)
         {

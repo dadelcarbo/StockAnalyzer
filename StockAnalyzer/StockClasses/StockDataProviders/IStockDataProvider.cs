@@ -53,5 +53,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         void AddSplit(StockSerie stockSerie, DateTime date, float before, float after);
         void ApplyTrimBefore(StockSerie stockSerie, DateTime upToDate);
+
+        bool SupportsDuration(BarDuration duration);
+
+        BarDuration[] SupportedDurations { get; }
     }
 }
