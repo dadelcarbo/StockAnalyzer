@@ -34,6 +34,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
     {
         private static readonly string ABC_INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\ABC";
         private static readonly string ABC_DAILY_FOLDER = DAILY_SUBFOLDER + @"\ABC";
+        private static readonly string ABC_DAT_FOLDER = DAILY_SUBFOLDER + @"\ABC\Dat";
         private static readonly string ABC_DAILY_CFG_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl";
         private static readonly string ABC_DAILY_CFG_GROUP_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\group";
         private static readonly string ABC_DAILY_CFG_SECTOR_FOLDER = DAILY_SUBFOLDER + @"\ABC\lbl\sector";
@@ -430,6 +431,10 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public static void CreateDirectories()
         {
+            if (!Directory.Exists(DataFolder + ABC_DAT_FOLDER))
+            {
+                Directory.CreateDirectory(DataFolder + ABC_DAT_FOLDER);
+            }
             if (!Directory.Exists(DataFolder + ABC_DAILY_FOLDER))
             {
                 Directory.CreateDirectory(DataFolder + ABC_DAILY_FOLDER);
@@ -655,12 +660,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 res = this.LoadFromCSV(stockSerie);
             }
 
-            string testFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".dat");
-            var dailyValues = stockSerie.ValueArray;
-            Persist1(testFileName, dailyValues);
-            var bars = dailyValues.Select(x => new StockBar { open = x.OPEN, high = x.HIGH, low = x.LOW, close = x.CLOSE, volume = x.VOLUME, dateTicks = x.DATE.ToBinary() }).ToArray();
-            Persist2(testFileName, bars);
-
             // Load data that just has been downloaded
             string abcGroup = GetABCGroup(stockSerie.StockGroup);
             if (abcGroup != null)
@@ -678,39 +677,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             this.ApplySplit(stockSerie);
 
             return res;
-        }
-
-        private static void Persist1(string fileName, StockDailyValue[] dailyValues)
-        {
-            var sw = Stopwatch.StartNew();
-            for (int i = 0; i < 100; i++)
-            {
-                //StockDailyValue.SerializeToMemoryMappedFile(dailyValues, fileName);
-                var dailValues2 = StockDailyValue.DeserializeFromMemoryMappedFile(fileName);
-            }
-            StockLog.Write($"Persist 1: {sw.ElapsedMilliseconds}");
-        }
-        private static void Persist2(string fileName, StockBar[] bars)
-        {
-            var sw = Stopwatch.StartNew();
-            for (int i = 0; i < 100; i++)
-            {
-                //StockBar.Serialize(fileName, bars);
-                var dailValues2 = StockBar.Deserialize(fileName);
-
-                var values = dailValues2.Select(v=> new StockDailyValue(v.open, v.high, v.low, v.close, v.volume, DateTime.FromBinary(v.dateTicks))).ToList();
-            }
-            StockLog.Write($"Persist 2: {sw.ElapsedMilliseconds}");
-        }
-        private void Persist3(StockSerie stockSerie, string fileName)
-        {
-            var sw = Stopwatch.StartNew();
-            for (int i = 0; i < 100; i++)
-            {
-                stockSerie.Clear();
-                this.LoadFromCSV(stockSerie);
-            }
-            StockLog.Write($"Persist 3: {sw.ElapsedMilliseconds}");
         }
 
         private void LoadGroupData(string abcGroup, Groups stockGroup)
@@ -1410,9 +1376,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         const string DATEFORMAT = "dd/MM/yyyy";
         public void SaveToCSV(StockSerie stockSerie, bool forceArchive = true)
         {
+            string fileName = Path.Combine(DataFolder + ABC_DAT_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".dat");
+
+            var bars = stockSerie.Values.Select(x => new StockBar { open = x.OPEN, high = x.HIGH, low = x.LOW, close = x.CLOSE, volume = x.VOLUME, dateTicks = x.DATE.ToBinary() }).ToArray();
+            StockBar.Serialize(fileName, bars);
+
+            return;
+
             if (stockSerie.Values.Count() == 0)
                 return;
-            string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+            //string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
             var lastDate = stockSerie.Keys.Last();
             var pivotDate = DateTime.MinValue;
             if (forceArchive || !File.Exists(fileName))
@@ -1489,13 +1462,23 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             return encoding.GetString(lineBytes.ToArray()).TrimEnd('\r', '\n');
         }
 
-
-
         public bool LoadFromCSV(StockSerie stockSerie, bool loadArchive = true)
         {
             StockLog.Write($"Serie: {stockSerie.StockName}");
+            string fileName = Path.Combine(DataFolder + ABC_DAT_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".dat");
+            if (File.Exists(fileName))
+            {
+                var bars = StockBar.Deserialize(fileName);
+                var dailyValues = bars.Select(v => new StockDailyValue(v.open, v.high, v.low, v.close, v.volume, DateTime.FromBinary(v.dateTicks)));
+                foreach (var dailyValue in dailyValues)
+                {
+                    stockSerie.Add(dailyValue.DATE, dailyValue);
+                }
+                return true;
+            }
+
             bool result = false;
-            string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+            fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
             var lastArchiveDate = DateTime.MinValue;
             if (loadArchive && File.Exists(fileName))
             {
@@ -1815,10 +1798,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
         public void SaveToCSV(StockInstrument instrument, IEnumerable<StockDailyValue> dailyValues, bool forceArchive = true)
         {
+            string fileName = Path.Combine(DataFolder + ABC_DAT_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".dat");
+
+            var bars = dailyValues.Select(x => new StockBar { open = x.OPEN, high = x.HIGH, low = x.LOW, close = x.CLOSE, volume = x.VOLUME, dateTicks = x.DATE.ToBinary() }).ToArray();
+            StockBar.Serialize(fileName, bars);
+
+            return;
+
             if (dailyValues.Count() == 0)
                 return;
 
-            string fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
+            fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
             var lastDate = dailyValues.Last().DATE;
             var pivotDate = DateTime.MinValue;
             if (forceArchive || !File.Exists(fileName))

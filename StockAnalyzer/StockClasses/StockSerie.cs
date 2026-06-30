@@ -716,7 +716,7 @@ namespace StockAnalyzer.StockClasses
                                 indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
                                 if (this.HasVolume || !indicator.RequiresVolumeData)
                                 {
-                                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
+                                    var dataSerie = stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, this);
                                 }
                                 else
                                 {
