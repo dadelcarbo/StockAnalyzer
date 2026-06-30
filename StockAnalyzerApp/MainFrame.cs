@@ -107,9 +107,6 @@ namespace StockAnalyzerApp
 
         public GraphCloseControl GraphCloseControl => this.graphCloseControl;
 
-        private StockSerie currentStockSerie2 = null;
-        private StockSerie CurrentStockSerie => currentStockSerie2;
-
         private StockPortfolio portfolio;
         public StockPortfolio Portfolio
         {
@@ -3886,11 +3883,11 @@ namespace StockAnalyzerApp
             }
 
             //
-            if (this.CurrentStockSerie != null && !string.IsNullOrEmpty(this.CurrentStockSerie.StockAnalysis.Theme))
+            if (!string.IsNullOrEmpty(this.ViewModel.Instrument?.StockAnalysis?.Theme))
             {
-                if (this.themeComboBox.Items.Contains(CurrentStockSerie.StockAnalysis.Theme))
+                if (this.themeComboBox.Items.Contains(this.ViewModel.Instrument.StockAnalysis.Theme))
                 {
-                    this.themeComboBox.SelectedItem = CurrentStockSerie.StockAnalysis.Theme;
+                    this.themeComboBox.SelectedItem = this.ViewModel.Instrument.StockAnalysis.Theme;
                 }
                 else if (themeComboBox.Items.Contains(Settings.Default.SelectedTheme))
                 {
@@ -4033,15 +4030,8 @@ namespace StockAnalyzerApp
                 }
             }
 
+            this.themeComboBox.SelectedItem = EMPTY_THEME;
             this.themeComboBox.Items.Remove(this.ViewModel.Theme);
-            if (this.CurrentStockSerie.StockAnalysis.Theme != string.Empty)
-            {
-                this.themeComboBox.SelectedItem = this.CurrentStockSerie.StockAnalysis.Theme;
-            }
-            else
-            {
-                this.themeComboBox.SelectedItem = this.themeComboBox.Items[0].ToString();
-            }
         }
         #endregion
 
@@ -4260,7 +4250,7 @@ namespace StockAnalyzerApp
 
         internal void OpenInDataProvider()
         {
-            IStockDataProvider dataProvider = StockDataProviderBase.GetDataProvider(this.CurrentStockSerie.DataProvider);
+            IStockDataProvider dataProvider = StockDataProviderBase.GetDataProvider(this.ViewModel.Instrument.DataProvider);
             if (dataProvider == null)
             {
                 return;
