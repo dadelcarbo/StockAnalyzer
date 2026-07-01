@@ -16,20 +16,20 @@ namespace Saxo.OpenAPI.TradingServices
         {
             if (File.Exists(Folders.SaxoInstruments))
             {
-                InstrumentCache = JsonConvert.DeserializeObject<List<Instrument>>(File.ReadAllText(Folders.SaxoInstruments));
+                InstrumentCache = JsonConvert.DeserializeObject<List<SaxoInstrument>>(File.ReadAllText(Folders.SaxoInstruments));
             }
             else
             {
-                InstrumentCache = new List<Instrument>();
+                InstrumentCache = new List<SaxoInstrument>();
             }
         }
-        public static readonly List<Instrument> InstrumentCache;
+        public static readonly List<SaxoInstrument> InstrumentCache;
 
         //static readonly string ASSET_TYPES = "Stock%2CMiniFuture%2CWarrantOpenEndKnockOut%2CEtf%2CCertificateConstantLeverage";
 
         static readonly string ASSET_TYPES = "MutualFund%2CCertificateUncappedCapitalProtection%2CCertificateCappedCapitalProtected%2CCertificateDiscount%2CCertificateCappedOutperformance%2CCertificateCappedBonus%2CCertificateExpress%2CCertificateTracker%2CCertificateUncappedOutperformance%2CCertificateBonus%2CCertificateConstantLeverage%2CStock%2CEtf%2CEtc%2CEtn%2CFund%2CRights%2CMiniFuture%2CWarrantKnockOut%2CWarrantOpenEndKnockOut%2CWarrantDoubleKnockOut%2CIpoOnStock%2CCompanyWarrant%2CStockIndex"; // %2CSrdOnStock%2CSrdOnEtf
 
-        public Instrument GetInstrumentByIsin(string isin)
+        public SaxoInstrument GetInstrumentByIsin(string isin)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
-        public Instrument GetInstrumentById(long uic)
+        public SaxoInstrument GetInstrumentById(long uic)
         {
             var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes={ASSET_TYPES}";
             try
@@ -97,7 +97,7 @@ namespace Saxo.OpenAPI.TradingServices
                     }
                     else
                     {
-                        instrument = new Instrument
+                        instrument = new SaxoInstrument
                         {
                             Identifier = uic,
                             Symbol = uic.ToString(),
@@ -142,7 +142,7 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
-        public PriceInfo GetInstrumentPrice(Instrument instrument, Account account)
+        public PriceInfo GetInstrumentPrice(SaxoInstrument instrument, Account account)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
-        public async Task<PriceInfo> GetInstrumentPriceAsync(Instrument instrument, Account account)
+        public async Task<PriceInfo> GetInstrumentPriceAsync(SaxoInstrument instrument, Account account)
         {
             try
             {
@@ -171,10 +171,10 @@ namespace Saxo.OpenAPI.TradingServices
 
     public class Instruments
     {
-        public Instrument[] Data { get; set; }
+        public SaxoInstrument[] Data { get; set; }
     }
 
-    public class Instrument
+    public class SaxoInstrument
     {
         public string AssetType { get; set; }
         public string CurrencyCode { get; set; }

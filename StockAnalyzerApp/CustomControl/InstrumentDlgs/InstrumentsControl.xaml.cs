@@ -173,9 +173,9 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                         this.Form.TopMost = false;
                     }
                 }
-                else if (e.AddedCells[0].Item is Instrument)
+                else if (e.AddedCells[0].Item is SaxoInstrument)
                 {
-                    var item = e.AddedCells[0].Item as Instrument;
+                    var item = e.AddedCells[0].Item as SaxoInstrument;
                     if (string.IsNullOrEmpty(item.Isin))
                         return;
 

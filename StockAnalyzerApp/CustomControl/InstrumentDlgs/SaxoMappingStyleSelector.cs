@@ -31,7 +31,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             }
             else
             {
-                var instrument = item as Instrument;
+                var instrument = item as SaxoInstrument;
                 if (instrument == null)
                     return null;
 

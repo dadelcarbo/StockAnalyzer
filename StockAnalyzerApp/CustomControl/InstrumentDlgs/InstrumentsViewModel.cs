@@ -239,7 +239,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
         #region Instruments
 
-        public List<Instrument> Instruments => InstrumentService.InstrumentCache;
+        public List<SaxoInstrument> Instruments => InstrumentService.InstrumentCache;
 
         private CommandBase saveInstrumentsCommand;
         public ICommand SaveInstrumentsCommand => saveInstrumentsCommand ??= new CommandBase(SaveInstruments);

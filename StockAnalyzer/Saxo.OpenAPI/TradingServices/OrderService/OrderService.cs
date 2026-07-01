@@ -10,7 +10,7 @@ namespace Saxo.OpenAPI.TradingServices
 {
     public class OrderService : BaseService
     {
-        public OrderResponse PatchOrder(Account account, Instrument instrument, long orderId, string orderType, string buySell, int qty, decimal value)
+        public OrderResponse PatchOrder(Account account, SaxoInstrument instrument, long orderId, string orderType, string buySell, int qty, decimal value)
         {
             var patchOrder = new PatchOrder
             {
@@ -26,7 +26,7 @@ namespace Saxo.OpenAPI.TradingServices
             };
             return Patch<OrderResponse>("trade/v2/orders", patchOrder);
         }
-        public OrderResponse BuyMarketOrder(Account account, Instrument instrument, int qty, decimal stopValue)
+        public OrderResponse BuyMarketOrder(Account account, SaxoInstrument instrument, int qty, decimal stopValue)
         {
             var orderRequest = new OrderRequest
             {
@@ -59,7 +59,7 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-        public OrderResponse BuyLimitOrder(Account account, Instrument instrument, int qty, decimal limitValue, decimal stopValue, bool T1)
+        public OrderResponse BuyLimitOrder(Account account, SaxoInstrument instrument, int qty, decimal limitValue, decimal stopValue, bool T1)
         {
             var orderRequest = new OrderRequest
             {
@@ -129,7 +129,7 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
-        public OrderResponse BuyTresholdOrder(Account account, Instrument instrument, int qty, decimal thresholdValue, decimal stopValue)
+        public OrderResponse BuyTresholdOrder(Account account, SaxoInstrument instrument, int qty, decimal thresholdValue, decimal stopValue)
         {
             var orderRequest = new OrderRequest
             {
@@ -163,7 +163,7 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-        public OrderResponse SellMarketOrder(Account account, Instrument instrument, int qty)
+        public OrderResponse SellMarketOrder(Account account, SaxoInstrument instrument, int qty)
         {
             var orderRequest = new OrderRequest
             {
@@ -178,7 +178,7 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-        public OrderResponse SellLimitOrder(Account account, Instrument instrument, int qty, decimal limitValue)
+        public OrderResponse SellLimitOrder(Account account, SaxoInstrument instrument, int qty, decimal limitValue)
         {
             var orderRequest = new OrderRequest
             {
@@ -194,7 +194,7 @@ namespace Saxo.OpenAPI.TradingServices
             return PostOrder(orderRequest);
         }
 
-        public OrderResponse SellStopOrder(Account account, Instrument instrument, int qty, decimal stopValue)
+        public OrderResponse SellStopOrder(Account account, SaxoInstrument instrument, int qty, decimal stopValue)
         {
             var orderRequest = new OrderRequest
             {

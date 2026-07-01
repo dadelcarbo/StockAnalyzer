@@ -71,14 +71,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                     if (line.StartsWith("$")) break;
 
                     var row = line.Split(',');
-                    var instrument = instrumentService.GetInstrumentById(long.Parse(row[0]));
-                    if (instrument != null && !stockDictionary.ContainsKey(instrument.Description))
+                    var saxoInstrument = instrumentService.GetInstrumentById(long.Parse(row[0]));
+                    if (saxoInstrument != null && !stockDictionary.ContainsKey(saxoInstrument.Description))
                     {
-                        var stockSerie = new StockSerie(instrument.Description, instrument.Symbol, Groups.SAXO, StockDataProvider.Saxo, BarDuration.Daily);
+                        var stockSerie = new StockSerie(saxoInstrument.Description, saxoInstrument.Symbol, Groups.SAXO, StockDataProvider.Saxo, BarDuration.Daily);
                         stockSerie.ISIN = row[1];
-                        stockDictionary.Add(instrument.Description, stockSerie);
+                        stockDictionary.Add(saxoInstrument.Description, stockSerie);
 
-                        stockSerie.Uic = instrument.Identifier;
+                        stockSerie.Uic = saxoInstrument.Identifier;
                     }
                     else
                     {

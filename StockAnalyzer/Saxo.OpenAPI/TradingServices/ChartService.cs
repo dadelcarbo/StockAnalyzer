@@ -17,8 +17,8 @@ namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
             if (!LoginService.IsConnected)
                 return null;
 
-            var instrument = instrumentService.GetInstrumentById(uic);
-            if (instrument == null)
+            var saxoInstrument = instrumentService.GetInstrumentById(uic);
+            if (saxoInstrument == null)
                 return null;
 
             int horizon;
@@ -61,11 +61,11 @@ namespace StockAnalyzer.Saxo.OpenAPI.TradingServices
             string method;
             if (from == null)
             {
-                method = $"chart/v1/charts/?AssetType={instrument.AssetType}&Horizon={horizon}&Uic={instrument.Identifier}";
+                method = $"chart/v1/charts/?AssetType={saxoInstrument.AssetType}&Horizon={horizon}&Uic={saxoInstrument.Identifier}";
             }
             else
             {
-                method = $"chart/v1/charts/?AssetType={instrument.AssetType}&Horizon={horizon}&Mode=From&Time={from}&Uic={instrument.Identifier}";
+                method = $"chart/v1/charts/?AssetType={saxoInstrument.AssetType}&Horizon={horizon}&Mode=From&Time={from}&Uic={saxoInstrument.Identifier}";
             }
             try
             {
