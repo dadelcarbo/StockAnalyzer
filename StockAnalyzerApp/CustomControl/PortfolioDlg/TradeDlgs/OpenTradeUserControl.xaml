@@ -54,11 +54,11 @@
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="55">Name:</Label>
-                        <TextBox Text="{Binding StockSerie.StockName, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
+                        <TextBox Text="{Binding StockInstrument.DisplayName, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="55">Symbol:</Label>
-                        <TextBox Text="{Binding Symbol, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
+                        <TextBox Text="{Binding StockInstrument.Symbol, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
                     </StackPanel>
 
                     <StackPanel Margin="1" Orientation="Horizontal">

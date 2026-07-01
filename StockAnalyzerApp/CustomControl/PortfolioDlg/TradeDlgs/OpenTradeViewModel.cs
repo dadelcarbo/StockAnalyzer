@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.GraphControls;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 
@@ -22,7 +23,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         private bool limitOrder;
         private bool thresholdOrder;
 
-        public StockSerie StockSerie { get; set; }
+        public StockInstrument StockInstrument { get; set; }
+
+        public StockDailyValue LastValue { get; set; }
 
         private void OnEntryChanged()
         {
@@ -62,19 +65,19 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 {
                     if (LimitOrder)
                     {
-                        entryValue = Math.Min(value, this.entryValue = this.StockSerie.LastValue.CLOSE);
+                        entryValue = Math.Min(value, this.entryValue = this.LastValue.CLOSE);
                     }
                     else
                     {
                         if (ThresholdOrder)
                         {
                             // Find long reentry
-                            entryValue = this.LongReentry != 0 ? this.LongReentry : entryValue = Math.Max(value, this.entryValue = this.StockSerie.LastValue.CLOSE);
+                            entryValue = this.LongReentry != 0 ? this.LongReentry : entryValue = Math.Max(value, this.entryValue = this.LastValue.CLOSE);
                             this.LongReentry = 0;
                         }
                         else
                         {
-                            this.entryValue = this.StockSerie.LastValue.CLOSE;
+                            this.entryValue = this.LastValue.CLOSE;
                         }
                     }
                     OnEntryChanged();
@@ -82,9 +85,9 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
                 }
             }
         }
-        public bool MarketOrder { get => marketOrder; set { marketOrder = value; if (value) this.EntryValue = this.StockSerie.LastValue.CLOSE; this.OnPropertyChanged("IsValueEditable"); } }
-        public bool LimitOrder { get => limitOrder; set { limitOrder = value; if (value) this.EntryValue = this.StockSerie.LastValue.LOW; this.OnPropertyChanged("IsValueEditable"); } }
-        public bool ThresholdOrder { get => thresholdOrder; set { thresholdOrder = value; if (value) this.EntryValue = this.StockSerie.LastValue.HIGH; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool MarketOrder { get => marketOrder; set { marketOrder = value; if (value) this.EntryValue = this.LastValue.CLOSE; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool LimitOrder { get => limitOrder; set { limitOrder = value; if (value) this.EntryValue = this.LastValue.LOW; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool ThresholdOrder { get => thresholdOrder; set { thresholdOrder = value; if (value) this.EntryValue = this.LastValue.HIGH; this.OnPropertyChanged("IsValueEditable"); } }
         public bool IsValueEditable => !this.marketOrder;
 
         /// <summary>
@@ -103,7 +106,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             {
                 if (stopValue != value)
                 {
-                    stopValue = Math.Min(value, this.stopValue = this.StockSerie.LastValue.CLOSE);
+                    stopValue = Math.Min(value, this.stopValue = this.LastValue.CLOSE);
                     OnEntryChanged();
                     this.OrdersChanged?.Invoke();
                 }
@@ -149,7 +152,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
         }
         private void CalculateTickSize()
         {
-            var instrumentDetails = this.Portfolio.GetInstrumentDetails(this.StockSerie);
+            var instrumentDetails = this.Portfolio.GetInstrumentDetails(this.StockInstrument);
             if (instrumentDetails == null)
             {
                 return;

@@ -27,7 +27,7 @@
                 <StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <Label Width="45">Name:</Label>
-                        <TextBox Text="{Binding StockSerie.StockName, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
+                        <TextBox Text="{Binding StockInstrument.DisplayName, Mode=OneWay}" Padding="4" IsEnabled="False" Width="200"></TextBox>
                     </StackPanel>
                     <StackPanel Margin="1" Orientation="Horizontal">
                         <Label Width="45">Qty:</Label>

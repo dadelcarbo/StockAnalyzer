@@ -2384,7 +2384,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             var portfolioValue = Portfolio.TotalValue;
             openTradeViewModel = new OpenTradeViewModel
             {
-                StockSerie = this.dataSerie.Instrument.StockSerie,
+                StockInstrument = this.dataSerie.Instrument,
+                LastValue = this.dataSerie.LastValue,
                 BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration,
                 EntryValue = this.closeCurveType.DataSerie[EndIndex],
                 StopValue = FindStopValueFromTheme(),
@@ -2468,7 +2469,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
             closeTradeViewModel = new CloseTradeViewModel
             {
-                StockSerie = this.dataSerie.Instrument.StockSerie,
+                StockInstrument = this.dataSerie.Instrument,
+                LastValue = this.dataSerie.LastValue,
                 Position = pos,
                 ExitValue = this.dataSerie.LastValue.CLOSE,
                 ExitQty = pos.EntryQty,

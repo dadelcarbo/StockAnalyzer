@@ -21,7 +21,6 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
-
             if (!this.TradeViewModel.Portfolio.SaxoLogin())
             {
                 return;
@@ -30,11 +29,11 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             long orderId = 0;
             if (this.TradeViewModel.MarketOrder)
             {
-                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue);
+                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockInstrument, StockAnalyzer.StockPortfolio.OrderType.Market, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue);
                 if (orderId != 0)
                 {
                     var position = this.TradeViewModel.Portfolio.Positions.OrderByDescending(p => p.EntryDate).FirstOrDefault();
-                    if (position != null && position.StockName == this.TradeViewModel.StockSerie.StockName)
+                    if (position != null && position.StockName == this.TradeViewModel.StockInstrument.DisplayName)
                     {
                         position.EntryComment = this.TradeViewModel.EntryComment;
                         position.Theme = this.TradeViewModel.Theme;
@@ -48,21 +47,21 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             }
             else if (this.TradeViewModel.LimitOrder)
             {
-                if (this.TradeViewModel.EntryValue > this.TradeViewModel.StockSerie.LastValue.CLOSE)
+                if (this.TradeViewModel.EntryValue > this.TradeViewModel.LastValue.CLOSE)
                 {
                     MessageBox.Show("Order on the wrong side of the market !", "Saxo Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Limit, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue, this.TradeViewModel.EntryValue);
+                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockInstrument, StockAnalyzer.StockPortfolio.OrderType.Limit, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue, this.TradeViewModel.EntryValue);
             }
             else if (this.TradeViewModel.ThresholdOrder)
             {
-                if (this.TradeViewModel.EntryValue < this.TradeViewModel.StockSerie.LastValue.CLOSE)
+                if (this.TradeViewModel.EntryValue < this.TradeViewModel.LastValue.CLOSE)
                 {
                     MessageBox.Show("Order on the wrong side of the market !", "Saxo Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockSerie, StockAnalyzer.StockPortfolio.OrderType.Threshold, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue, this.TradeViewModel.EntryValue);
+                orderId = this.TradeViewModel.Portfolio.SaxoBuyOrder(this.TradeViewModel.StockInstrument, StockAnalyzer.StockPortfolio.OrderType.Threshold, this.TradeViewModel.EntryQty, this.TradeViewModel.StopValue, this.TradeViewModel.EntryValue);
             }
             if (orderId == 0)
             {

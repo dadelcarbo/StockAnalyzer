@@ -7,6 +7,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -865,6 +866,10 @@ namespace StockAnalyzer.StockPortfolio
             }
         }
 
+        public long SaxoBuyOrder(StockInstrument instrument, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = false)
+        {
+            return SaxoBuyOrder(instrument.StockSerie, orderType, qty, stopValue, orderValue, t1);
+        }
 
         public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = false)
         {
@@ -1190,6 +1195,37 @@ namespace StockAnalyzer.StockPortfolio
             }
             return null;
         }
+
+        public InstrumentDetails GetInstrumentDetails(StockInstrument stockInstrument)
+        {
+            using var ml = new MethodLogger(this, true, this.Name);
+            try
+            {
+                if (!this.SaxoSilentLogin())
+                    return null;
+
+                var saxoInstrument = instrumentService.GetInstrumentByIsin(stockInstrument.Isin == null ? stockInstrument.Symbol : stockInstrument.Isin);
+                if (saxoInstrument == null)
+                {
+                    MessageBox.Show($"Instrument: {stockInstrument.DisplayName}:{stockInstrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+
+                var instrumentDetail = instrumentService.GetInstrumentDetailsById(saxoInstrument.Identifier, saxoInstrument.AssetType, account);
+                if (instrumentDetail == null)
+                {
+                    MessageBox.Show($"InstrumentDetails: {stockInstrument.DisplayName}:{stockInstrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null;
+                }
+                return instrumentDetail;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return null;
+        }
+
         public InstrumentDetails GetInstrumentDetails(StockSerie stockSerie)
         {
             using var ml = new MethodLogger(this, true, this.Name);

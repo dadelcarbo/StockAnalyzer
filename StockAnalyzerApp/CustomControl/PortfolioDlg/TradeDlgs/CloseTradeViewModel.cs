@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.GraphControls;
+using StockAnalyzerApp.StockData;
 using System;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
@@ -41,12 +42,14 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
             this.OnExitChanged();
         }
 
-        public bool MarketOrder { get => marketOrder; set { marketOrder = value; if (value) this.ExitValue = this.StockSerie.LastValue.CLOSE; this.OnPropertyChanged("IsValueEditable"); } }
-        public bool LimitOrder { get => limitOrder; set { limitOrder = value; if (value) this.ExitValue = this.StockSerie.LastValue.HIGH; this.OnPropertyChanged("IsValueEditable"); } }
-        public bool ThresholdOrder { get => thresholdOrder; set { thresholdOrder = value; if (value) this.ExitValue = this.StockSerie.LastValue.LOW; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool MarketOrder { get => marketOrder; set { marketOrder = value; if (value) this.ExitValue = this.LastValue.CLOSE; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool LimitOrder { get => limitOrder; set { limitOrder = value; if (value) this.ExitValue = this.LastValue.HIGH; this.OnPropertyChanged("IsValueEditable"); } }
+        public bool ThresholdOrder { get => thresholdOrder; set { thresholdOrder = value; if (value) this.ExitValue = this.LastValue.LOW; this.OnPropertyChanged("IsValueEditable"); } }
         public bool IsValueEditable => !this.marketOrder;
 
-        public StockSerie StockSerie { get; set; }
+        public StockInstrument StockInstrument { get; set; }
+
+        public StockDailyValue LastValue { get; set; }
 
         public int ExitQty
         {
@@ -88,7 +91,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs
 
         public void CalculateTickSize()
         {
-            var instrumentDetails = this.Portfolio.GetInstrumentDetails(this.StockSerie);
+            var instrumentDetails = this.Portfolio.GetInstrumentDetails(this.StockInstrument);
             if (instrumentDetails == null)
             {
                 return;
