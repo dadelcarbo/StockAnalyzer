@@ -36,7 +36,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         bool SupportsIntradayDownload { get; }
 
-        DataSerie LoadData(StockInstrument instrument, BarDuration barDuration);
+        /// <summary>
+        /// Get data from data provider for a given instrument and bar duration. Returns null if not available.
+        /// data provider is in charge of loading or downloading.
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <param name="barDuration"></param>
+        /// <returns></returns>
+        DataSerie GetData(StockInstrument instrument, BarDuration barDuration);
 
         bool LoadData(StockSerie stockSerie);
         bool DownloadDailyData(StockSerie stockSerie);

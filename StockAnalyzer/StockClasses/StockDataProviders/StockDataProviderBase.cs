@@ -472,7 +472,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return;
         }
 
-        public virtual DataSerie LoadData(StockInstrument instrument, BarDuration duration)
+        public virtual DataSerie GetData(StockInstrument instrument, BarDuration duration)
         {
             if (!instrument.StockSerie.Initialise())
                 return null;

@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using FastBars;
+using Newtonsoft.Json;
 using StockAnalyzer.StockClasses.StockDataProviders.Saxo;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp.StockData;
@@ -86,12 +88,26 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override bool LoadData(StockSerie stockSerie)
         {
-            var archiveFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
-
-            if (File.Exists(archiveFileName))
+            var datFileName = Path.Combine(DataFolder + INTRADAY_FOLDER, $"{stockSerie.ISIN}.dat");
+            if (!File.Exists(datFileName))
             {
-                stockSerie.ReadFromCSVFile(archiveFileName);
+                var archiveFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
+                if (File.Exists(archiveFileName))
+                {
+                    stockSerie.ReadFromCSVFile(archiveFileName);
+                }
+                var dataSerie = new DataSerie(new StockInstrument(stockSerie), BarDuration.H_1, stockSerie.ValueArray);
+                dataSerie.Serialize(datFileName);
             }
+            else
+            {
+                var dataSerie = new DataSerie(new StockInstrument(stockSerie), BarDuration.H_1, datFileName);
+                foreach (var dailyValue in dataSerie.Values)
+                {
+                    stockSerie.Add(dailyValue.DATE, dailyValue);
+                }
+            }
+
             return stockSerie.Count > 0;
         }
 

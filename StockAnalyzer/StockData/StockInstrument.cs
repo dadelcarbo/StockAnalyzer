@@ -62,7 +62,7 @@ namespace StockAnalyzerApp.StockData
                 if (!dp.SupportsDuration(duration))
                     return null;
 
-                var dataSerie = dp.LoadData(this, duration);
+                var dataSerie = dp.GetData(this, duration);
 
                 if (dataSerie != null)
                 {
@@ -73,6 +73,7 @@ namespace StockAnalyzerApp.StockData
             }
             return cache[duration];
         }
+
         public BarDuration[] SupportedDurations => StockDataProviderBase.GetDataProvider(this.DataProvider)?.SupportedDurations;
 
         public bool BelongsToGroup(Groups group)

@@ -369,6 +369,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         {
             bool success = true;
 
+            StockLog.Write($"Downloading data for {group.Group} from {startDate.ToShortDateString()}");
             NotifyProgress($"Downloading data for {group.Group} from {startDate.ToShortDateString()}");
             try
             {
@@ -379,9 +380,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
 
                 string fileName = destFolder + @"\" + group.AbcGroup + "_" + endDate.Year + "_" + endDate.Month.ToString("0#") + ".csv";
-                if (startDate >= endDate)
-                    return false;
-
+              
                 if (AbcClient.DownloadData(fileName, startDate, endDate, group.AbcGroup, useCache))
                 {
                     StockLog.Write($"{group.Group} from:{startDate:yy_MM_dd} to:{endDate:yy_MM_dd} success");
