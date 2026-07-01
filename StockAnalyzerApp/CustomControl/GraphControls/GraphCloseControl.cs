@@ -2426,7 +2426,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         void tradeMenu_Click(object sender, EventArgs e)
         {
-            var tradeManagerViewModel = new TradeManagerViewModel(Portfolio, this.dataSerie.Instrument.StockSerie);
+            var tradeManagerViewModel = new TradeManagerViewModel(Portfolio, this.dataSerie.Instrument);
             tradeManagerViewModel.OrdersChanged += TradeManagerViewModel_OrdersChanged;
             var tradeManagerDlg = new TradeManagerDlg(tradeManagerViewModel);
             tradeManagerDlg.Show(this);

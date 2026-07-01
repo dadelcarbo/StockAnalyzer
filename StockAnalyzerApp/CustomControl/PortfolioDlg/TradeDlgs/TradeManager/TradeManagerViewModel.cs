@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -22,14 +23,14 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         public void RaiseOrdersChanged() { this.OrdersChanged?.Invoke(this); }
         #endregion
 
-        public TradeManagerViewModel(StockPortfolio portfolio, StockSerie serie)
+        public TradeManagerViewModel(StockPortfolio portfolio, StockInstrument instrument)
         {
             this.UseLog = true;
             this.Portfolio = new PortfolioViewModel(portfolio);
-            this.StockSerie = serie;
+            this.StockInstrument = instrument;
             Task.Run(() => this.PerformPriceRefreshCmd());
         }
-        public StockSerie StockSerie { get; set; }
+        public StockInstrument StockInstrument { get; set; }
         public PortfolioViewModel Portfolio { get; set; }
 
         #region REFRESH PORTFOLIO
@@ -54,7 +55,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
         {
             this.Bid = 0;
             this.Ask = 0;
-            var pi = await this.Portfolio.Portfolio.GetPriceAsync(this.StockSerie);
+            var pi = await this.Portfolio.Portfolio.GetPriceAsync(this.StockInstrument);
 
             if (pi?.LastUpdated != null)
             {
@@ -135,7 +136,7 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs.TradeManager
                 return;
 
             // Perform Buy Logic Here
-            var orderId = this.Portfolio.Portfolio.SaxoBuyOrder(this.StockSerie, OrderType.Market, this.Qty, this.EntryStop); 
+            var orderId = this.Portfolio.Portfolio.SaxoBuyOrder(this.StockInstrument, OrderType.Market, this.Qty, this.EntryStop);
             if (orderId != 0)
             {
                 MessageBox.Show($"Buy Order Placed: Order ID = {orderId}", "Order Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);

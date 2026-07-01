@@ -48,10 +48,10 @@
             <GroupBox Header="Instrument">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding StockSerie.StockName}" FontSize="14" VerticalAlignment="Center"  Margin="2"/>
+                        <TextBlock Text="{Binding StockInstrument.DisplayName}" FontSize="14" VerticalAlignment="Center"  Margin="2"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding StockSerie.ISIN}" FontSize="14" VerticalAlignment="Center"  Margin="2"/>
+                        <TextBlock Text="{Binding StockInstrument.Isin}" FontSize="14" VerticalAlignment="Center"  Margin="2"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding MarketState}" FontSize="14" VerticalAlignment="Center"  Margin="2"/>
