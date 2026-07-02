@@ -91,13 +91,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             var datFileName = Path.Combine(DataFolder + INTRADAY_FOLDER, $"{stockSerie.ISIN}.dat");
             if (!File.Exists(datFileName))
             {
-                var archiveFileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, $"{stockSerie.ISIN}.txt");
-                if (File.Exists(archiveFileName))
-                {
-                    stockSerie.ReadFromCSVFile(archiveFileName);
-                }
-                var dataSerie = new DataSerie(new StockInstrument(stockSerie), BarDuration.H_1, stockSerie.ValueArray);
-                dataSerie.Serialize(datFileName);
+                return false;
             }
             else
             {
