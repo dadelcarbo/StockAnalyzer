@@ -7,6 +7,7 @@ using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +19,13 @@ using System.Windows.Input;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
+    public class LineViewModel
+    {
+        public StockInstrument Instrument { get; set; }
+        public StockDailyValue LastValue { get; set; }
+        public StockDailyValue FirstValue { get; set; }
+    }
+
     public class InstrumentViewModel : NotifyPropertyChangedBase
     {
 
@@ -33,7 +41,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 {
                     group = value;
                     OnPropertyChanged("Group");
-                    this.Lines = new ObservableCollection<StockSerie>(GetLines());
+                    this.Lines = new ObservableCollection<LineViewModel>(GetLines());
 
                     OnPropertyChanged("Lines");
                 }
@@ -52,7 +60,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 {
                     dataProvider = value;
                     OnPropertyChanged("DataProvider");
-                    this.Lines = new ObservableCollection<StockSerie>(GetLines());
+                    this.Lines = new ObservableCollection<LineViewModel>(GetLines());
 
                     OnPropertyChanged("Lines");
                 }
@@ -113,22 +121,22 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 }
             }
         }
-        public ObservableCollection<StockSerie> Lines { get; set; }
+        public ObservableCollection<LineViewModel> Lines { get; set; }
 
         public InstrumentViewModel()
         {
-            this.Lines = new ObservableCollection<StockSerie>();
+            this.Lines = new ObservableCollection<LineViewModel>();
 
             this.SaxoUnderlyings = new ObservableCollection<SaxoUnderlying>(SaxoUnderlying.Load());
 
             ProgressVisibility = Visibility.Collapsed;
         }
 
-        private IEnumerable<StockSerie> GetLines()
+        private IEnumerable<LineViewModel> GetLines()
         {
             return dataProvider == StockDataProvider.All ?
-                StockDictionary.Instance.Values.Where(s => s.BelongsToGroupFull(this.group)) :
-                StockDictionary.Instance.Values.Where(s => s.DataProvider == dataProvider && s.BelongsToGroupFull(this.group));
+                StockDictionary.Instruments.Values.Where(s => s.BelongsToGroupFull(this.group)).Select(s => new LineViewModel() { Instrument = s }) :
+                StockDictionary.Instruments.Values.Where(s => s.DataProvider == dataProvider && s.BelongsToGroupFull(this.group)).Select(s => new LineViewModel() { Instrument = s });
         }
 
         private bool canceled = false;
@@ -153,12 +161,12 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             try
             {
-                var stockList = GetLines().ToList();
+                var lines = GetLines().ToList();
                 this.Progress = 0;
-                this.NbStocks = stockList.Count;
+                this.NbStocks = lines.Count;
                 int count = 0;
                 int step = Math.Max(1, this.NbStocks / 100);
-                foreach (var stockSerie in stockList)
+                foreach (var line in lines)
                 {
                     if (canceled)
                     {
@@ -171,10 +179,14 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
                         await Task.Delay(5);
                     }
-                    stockSerie.Initialise();
-                    stockSerie.BarDuration = BarDuration.Daily;
 
-                    Lines.Add(stockSerie);
+                    var dataSerie = line.Instrument.GetDefaultDataSerie();
+                    if (dataSerie != null && dataSerie.Count > 0)
+                    {
+                        line.LastValue = dataSerie.LastValue;
+                        line.FirstValue = dataSerie.Values[0];
+                    }
+                    Lines.Add(line);
                 }
             }
             catch (Exception exception)

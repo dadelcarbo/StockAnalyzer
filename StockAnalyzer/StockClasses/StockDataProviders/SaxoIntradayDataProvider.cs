@@ -429,5 +429,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         public override BarDuration[] SupportedDurations => new BarDuration[] { BarDuration.H_1, BarDuration.H_2, BarDuration.H_3, BarDuration.H_4 };
+
+        public override BarDuration DefaultDuration => BarDuration.H_1;
     }
 }

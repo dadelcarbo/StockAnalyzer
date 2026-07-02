@@ -380,7 +380,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 }
 
                 string fileName = destFolder + @"\" + group.AbcGroup + "_" + endDate.Year + "_" + endDate.Month.ToString("0#") + ".csv";
-              
+
                 if (AbcClient.DownloadData(fileName, startDate, endDate, group.AbcGroup, useCache))
                 {
                     StockLog.Write($"{group.Group} from:{startDate:yy_MM_dd} to:{endDate:yy_MM_dd} success");
@@ -1369,6 +1369,68 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
 
             return groupList != null && groupList.Contains(stockSerie.StockName);
+        }
+
+        public static bool BelongsToGroup(StockInstrument instrument, Groups group)
+        {
+            if (group == instrument.Group || group == Groups.ALL_STOCKS)
+                return true;
+
+            switch (group)
+            {
+                case Groups.EURO_A_B:
+                    return instrument.Group == Groups.EURO_A || instrument.Group == Groups.EURO_B;
+                case Groups.EURO_A_B_C:
+                    return instrument.Group == Groups.EURO_A || instrument.Group == Groups.EURO_B || instrument.Group == Groups.EURO_C;
+                case Groups.CACALL:
+                    return instrument.Group == Groups.EURO_A || instrument.Group == Groups.EURO_B || instrument.Group == Groups.EURO_C || instrument.Group == Groups.ALTERNEXT;
+                case Groups.PEA_EURONEXT:
+                    return instrument.Group == Groups.EURO_A || instrument.Group == Groups.EURO_B || instrument.Group == Groups.EURO_C || instrument.Group == Groups.ALTERNEXT
+                        || instrument.Group == Groups.BELGIUM || instrument.Group == Groups.HOLLAND || instrument.Group == Groups.PORTUGAL;
+                case Groups.PEA:
+                    return instrument.Group == Groups.EURO_A || instrument.Group == Groups.EURO_B || instrument.Group == Groups.EURO_C || instrument.Group == Groups.ALTERNEXT
+                        || instrument.Group == Groups.BELGIUM || instrument.Group == Groups.HOLLAND || instrument.Group == Groups.PORTUGAL
+                        || instrument.Group == Groups.ITALIA || instrument.Group == Groups.GERMANY || instrument.Group == Groups.SPAIN;
+            }
+
+            if (!groupSeries.ContainsKey(group))
+                return false;
+
+            var groupList = groupSeries[group];
+            if (groupList == null)
+            {
+                groupList = new List<string>();
+                var abcGroup = abcGroupConfig.FirstOrDefault(g => g.Group == group);
+                // parse group definition
+                string fileName = DataFolder + @"\" + ABC_DAILY_CFG_GROUP_FOLDER + $@"\{abcGroup.AbcGroup}.csv";
+                if (File.Exists(fileName))
+                {
+                    using StreamReader sr = new StreamReader(fileName, true);
+                    string line;
+                    sr.ReadLine(); // Skip first line
+                    while (!sr.EndOfStream)
+                    {
+                        line = sr.ReadLine();
+                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
+                        {
+                            string[] row = line.Split(';');
+                            var serie = stockDictionary.Values.FirstOrDefault(s => s.ISIN == row[0]);
+                            if (serie != null)
+                            {
+                                groupList.Add(serie.StockName);
+                            }
+                        }
+                    }
+                    groupSeries[group] = groupList;
+                }
+                else
+                {
+                    MessageBox.Show($"Group definition file not found for Group: {group}", "ABD DataProvider Group error");
+                }
+            }
+
+
+            return groupList != null && groupList.Contains(instrument.Id);
         }
 
         #region Persistency

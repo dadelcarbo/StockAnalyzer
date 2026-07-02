@@ -498,5 +498,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         }
 
         public virtual BarDuration[] SupportedDurations => new BarDuration[] { BarDuration.Daily, BarDuration.Weekly, BarDuration.Monthly };
+        public virtual BarDuration DefaultDuration => BarDuration.Daily;
     }
 }

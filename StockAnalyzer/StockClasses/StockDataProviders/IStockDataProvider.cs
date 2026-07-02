@@ -64,5 +64,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         bool SupportsDuration(BarDuration duration);
 
         BarDuration[] SupportedDurations { get; }
+
+        BarDuration DefaultDuration { get; }
     }
 }

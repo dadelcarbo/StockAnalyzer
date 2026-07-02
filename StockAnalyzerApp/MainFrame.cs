@@ -66,6 +66,7 @@ namespace StockAnalyzerApp
     public partial class StockAnalyzerForm : Form
     {
         public delegate void SelectedStockChangedEventHandler(string stockName, bool activateMainWindow);
+        public delegate void SelectedInstrumentChangedEventHandler(StockInstrument instrument, bool activateMainWindow);
         public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, BarDuration barDuration, bool activateMainWindow);
         public delegate void SelectedStockAndDurationAndThemeChangedEventHandler(string stockName, BarDuration barDuration, string theme, bool activateMainWindow);
         public delegate void SelectedStockAndDurationAndIndexChangedEventHandler(string stockName, int startIndex, int endIndex, BarDuration barDuration, bool activateMainWindow);
@@ -1187,6 +1188,19 @@ namespace StockAnalyzerApp
             }
         }
 
+
+        public void OnSelectedInstrumentChanged(StockInstrument instrument, bool activate)
+        {
+            using (new MethodLogger(this))
+            {
+                this.ViewModel.Instrument = instrument;
+
+                if (activate)
+                {
+                    this.Activate();
+                }
+            }
+        }
         public void OnSelectedStockAndDurationAndThemeChanged(string stockName, BarDuration barDuration, string theme, bool activate)
         {
             using (new MethodLogger(this))
@@ -2137,7 +2151,7 @@ namespace StockAnalyzerApp
                 instrumentsDlg.instrumentsControl1.ViewModel.Group = this.ViewModel.Instrument.Group;
 
                 instrumentsDlg.FormClosing += new FormClosingEventHandler(instrumentsDlg_FormClosing);
-                instrumentsDlg.instrumentsControl1.SelectedStockChanged += OnSelectedStockChanged;
+                instrumentsDlg.instrumentsControl1.SelectedInstrumentChanged += OnSelectedInstrumentChanged;
                 instrumentsDlg.Show();
             }
             else
@@ -2147,7 +2161,7 @@ namespace StockAnalyzerApp
         }
         private void instrumentsDlg_FormClosing(object sender, FormClosingEventArgs e)
         {
-            instrumentsDlg.instrumentsControl1.SelectedStockChanged -= OnSelectedStockChanged;
+            instrumentsDlg.instrumentsControl1.SelectedInstrumentChanged -= OnSelectedInstrumentChanged;
             this.instrumentsDlg = null;
         }
         #endregion

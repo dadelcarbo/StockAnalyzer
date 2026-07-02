@@ -1,9 +1,11 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
+using StockAnalyzer.StockData;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockData;
+using System.Windows.Media.Animation;
 
 namespace StockAnalyzerApp.StockData
 {
@@ -74,11 +76,47 @@ namespace StockAnalyzerApp.StockData
             return cache[duration];
         }
 
+        public DataSerie GetDefaultDataSerie()
+        {
+            var dp = StockDataProviderBase.GetDataProvider(this.DataProvider);
+
+            if (dp == null)
+                throw new InvalidOperationException($"Data Provider {this.DataProvider} not found, cannot get data serie !");
+
+            return GetDataSerie(dp.DefaultDuration);
+        }
+
         public BarDuration[] SupportedDurations => StockDataProviderBase.GetDataProvider(this.DataProvider)?.SupportedDurations;
+
+        #region Group Management
 
         public bool BelongsToGroup(Groups group)
         {
-            return this.StockSerie.BelongsToGroup(group);
+            if (StockAnalysis != null && StockAnalysis.Excluded) return false;
+            return BelongsToGroupFull(group);
         }
+        public bool BelongsToGroupFull(Groups group)
+        {
+            if (group == Groups.NONE)
+                return false;
+            if (this.Group == group || group == Groups.ALL)
+                return true;
+
+            switch (group)
+            {
+                case Groups.SAXO:
+                    return this.SaxoId > 0;
+            }
+
+            if (DataProvider == StockDataProvider.ABC)
+                return ABCDataProvider.BelongsToGroup(this.StockSerie, group);
+
+            return false;
+        }
+        public bool BelongsToGroup(string groupName)
+        {
+            return this.BelongsToGroup((Groups)Enum.Parse(typeof(Groups), groupName));
+        }
+        #endregion
     }
 }

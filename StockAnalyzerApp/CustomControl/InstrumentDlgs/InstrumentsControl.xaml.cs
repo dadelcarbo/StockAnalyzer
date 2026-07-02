@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
+using static StockAnalyzerApp.StockAnalyzerForm;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
@@ -23,7 +24,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
     {
         private System.Windows.Forms.Form Form { get; }
 
-        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedInstrumentChangedEventHandler SelectedInstrumentChanged;
 
         public InstrumentViewModel ViewModel;
         public InstrumentsControl(System.Windows.Forms.Form form)
@@ -47,13 +48,13 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         private void RadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
             // Open on the alert stock
-            var line = ((RadGridView)sender).SelectedItem as StockSerie;
+            var line = ((RadGridView)sender).SelectedItem as LineViewModel;
 
             if (line == null) return;
 
             this.Form.TopMost = true;
             StockAnalyzerForm.MainFrame.Activate();
-            this.SelectedStockChanged(line.StockName, true);
+            this.SelectedInstrumentChanged(line.Instrument, true);
 
             this.Form.TopMost = false;
         }
@@ -122,22 +123,22 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             try
             {
-                var abcSeries = this.gridView.Items.Cast<StockSerie>().Where(s => s.DataProvider == StockDataProvider.ABC);
-                if (abcSeries.Any())
+                var instruments = this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.DataProvider == StockDataProvider.ABC).Select(s => s.Instrument);
+                if (instruments.Any())
                 {
-                    ABCDataProvider.AddToExcludedList(abcSeries.Select(s => s.ISIN));
-                    foreach (var serie in abcSeries)
+                    ABCDataProvider.AddToExcludedList(instruments.Select(s => s.Isin));
+                    foreach (var instrument in instruments)
                     {
-                        serie.StockAnalysis.Excluded = true;
+                        instrument.StockAnalysis.Excluded = true;
                     }
                 }
 
-                foreach (var serie in this.gridView.Items.Cast<StockSerie>().Where(s => s.DataProvider != StockDataProvider.ABC))
+                foreach (var instrument in this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.DataProvider != StockDataProvider.ABC).Select(s => s.Instrument))
                 {
-                    var dp = StockDataProviderBase.GetDataProvider(serie.DataProvider);
-                    var handled = dp.RemoveEntry(serie);
+                    var dp = StockDataProviderBase.GetDataProvider(instrument.DataProvider);
+                    var handled = dp.RemoveEntry(instrument.StockSerie);
 
-                    serie.StockAnalysis.Excluded = true;
+                    instrument.StockAnalysis.Excluded = true;
                 }
 
             }
@@ -160,7 +161,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                     {
                         this.Form.TopMost = true;
                         StockAnalyzerForm.MainFrame.Activate();
-                        this.SelectedStockChanged(serieName, true);
+                        this.SelectedInstrumentChanged(StockDictionary.Instruments[serieName], true);
 
                         this.Form.TopMost = false;
                     }
@@ -179,13 +180,13 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                     if (string.IsNullOrEmpty(item.Isin))
                         return;
 
-                    var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == item.Isin);
-                    if (stockSerie == null)
+                    var instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == item.Isin);
+                    if (instrument == null)
                         return;
 
                     this.Form.TopMost = true;
                     StockAnalyzerForm.MainFrame.Activate();
-                    this.SelectedStockChanged(stockSerie.StockName, true);
+                    this.SelectedInstrumentChanged(instrument, true);
 
                     this.Form.TopMost = false;
                 }
