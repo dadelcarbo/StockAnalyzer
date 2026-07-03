@@ -124,7 +124,6 @@ namespace StockAnalyzer.StockClasses
         public int LastIndex => this.ValueArray.Length - 1;
         public int LastCompleteIndex => this.LastIndex > 0 ? (this.ValueArray.Last().IsComplete ? this.Count - 1 : this.Count - 2) : -1;
 
-        public StockSerie SecondarySerie { get; set; }
         public StockDailyValue LastValue { get; private set; }
         public StockDailyValue FirstValue => Values?.FirstOrDefault();
 
@@ -2676,34 +2675,6 @@ namespace StockAnalyzer.StockClasses
             writer.WriteEndElement();
         }
         #endregion
-        #region Analysis Serialisation Members
-        public void ReadAnalysisFromXml(System.Xml.XmlReader reader)
-        {
-            try
-            {
-                // Deserialize StockAnalysis
-                reader.ReadStartElement(); // Start StockAnalysisItem
-                XmlSerializer serializer = new XmlSerializer(typeof(StockAnalysis));
-
-                this.StockAnalysis = (StockAnalysis)serializer.Deserialize(reader);
-
-                reader.ReadEndElement(); // End StockAnalysisItem
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Error parsing analysis file");
-            }
-        }
-        public void WriteAnalysisToXml(System.Xml.XmlWriter writer)
-        {
-            if (!this.StockAnalysis.IsEmpty())
-            {
-                // Serialize StockAnalysis
-                XmlSerializer serializer = new XmlSerializer(typeof(StockAnalysis));
-                serializer.Serialize(writer, this.StockAnalysis);
-            }
-        }
-        #endregion
         #region Generate related series
 
         public List<StockDailyValue> GenerateSerieForTimeSpan(List<StockDailyValue> dailyValueList, BarDuration timeSpan)
@@ -2966,101 +2937,9 @@ namespace StockAnalyzer.StockClasses
         }
 
         #endregion
-        /// <summary>
-        /// This function extract a float serie from another serie in order to be compared with the current serie. This function manages inconsistent date issues
-        /// </summary>
-        /// <param name="otherSerie"></param>
-        /// <returns></returns>
-        public FloatSerie GenerateSecondarySerieFromOtherSerie(StockSerie otherSerie)
-        {
-            if (!otherSerie.Initialise())
-            {
-                return null;
-            }
-            BarDuration currentBarDuration = this.barDuration;
-            otherSerie.BarDuration = BarDuration.Daily;
-            this.barDuration = BarDuration.Daily;
 
-            FloatSerie newSerie = new FloatSerie(this.Count);
-            newSerie.Name = otherSerie.StockName;
 
-            FloatSerie otherFloatSerie = otherSerie.GetSerie(StockDataType.CLOSE);
-            float previousValue = otherFloatSerie[0];
-            DateTime startDate = otherSerie.Keys.First();
-            DateTime lastDate = otherSerie.LastValue.DATE;
 
-            int i = 0;
-            foreach (StockDailyValue dailyValue in this.Values)
-            {
-                if (dailyValue.DATE > lastDate || dailyValue.DATE < startDate)
-                {
-                    newSerie[i] = float.NaN;
-                }
-                else
-                {
-                    if (otherSerie.ContainsKey(dailyValue.DATE))
-                    {
-                        newSerie[i] = otherSerie[dailyValue.DATE].GetStockData(StockDataType.CLOSE);
-                        previousValue = newSerie[i];
-                    }
-                    else
-                    {
-                        newSerie[i] = previousValue;
-                    }
-                }
-                i++;
-            }
-
-            otherSerie.BarDuration = currentBarDuration;
-            this.barDuration = currentBarDuration;
-
-            return newSerie;
-        }
-        public FloatSerie GenerateSecondarySerieFromOtherSerie(StockSerie otherSerie, BarDuration duration)
-        {
-            if (duration >= BarDuration.M_5 || !otherSerie.Initialise())
-            {
-                return null;
-            }
-            BarDuration currentBarDuration = this.barDuration;
-            otherSerie.BarDuration = duration;
-            this.barDuration = duration;
-
-            FloatSerie newSerie = new FloatSerie(this.Count);
-            newSerie.Name = otherSerie.StockName;
-
-            FloatSerie otherCloseSerie = otherSerie.GetSerie(StockDataType.CLOSE);
-            float previousValue = otherCloseSerie[0];
-            DateTime startDate = otherSerie.Keys.First();
-            DateTime lastDate = otherSerie.LastValue.DATE;
-
-            int i = 0;
-            foreach (StockDailyValue dailyValue in this.Values)
-            {
-                if (dailyValue.DATE > lastDate || dailyValue.DATE < startDate)
-                {
-                    newSerie[i] = otherCloseSerie[0];
-                }
-                else
-                {
-                    if (otherSerie.ContainsKey(dailyValue.DATE))
-                    {
-                        newSerie[i] = otherSerie[dailyValue.DATE].GetStockData(StockDataType.CLOSE);
-                        previousValue = newSerie[i];
-                    }
-                    else
-                    {
-                        newSerie[i] = previousValue;
-                    }
-                }
-                i++;
-            }
-
-            otherSerie.BarDuration = currentBarDuration;
-            this.barDuration = currentBarDuration;
-
-            return newSerie;
-        }
         #region CSV file IO
         public bool ReadFromCSVFile(string fileName)
         {

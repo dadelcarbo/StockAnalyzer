@@ -337,7 +337,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     this.ProgressValue = evt.ProgressPercentage;
                 };
 
-                var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group));
+                var series = StockDictionary.Instance.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group));
                 if (this.RunAgentEngine(series))
                 {
                     e.Cancel = false;

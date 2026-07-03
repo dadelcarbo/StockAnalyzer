@@ -5,7 +5,9 @@ using StockAnalyzer.StockData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Media.Animation;
+using System.Xml.Serialization;
 
 namespace StockAnalyzerApp.StockData
 {
@@ -118,5 +120,35 @@ namespace StockAnalyzerApp.StockData
             return this.BelongsToGroup((Groups)Enum.Parse(typeof(Groups), groupName));
         }
         #endregion
+
+        #region Analysis Serialisation Members
+        public void ReadAnalysisFromXml(System.Xml.XmlReader reader)
+        {
+            try
+            {
+                // Deserialize StockAnalysis
+                reader.ReadStartElement(); // Start StockAnalysisItem
+                XmlSerializer serializer = new XmlSerializer(typeof(StockAnalysis));
+
+                this.StockAnalysis = (StockAnalysis)serializer.Deserialize(reader);
+
+                reader.ReadEndElement(); // End StockAnalysisItem
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Error parsing analysis file");
+            }
+        }
+        public void WriteAnalysisToXml(System.Xml.XmlWriter writer)
+        {
+            if (!this.StockAnalysis.IsEmpty())
+            {
+                // Serialize StockAnalysis
+                XmlSerializer serializer = new XmlSerializer(typeof(StockAnalysis));
+                serializer.Serialize(writer, this.StockAnalysis);
+            }
+        }
+        #endregion
+
     }
 }

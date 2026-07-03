@@ -100,8 +100,6 @@ namespace StockAnalyzerApp
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         public static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
-        public StockDictionary StockDictionary { get; private set; }
-
         public List<StockPortfolio> Portfolios => PortfolioDataProvider.Portfolios;
 
         public ToolStripProgressBar ProgressBar => this.progressBar;
@@ -243,8 +241,9 @@ namespace StockAnalyzerApp
             this.graphCloseControl.HideIndicators = false;
             this.FormClosing += new FormClosingEventHandler(StockAnalyzerForm_FormClosing);
 
-            this.StockDictionary = new StockDictionary(new DateTime(DateTime.Now.Year, 01, 01));
-            this.StockDictionary.ReportProgress += new StockDictionary.ReportProgressHandler(StockDictionary_ReportProgress);
+            StockDictionary.Initialize(new DateTime(DateTime.Now.Year, 01, 01));
+
+            StockDictionary.Instance.ReportProgress += new StockDictionary.ReportProgressHandler(StockDictionary_ReportProgress);
 
             NbBars = Settings.Default.DefaultBarNumber;
 
@@ -494,7 +493,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressVal = 30;
 
             var download = Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable();
-            StockDataProviderBase.InitStockDictionary(this.StockDictionary, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
+            StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
             //
             InitialiseThemeCombo();
@@ -505,18 +504,17 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading Drawing items ...";
             LoadAnalysis(this.ViewModel.AnalysisFile);
 
-            ABCDataProvider.AddToExcludedList(StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.ISIN));
+            ABCDataProvider.AddToExcludedList(StockDictionary.Instruments.Values.Where(s => s.DataProvider == StockDataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.Isin));
 
-            var cac40 = this.StockDictionary["CAC40"];
-            cac40.Initialise();
+            var cac40DataSerie = StockDictionary.Instruments["CAC40"].GetDefaultDataSerie();
 
             // Generate breadth 
             if (Settings.Default.GenerateBreadth)
             {
-                foreach (StockSerie stockserie in this.StockDictionary.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
+                foreach (var instrument in StockDictionary.Instruments.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
                 {
-                    StockSplashScreen.ProgressText = "Generating breadth data " + stockserie.StockName;
-                    stockserie.Initialise();
+                    StockSplashScreen.ProgressText = "Generating breadth data " + instrument.DisplayName;
+                    var dataSerie = instrument.GetDefaultDataSerie();
                     if (!BreadthDataProvider.NeedGenerate)
                         break;
                 }
@@ -526,7 +524,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading portfolio data...";
 
             var portfolioDataProvider = PortfolioDataProvider.GetDataProvider(StockDataProvider.Portfolio);
-            portfolioDataProvider.InitDictionary(StockDictionary, false);
+            portfolioDataProvider.InitDictionary(StockDictionary.Instance, false);
             InitialisePortfolioCombo();
             Portfolio = PortfolioDataProvider.Portfolios.First();
 
@@ -602,7 +600,7 @@ namespace StockAnalyzerApp
             }
             else
             {
-                this.ViewModel.Instrument = StockDictionary.Instruments["CAC40"];
+                this.ViewModel.Instrument = cac40DataSerie.Instrument;
             }
 
             if (Settings.Default.GenerateDailyReport)
@@ -617,8 +615,8 @@ namespace StockAnalyzerApp
                 {
                     reportDate = DateTime.Parse(File.ReadAllText(fileName), CultureInfo.InvariantCulture);
                 }
-                cac40.BarDuration = BarDuration.Daily;
-                if (reportDate < cac40.LastValue.DATE)
+
+                if (reportDate < cac40DataSerie.LastValue.DATE)
                 {
                     showAlertDefDialogMenuItem_Click(this, null);
                     stockAlertManagerViewModel.RunFullAlert();
@@ -626,7 +624,7 @@ namespace StockAnalyzerApp
                     //GenerateReport(BarDuration.Daily);
                     //GenerateReport(BarDuration.Weekly);
 
-                    File.WriteAllText(fileName, cac40.LastValue.DATE.ToString(CultureInfo.InvariantCulture));
+                    File.WriteAllText(fileName, cac40DataSerie.LastValue.DATE.ToString(CultureInfo.InvariantCulture));
                 }
             }
 
@@ -784,12 +782,14 @@ namespace StockAnalyzerApp
                 var duration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
                 var theme = fields[2];
                 var nbBars = int.Parse(fields[3]);
-                if (!StockDictionary.ContainsKey(stockName))
-                    continue;
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments[stockName], theme, true, duration, nbBars);
-                string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
-                htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
+                if (StockDictionary.Instruments.TryGetValue(stockName, out var instrument))
+                {
+                    var bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
+                    string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+
+                    htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
+                }
             }
             htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", $"Report - {Path.GetFileNameWithoutExtension(templateFile)}");
             htmlReportTemplate = htmlReportTemplate.Replace("%%Date%%", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
@@ -813,26 +813,26 @@ namespace StockAnalyzerApp
 
             foreach (string stockName in watchlist.StockList)
             {
-                if (!StockDictionary.ContainsKey(stockName))
-                    continue;
+                if (StockDictionary.Instruments.TryGetValue(stockName, out var instrument))
+                {
+                    var duration = BarDuration.Daily;
+                    var theme = REPORT_THEME;
+                    var nbBars = 75;
+                    var bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
+                    string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
-                var duration = BarDuration.Daily;
-                var theme = REPORT_THEME;
-                var nbBars = 75;
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments[stockName], theme, true, duration, nbBars);
-                string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                    var row = TABLE_ROW_TEMPLATE_WATCHLIST.Replace("%%Daily%%", data);
 
-                var row = TABLE_ROW_TEMPLATE_WATCHLIST.Replace("%%Daily%%", data);
+                    duration = BarDuration.Weekly;
+                    theme = REPORT_THEME;
+                    nbBars = 75;
+                    bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
+                    data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
-                duration = BarDuration.Weekly;
-                theme = REPORT_THEME;
-                nbBars = 75;
-                bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments[stockName], theme, true, duration, nbBars);
-                data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                    row = row.Replace("%%Weekly%%", data);
 
-                row = row.Replace("%%Weekly%%", data);
-
-                tableRows += row;
+                    tableRows += row;
+                }
             }
             htmlReport = htmlReport.Replace("%%Title%%", $"{watchlist.Name}");
             htmlReport = htmlReport.Replace("%%TABLE_ROWS%%", tableRows);
@@ -896,7 +896,7 @@ namespace StockAnalyzerApp
                 {
                     Debug.WriteLine("Cond0");
                     this.searchCombo.Items.Clear();
-                    this.searchCombo.Items.AddRange(this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
+                    this.searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
                     typedSearch = null;
                     return;
@@ -911,11 +911,11 @@ namespace StockAnalyzerApp
                 var name = searchCombo.Text.ToUpper();
                 string[] match;
                 if (name.Length == 12)
-                    match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && (p.Key.ToUpper().Contains(name) || p.Value.ISIN == name)).Select(p => p.Key).ToArray();
+                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && (p.Key.ToUpper().Contains(name) || p.Value.Isin == name)).Select(p => p.Key).ToArray();
                 else if (name.Length <= 3)
-                    match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && (p.Key.ToUpper().Contains(name) || (p.Value.Symbol != null && p.Value.Symbol.Contains(name)))).Select(p => p.Key).ToArray();
+                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && (p.Key.ToUpper().Contains(name) || (p.Value.Symbol != null && p.Value.Symbol.Contains(name)))).Select(p => p.Key).ToArray();
                 else
-                    match = this.StockDictionary.Where(p => !p.Value.StockAnalysis.Excluded && p.Key.ToUpper().Contains(name)).Select(p => p.Key).ToArray();
+                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && p.Key.ToUpper().Contains(name)).Select(p => p.Key).ToArray();
 
                 if (match.Length == 1)
                 {
@@ -1026,7 +1026,7 @@ namespace StockAnalyzerApp
                 var sw = Stopwatch.StartNew();
                 var groups = alertDefs.Select(a => a.Group).Distinct();
 
-                var turboList = this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.StockGroup == Groups.TURBO);
+                var turboList = StockDictionary.Instance.Values.Where(s => !s.StockAnalysis.Excluded && s.StockGroup == Groups.TURBO);
                 var downloadTasks = turboList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s)));
 
                 Task.WaitAll(downloadTasks.ToArray());
@@ -1301,7 +1301,7 @@ namespace StockAnalyzerApp
                 // Cleanup missing stocks
                 foreach (var watchList in StockWatchList.WatchLists)
                 {
-                    watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
+                    watchList.StockList.RemoveAll(s => !StockDictionary.Instruments.ContainsKey(s));
                 }
             }
         }
@@ -1309,9 +1309,9 @@ namespace StockAnalyzerApp
         private void LoadAnalysis(string analysisFileName)
         {
             // Clear existing analysis
-            foreach (StockSerie stockSerie in this.StockDictionary.Values)
+            foreach (var instrument in StockDictionary.Instruments.Values)
             {
-                stockSerie.StockAnalysis.Clear();
+                instrument.StockAnalysis.Clear();
             }
 
             // Read Stock Values from XML
@@ -1327,11 +1327,11 @@ namespace StockAnalyzerApp
                     StockDictionary.ReadAnalysisFromXml(xmlReader);
                 }
                 bool dirty = false;
-                foreach (StockSerie stockSerie in this.StockDictionary.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
+                foreach (var instrument in StockDictionary.Instruments.Values.Where(s => s.StockAnalysis.Theme != string.Empty))
                 {
-                    if (!this.themeComboBox.Items.Contains(stockSerie.StockAnalysis.Theme))
+                    if (!this.themeComboBox.Items.Contains(instrument.StockAnalysis.Theme))
                     {
-                        stockSerie.StockAnalysis.Theme = string.Empty;
+                        instrument.StockAnalysis.Theme = string.Empty;
                         dirty = true;
                     }
                 }
@@ -1429,7 +1429,7 @@ namespace StockAnalyzerApp
                 StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
 
                 var stockSeries =
-                   this.StockDictionary.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
+                   StockDictionary.Instance.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
 
                 StockSplashScreen.ProgressVal = 0;
                 StockSplashScreen.ProgressMax = stockSeries.Count();
@@ -1835,7 +1835,7 @@ namespace StockAnalyzerApp
 
             foreach (StockWatchList watchList in StockWatchList.WatchLists)
             {
-                watchList.StockList.RemoveAll(s => !StockDictionary.ContainsKey(s));
+                watchList.StockList.RemoveAll(s => !StockDictionary.Instruments.ContainsKey(s));
                 watchList.StockList.Sort();
             }
 
@@ -2080,7 +2080,7 @@ namespace StockAnalyzerApp
         {
             // Clean existing menus
             this.secondarySerieMenuItem.DropDownItems.Clear();
-            var validGroups = this.StockDictionary.GetValidGroups().Select(g => g.ToString());
+            var validGroups = StockDictionary.Instance.GetValidGroups().Select(g => g.ToString());
             ToolStripMenuItem[] groupMenuItems = new ToolStripMenuItem[validGroups.Count()];
 
             int i = 0;
@@ -2089,16 +2089,16 @@ namespace StockAnalyzerApp
                 groupMenuItems[i] = new ToolStripMenuItem(group);
 
                 // 
-                var groupSeries = StockDictionary.Values.Where(s => s.StockGroup.ToString() == group && !s.StockAnalysis.Excluded);
-                if (groupSeries.Count() != 0)
+                var groupInstruments = StockDictionary.Instruments.Values.Where(s => s.Group.ToString() == group && !s.StockAnalysis.Excluded);
+                if (groupInstruments.Count() != 0)
                 {
-                    ToolStripMenuItem[] secondarySerieMenuItems = new ToolStripMenuItem[groupSeries.Count()];
+                    ToolStripMenuItem[] secondarySerieMenuItems = new ToolStripMenuItem[groupInstruments.Count()];
                     ToolStripMenuItem secondarySerieSubMenuItem;
 
                     int n = 0;
-                    foreach (StockSerie stockSerie in groupSeries)
+                    foreach (var instruments in groupInstruments)
                     {
-                        secondarySerieSubMenuItem = new ToolStripMenuItem(stockSerie.StockName);
+                        secondarySerieSubMenuItem = new ToolStripMenuItem(instruments.DisplayName);
                         secondarySerieSubMenuItem.Click += new EventHandler(secondarySerieMenuItem_Click);
                         secondarySerieMenuItems[n++] = secondarySerieSubMenuItem;
                     }
@@ -2650,7 +2650,7 @@ namespace StockAnalyzerApp
                 htmlBody += htmlAlerts;
 
                 // Generate EURO_A Summation Index
-                if (StockDictionary.ContainsKey("McClellanSum.EURO_A"))
+                if (StockDictionary.Instruments.ContainsKey("McClellanSum.EURO_A"))
                 {
                     this.Size = new Size(950, 800);
 
@@ -2676,9 +2676,10 @@ namespace StockAnalyzerApp
                     var barDuration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
                     var theme = fields[2];
                     var nbBars = int.Parse(fields[3]);
-                    if (!StockDictionary.ContainsKey(stockName))
+
+                    if (!StockDictionary.Instruments.TryGetValue(stockName, out var stockInstrument))
                         continue;
-                    var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments[stockName], theme, true, barDuration, nbBars);
+                    var bitmapString = this.GetStockSnapshotAsHtml(stockInstrument, theme, true, barDuration, nbBars);
                     string data = $"\r\n    <h3>{stockName}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                     htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
@@ -2881,7 +2882,7 @@ namespace StockAnalyzerApp
         {
             if (stockScannerDlg == null)
             {
-                stockScannerDlg = new StockScannerDlg(StockDictionary, this.ViewModel.Instrument.Group, this.ViewModel.BarDuration, this.ViewModel.Theme);
+                stockScannerDlg = new StockScannerDlg(StockDictionary.Instance, this.ViewModel.Instrument.Group, this.ViewModel.BarDuration, this.ViewModel.Theme);
                 stockScannerDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
                 stockScannerDlg.FormClosing += new FormClosingEventHandler(delegate
                 {
@@ -3134,13 +3135,11 @@ namespace StockAnalyzerApp
         }
         private void CheckSecondarySerieMenu(string stockName)
         {
-            if (this.StockDictionary.Keys.Contains(stockName))
+            if (StockDictionary.Instruments.TryGetValue(stockName, out var instrument))
             {
-                StockSerie secondarySerie = this.StockDictionary[stockName];
-
                 foreach (ToolStripMenuItem groupMenuItem in this.secondarySerieMenuItem.DropDownItems)
                 {
-                    if (groupMenuItem.Text == secondarySerie.StockGroup.ToString())
+                    if (groupMenuItem.Text == instrument.Group.ToString())
                     {
                         groupMenuItem.Checked = true;
                     }
@@ -3150,7 +3149,7 @@ namespace StockAnalyzerApp
                     }
                     foreach (ToolStripMenuItem subMenuItem in groupMenuItem.DropDownItems)
                     {
-                        if (subMenuItem.Text == secondarySerie.StockName)
+                        if (subMenuItem.Text == instrument.DisplayName)
                         {
                             subMenuItem.Checked = true;
                         }
@@ -3180,10 +3179,15 @@ namespace StockAnalyzerApp
         }
         private void secondarySerieMenuItem_Click(object sender, EventArgs e)
         {
+            var dataSerie = this.ViewModel.Instrument?.GetDataSerie(this.ViewModel.BarDuration);
+            if (dataSerie == null)
+            {
+                return;
+            }
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
-
             menuItem.Checked = !menuItem.Checked;
-            FloatSerie secondarySerie = this.ViewModel.Instrument.StockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[sender.ToString()]);
+
+            FloatSerie secondarySerie = dataSerie.GenerateSecondarySerieFromOtherSerie(sender.ToString(), this.ViewModel.BarDuration);
             if (menuItem.Checked && secondarySerie == null)
             {
                 menuItem.Checked = false;
@@ -3648,26 +3652,17 @@ namespace StockAnalyzerApp
                                         }
                                         break;
                                     case "SECONDARY":
-                                        if (this.ViewModel.Instrument.StockSerie.SecondarySerie != null)
+                                        if (fields[1].ToUpper() == "NONE" || !StockDictionary.Instruments.ContainsKey(fields[1]))
                                         {
-                                            CheckSecondarySerieMenu(fields[1]);
-                                            this.graphCloseControl.SecondaryFloatSerie = this.ViewModel.Instrument.StockSerie.GenerateSecondarySerieFromOtherSerie(this.ViewModel.Instrument.StockSerie.SecondarySerie);
+                                            ClearSecondarySerieMenu();
+                                            this.graphCloseControl.SecondaryFloatSerie = null;
                                         }
                                         else
                                         {
-                                            if (fields[1].ToUpper() == "NONE" ||
-                                                !this.StockDictionary.ContainsKey(fields[1]))
+                                            if (StockDictionary.Instruments.ContainsKey(fields[1]))
                                             {
-                                                ClearSecondarySerieMenu();
-                                                this.graphCloseControl.SecondaryFloatSerie = null;
-                                            }
-                                            else
-                                            {
-                                                if (this.StockDictionary.ContainsKey(fields[1]))
-                                                {
-                                                    CheckSecondarySerieMenu(fields[1]);
-                                                    this.graphCloseControl.SecondaryFloatSerie = this.ViewModel.Instrument.StockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
-                                                }
+                                                CheckSecondarySerieMenu(fields[1]);
+                                                this.graphCloseControl.SecondaryFloatSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(fields[1], this.ViewModel.BarDuration);
                                             }
                                         }
                                         break;
@@ -3791,9 +3786,9 @@ namespace StockAnalyzerApp
                 if (ViewModel.Instrument.BelongsToGroup(Groups.BREADTH))
                 {
                     string[] fields = this.ViewModel.Instrument.DisplayName.Split('.');
-                    if (fields.Length > 1 && this.StockDictionary.ContainsKey(fields[1]))
+                    if (fields.Length > 1 && StockDictionary.Instance.ContainsKey(fields[1]))
                     {
-                        this.graphCloseControl.SecondaryFloatSerie = this.ViewModel.Instrument.StockSerie.GenerateSecondarySerieFromOtherSerie(this.StockDictionary[fields[1]]);
+                        this.graphCloseControl.SecondaryFloatSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(fields[1], this.ViewModel.BarDuration);
                     }
                 }
 
@@ -4112,9 +4107,9 @@ namespace StockAnalyzerApp
         #region FILE MENU HANDLERS
         private void newAnalysisMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (StockSerie stockSerie in this.StockDictionary.Values)
+            foreach (var instrument in StockDictionary.Instruments.Values)
             {
-                stockSerie.StockAnalysis.Clear();
+                instrument.StockAnalysis.Clear();
             }
             this.saveAnalysisFileAsMenuItem_Click(sender, e);
 
@@ -4226,10 +4221,10 @@ namespace StockAnalyzerApp
         private void configDataProviderMenuItem_Click(object sender, EventArgs e)
         {
             var configDialog = ((IConfigDialog)((ToolStripMenuItem)sender).Tag);
-            if (configDialog.ShowDialog(this.StockDictionary) == DialogResult.OK)
+            if (configDialog.ShowDialog(StockDictionary.Instance) == DialogResult.OK)
             {
                 var dataProvider = (IStockDataProvider)configDialog;
-                dataProvider.InitDictionary(this.StockDictionary, true);
+                dataProvider.InitDictionary(StockDictionary.Instance, true);
                 this.CreateSecondarySerieMenuItem();
             }
         }
@@ -4262,7 +4257,7 @@ namespace StockAnalyzerApp
             {
                 return;
             }
-            foreach (var serie in this.StockDictionary.Values)
+            foreach (var serie in StockDictionary.Instruments.Values)
             {
                 serie.StockAnalysis.DrawingItems.Clear();
             }
@@ -4327,7 +4322,7 @@ namespace StockAnalyzerApp
             }
             if (dataProvider.ShowDialog(saxoId) == DialogResult.OK)
             {
-                dataProvider.InitDictionary(this.StockDictionary, true);
+                dataProvider.InitDictionary(StockDictionary.Instance, true);
                 this.CreateSecondarySerieMenuItem();
             }
         }

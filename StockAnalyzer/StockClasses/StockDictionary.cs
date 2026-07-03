@@ -42,9 +42,16 @@ namespace StockAnalyzer.StockClasses
         public delegate void ReportProgressHandler(string progress);
         public event ReportProgressHandler ReportProgress;
 
-        public StockDictionary(DateTime archiveEndDate)
+
+        static public void Initialize(DateTime archiveEndDate)
         {
-            Instance = this;
+            if (Instance == null)
+            {
+                Instance = new StockDictionary(archiveEndDate);
+            }
+        }
+        private StockDictionary(DateTime archiveEndDate)
+        {
             this.ArchiveEndDate = archiveEndDate;
 
             StockPortfolio.StockPortfolio.PriceProvider = this;
@@ -1464,7 +1471,7 @@ namespace StockAnalyzer.StockClasses
         }
         #endregion
         #region ANALYSIS SERIALISATION
-        public void ReadAnalysisFromXml(System.Xml.XmlReader reader)
+        static public void ReadAnalysisFromXml(System.Xml.XmlReader reader)
         {
             reader.Read(); // Skip Header
             reader.Read(); // Skip StockAnalysisList
@@ -1474,9 +1481,9 @@ namespace StockAnalyzer.StockClasses
                 string stockName = reader.GetAttribute("StockName");
                 if (stockName != null)
                 {
-                    if (this.Keys.Contains(stockName))
+                    if (Instruments.TryGetValue(stockName, out var instrument))
                     {
-                        this[stockName].ReadAnalysisFromXml(reader);
+                        instrument.ReadAnalysisFromXml(reader);
                     }
                     else
                     {
@@ -1489,17 +1496,17 @@ namespace StockAnalyzer.StockClasses
                 }
             }
         }
-        public void WriteAnalysisToXml(System.Xml.XmlWriter writer)
+        static public void WriteAnalysisToXml(System.Xml.XmlWriter writer)
         {
             // Serialize Flat Attributes
             writer.WriteStartElement("StockAnalysisList");
 
-            foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.IsEmpty()).OrderBy(s => s.StockGroup))
+            foreach (var instrument in Instruments.Values.Where(s => !s.StockAnalysis.IsEmpty()).OrderBy(s => s.Group))
             {
                 writer.WriteStartElement("StockAnalysisItem");
-                writer.WriteAttributeString("StockName", stockSerie.StockName);
+                writer.WriteAttributeString("StockName", instrument.Id);
 
-                stockSerie.WriteAnalysisToXml(writer);
+                instrument.WriteAnalysisToXml(writer);
 
                 writer.WriteEndElement();
             }

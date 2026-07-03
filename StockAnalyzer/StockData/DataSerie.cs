@@ -22,11 +22,13 @@ namespace StockAnalyzer.StockData
 {
     public class DataSerie
     {
-        public StockInstrument Instrument { get; set; }
+        public StockInstrument Instrument { get; }
+        public BarDuration BarDuration { get; }
+        public string StockName => this.Instrument?.DisplayName;
+
         public DataSerie(StockInstrument instrument, BarDuration barDuration, StockDailyValue[] values)
         {
             this.Instrument = instrument;
-            this.StockName = instrument.DisplayName;
             this.BarDuration = barDuration;
             this.Values = values;
 
@@ -35,7 +37,6 @@ namespace StockAnalyzer.StockData
         public DataSerie(StockInstrument instrument, BarDuration barDuration, string path)
         {
             this.Instrument = instrument;
-            this.StockName = instrument.DisplayName;
             this.BarDuration = barDuration;
 
             this.Deserialize(path);
@@ -61,9 +62,6 @@ namespace StockAnalyzer.StockData
         public StockDailyValue[] Values;
         public StockDailyValue this[DateTime key] => this.Values?.FirstOrDefault(v => v.DATE == key);
 
-        public string StockName { get; set; }
-
-        public BarDuration BarDuration { get; set; }
 
         public int LastIndex => Values == null ? -1 : Values.Length - 1;
         public int LastCompleteIndex => this.LastIndex > 0 ? this.Values[LastIndex].IsComplete ? this.LastIndex : this.LastIndex : -1;

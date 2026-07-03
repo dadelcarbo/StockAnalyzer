@@ -317,7 +317,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
 
 
-                var series = StockAnalyzerForm.MainFrame.StockDictionary.Values.Where(s => s.BelongsToGroup(this.Group));
+                var series = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.Group));
                 //foreach (var serie in series)
                 //{
                 //    serie.IsInitialised = false;
