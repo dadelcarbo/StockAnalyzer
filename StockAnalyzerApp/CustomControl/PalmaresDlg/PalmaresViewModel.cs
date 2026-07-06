@@ -506,11 +506,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 OnPropertyChanged("Lines");
                 await Task.Delay(10);
 
-                var stockList = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
+                var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
                 this.Progress = 0;
-                this.NbStocks = stockList.Count;
+                this.NbStocks = instruments.Count;
                 int count = 0;
-                foreach (var stockSerie in stockList)
+                foreach (var instrument in instruments)
                 {
                     if (canceled)
                     {
@@ -521,26 +521,23 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         this.Progress = count;
                     if (this.DownloadIntraday && (this.group == StockAnalyzer.StockClasses.Groups.TURBO_5M || this.group == StockAnalyzer.StockClasses.Groups.TURBO))
                     {
-                        StockDataProviderBase.DownloadSerieData(stockSerie);
+                        StockDataProviderBase.DownloadSerieData(instrument.StockSerie);
                     }
-                    if (!stockSerie.Initialise())
-                        continue;
 
-                    var previousDuration = stockSerie.BarDuration;
-                    stockSerie.BarDuration = this.BarDuration;
-                    if (stockSerie.Count < Math.Max(100, this.Stok))
+                    var dataSerie = instrument.GetDataSerie(this.BarDuration);
+
+                    if (dataSerie == null || dataSerie.Count < Math.Max(100, this.Stok))
                     {
-                        stockSerie.BarDuration = previousDuration;
                         continue;
                     }
 
-                    var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                    var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-                    var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-                    var openSerie = stockSerie.GetSerie(StockDataType.OPEN);
+                    var closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
+                    var lowSerie = dataSerie.GetSerie(StockDataType.LOW);
+                    var highSerie = dataSerie.GetSerie(StockDataType.HIGH);
+                    var openSerie = dataSerie.GetSerie(StockDataType.OPEN);
 
-                    var endIndex = stockSerie.LastIndex;
-                    var lastBar = stockSerie.Values.ElementAt(endIndex);
+                    var endIndex = dataSerie.LastIndex;
+                    var lastBar = dataSerie.Values.ElementAt(endIndex);
 
                     if (Liquidity >= 0 && Liquidity > lastBar.EXCHANGED / 1000000f)
                     {
@@ -587,7 +584,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     {
                         try
                         {
-                            trailStopSerie = stockSerie.GetTrailStop(this.stop);
+                            trailStopSerie = dataSerie.GetTrailStop(this.stop);
                             stopValue = trailStopSerie.Series[0][endIndex];
                             if (float.IsNaN(stopValue))
                             {
@@ -605,7 +602,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     bool match = true;
                     if (screenerSerie != null)
                     {
-                        match = screenerSerie.MatchFilter(stockSerie, this.BarDuration, endIndex);
+                        match = screenerSerie.MatchFilter(dataSerie, endIndex);
                         if (screenerOnly && !match)
                         {
                             continue;
@@ -614,14 +611,12 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     int highestIn = lastBar.VARIATION > 0 ? closeSerie.GetHighestIn(endIndex) : 0;
 
-                    var dataSerie = StockDictionary.Instruments[stockSerie.StockName].GetDataSerie(this.BarDuration);
-
                     #region Calculate Indicators
                     float stockIndicator1 = float.NaN;
                     if (viewableSeries1 != null)
                     {
                         if (Indicator1.StartsWith("RO"))
-                            stockIndicator1 = stockSerie.CalculateLastROx(Indicator1, (int)viewableSeries1.Parameters[0]);
+                            stockIndicator1 = dataSerie.CalculateLastROx(Indicator1, (int)viewableSeries1.Parameters[0]);
                         else
                             try { viewableSeries1.ApplyTo(dataSerie); stockIndicator1 = viewableSeries1.Series[0][endIndex]; } catch { }
 
@@ -635,7 +630,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     if (viewableSeries2 != null)
                     {
                         if (Indicator2.StartsWith("RO"))
-                            stockIndicator2 = stockSerie.CalculateLastROx(Indicator2, (int)viewableSeries2.Parameters[0]);
+                            stockIndicator2 = dataSerie.CalculateLastROx(Indicator2, (int)viewableSeries2.Parameters[0]);
                         else
                             try { viewableSeries2.ApplyTo(dataSerie); stockIndicator2 = viewableSeries2.Series[0][endIndex]; } catch { }
 
@@ -649,7 +644,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     if (viewableSeries3 != null)
                     {
                         if (Indicator3.StartsWith("RO"))
-                            stockIndicator3 = stockSerie.CalculateLastROx(Indicator3, (int)viewableSeries3.Parameters[0]);
+                            stockIndicator3 = dataSerie.CalculateLastROx(Indicator3, (int)viewableSeries3.Parameters[0]);
                         else
                             try { viewableSeries3.ApplyTo(dataSerie); stockIndicator3 = viewableSeries3.Series[0][endIndex]; } catch { }
 
@@ -664,9 +659,9 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Lines.Add(new PalmaresLine
                     {
                         Match = match,
-                        Group = stockSerie.StockGroup.ToString(),
-                        Symbol = stockSerie.Symbol,
-                        Name = stockSerie.StockName,
+                        Group = instrument.Group.ToString(),
+                        Symbol = instrument.Symbol,
+                        Name = instrument.DisplayName,
                         Value = lastValue,
                         Highest = highestIn,
                         Volume = lastBar.EXCHANGED / 1000000f,
@@ -678,8 +673,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         BarVariation = barVariation,
                         LastDate = lastBar.DATE
                     });
-
-                    stockSerie.BarDuration = previousDuration;
                 }
 
             }

@@ -674,15 +674,15 @@ namespace StockAnalyzer.StockClasses
                     case AlertType.Group:
                     case AlertType.Stock:
                         {
-                            if (!string.IsNullOrEmpty(stockAlert.Script))
-                            {
-                                var screener = StockScriptManager.Instance.CreateStockFilterInstance(stockAlert.Script);
-                                if (screener != null)
-                                {
-                                    if (!screener.MatchFilter(this, stockAlert.BarDuration))
-                                        return false;
-                                }
-                            }
+                            //if (!string.IsNullOrEmpty(stockAlert.Script))
+                            //{
+                            //    var screener = StockScriptManager.Instance.CreateStockFilterInstance(stockAlert.Script);
+                            //    if (screener != null)
+                            //    {
+                            //        if (!screener.MatchFilter(this, stockAlert.BarDuration))
+                            //            return false;
+                            //    }
+                            //}
                             if (!string.IsNullOrEmpty(stockAlert.FilterFullName))
                             {
                                 if (this.BarDuration != stockAlert.FilterDuration)

@@ -148,6 +148,11 @@ namespace StockAnalyzerApp.StockData
                 serializer.Serialize(writer, this.StockAnalysis);
             }
         }
+
+        public StockAlert MatchAlert(StockAlertDef alertDef)
+        {
+            throw new NotImplementedException("MatchAlert method is not implemented in StockInstrument");
+        }
         #endregion
 
     }

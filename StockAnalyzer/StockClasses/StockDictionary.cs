@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 
 namespace StockAnalyzer.StockClasses
 {
@@ -1559,57 +1560,16 @@ namespace StockAnalyzer.StockClasses
             using MethodLogger ml = new MethodLogger(this, true, $"AlertDef: {alertDef.Title}");
             sw = Stopwatch.StartNew();
 
-            // Initialize Group
-            StockLog.Write($"Initializing group {alertDef.Group} for alert {alertDef.Title}");
-            foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
-            {
-                stockSerie.Initialise();
-            }
-            StockLog.Write($"Group {alertDef.Group} initialized in {sw.Elapsed}");
-
             var alerts = new List<StockAlert>();
             try
             {
-                foreach (StockSerie stockSerie in Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
+                foreach (var instrument in Instruments.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
                 {
-                    if (alertDef.BarDuration > BarDuration.Monthly && stockSerie.BelongsToGroup(Groups.PEA)) // if intraday
-                    {
-                        continue;
-                    }
-                    if (stockSerie.IsInitialised)
-                    {
-                        var previousBarDuration = stockSerie.BarDuration;
-                        try
-                        {
-                            stockSerie.BarDuration = alertDef.BarDuration;
-                            if (stockSerie.Count < 30)
-                                continue;
+                    var alert = instrument.MatchAlert(alertDef);
 
-                            if (alertDef.MinLiquidity > 0 && stockSerie.HasVolume)
-                            {
-                                if (!stockSerie.HasLiquidity(alertDef.MinLiquidity, 10))
-                                {
-                                    continue;
-                                }
-                            }
-
-                            var values = stockSerie.ValueArray;
-                            var lastIndex = alertDef.CompleteBar ? stockSerie.LastCompleteIndex : stockSerie.LastIndex;
-                            var dailyValue = values.ElementAt(lastIndex);
-                            if (stockSerie.MatchEvent(alertDef))
-                            {
-                                alerts.Add(new StockAlert
-                                {
-                                    AlertDef = alertDef,
-                                    Date = dailyValue.DATE,
-                                    StockSerie = stockSerie
-                                });
-                            }
-                        }
-                        finally
-                        {
-                            stockSerie.BarDuration = previousBarDuration;
-                        }
+                    if (alert != null)
+                    {
+                        alerts.Add(alert);
                     }
                 }
             }
