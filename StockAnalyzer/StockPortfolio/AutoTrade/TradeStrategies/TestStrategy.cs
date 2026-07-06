@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 {
@@ -8,52 +9,52 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 
         public string Description => "Buy Sell on EMA cross over";
 
-        public TradeRequest TryToOpenPosition(StockSerie stockSerie, BarDuration duration, int index = -1)
+        public TradeRequest TryToOpenPosition(DataSerie dataSerie, BarDuration duration, int index = -1)
         {
             if (index == 0) return null;
 
-            var emaLong = stockSerie.GetIndicator("EMA(75)").Series[0];
-            var emashort = stockSerie.GetIndicator("EMA(5)").Series[0];
+            var emaLong = dataSerie.GetIndicator("EMA(75)").Series[0];
+            var emashort = dataSerie.GetIndicator("EMA(5)").Series[0];
 
             StockDailyValue dailyValue;
             if (index == -1)
             {
-                index = stockSerie.LastIndex;
-                dailyValue = stockSerie.LastValue;
+                index = dataSerie.LastIndex;
+                dailyValue = dataSerie.LastValue;
             }
             else
             {
-                dailyValue = stockSerie.ValueArray[index];
+                dailyValue = dataSerie.Values[index];
             }
 
             if (emaLong[index - 1] < emashort[index - 1] && emaLong[index - 1] > emashort[index])
             {
-                return new TradeRequest { BuySell = BuySell.Buy, StockSerie = stockSerie, Value = dailyValue.CLOSE, Stop = dailyValue.LOW };
+                return new TradeRequest { BuySell = BuySell.Buy, DataSerie = dataSerie, Value = dailyValue.CLOSE, Stop = dailyValue.LOW };
             }
             return null;
         }
 
-        public TradeRequest TryToClosePosition(StockSerie stockSerie, BarDuration duration, int index = -1)
+        public TradeRequest TryToClosePosition(DataSerie dataSerie, BarDuration duration, int index = -1)
         {
             if (index == 0) return null;
 
-            var emaLong = stockSerie.GetIndicator("EMA(75)").Series[0];
-            var emashort = stockSerie.GetIndicator("EMA(5)").Series[0];
+            var emaLong = dataSerie.GetIndicator("EMA(75)").Series[0];
+            var emashort = dataSerie.GetIndicator("EMA(5)").Series[0];
 
             StockDailyValue dailyValue;
             if (index == -1)
             {
-                index = stockSerie.LastIndex;
-                dailyValue = stockSerie.LastValue;
+                index = dataSerie.LastIndex;
+                dailyValue = dataSerie.LastValue;
             }
             else
             {
-                dailyValue = stockSerie.ValueArray[index];
+                dailyValue = dataSerie.Values[index];
             }
 
             if (emaLong[index - 1] > emashort[index - 1] && emaLong[index - 1] < emashort[index])
             {
-                return new TradeRequest { BuySell = BuySell.Sell, StockSerie = stockSerie, Value = dailyValue.CLOSE };
+                return new TradeRequest { BuySell = BuySell.Sell, DataSerie = dataSerie , Value = dailyValue.CLOSE };
             }
 
             return null;

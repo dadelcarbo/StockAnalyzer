@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Text.Json.Serialization;
 
@@ -9,7 +10,8 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         public long Id { get; set; }
         public DateTime OpenDate { get; set; }
         [JsonIgnore]
-        public StockSerie StockSerie { get; set; }
+        public StockInstrument Instrument { get; set; }
+        public BarDuration Duration { get; set; }
         public int Qty { get; set; }
         public float TheoriticalOpenValue { get; set; }
         public float ActualOpenValue { get; set; }

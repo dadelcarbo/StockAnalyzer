@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 {
@@ -7,8 +8,8 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
         string Name { get; }
         string Description { get; }
 
-        TradeRequest TryToClosePosition(StockSerie stockSerie, BarDuration duration, int index = -1);
+        TradeRequest TryToClosePosition(DataSerie dataSerie, BarDuration duration, int index = -1);
 
-        TradeRequest TryToOpenPosition(StockSerie stockSerie, BarDuration duration, int index = -1);
+        TradeRequest TryToOpenPosition(DataSerie dataSerie, BarDuration duration, int index = -1);
     }
 }

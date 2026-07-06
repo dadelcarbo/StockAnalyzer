@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 {
@@ -7,40 +8,40 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
         public string Name => "Switch";
         public string Description => "Systematicaly buy or sell, just for testing";
 
-        public TradeRequest TryToOpenPosition(StockSerie stockSerie, BarDuration duration, int index = -1)
+        public TradeRequest TryToOpenPosition(DataSerie dataSerie, BarDuration duration, int index = -1)
         {
             if (index == 0) return null;
 
             StockDailyValue lastBar;
             if (index == -1)
             {
-                index = stockSerie.LastIndex;
-                lastBar = stockSerie.LastValue;
+                index = dataSerie.LastIndex;
+                lastBar = dataSerie.LastValue;
             }
             else
             {
-                lastBar = stockSerie.ValueArray[index];
+                lastBar = dataSerie.Values[index];
             }
 
-            return new TradeRequest { BuySell = BuySell.Buy, StockSerie = stockSerie, Value = lastBar.CLOSE };
+            return new TradeRequest { BuySell = BuySell.Buy, DataSerie = dataSerie, Value = lastBar.CLOSE };
         }
 
-        public TradeRequest TryToClosePosition(StockSerie stockSerie, BarDuration duration, int index = -1)
+        public TradeRequest TryToClosePosition(DataSerie dataSerie, BarDuration duration, int index = -1)
         {
             if (index == 0) return null;
 
             StockDailyValue lastBar;
             if (index == -1)
             {
-                index = stockSerie.LastIndex;
-                lastBar = stockSerie.LastValue;
+                index = dataSerie.LastIndex;
+                lastBar = dataSerie.LastValue;
             }
             else
             {
-                lastBar = stockSerie.ValueArray[index];
+                lastBar = dataSerie.Values[index];
             }
 
-            return new TradeRequest { BuySell = BuySell.Sell, StockSerie = stockSerie, Value = lastBar.CLOSE };
+            return new TradeRequest { BuySell = BuySell.Sell, DataSerie = dataSerie, Value = lastBar.CLOSE };
         }
     }
 }

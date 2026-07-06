@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.ObjectModel;
@@ -30,10 +31,8 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         public TradeAgent(TradeAgentDef agentDef)
         {
             this.AgentDef = agentDef;
-            if (StockDictionary.Instance.ContainsKey(agentDef.StockName))
-            {
-                this.StockSerie = StockDictionary.Instance[agentDef.StockName];
-            }
+            StockDictionary.Instruments.TryGetValue(agentDef.StockName, out StockInstrument instrument);
+
             this.Strategy = TradeStrategyManager.CreateInstance("TrailAtr");
             this.Portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == agentDef.PortfolioName);
         }
@@ -41,7 +40,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         public TradeAgentDef AgentDef { get; private set; }
 
         [JsonIgnore]
-        public StockSerie StockSerie { get; set; }
+        public StockInstrument Instrument { get; set; }
 
         [JsonIgnore]
         public StockPortfolio Portfolio { get; set; }
@@ -77,7 +76,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
             else
             {
                 // Check is opened position for this instrument.
-                var saxoPosition = this.Portfolio.SaxoGetPosition(StockSerie);
+                var saxoPosition = this.Portfolio.SaxoGetPosition(Instrument.StockSerie);
                 if (saxoPosition != null)
                 {
                     var positionId = long.Parse(saxoPosition.PositionId);
@@ -91,7 +90,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                             ActualOpenValue = saxoPosition.PositionBase.OpenPrice,
                             TheoriticalOpenValue = saxoPosition.PositionBase.OpenPrice,
                             Qty = (int)saxoPosition.PositionBase.Amount,
-                            StockSerie = this.StockSerie
+                            Instrument = this.Instrument
                             //Stop = tradeRequest.Stop
                         };
                         this.Positions.Add(this.Position);
@@ -144,19 +143,19 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
             if (!Running)
                 return;
 
-            var previousDuration = StockSerie.BarDuration;
             try
             {
-                lock (StockSerie)
+                lock (Instrument)
                 {
                     // Get StockSerie Data
-                    StockDataProviderBase.DownloadSerieData(StockSerie);
-                    StockSerie.BarDuration = this.AgentDef.BarDuration;
+                    StockDataProviderBase.DownloadSerieData(Instrument);
+
+                    var dataSerie = Instrument.GetDataSerie(this.AgentDef.BarDuration);
 
                     if (TradeEngine.IsTest)
                     {
                         index++;
-                        if (index > StockSerie.LastIndex)
+                        if (index > dataSerie.LastIndex)
                         {
                             StockLog.Write($"{this} Test Agent Completed");
                             this.Stop();
@@ -167,7 +166,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                     // Check Orders
                     if (Position == null)
                     {
-                        var tradeRequest = Strategy.TryToOpenPosition(StockSerie, this.AgentDef.BarDuration, index);
+                        var tradeRequest = Strategy.TryToOpenPosition(dataSerie, this.AgentDef.BarDuration, index);
                         if (tradeRequest != null)
                         {
                             TradeRequests.Add(tradeRequest);
@@ -177,7 +176,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                     }
                     else
                     {
-                        var tradeRequest = Strategy.TryToClosePosition(StockSerie, this.AgentDef.BarDuration, index);
+                        var tradeRequest = Strategy.TryToClosePosition(dataSerie, this.AgentDef.BarDuration, index);
                         if (tradeRequest != null)
                         {
                             TradeRequests.Add(tradeRequest);
@@ -196,7 +195,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                             }
                             else
                             {
-                                StockLog.Write($"{this} No position on ${StockSerie.StockName} found. ");
+                                StockLog.Write($"{this} No position on ${Instrument.DisplayName} found. ");
                                 this.Position = null;
                             }
                         }
@@ -207,7 +206,6 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
             {
                 MessageBox.Show(ex.Message, "Auto trade error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            StockSerie.BarDuration = previousDuration;
         }
 
         private void ProcessBuyRequest(TradeRequest tradeRequest)
@@ -250,13 +248,14 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                     TheoriticalOpenValue = tradeRequest.Value,
                     Qty = tradeRequest.Qty,
                     Stop = tradeRequest.Stop,
-                    StockSerie = tradeRequest.StockSerie
+                    Instrument = tradeRequest.DataSerie.Instrument,
+                    Duration = tradeRequest.DataSerie.BarDuration
                 };
                 this.Positions.Add(this.Position);
             }
             else
             {
-                var orderId = Portfolio.SaxoBuyOrder(StockSerie, OrderType.Market, tradeRequest.Qty, tradeRequest.Stop);
+                var orderId = Portfolio.SaxoBuyOrder(Instrument, OrderType.Market, tradeRequest.Qty, tradeRequest.Stop);
                 if (orderId == 0)
                 {
                     StockLog.Write($"{this} Saxo Buy failed");
@@ -266,7 +265,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                 var saxoPosition = this.Portfolio.SaxoGetPositions()?.FirstOrDefault(p => p.PositionBase.SourceOrderId == orderId.ToString());
                 if (saxoPosition == null)
                 {
-                    StockLog.Write($"{this} Saxo position not found for {StockSerie.StockName}");
+                    StockLog.Write($"{this} Saxo position not found for {Instrument.DisplayName}");
                     return;
                 }
 
@@ -285,7 +284,8 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                     TheoriticalOpenValue = tradeRequest.Value,
                     Qty = tradeRequest.Qty,
                     Stop = tradeRequest.Stop,
-                    StockSerie = tradeRequest.StockSerie
+                    Instrument = tradeRequest.DataSerie.Instrument,
+                    Duration = tradeRequest.DataSerie.BarDuration
                 };
                 this.Positions.Add(this.Position);
             }
@@ -364,7 +364,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         public override string ToString()
         {
             var running = Running ? "Running" : "Stopped";
-            return $"{AgentDef.Id}-{Strategy.Name}-{AgentDef.BarDuration}-{StockSerie.StockName}-{running}";
+            return $"{AgentDef.Id}-{Strategy.Name}-{AgentDef.BarDuration}-{Instrument.DisplayName}-{running}";
         }
     }
 }

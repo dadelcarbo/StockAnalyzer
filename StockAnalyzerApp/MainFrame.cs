@@ -11,7 +11,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
-using StockAnalyzer.StockData;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using System;
 using System.Text.Json.Serialization;
 
@@ -16,7 +17,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
 
         public DateTime Date { get; set; } = DateTime.Now;
         [JsonIgnore]
-        public StockSerie StockSerie { get; set; }
+        public DataSerie DataSerie { get; set; }
         public BuySell BuySell { get; set; }
         public int Qty { get; set; }
         public float Value { get; set; }

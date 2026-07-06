@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 {
@@ -10,11 +11,11 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 
         static int period = 12;
 
-        public TradeRequest TryToOpenPosition(StockSerie stockSerie, BarDuration duration, int index = -1)
+        public TradeRequest TryToOpenPosition(DataSerie dataSerie, BarDuration duration, int index = -1)
         {
             if (index == 0) return null;
 
-            var trailStop = stockSerie.GetTrailStop($"TRAILATR({12},6,0.75,-0.25,EMA)");
+            var trailStop = dataSerie.GetTrailStop($"TRAILATR({12},6,0.75,-0.25,EMA)");
 
             var brokenUpEvents = trailStop.GetEvents("BrokenUp");
 
@@ -22,41 +23,41 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
             StockDailyValue lastBar;
             if (index == -1)
             {
-                index = stockSerie.LastIndex;
-                lastBar = stockSerie.LastValue;
+                index = dataSerie.LastIndex;
+                lastBar = dataSerie.LastValue;
             }
             else
             {
-                lastBar = stockSerie.ValueArray[index];
+                lastBar = dataSerie.Values[index];
             }
 
             if (brokenUpEvents[index])
             {
-                return new TradeRequest { BuySell = BuySell.Buy, StockSerie = stockSerie, Value = lastBar.CLOSE, Stop = lastBar.LOW };
+                return new TradeRequest { BuySell = BuySell.Buy, DataSerie = dataSerie, Value = lastBar.CLOSE, Stop = lastBar.LOW };
             }
             return null;
         }
 
-        public TradeRequest TryToClosePosition(StockSerie stockSerie, BarDuration duration, int index = -1)
+        public TradeRequest TryToClosePosition(DataSerie dataSerie, BarDuration duration, int index = -1)
         {
             if (index == 0) return null;
 
-            var emaSerie = stockSerie.GetIndicator($"EMA({12})").Series[0];
+            var emaSerie = dataSerie.GetIndicator($"EMA({12})").Series[0];
 
             StockDailyValue lastBar;
             if (index == -1)
             {
-                index = stockSerie.LastIndex;
-                lastBar = stockSerie.LastValue;
+                index = dataSerie.LastIndex;
+                lastBar = dataSerie.LastValue;
             }
             else
             {
-                lastBar = stockSerie.ValueArray[index];
+                lastBar = dataSerie.Values[index];
             }
 
             if (lastBar.CLOSE < emaSerie[index])
             {
-                return new TradeRequest { BuySell = BuySell.Sell, StockSerie = stockSerie, Value = lastBar.CLOSE };
+                return new TradeRequest { BuySell = BuySell.Sell, DataSerie = dataSerie, Value = lastBar.CLOSE };
             }
 
             return null;

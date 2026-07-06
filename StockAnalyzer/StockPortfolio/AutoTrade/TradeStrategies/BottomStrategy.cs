@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
@@ -10,53 +11,53 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
 
         float R2 = 0;
 
-        public TradeRequest TryToOpenPosition(StockSerie stockSerie, BarDuration duration, int index = -1)
+        public TradeRequest TryToOpenPosition(DataSerie dataSerie, BarDuration duration, int index = -1)
         {
             if (index == 0) return null;
 
             StockDailyValue lastBar;
             if (index == -1)
             {
-                index = stockSerie.LastIndex;
-                lastBar = stockSerie.LastValue;
+                index = dataSerie.LastIndex;
+                lastBar = dataSerie.LastValue;
             }
             else
             {
-                lastBar = stockSerie.ValueArray[index];
+                lastBar = dataSerie.Values[index];
             }
 
-            StockDailyValue previousBar = stockSerie.ValueArray[index - 1];
+            StockDailyValue previousBar = dataSerie.Values[index - 1];
 
             if (lastBar.CLOSE > previousBar.BodyHigh)
             {
                 var stop = Math.Min(lastBar.LOW, previousBar.LOW);
                 R2 = lastBar.CLOSE + 2f * (lastBar.CLOSE - stop);
-                return new TradeRequest { BuySell = BuySell.Buy, StockSerie = stockSerie, Value = lastBar.CLOSE, Stop = stop };
+                return new TradeRequest { BuySell = BuySell.Buy, DataSerie = dataSerie, Value = lastBar.CLOSE, Stop = stop };
             }
             return null;
         }
 
-        public TradeRequest TryToClosePosition(StockSerie stockSerie, BarDuration duration, int index = -1)
+        public TradeRequest TryToClosePosition(DataSerie dataSerie, BarDuration duration, int index = -1)
         {
             if (index == 0) return null;
 
             StockDailyValue lastBar;
             if (index == -1)
             {
-                index = stockSerie.LastIndex;
-                lastBar = stockSerie.LastValue;
+                index = dataSerie.LastIndex;
+                lastBar = dataSerie.LastValue;
             }
             else
             {
-                lastBar = stockSerie.ValueArray[index];
+                lastBar = dataSerie.Values[index];
             }
 
-            StockDailyValue previousBar = stockSerie.ValueArray[index - 1];
+            StockDailyValue previousBar = dataSerie.Values[index - 1];
 
 
             if (lastBar.CLOSE < previousBar.BodyLow)
             {
-                return new TradeRequest { BuySell = BuySell.Sell, StockSerie = stockSerie, Value = lastBar.CLOSE };
+                return new TradeRequest { BuySell = BuySell.Sell, DataSerie = dataSerie, Value = lastBar.CLOSE };
             }
 
             return null;
