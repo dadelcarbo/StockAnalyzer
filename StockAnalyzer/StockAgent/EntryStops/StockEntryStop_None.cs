@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockAgent.EntryStops
             return 0f;
         }
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
             return true;
         }

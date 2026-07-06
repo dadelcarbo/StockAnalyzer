@@ -29,12 +29,12 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie histogramSerie;
         FloatSerie emacdSerie;
         FloatSerie signalSerie;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (SlowPeriod <= FastPeriod || stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
+            if (SlowPeriod <= FastPeriod || DataSerie.Count < Math.Max(SlowPeriod, FastPeriod))
                 return false;
 
-            var emacd = stockSerie.GetIndicator($"EMACD({SlowPeriod},{FastPeriod},{SignalPeriod})");
+            var emacd = DataSerie.GetIndicator($"EMACD({SlowPeriod},{FastPeriod},{SignalPeriod})");
             histogramSerie = emacd.Series[0];
             emacdSerie = emacd.Series[1];
             signalSerie = emacd.Series[2];

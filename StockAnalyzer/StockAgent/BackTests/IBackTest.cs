@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace StockAnalyzer.StockAgent.BackTests
 {
     public interface IBackTest : IStockAgent
     {
-        public bool Initialize(StockSerie stockSerie, BarDuration duration);
+        public bool Initialize(StockInstrument instrument, BarDuration duration, int minIndex);
 
         public float GetStop(int index);
     }
@@ -24,23 +25,27 @@ namespace StockAnalyzer.StockAgent.BackTests
             return (IBackTest)Activator.CreateInstance(type);
         }
 
-        public bool Initialize(StockSerie stockSerie, BarDuration duration)
+        public bool Initialize(StockInstrument instrument, BarDuration duration, int minIndex)
         {
             try
             {
-                this.StockSerie = stockSerie;
-                stockSerie.ResetIndicatorCache();
+                this.Instrument = instrument;
+                this.DataSerie = instrument.GetDataSerie(duration);
 
-                stockSerie.BarDuration = duration;
-                closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                openSerie = stockSerie.GetSerie(StockDataType.OPEN);
-                lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-                highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-                volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
-                volumeEuroSerie = stockSerie.GetSerie(StockDataType.VOLUME).CalculateEMA(10);
+                if (this.DataSerie == null || this.DataSerie.Count < minIndex)
+                {
+                    return false;
+                }
+
+                closeSerie = DataSerie.GetSerie(StockDataType.CLOSE);
+                openSerie = DataSerie.GetSerie(StockDataType.OPEN);
+                lowSerie = DataSerie.GetSerie(StockDataType.LOW);
+                highSerie = DataSerie.GetSerie(StockDataType.HIGH);
+                volumeSerie = DataSerie.GetSerie(StockDataType.VOLUME);
+                volumeEuroSerie = DataSerie.GetSerie(StockDataType.VOLUME).CalculateEMA(10);
                 this.Trade = null;
 
-                return Init(stockSerie);
+                return Init();
             }
             catch (Exception ex)
             {
@@ -58,7 +63,7 @@ namespace StockAnalyzer.StockAgent.BackTests
                 if (volumeEuroSerie[index] < 0.5f)
                     return TradeAction.Nothing;
                 var action = this.TryToOpenPosition(index);
-                if (action == TradeAction.Buy )
+                if (action == TradeAction.Buy)
                 {
                     this.EntryStopValue = this.GetStop(index);
                 }

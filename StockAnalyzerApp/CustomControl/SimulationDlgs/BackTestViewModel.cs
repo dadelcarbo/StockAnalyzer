@@ -7,6 +7,7 @@ using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -258,8 +259,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     this.ProgressValue = evt.ProgressPercentage;
                 };
 
-                var series = StockDictionary.Instance.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.Group));
-                if (this.RunAgentEngine(series))
+                var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group));
+                if (this.RunAgentEngine(instruments))
                 {
                     e.Cancel = false;
                 }
@@ -274,7 +275,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             }
         }
 
-        private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries)
+        private bool RunAgentEngine(IEnumerable<StockInstrument> instruments)
         {
             try
             {
@@ -306,7 +307,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                         throw new ArgumentOutOfRangeException("Invalid selector: " + this.Selector);
                 }
 
-                engine.GreedySelection(stockSeries, this.BarDuration, 20, selector);
+                engine.GreedySelection(instruments, this.BarDuration, 20, selector);
                 if (engine.BestTradeSummary == null)
                     return false;
             }

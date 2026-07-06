@@ -25,11 +25,11 @@ namespace StockAnalyzer.StockAgent.Agents
 
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
+            if (DataSerie.Count < Math.Max(SlowPeriod, FastPeriod))
                 return false;
-            var cloud = stockSerie.GetCloud($"EMA2Lines({FastPeriod},{SlowPeriod},{SignalPeriod})");
+            var cloud = DataSerie.GetCloud($"EMA2Lines({FastPeriod},{SlowPeriod},{SignalPeriod})");
             bullEvents = cloud.Events[Array.IndexOf(cloud.EventNames, "CloudUp")];
             bearEvents = cloud.Events[Array.IndexOf(cloud.EventNames, "CloudDown")];
             return bullEvents != null && bearEvents != null;

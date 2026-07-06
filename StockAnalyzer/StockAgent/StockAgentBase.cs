@@ -1,6 +1,8 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +28,7 @@ namespace StockAnalyzer.StockAgent
         protected FloatSerie volumeEuroSerie;  // Exchanged volume in M€
 
         public StockTrade Trade { get; set; }
-        public StockSerie StockSerie { get; protected set; }
+        public StockInstrument Instrument { get; protected set; }
 
         static SortedDictionary<Type, List<string>> agentNameDicos = new SortedDictionary<Type, List<string>>();
         public static List<string> GetAgentNames(Type type)
@@ -65,25 +67,27 @@ namespace StockAnalyzer.StockAgent
         protected float EntryTargetValue { get; private set; }
         protected IStockEntryTarget EntryTargetAgent { get; private set; }
 
-        public bool Initialize(StockSerie stockSerie, BarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent)
+        public DataSerie DataSerie { get; set; }
+
+        public bool Initialize(StockInstrument instrument, BarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent)
         {
             try
             {
-                this.StockSerie = stockSerie;
-                stockSerie.ResetIndicatorCache();
+                this.Instrument = instrument;
 
-                stockSerie.BarDuration = duration;
-                closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-                openSerie = stockSerie.GetSerie(StockDataType.OPEN);
-                lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-                highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-                volumeSerie = stockSerie.GetSerie(StockDataType.VOLUME);
-                volumeEuroSerie = stockSerie.GetSerie(StockDataType.VOLUME).CalculateEMA(10);
+                this.DataSerie = instrument.GetDataSerie(duration);
+
+                closeSerie = this.DataSerie.GetSerie(StockDataType.CLOSE);
+                openSerie = this.DataSerie.GetSerie(StockDataType.OPEN);
+                lowSerie = this.DataSerie.GetSerie(StockDataType.LOW);
+                highSerie = this.DataSerie.GetSerie(StockDataType.HIGH);
+                volumeSerie = this.DataSerie.GetSerie(StockDataType.VOLUME);
+                volumeEuroSerie = this.DataSerie.GetSerie(StockDataType.VOLUME).CalculateEMA(10);
                 this.Trade = null;
                 this.EntryStopAgent = entryStopAgent;
                 this.EntryTargetAgent = entryTargetAgent;
 
-                return Init(stockSerie);
+                return Init();
             }
             catch (Exception ex)
             {
@@ -91,7 +95,7 @@ namespace StockAnalyzer.StockAgent
                 return false;
             }
         }
-        protected abstract bool Init(StockSerie stockSerie);
+        protected abstract bool Init();
 
         public virtual TradeAction Decide(int index)
         {
@@ -139,13 +143,13 @@ namespace StockAnalyzer.StockAgent
             return TryToClosePosition(index) == TradeAction.Sell;
         }
 
-        public void OpenTrade(StockSerie serie, int entryIndex, int qty = 1, bool isLong = true)
+        public void OpenTrade(int entryIndex, int qty = 1)
         {
-            if (entryIndex >= serie.Count) return;
+            if (entryIndex >= this.DataSerie.Count) return;
             if (openSerie[entryIndex] * 0.99 <= this.EntryStopValue) // Do not buy if lower than stop level or not more than 1% upper the stop)
                 return;
 
-            this.Trade = new StockTrade(serie, entryIndex, qty, this.EntryStopValue, isLong);
+            this.Trade = new StockTrade(this.DataSerie, entryIndex, openSerie[entryIndex], qty, this.EntryStopValue);
             this.TradeSummary.Trades.Add(this.Trade);
         }
 
@@ -314,32 +318,32 @@ namespace StockAnalyzer.StockAgent
                     res.Add(param.Key, values);
                 }
                 else
-                if (param.Key.PropertyType == typeof(float))
-                {
-                    float min = (float)param.Value.Min;
-                    float max = (float)param.Value.Max;
-                    if (min == max)
+                    if (param.Key.PropertyType == typeof(float))
                     {
-                        res.Add(param.Key, new List<object>() { min });
+                        float min = (float)param.Value.Min;
+                        float max = (float)param.Value.Max;
+                        if (min == max)
+                        {
+                            res.Add(param.Key, new List<object>() { min });
+                        }
+                        else
+                        {
+                            var values = new List<object>();
+                            for (float val = min; val <= max; val += param.Value.Step)
+                            {
+                                values.Add(val);
+                            }
+                            if ((float)values.Last() != (float)param.Value.Max)
+                            {
+                                values.Add((float)param.Value.Max);
+                            }
+                            res.Add(param.Key, values);
+                        }
                     }
                     else
                     {
-                        var values = new List<object>();
-                        for (float val = min; val <= max; val += param.Value.Step)
-                        {
-                            values.Add(val);
-                        }
-                        if ((float)values.Last() != (float)param.Value.Max)
-                        {
-                            values.Add((float)param.Value.Max);
-                        }
-                        res.Add(param.Key, values);
+                        throw new NotSupportedException("Type " + param.Key.PropertyType + " is not supported as a parameter in Agent");
                     }
-                }
-                else
-                {
-                    throw new NotSupportedException("Type " + param.Key.PropertyType + " is not supported as a parameter in Agent");
-                }
             }
             return res;
         }

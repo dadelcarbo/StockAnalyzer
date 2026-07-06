@@ -17,6 +17,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace StockAnalyzer.StockData
 {
@@ -1959,6 +1960,58 @@ namespace StockAnalyzer.StockData
 
             var bars = StockBar.Deserialize(path);
             this.Values = bars.Select(v => new StockDailyValue(v.open, v.high, v.low, v.close, v.volume, DateTime.FromBinary(v.dateTicks))).ToArray();
+        }
+
+        #endregion
+
+        #region IndexOf
+
+        public int IndexOf(DateTime date)
+        {
+            if (this.Values.Length == 0)
+            {
+                return -1;
+            }
+            if (date < Values[0].DATE) { return -1; }
+            if (date > Values[Values.Length - 1].DATE) { return -1; }
+            return IndexOfRec(date, 0, Values.Length - 1);
+        }
+
+        private int IndexOfRec(DateTime date, int startIndex, int endIndex)
+        {
+            if (startIndex < endIndex)
+            {
+                if (Values[startIndex].DATE == date)
+                {
+                    return startIndex;
+                }
+                if (Values[endIndex].DATE == date)
+                {
+                    return endIndex;
+                }
+                int midIndex = (startIndex + endIndex) / 2;
+                int comp = date.CompareTo(Values[midIndex].DATE);
+                if (comp == 0)
+                {
+                    return midIndex;
+                }
+                else if (comp < 0)
+                {// 
+                    return IndexOfRec(date, startIndex + 1, midIndex - 1);
+                }
+                else
+                {
+                    return IndexOfRec(date, midIndex + 1, endIndex - 1);
+                }
+            }
+            else
+            {
+                if (startIndex == endIndex && Values[startIndex].DATE == date)
+                {
+                    return startIndex;
+                }
+                return -1;
+            }
         }
 
         #endregion

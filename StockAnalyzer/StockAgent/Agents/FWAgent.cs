@@ -34,22 +34,22 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie volumeEMA;
         FloatSerie variation;
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (SlowPeriod <= FastPeriod || stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
+            if (SlowPeriod <= FastPeriod || DataSerie.Count < Math.Max(SlowPeriod, FastPeriod))
                 return false;
 
-            var emacd = stockSerie.GetIndicator($"EMACD({SlowPeriod},{FastPeriod},{SignalPeriod})");
+            var emacd = DataSerie.GetIndicator($"EMACD({SlowPeriod},{FastPeriod},{SignalPeriod})");
             histogramSerie = emacd.Series[0];
             emacdSerie = emacd.Series[1];
             signalSerie = emacd.Series[2];
 
-            natr = stockSerie.GetIndicator($"NATR(14)").Series[0];
-            highest = stockSerie.GetIndicator($"HIGHEST(20)").Series[0];
+            natr = DataSerie.GetIndicator($"NATR(14)").Series[0];
+            highest = DataSerie.GetIndicator($"HIGHEST(20)").Series[0];
 
             volumeEMA = volumeSerie.CalculateEMA(20);
 
-            variation = stockSerie.GetSerie(StockDataType.VARIATION);
+            variation = DataSerie.GetSerie(StockDataType.VARIATION);
 
             return emacd != null;
         }

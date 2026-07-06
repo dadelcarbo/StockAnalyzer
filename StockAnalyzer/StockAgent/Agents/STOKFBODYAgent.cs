@@ -23,11 +23,11 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string Description => "Buy when according to STOKFBODY signals";
 
         FloatSerie stockfBodySerie;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
-            stockfBodySerie = stockSerie.GetIndicator($"STOKFBODY({Period})").Series[0];
+            stockfBodySerie = DataSerie.GetIndicator($"STOKFBODY({Period})").Series[0];
             return true;
         }
 

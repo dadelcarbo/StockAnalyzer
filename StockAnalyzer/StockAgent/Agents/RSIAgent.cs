@@ -26,11 +26,11 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string DisplayIndicator => $"INDICATOR|RSI({Period},1)";
 
         FloatSerie rsiSerie;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
-            rsiSerie = stockSerie.GetIndicator($"RSI({Period},1)").Series[0];
+            rsiSerie = DataSerie.GetIndicator($"RSI({Period},1)").Series[0];
             return true;
         }
 

@@ -15,9 +15,9 @@ namespace StockAnalyzer.StockAgent.EntryStops
             return closeSerie[index] * (1f - Percent);
         }
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            this.closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            this.closeSerie = DataSerie.GetSerie(StockDataType.CLOSE);
             return true;
         }
     }

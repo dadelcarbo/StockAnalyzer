@@ -24,7 +24,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
     public partial class BackTestUserControl : System.Windows.Controls.UserControl
     {
         private readonly Form parent;
-        public event StockAnalyzerForm.SelectedStockAndDurationAndIndexChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationAndIndexChangedEventHandler SelectedStockChanged;
 
         public BackTestViewModel ViewModel { get; set; }
 
@@ -52,9 +52,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 try
                 {
-                    int exitIndex = viewModel.IsClosed ? viewModel.ExitIndex : viewModel.Serie.LastIndex;
+                    int exitIndex = viewModel.IsClosed ? viewModel.ExitIndex : viewModel.DataSerie.LastIndex;
 
-                    this.SelectedStockChanged(viewModel.Serie.StockName, Math.Max(0, viewModel.EntryIndex - 100), Math.Min(viewModel.Serie.LastIndex, exitIndex + 100), ViewModel.BarDuration, true);
+                    this.SelectedStockChanged(viewModel.Instrument, Math.Max(0, viewModel.EntryIndex - 100), Math.Min(viewModel.DataSerie.LastIndex, exitIndex + 100), ViewModel.BarDuration, true);
 
                     if (!string.IsNullOrEmpty(this.ViewModel.BestAgent?.DisplayIndicator))
                     {

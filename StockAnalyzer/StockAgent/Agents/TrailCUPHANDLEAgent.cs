@@ -25,11 +25,11 @@ namespace StockAnalyzer.StockAgent.Agents
         IStockTrailStop trailStop;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
-            trailStop = stockSerie.GetTrailStop($"TRAILCUPEMA(4,{HL > 0.5f},{Period})");
+            trailStop = DataSerie.GetTrailStop($"TRAILCUPEMA(4,{HL > 0.5f},{Period})");
             bullEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenUp")];
             bearEvents = trailStop.Events[Array.IndexOf(trailStop.EventNames, "BrokenDown")];
             return bullEvents != null && bearEvents != null;

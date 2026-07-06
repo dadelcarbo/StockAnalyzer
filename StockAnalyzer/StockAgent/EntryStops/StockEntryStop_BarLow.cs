@@ -15,9 +15,9 @@ namespace StockAnalyzer.StockAgent.EntryStops
             return lowSerie.GetMin(index - Period, index);
         }
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            this.lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            this.lowSerie = DataSerie.GetSerie(StockDataType.LOW);
             return true;
         }
     }

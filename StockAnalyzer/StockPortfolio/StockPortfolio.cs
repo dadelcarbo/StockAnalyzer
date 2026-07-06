@@ -334,7 +334,7 @@ namespace StockAnalyzer.StockPortfolio
                     EntryValue = trade.EntryValue,
                     ExitDate = trade.IsClosed ? (DateTime?)trade.ExitDate : null,
                     ExitValue = trade.ExitValue,
-                    StockName = trade.Serie.StockName,
+                    StockName = trade.Instrument.DisplayName,
 
                     Stop = trade.EntryStop,
                     TrailStop = trade.EntryStop

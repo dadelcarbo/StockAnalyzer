@@ -20,7 +20,7 @@ namespace StockAnalyzer.StockAgent.Agents
         [StockAgentParam(0.01f, 0.3f, 0.01f)]
         public float ExitPercentUp { get; set; }
 
-        protected override bool Init(StockSerie stockSerie) { return true; }
+        protected override bool Init() { return true; }
         protected override TradeAction TryToOpenPosition(int index)
         {
             float close = closeSerie[index];

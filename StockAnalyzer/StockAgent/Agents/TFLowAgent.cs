@@ -21,11 +21,11 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie highest;
         FloatSerie close;
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            bearLine = stockSerie.GetCloud($"TRENDBODY({Period})").Series[1];
-            highest = stockSerie.GetIndicator($"HIGHEST({Period})").Series[0];
-            close = stockSerie.GetSerie(StockDataType.CLOSE);
+            bearLine = DataSerie.GetCloud($"TRENDBODY({Period})").Series[1];
+            highest = DataSerie.GetIndicator($"HIGHEST({Period})").Series[0];
+            close = DataSerie.GetSerie(StockDataType.CLOSE);
             return true;
         }
 

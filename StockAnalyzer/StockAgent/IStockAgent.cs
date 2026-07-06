@@ -1,5 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
+using StockAnalyzerApp.StockData;
 using System.Collections.Generic;
 
 namespace StockAnalyzer.StockAgent
@@ -22,15 +24,16 @@ namespace StockAnalyzer.StockAgent
         string DisplayIndicator { get; }
         StockTradeSummary TradeSummary { get; }
 
-        StockSerie StockSerie { get; }
+        StockInstrument Instrument { get; }
+        DataSerie DataSerie { get; }
 
-        bool Initialize(StockSerie stockSerie, BarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent);
+        bool Initialize(StockInstrument instrument, BarDuration duration, IStockEntryStop entryStopAgent, IStockEntryTarget entryTargetAgent);
         TradeAction Decide(int index);
 
         bool CanOpen(int index);
         bool CanClose(int index);
 
-        void OpenTrade(StockSerie serie, int entryIndex, int qty = 1, bool isLong = true);
+        void OpenTrade(int entryIndex, int qty = 1);
 
         void CloseTrade(int exitIndex);
 

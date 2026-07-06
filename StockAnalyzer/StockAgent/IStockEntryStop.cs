@@ -1,5 +1,8 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
+using StockAnalyzerApp.StockData;
 using System.Collections.Generic;
+using System.Data;
 
 namespace StockAnalyzer.StockAgent
 {
@@ -7,7 +10,9 @@ namespace StockAnalyzer.StockAgent
     {
         string Description { get; }
 
-        bool Initialize(StockSerie stockSerie, BarDuration duration);
+        DataSerie DataSerie { get; }
+
+        bool Initialize(StockInstrument instrument, BarDuration duration, int minIndex);
 
         float GetStop(int index);
 
@@ -23,7 +28,9 @@ namespace StockAnalyzer.StockAgent
     {
         string Description { get; }
 
-        bool Initialize(StockSerie stockSerie, BarDuration duration);
+        DataSerie DataSerie { get; }
+
+        bool Initialize(StockInstrument instrument, BarDuration duration, int minIndex);
 
         float GetTarget(int index);
 

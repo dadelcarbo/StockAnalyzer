@@ -24,11 +24,11 @@ namespace StockAnalyzer.StockAgent.Agents
         IStockEvent highLowBars;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Math.Max(Period1, Period2))
+            if (DataSerie.Count < Math.Max(Period1, Period2))
                 return false;
-            highLowBars = stockSerie.GetIndicator($"HIGHLOWBARS({Period1},{Period2})");
+            highLowBars = DataSerie.GetIndicator($"HIGHLOWBARS({Period1},{Period2})");
             bullEvents = highLowBars.Events[Array.IndexOf(highLowBars.EventNames, "BullStart")];
             bearEvents = highLowBars.Events[Array.IndexOf(highLowBars.EventNames, "BullEnd")];
             return bullEvents != null && bearEvents != null;

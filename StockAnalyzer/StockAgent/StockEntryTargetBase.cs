@@ -1,5 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +11,8 @@ namespace StockAnalyzer.StockAgent
 {
     public abstract class StockEntryTargetBase : IStockEntryTarget
     {
-        public StockSerie StockSerie { get; private set; }
         public BarDuration Duration { get; private set; }
+        public DataSerie DataSerie { get; private set; }
 
 
         static List<string> entryTargetNames = null;
@@ -35,14 +37,17 @@ namespace StockAnalyzer.StockAgent
             return entryTargetNames;
         }
 
-        public bool Initialize(StockSerie stockSerie, BarDuration duration)
+        public bool Initialize(StockInstrument instrument, BarDuration duration, int minIndex)
         {
             try
             {
-                this.StockSerie = stockSerie;
                 this.Duration = duration;
+                this.DataSerie = instrument.GetDataSerie(duration);
 
-                return Init(stockSerie);
+                if (DataSerie == null || DataSerie.Count < minIndex)
+                    return false;
+
+                return Init();
             }
             catch (Exception ex)
             {
@@ -50,7 +55,7 @@ namespace StockAnalyzer.StockAgent
                 return false;
             }
         }
-        protected abstract bool Init(StockSerie stockSerie);
+        protected abstract bool Init();
 
         public abstract string Description { get; }
 
@@ -147,32 +152,32 @@ namespace StockAnalyzer.StockAgent
                     res.Add(param.Key, values);
                 }
                 else
-                if (param.Key.PropertyType == typeof(float))
-                {
-                    float min = (float)param.Value.Min;
-                    float max = (float)param.Value.Max;
-                    if (min == max)
+                    if (param.Key.PropertyType == typeof(float))
                     {
-                        res.Add(param.Key, new List<object>() { min });
+                        float min = (float)param.Value.Min;
+                        float max = (float)param.Value.Max;
+                        if (min == max)
+                        {
+                            res.Add(param.Key, new List<object>() { min });
+                        }
+                        else
+                        {
+                            var values = new List<object>();
+                            for (float val = min; val <= max; val += param.Value.Step)
+                            {
+                                values.Add(val);
+                            }
+                            if ((float)values.Last() != (float)param.Value.Max)
+                            {
+                                values.Add((float)param.Value.Max);
+                            }
+                            res.Add(param.Key, values);
+                        }
                     }
                     else
                     {
-                        var values = new List<object>();
-                        for (float val = min; val <= max; val += param.Value.Step)
-                        {
-                            values.Add(val);
-                        }
-                        if ((float)values.Last() != (float)param.Value.Max)
-                        {
-                            values.Add((float)param.Value.Max);
-                        }
-                        res.Add(param.Key, values);
+                        throw new NotSupportedException("Type " + param.Key.PropertyType + " is not supported as a parameter in EntryTarget");
                     }
-                }
-                else
-                {
-                    throw new NotSupportedException("Type " + param.Key.PropertyType + " is not supported as a parameter in EntryTarget");
-                }
             }
             return res;
         }

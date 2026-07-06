@@ -73,6 +73,7 @@ namespace StockAnalyzerApp
         public delegate void SelectedInstrumentAndDurationAndThemeChangedEventHandler(StockInstrument instrument, BarDuration barDuration, string theme, bool activateMainWindow);
 
         public delegate void SelectedStockAndDurationAndIndexChangedEventHandler(string stockName, int startIndex, int endIndex, BarDuration barDuration, bool activateMainWindow);
+        public delegate void SelectedInstrumentAndDurationAndIndexChangedEventHandler(StockInstrument instrument, int startIndex, int endIndex, BarDuration barDuration, bool activateMainWindow);
 
         public delegate void SelectedStockGroupChangedEventHandler(Groups stockgroup);
 
@@ -1296,6 +1297,23 @@ namespace StockAnalyzerApp
                 }
             }
         }
+        public void OnSelectedInstrumentAndDurationAndIndexChanged(StockInstrument instrument, int startIndex, int endIndex, BarDuration barDuration, bool activate)
+        {
+            using (new MethodLogger(this))
+            {
+                this.ViewModel.SetBarDuration(barDuration, false);
+                this.SetBarDurationCombo(barDuration);
+
+                this.ViewModel.Instrument = instrument;
+
+                this.ChangeZoom(startIndex, endIndex);
+
+                if (activate)
+                {
+                    this.Activate();
+                }
+            }
+        }
 
         private void DeactivateGraphControls(string msg)
         {
@@ -2390,7 +2408,7 @@ namespace StockAnalyzerApp
             if (backTestDialog == null)
             {
                 backTestDialog = new BackTestDlg() { StartPosition = FormStartPosition.CenterScreen };
-                backTestDialog.backTestControl.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+                backTestDialog.backTestControl.SelectedStockChanged += OnSelectedInstrumentAndDurationAndIndexChanged;
                 backTestDialog.FormClosed += (a, b) =>
                 {
                     backTestDialog = null;
@@ -2409,7 +2427,7 @@ namespace StockAnalyzerApp
             if (portfolioSimulationDialog == null)
             {
                 portfolioSimulationDialog = new PortfolioSimulationDlg() { StartPosition = FormStartPosition.CenterScreen };
-                portfolioSimulationDialog.portfolioSimulationControl1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+                portfolioSimulationDialog.portfolioSimulationControl1.SelectedStockChanged += OnSelectedInstrumentAndDurationAndIndexChanged;
 
                 portfolioSimulationDialog.FormClosed += (a, b) =>
                 {

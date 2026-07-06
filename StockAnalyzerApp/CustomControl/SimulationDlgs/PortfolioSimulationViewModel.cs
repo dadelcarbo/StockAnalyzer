@@ -6,6 +6,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -316,14 +317,9 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                     this.ProgressValue = evt.ProgressPercentage;
                 };
 
+                var series = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group));
 
-                var series = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.Group));
-                //foreach (var serie in series)
-                //{
-                //    serie.IsInitialised = false;
-                //}
-
-                if (this.RunAgentEngine(series.Where(s => s.Initialise())))
+                if (this.RunAgentEngine(series))
                 {
                     e.Cancel = false;
                 }
@@ -337,12 +333,12 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 StockDataProviderBase.IntradayDownloadSuspended = false;
             }
         }
-        private bool RunAgentEngine(IEnumerable<StockSerie> stockSeries)
+        private bool RunAgentEngine(IEnumerable<StockInstrument> instruments)
         {
             try
             {
                 var agents = new List<IStockPortfolioAgent>();
-                foreach (var serie in stockSeries)
+                foreach (var serie in instruments)
                 {
                     var agent = new PortfolioAgent()
                     {
@@ -371,7 +367,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
                 string msg = tradeSummary.ToLog(this.Duration) + Environment.NewLine;
                 msg += engine.ToLog(this.Duration) + Environment.NewLine;
-                msg += "NB Series: " + stockSeries.Count() + Environment.NewLine;
+                msg += "NB Series: " + instruments.Count() + Environment.NewLine;
                 msg += Environment.NewLine + "Opened position: " + Environment.NewLine;
 
                 this.Report = msg;

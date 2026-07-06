@@ -4,6 +4,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.StockData;
 using System;
@@ -275,7 +276,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                         var position = StockPortfolio.ReplayPortfolio.Positions.FirstOrDefault();
                         this.Positions.Add(openPosition = new MarketReplayPositionViewModel(position));
                         openPosition.SetValue(lastValue.CLOSE);
-                        openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, value);
+                        openTrade = new StockTrade(replayDataSerie, replaySerie.LastCompleteIndex, value);
                         this.Stop = 0;
                     }
                 }
@@ -362,7 +363,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             var position = StockPortfolio.ReplayPortfolio.Positions.FirstOrDefault();
             this.Positions.Add(openPosition = new MarketReplayPositionViewModel(position));
             openPosition.Stop = this.Stop;
-            openTrade = new StockTrade(replaySerie, replaySerie.LastCompleteIndex, this.Value);
+            openTrade = new StockTrade(replayDataSerie, replaySerie.LastCompleteIndex, this.Value);
 
             this.Forward();
         }
@@ -397,6 +398,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
         int referenceSerieIndex;
 
         StockSerie replaySerie;
+        DataSerie replayDataSerie;
+        StockInstrument replayInstrument;
         StockSerie referenceSerie;
 
         private void Start()
@@ -423,7 +426,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             CopyReferenceValues(referenceSerieIndex + 1);
 
-            StockDictionary.Instruments.Add(name, new StockInstrument(replaySerie));
+            StockDictionary.Instruments.Add(name, replayInstrument = new StockInstrument(replaySerie));
 
             this.SelectedStockChanged(name, true);
 
@@ -445,6 +448,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 currentDate = currentDate.AddDays(1);
             }
             replaySerie.Initialise();
+            replayDataSerie = new DataSerie(replayInstrument, barDuration, replaySerie.ValueArray);
+
             this.Value = replaySerie.ValueArray.Last().CLOSE;
         }
     }

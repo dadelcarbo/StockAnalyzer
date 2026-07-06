@@ -59,10 +59,10 @@ namespace StockAnalyzer.StockAgent
                 // Sell Positions
                 foreach (var trade in openTrades)
                 {
-                    var agent = agents.FirstOrDefault(a => trade.Serie == a.StockSerie);
+                    var agent = agents.FirstOrDefault(a => trade.Instrument == a.Instrument);
 
-                    int index = trade.Serie.IndexOf(date);
-                    if (index < minIndex || index >= trade.Serie.LastIndex) // Date not exists
+                    int index = trade.DataSerie.IndexOf(date);
+                    if (index < minIndex || index >= trade.DataSerie.LastIndex) // Date not exists
                     {
                         equity += trade.EntryAmount;
                         continue;
@@ -70,7 +70,7 @@ namespace StockAnalyzer.StockAgent
 
                     if (agent.CanClose(index))
                     {
-                        StockLog.Write($"{date.ToShortDateString()} - Sell {trade.Serie.StockName}");
+                        StockLog.Write($"{date.ToShortDateString()} - Sell {trade.Instrument.DisplayName}");
                         trade.CloseAtOpen(index + 1);
                         equity += trade.ExitAmount;
                         cash += trade.ExitAmount;
@@ -91,10 +91,10 @@ namespace StockAnalyzer.StockAgent
                     {
                         if (positionManagement.StopATR == 0.0f && openTrades.Count >= positionManagement.MaxPositions)
                             break;
-                        if (openTrades.Any(t => t.Serie == agent.StockSerie))
+                        if (openTrades.Any(t => t.Instrument == agent.Instrument))
                             continue;
-                        int index = agent.StockSerie.IndexOf(date);
-                        if (index < minIndex || index >= agent.StockSerie.LastIndex) // Date not exists
+                        int index = agent.DataSerie.IndexOf(date);
+                        if (index < minIndex || index >= agent.DataSerie.LastIndex) // Date not exists
                             continue;
 
                         if (agent.CanOpen(index))
@@ -106,8 +106,8 @@ namespace StockAnalyzer.StockAgent
                     {
                         foreach (var tuple in buyOpportunities.OrderByDescending(b => b.Item2.RankSerie[b.Item1]).Take(nbBuys))
                         {
-                            StockLog.Write($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
-                            var trade = new StockTrade(tuple.Item2.StockSerie, tuple.Item1 + 1);
+                            StockLog.Write($"{date.ToShortDateString()} - Buy {tuple.Item2.Instrument.DisplayName}");
+                            var trade = new StockTrade(tuple.Item2.DataSerie, tuple.Item1 + 1, tuple.Item2.DataSerie.Values[tuple.Item1 + 1].OPEN);
 
                             trade.Qty = (int)(cash / (positionManagement.MaxPositions - openTrades.Count) / trade.EntryValue);
 
@@ -121,11 +121,11 @@ namespace StockAnalyzer.StockAgent
                         float portfolioRisk = equity * 0.01f * positionManagement.PortfolioRisk;
                         foreach (var tuple in buyOpportunities.OrderByDescending(b => b.Item2.RankSerie[b.Item1]))
                         {
-                            StockLog.Write($"{date.ToShortDateString()} - Buy {tuple.Item2.StockSerie.StockName}");
-                            var trade = new StockTrade(tuple.Item2.StockSerie, tuple.Item1 + 1);
+                            StockLog.Write($"{date.ToShortDateString()} - Buy {tuple.Item2.Instrument.DisplayName}");
+                            var trade = new StockTrade(tuple.Item2.DataSerie, tuple.Item1 + 1, tuple.Item2.DataSerie.Values[tuple.Item1 + 1].OPEN);
 
                             // Calculate position sizing
-                            var atr = trade.Serie.GetIndicator("ATR(10)").Series[0][tuple.Item1];
+                            var atr = trade.DataSerie.GetIndicator("ATR(10)").Series[0][tuple.Item1];
                             var stockRisk = positionManagement.StopATR * atr;
                             trade.Qty = (int)Math.Floor(portfolioRisk / stockRisk);
 

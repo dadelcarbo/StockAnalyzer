@@ -26,12 +26,12 @@ namespace StockAnalyzer.StockAgent.Agents
 
         FloatSerie upBand;
         FloatSerie lowBand;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
-            upBand = stockSerie.GetIndicator($"BB({Period},{UpWidth},{-DownWidth},MA)").Series[0];
-            lowBand = stockSerie.GetIndicator($"BB({Period},{UpWidth},{-DownWidth},MA)").Series[1];
+            upBand = DataSerie.GetIndicator($"BB({Period},{UpWidth},{-DownWidth},MA)").Series[0];
+            lowBand = DataSerie.GetIndicator($"BB({Period},{UpWidth},{-DownWidth},MA)").Series[1];
             return upBand != null && lowBand != null;
         }
 

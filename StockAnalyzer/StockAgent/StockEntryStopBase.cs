@@ -1,5 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +11,9 @@ namespace StockAnalyzer.StockAgent
 {
     public abstract class StockEntryStopBase : IStockEntryStop
     {
-        public StockSerie StockSerie { get; private set; }
         public BarDuration Duration { get; private set; }
+
+        public DataSerie DataSerie { get; private set; }
 
 
         static List<string> entryStopNames = null;
@@ -35,14 +38,18 @@ namespace StockAnalyzer.StockAgent
             return entryStopNames;
         }
 
-        public bool Initialize(StockSerie stockSerie, BarDuration duration)
+        public bool Initialize(StockInstrument instrument, BarDuration duration, int minIndex)
         {
             try
             {
-                this.StockSerie = stockSerie;
                 this.Duration = duration;
+                this.DataSerie = instrument.GetDataSerie(duration);
 
-                return Init(stockSerie);
+                if (DataSerie == null || DataSerie.Count < minIndex)
+                    return false;
+
+
+                return Init();
             }
             catch (Exception ex)
             {
@@ -50,7 +57,7 @@ namespace StockAnalyzer.StockAgent
                 return false;
             }
         }
-        protected abstract bool Init(StockSerie stockSerie);
+        protected abstract bool Init();
 
         public abstract string Description { get; }
 

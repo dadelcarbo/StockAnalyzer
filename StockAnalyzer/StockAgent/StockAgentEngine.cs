@@ -1,8 +1,10 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Linq;
 
 namespace StockAnalyzer.StockAgent
@@ -40,7 +42,7 @@ namespace StockAnalyzer.StockAgent
         }
 
 
-        public void GreedySelection(IEnumerable<StockSerie> series, BarDuration duration, int minIndex, Func<StockTradeSummary, float> selector)
+        public void GreedySelection(IEnumerable<StockInstrument> instruments, BarDuration duration, int minIndex, Func<StockTradeSummary, float> selector)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -54,34 +56,25 @@ namespace StockAnalyzer.StockAgent
             var entryTargetParameters = StockAgentBase.GetParamRanges(this.EntryTargetType);
             var allParameters = agentParameters.Union(entryStopParameters).Union(entryTargetParameters);
 
-            var stockSeries = new List<StockSerie>();
+            var stockSeries = new List<StockInstrument>();
             if (ProgressChanged != null)
             {
                 this.ProgressChanged(this, new ProgressChangedEventArgs(0, null));
             }
 
-            int nbSteps = series.Count();
+            int nbSteps = instruments.Count();
             int modulo = Math.Max(1, nbSteps / 100);
             int nb = 0;
-            foreach (var serie in series)
+            foreach (var instrument in instruments)
             {
                 if (Worker != null && Worker.CancellationPending)
                     return;
 
-                serie.BarDuration = BarDuration.Daily;
-                serie.IsInitialised = false;
-                if (serie.Initialise())
+                stockSeries.Add(instrument);
+                if (ProgressChanged != null && nb % modulo == 0)
                 {
-                    serie.BarDuration = duration;
-                    if (serie.Count > minIndex)
-                    {
-                        stockSeries.Add(serie);
-                    }
-                    if (ProgressChanged != null && nb % modulo == 0)
-                    {
-                        int percent = (nb * 100) / nbSteps;
-                        this.ProgressChanged(this, new ProgressChangedEventArgs(percent, null));
-                    }
+                    int percent = (nb * 100) / nbSteps;
+                    this.ProgressChanged(this, new ProgressChangedEventArgs(percent, null));
                 }
                 nb++;
             }
@@ -125,7 +118,7 @@ namespace StockAnalyzer.StockAgent
                 }
 
                 // Perform calculation
-                this.Perform(series, minIndex, duration);
+                this.Perform(instruments, minIndex, duration);
 
                 // Select Best (after cleaning outliers)
                 this.Agent.TradeSummary.CleanOutliers();
@@ -149,7 +142,7 @@ namespace StockAnalyzer.StockAgent
             msg += bestAgent.ToLog() + Environment.NewLine;
             msg += bestEntryStop.ToLog() + Environment.NewLine;
             msg += bestEntryTarget.ToLog() + Environment.NewLine;
-            msg += "NB Series: " + series.Count() + Environment.NewLine;
+            msg += "NB Series: " + instruments.Count() + Environment.NewLine;
             msg += "Duration: " + elapsedTime;
 
             this.BestTradeSummary = bestAgent.TradeSummary;
@@ -174,26 +167,26 @@ namespace StockAnalyzer.StockAgent
             }
         }
 
-        public void Perform(IEnumerable<StockSerie> series, int minIndex, BarDuration duration)
+        public void Perform(IEnumerable<StockInstrument> instruments, int minIndex, BarDuration duration)
         {
             try
             {
-                foreach (var serie in series.Where(s => s.Count > minIndex))
+                foreach (var serie in instruments)
                 {
                     if (!this.Agent.Initialize(serie, duration, this.EntryStop, this.EntryTarget))
                     {
                         continue;
                     }
-                    if (!this.EntryStop.Initialize(serie, duration))
+                    if (!this.EntryStop.Initialize(serie, duration, minIndex))
                     {
                         continue;
                     }
-                    if (!this.EntryTarget.Initialize(serie, duration))
+                    if (!this.EntryTarget.Initialize(serie, duration, minIndex))
                     {
                         continue;
                     }
 
-                    var size = serie.Count - 1;
+                    var size = this.Agent.DataSerie.Count;
                     for (int i = minIndex; i < size; i++)
                     {
                         switch (this.Agent.Decide(i))
@@ -201,7 +194,7 @@ namespace StockAnalyzer.StockAgent
                             case TradeAction.Nothing:
                                 break;
                             case TradeAction.Buy:
-                                this.Agent.OpenTrade(serie, i + 1);
+                                this.Agent.OpenTrade(i + 1);
                                 break;
                             case TradeAction.Sell:
                                 this.Agent.CloseTrade(i + 1);

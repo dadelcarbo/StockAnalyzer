@@ -30,20 +30,20 @@ namespace StockAnalyzer.StockAgent.Agents
 
         public PositionManagement PositionManagement { get; set; }
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < 200)
+            if (DataSerie.Count < 200)
                 return false;
             if (EntryEvent == null)
                 return false;
-            var viewableSeries = stockSerie.GetViewableItem(this.EntryType.ToUpper() + "|" + this.EntryIndicator) as IStockEvent;
+            var viewableSeries = DataSerie.GetViewableItem(this.EntryType.ToUpper() + "|" + this.EntryIndicator) as IStockEvent;
             if (viewableSeries != null)
             {
                 this.entryEvents = viewableSeries.Events[Array.IndexOf(viewableSeries.EventNames, this.EntryEvent)];
             }
             if (ExitEvent == null)
                 return false;
-            viewableSeries = stockSerie.GetViewableItem(this.ExitType.ToUpper() + "|" + this.ExitIndicator) as IStockEvent;
+            viewableSeries = DataSerie.GetViewableItem(this.ExitType.ToUpper() + "|" + this.ExitIndicator) as IStockEvent;
             if (viewableSeries != null)
             {
                 this.exitEvents = viewableSeries.Events[Array.IndexOf(viewableSeries.EventNames, this.ExitEvent)];
@@ -51,14 +51,14 @@ namespace StockAnalyzer.StockAgent.Agents
 
             if (FilterEvent != null)
             {
-                viewableSeries = stockSerie.GetViewableItem(this.FilterType.ToUpper() + "|" + this.FilterIndicator) as IStockEvent;
+                viewableSeries = DataSerie.GetViewableItem(this.FilterType.ToUpper() + "|" + this.FilterIndicator) as IStockEvent;
                 if (viewableSeries != null)
                 {
                     this.filterEvents = viewableSeries.Events[Array.IndexOf(viewableSeries.EventNames, this.FilterEvent)];
                 }
             }
             if (PositionManagement?.Rank == null) return false;
-            var indicator = stockSerie.GetViewableItem("INDICATOR|" + this.PositionManagement.Rank) as IStockIndicator;
+            var indicator = DataSerie.GetViewableItem("INDICATOR|" + this.PositionManagement.Rank) as IStockIndicator;
             if (indicator == null) return false;
             RankSerie = indicator.Series[0];
 

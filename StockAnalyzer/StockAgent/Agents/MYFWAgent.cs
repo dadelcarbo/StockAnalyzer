@@ -27,20 +27,20 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie ror;
         FloatSerie ema;
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
 
-            natr = stockSerie.GetIndicator($"NATR(14)").Series[0];
-            highest = stockSerie.GetIndicator($"HIGHEST(20)").Series[0];
+            natr = DataSerie.GetIndicator($"NATR(14)").Series[0];
+            highest = DataSerie.GetIndicator($"HIGHEST(20)").Series[0];
 
             volumeEMA = volumeSerie.CalculateEMA(20);
 
-            variation = stockSerie.GetSerie(StockDataType.VARIATION);
+            variation = DataSerie.GetSerie(StockDataType.VARIATION);
 
-            ema = stockSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(Period);
-            ror = stockSerie.GetIndicator($"ROR(50)").Series[0];
+            ema = DataSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(Period);
+            ror = DataSerie.GetIndicator($"ROR(50)").Series[0];
 
             return true;
         }

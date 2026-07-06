@@ -13,11 +13,11 @@ namespace StockAnalyzer.StockAgent.Agents
 
         FloatSerie stopSerie;
         BoolSerie supportDetected;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < 50)
+            if (DataSerie.Count < 50)
                 return false;
-            var sar = stockSerie.GetIndicator($"SAR(0.0,{Speed},0.2,1)");
+            var sar = DataSerie.GetIndicator($"SAR(0.0,{Speed},0.2,1)");
             stopSerie = sar.Series[0];
             supportDetected = sar.Events[0];
             return stopSerie != null && supportDetected != null;

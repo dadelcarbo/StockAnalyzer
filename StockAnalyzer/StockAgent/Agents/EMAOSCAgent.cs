@@ -23,13 +23,13 @@ namespace StockAnalyzer.StockAgent.Agents
 
         FloatSerie oscSerie;
         float stop = float.NaN;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Math.Max(SlowPeriod, FastPeriod))
+            if (DataSerie.Count < Math.Max(SlowPeriod, FastPeriod))
                 return false;
-            oscSerie = stockSerie.GetIndicator($"OSC({FastPeriod},{SlowPeriod},True,EMA)").Series[0];
-            closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
-            lowSerie = stockSerie.GetSerie(StockDataType.LOW);
+            oscSerie = DataSerie.GetIndicator($"OSC({FastPeriod},{SlowPeriod},True,EMA)").Series[0];
+            closeSerie = DataSerie.GetSerie(StockDataType.CLOSE);
+            lowSerie = DataSerie.GetSerie(StockDataType.LOW);
             return oscSerie != null;
         }
 

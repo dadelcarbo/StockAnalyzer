@@ -19,13 +19,13 @@ namespace StockAnalyzer.StockAgent.Agents
 
         FloatSerie bodyLowSerie;
         FloatSerie emaSerie;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
 
-            emaSerie = stockSerie.GetIndicator($"EMA({Period})").Series[0];
-            bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+            emaSerie = DataSerie.GetIndicator($"EMA({Period})").Series[0];
+            bodyLowSerie = DataSerie.GetSerie(StockDataType.BODYLOW);
 
             return true;
         }

@@ -18,12 +18,12 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string DisplayIndicator => $"INDICATOR|EMA({Period})";
 
         FloatSerie emaSerie;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
 
-            emaSerie = stockSerie.GetIndicator($"EMA({Period})").Series[0];
+            emaSerie = DataSerie.GetIndicator($"EMA({Period})").Series[0];
 
             return true;
         }

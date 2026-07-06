@@ -13,12 +13,12 @@ namespace StockAnalyzer.StockAgent.EntryStops
         FloatSerie atrSerie;
         public override float GetStop(int index)
         {
-            return this.StockSerie.GetSerie(StockDataType.CLOSE)[index] - NbATR * atrSerie[index];
+            return this.DataSerie.GetSerie(StockDataType.CLOSE)[index] - NbATR * atrSerie[index];
         }
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            this.atrSerie = stockSerie.GetIndicator("ATR(10)").Series[0];
+            this.atrSerie = DataSerie.GetIndicator("ATR(10)").Series[0];
             return true;
         }
     }

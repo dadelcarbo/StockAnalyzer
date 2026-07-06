@@ -22,14 +22,14 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie bodyLowSerie;
         FloatSerie emaSerie;
         DateTime[] dates;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
 
-            dates = stockSerie.Keys.ToArray();
-            emaSerie = stockSerie.GetIndicator($"EMA({Period})").Series[0];
-            bodyLowSerie = stockSerie.GetSerie(StockDataType.BODYLOW);
+            dates = DataSerie.DateSerie;
+            emaSerie = DataSerie.GetIndicator($"EMA({Period})").Series[0];
+            bodyLowSerie = DataSerie.GetSerie(StockDataType.BODYLOW);
 
             return true;
         }

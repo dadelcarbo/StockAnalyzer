@@ -11,7 +11,7 @@ namespace StockAnalyzer.StockAgent.EntryTargets
             return float.MaxValue;
         }
 
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
             return true;
         }

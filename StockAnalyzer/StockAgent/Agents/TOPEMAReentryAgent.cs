@@ -21,14 +21,14 @@ namespace StockAnalyzer.StockAgent.Agents
         FloatSerie supportSerie;
         FloatSerie resistanceSerie;
         IStockEvent events;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Smoothing)
+            if (DataSerie.Count < Smoothing)
                 return false;
 
-            events = stockSerie.GetIndicator(DisplayIndicator);
-            supportSerie = stockSerie.GetIndicator(DisplayIndicator).Series[0];
-            resistanceSerie = stockSerie.GetIndicator(DisplayIndicator).Series[1];
+            events = DataSerie.GetIndicator(DisplayIndicator);
+            supportSerie = DataSerie.GetIndicator(DisplayIndicator).Series[0];
+            resistanceSerie = DataSerie.GetIndicator(DisplayIndicator).Series[1];
 
             return true;
         }

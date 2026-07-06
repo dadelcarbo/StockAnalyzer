@@ -20,11 +20,11 @@ namespace StockAnalyzer.StockAgent.Agents
         IStockEvent stockEvents;
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
-            stockEvents = stockSerie.GetIndicator($"TRAILHL2SR({Period})");
+            stockEvents = DataSerie.GetIndicator($"TRAILHL2SR({Period})");
             bullEvents = stockEvents.Events[Array.IndexOf(stockEvents.EventNames, "BullStart")];
             bearEvents = stockEvents.Events[Array.IndexOf(stockEvents.EventNames, "BullEnd")];
             return bullEvents != null && bearEvents != null;

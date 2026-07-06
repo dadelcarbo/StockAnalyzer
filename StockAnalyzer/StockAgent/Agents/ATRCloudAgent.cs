@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockMath;
 using System;
 
@@ -21,15 +22,14 @@ namespace StockAnalyzer.StockAgent.Agents
         public override string Description => "Buy when closing above ATR band and sell when closing below ATR band";
         public override string DisplayIndicator => $"CLOUD|ATR({Period},{Period},{Width},{-Width},EMA)";
 
-
         BoolSerie bullEvents;
         BoolSerie bearEvents;
-        protected override bool Init(StockSerie stockSerie)
+        protected override bool Init()
         {
-            if (stockSerie.Count < Period)
+            if (DataSerie.Count < Period)
                 return false;
 
-            var cloud = stockSerie.GetCloud($"ATR({Period},{Period},{Width},{-Width},EMA)");
+            var cloud = DataSerie.GetCloud($"ATR({Period},{Period},{Width},{-Width},EMA)");
             bullEvents = cloud.Events[Array.IndexOf(cloud.EventNames, "CloudUp")];
             bearEvents = cloud.Events[Array.IndexOf(cloud.EventNames, "CloudDown")];
             return bullEvents != null && bearEvents != null;
