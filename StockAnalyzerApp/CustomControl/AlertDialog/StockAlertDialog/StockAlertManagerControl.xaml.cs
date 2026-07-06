@@ -13,7 +13,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         readonly StockAlertManagerViewModel ViewModel;
         readonly StockAlertManagerDlg ParentDlg;
 
-        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged; 
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationAndThemeChangedEventHandler SelectedInstrumentAndDurationChanged;
 
         public StockAlertManagerControl(StockAlertManagerDlg parent, StockAlertManagerViewModel viewModel)
         {
@@ -22,7 +22,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             InitializeComponent();
             this.DataContext = viewModel;
 
-            this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
+            this.SelectedInstrumentAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedInstrumentAndDurationAndThemeChanged;
 
             alertGrid.SortDescriptors.Clear();
             alertGrid.SortDescriptors.Add(new SortDescriptor
@@ -72,7 +72,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             this.ParentDlg.TopMost = true;
             StockAnalyzerForm.MainFrame.Activate();
 
-            this.SelectedStockAndDurationChanged(alertValue.StockSerie.StockName, alertValue.AlertDef.BarDuration, alertValue.AlertDef.Theme, true);
+            this.SelectedInstrumentAndDurationChanged(alertValue.Instrument, alertValue.AlertDef.BarDuration, alertValue.AlertDef.Theme, true);
             this.ParentDlg.TopMost = false;
         }
     }

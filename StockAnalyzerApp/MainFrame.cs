@@ -67,8 +67,12 @@ namespace StockAnalyzerApp
     {
         public delegate void SelectedStockChangedEventHandler(string stockName, bool activateMainWindow);
         public delegate void SelectedInstrumentChangedEventHandler(StockInstrument instrument, bool activateMainWindow);
+
         public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, BarDuration barDuration, bool activateMainWindow);
+
         public delegate void SelectedStockAndDurationAndThemeChangedEventHandler(string stockName, BarDuration barDuration, string theme, bool activateMainWindow);
+        public delegate void SelectedInstrumentAndDurationAndThemeChangedEventHandler(StockInstrument instrument, BarDuration barDuration, string theme, bool activateMainWindow);
+
         public delegate void SelectedStockAndDurationAndIndexChangedEventHandler(string stockName, int startIndex, int endIndex, BarDuration barDuration, bool activateMainWindow);
 
         public delegate void SelectedStockGroupChangedEventHandler(Groups stockgroup);
@@ -1223,6 +1227,28 @@ namespace StockAnalyzerApp
                 }
             }
         }
+        public void OnSelectedInstrumentAndDurationAndThemeChanged(StockInstrument instrument, BarDuration barDuration, string theme, bool activate)
+        {
+            using (new MethodLogger(this))
+            {
+                this.ViewModel.SetBarDuration(barDuration, false);
+                this.SetBarDurationCombo(barDuration);
+
+                if (string.IsNullOrEmpty(theme) || !themeDictionary.ContainsKey(theme))
+                {
+                    theme = EMPTY_THEME;
+                }
+                this.SetThemeCombo(theme);
+                this.ViewModel.SetTheme(theme, false);
+
+                this.ViewModel.Instrument = instrument;
+
+                if (activate)
+                {
+                    this.Activate();
+                }
+            }
+        }
         public void OnSelectedStockAndDurationChanged(string stockName, BarDuration barDuration, bool activate)
         {
             using (new MethodLogger(this))
@@ -1231,6 +1257,21 @@ namespace StockAnalyzerApp
                 this.SetBarDurationCombo(barDuration);
 
                 this.ViewModel.Instrument = StockDictionary.Instruments[stockName];
+
+                if (activate)
+                {
+                    this.Activate();
+                }
+            }
+        }
+        public void OnSelectedInstrumentAndDurationChanged(StockInstrument instrument, BarDuration barDuration, bool activate)
+        {
+            using (new MethodLogger(this))
+            {
+                this.ViewModel.SetBarDuration(barDuration, false);
+                this.SetBarDurationCombo(barDuration);
+
+                this.ViewModel.Instrument = instrument;
 
                 if (activate)
                 {
@@ -2783,15 +2824,14 @@ namespace StockAnalyzerApp
                 this.ViewModel.Theme = alertDef.Theme;
                 foreach (var alertValue in alertValues.OrderByDescending(l => l.Speed).Take(nbStocks))
                 {
-                    var instrument = StockDictionary.Instruments[alertValue.StockSerie.StockName];
-                    var bitmapString = this.GetStockSnapshotAsHtml(instrument, alertValue.AlertDef.Theme, false, alertValue.AlertDef.BarDuration, 100);
+                    var bitmapString = this.GetStockSnapshotAsHtml(alertValue.Instrument, alertValue.AlertDef.Theme, false, alertValue.AlertDef.BarDuration, 100);
 
-                    var stockName = stockNameTemplate.Replace("%MSG%", alertValue.StockSerie.StockName).Replace("%IMG%", bitmapString) + "\r\n";
-                    var stokValue = alertValue.StockSerie.CalculateLastFastOscillator(stokPeriod, InputType.Close);
+                    var stockName = stockNameTemplate.Replace("%MSG%", alertValue.Instrument.DisplayName).Replace("%IMG%", bitmapString) + "\r\n";
+                    var stokValue = alertValue.Stok;
                     if (float.IsNaN(alertValue.Stop))
                     {
                         html += rowTemplate.
-                            Replace("%GROUP%", alertValue.StockSerie.StockGroup.ToString()).
+                            Replace("%GROUP%", alertValue.Instrument.Group.ToString()).
                             Replace("%COL1%", stockName).
                             Replace("%COL2.1%", alertValue.Speed.ToString(alertValue.SpeedFormat)).
                             Replace("%COL2.2%", stokValue.ToString("#.##")).
@@ -2804,7 +2844,7 @@ namespace StockAnalyzerApp
                     else
                     {
                         html += rowTemplate.
-                            Replace("%GROUP%", alertValue.StockSerie.StockGroup.ToString()).
+                            Replace("%GROUP%", alertValue.Instrument.Group.ToString()).
                             Replace("%COL1%", stockName).
                             Replace("%COL2.1%", alertValue.Speed.ToString(alertValue.SpeedFormat)).
                             Replace("%COL2.2%", stokValue.ToString("#.##")).

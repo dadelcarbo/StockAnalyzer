@@ -1,7 +1,9 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
+using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockData;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -148,12 +150,133 @@ namespace StockAnalyzerApp.StockData
                 serializer.Serialize(writer, this.StockAnalysis);
             }
         }
-
-        public StockAlert MatchAlert(StockAlertDef alertDef)
-        {
-            throw new NotImplementedException("MatchAlert method is not implemented in StockInstrument");
-        }
         #endregion
 
+        #region Alert Detection
+
+        private bool MatchEvent(StockAlertDef stockAlert)
+        {
+            try
+            {
+                int eventIndex;
+                IStockEvent stockEvent = null;
+                IStockViewableSeries indicator;
+
+                switch (stockAlert.Type)
+                {
+                    case AlertType.Group:
+                    case AlertType.Stock:
+                        {
+                            //if (!string.IsNullOrEmpty(stockAlert.Script))
+                            //{
+                            //    var screener = StockScriptManager.Instance.CreateStockFilterInstance(stockAlert.Script);
+                            //    if (screener != null)
+                            //    {
+                            //        if (!screener.MatchFilter(this, stockAlert.BarDuration))
+                            //            return false;
+                            //    }
+                            //}
+                            if (!string.IsNullOrEmpty(stockAlert.FilterFullName))
+                            {
+                                var dataSerie = this.GetDataSerie(stockAlert.FilterDuration);
+                                if (dataSerie == null)
+                                    return false;
+
+                                indicator = StockViewableItemsManager.GetViewableItem(stockAlert.FilterFullName);
+                                if (dataSerie.HasVolume || !indicator.RequiresVolumeData)
+                                {
+                                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, dataSerie);
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                                eventIndex = Array.IndexOf(stockEvent.EventNames, stockAlert.FilterEventName);
+                                if (eventIndex == -1)
+                                {
+                                    StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
+                                    return false;
+                                }
+                                else
+                                {
+                                    if (!stockEvent.Events[eventIndex][dataSerie.LastIndex])
+                                        return false;
+                                }
+                            }
+                            if (!string.IsNullOrEmpty(stockAlert.IndicatorName))
+                            {
+                                var dataSerie = this.GetDataSerie(stockAlert.BarDuration);
+                                if (dataSerie == null)
+                                    return false;
+
+                                indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
+                                if (dataSerie.HasVolume || !indicator.RequiresVolumeData)
+                                {
+                                    stockEvent = (IStockEvent)StockViewableItemsManager.CreateInitialisedFrom(indicator, dataSerie);
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                                eventIndex = Array.IndexOf(stockEvent.EventNames, stockAlert.EventName);
+                                if (eventIndex == -1)
+                                {
+                                    StockLog.Write("Event " + stockAlert.EventName + " not found in " + indicator.Name);
+                                    return false;
+                                }
+                                else
+                                {
+                                    return stockEvent.Events[eventIndex][dataSerie.LastIndex];
+                                }
+                            }
+                            return true;
+                        }
+                    case AlertType.Price:
+                        if (stockAlert.PriceTrigger != 0)
+                        {
+                            var dataSerie = this.GetDataSerie(stockAlert.BarDuration);
+                            var closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
+                            var index = dataSerie.LastIndex;
+                            if (index == 0)
+                                return false;
+
+                            if (stockAlert.TriggerBrokenUp)
+                            {
+                                return closeSerie[index - 1] < stockAlert.PriceTrigger && closeSerie[index] > stockAlert.PriceTrigger;
+                            }
+                            else
+                            {
+                                return closeSerie[index - 1] > stockAlert.PriceTrigger && closeSerie[index] < stockAlert.PriceTrigger;
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+
+            return false;
+        }
+
+        public StockAlert MatchAlertDef(StockAlertDef alertDef)
+        {
+            if (this.MatchEvent(alertDef))
+            {
+                return new StockAlert()
+                {
+                    Date = this.GetDataSerie(alertDef.BarDuration).LastValue.DATE,
+                    AlertDef = alertDef,
+                    Instrument = this
+                };
+            }
+            return null;
+        }
+
+
+
+
+        #endregion
     }
 }

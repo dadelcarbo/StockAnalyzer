@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzerApp.StockData;
+using System;
 using System.Linq;
 
 namespace StockAnalyzer.StockClasses
@@ -7,21 +8,22 @@ namespace StockAnalyzer.StockClasses
     {
         public DateTime Date { get; set; }
         public StockAlertDef AlertDef { get; set; }
-        public StockSerie StockSerie { get; set; }
+        public StockInstrument Instrument { get; set; }
 
 
         public StockAlertValue GetAlertValue()
         {
-            var previousBarDuration = StockSerie.BarDuration;
-            StockSerie.BarDuration = AlertDef.BarDuration;
-            var values = StockSerie.ValueArray;
-            var lastIndex = AlertDef.CompleteBar ? StockSerie.LastCompleteIndex : StockSerie.LastIndex;
-            var dailyValue = values.ElementAt(lastIndex);
+            var dataSerie = Instrument.GetDataSerie(AlertDef.BarDuration);
+            if (dataSerie == null)
+                throw new InvalidOperationException($"No data serie found for {AlertDef.BarDuration} on {Instrument.DisplayName}");
+
+            var lastIndex = AlertDef.CompleteBar ? dataSerie.LastCompleteIndex : dataSerie.LastIndex;
+            var dailyValue = dataSerie.Values[lastIndex];
 
             float stop = float.NaN;
             if (!string.IsNullOrEmpty(AlertDef.Stop))
             {
-                var trailStopSerie = StockSerie.GetTrailStop(AlertDef.Stop)?.Series[0];
+                var trailStopSerie = dataSerie.GetTrailStop(AlertDef.Stop)?.Series[0];
                 if (trailStopSerie != null)
                 {
                     stop = trailStopSerie[lastIndex];
@@ -29,18 +31,17 @@ namespace StockAnalyzer.StockClasses
             }
 
             var speedIndicatorName = string.IsNullOrEmpty(AlertDef.Speed) ? "ROR(35)" : AlertDef.Speed;
-            var speedIndicator = StockSerie.GetIndicator(speedIndicatorName);
+            var speedIndicator = dataSerie.GetIndicator(speedIndicatorName);
 
             var stokPeriod = AlertDef.Stok == 0 ? 35 : AlertDef.Stok;
 
-            var closeSerie = StockSerie.GetSerie(StockDataType.CLOSE);
+            var closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
             var highest = closeSerie.GetHighestIn(lastIndex);
-            var stok = StockSerie.CalculateLastFastOscillator(stokPeriod, StockViewableItems.InputType.Close);
+            var stok = dataSerie.CalculateLastFastOscillator(stokPeriod, StockViewableItems.InputType.Close);
 
-            StockSerie.BarDuration = previousBarDuration;
             return new StockAlertValue()
             {
-                StockSerie = StockSerie,
+                Instrument = Instrument,
                 AlertDef = AlertDef,
                 Date = this.Date,
 

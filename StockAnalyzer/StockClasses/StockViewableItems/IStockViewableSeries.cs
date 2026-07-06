@@ -47,8 +47,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         IndicatorDisplayTarget DisplayTarget { get; }
         IndicatorDisplayStyle DisplayStyle { get; }
 
-        bool HasTrendLine { get; }
-
         string ToThemeString();
 
         int ParameterCount { get; }

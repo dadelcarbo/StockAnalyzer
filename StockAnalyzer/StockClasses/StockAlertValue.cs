@@ -1,10 +1,11 @@
-﻿using System;
+﻿using StockAnalyzerApp.StockData;
+using System;
 
 namespace StockAnalyzer.StockClasses
 {
     public class StockAlertValue
     {
-        public StockSerie StockSerie { get; set; }
+        public StockInstrument Instrument { get; set; }
         public StockAlertDef AlertDef { get; set; }
         public DateTime Date { get; set; }
         public float Value { get; set; }

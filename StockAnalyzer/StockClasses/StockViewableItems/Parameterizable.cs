@@ -106,8 +106,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
         virtual public Object[] Parameters { get { return parameters; } protected set { parameters = value; } }
         abstract public ParamRange[] ParameterRanges { get; }
 
-        virtual public bool HasTrendLine => false;
-
         public int SeriesCount => SerieNames.Length;
         abstract public string[] SerieNames { get; }
 

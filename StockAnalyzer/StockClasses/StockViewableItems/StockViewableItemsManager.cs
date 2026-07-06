@@ -346,6 +346,35 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
             return viewableSerie;
         }
 
+        static public IStockViewableSeries CreateInitialisedFrom(IStockViewableSeries aViewableSerie, DataSerie dataSerie)
+        {
+            IStockViewableSeries viewableSerie = null;
+            switch (aViewableSerie.Type)
+            {
+                case ViewableItemType.Indicator:
+                    viewableSerie = dataSerie.GetIndicator(aViewableSerie.Name);
+                    break;
+                case ViewableItemType.Decorator:
+                    viewableSerie = dataSerie.GetDecorator(aViewableSerie.Name, ((IStockDecorator)aViewableSerie).DecoratedItem);
+                    break;
+                case ViewableItemType.TrailStop:
+                    viewableSerie = dataSerie.GetTrailStop(aViewableSerie.Name);
+                    break;
+                case ViewableItemType.Trail:
+                    viewableSerie = dataSerie.GetTrail(aViewableSerie.Name, ((IStockTrail)aViewableSerie).TrailedItem);
+                    break;
+                case ViewableItemType.Cloud:
+                    viewableSerie = dataSerie.GetCloud(aViewableSerie.Name);
+                    break;
+                case ViewableItemType.AutoDrawing:
+                    viewableSerie = dataSerie.GetAutoDrawing(aViewableSerie.Name);
+                    break;
+                default:
+                    throw new NotImplementedException($"ItemType not Implemented {aViewableSerie.Type}");
+            }
+            return viewableSerie;
+        }
+
         static public string GetTheme(string fullString)
         {
             string theme = ThemeTemplate;
