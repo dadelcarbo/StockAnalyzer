@@ -1030,7 +1030,7 @@ namespace StockAnalyzerApp
                 var sw = Stopwatch.StartNew();
                 var groups = alertDefs.Select(a => a.Group).Distinct();
 
-                var turboList = StockDictionary.Instance.Values.Where(s => !s.StockAnalysis.Excluded && s.StockGroup == Groups.TURBO);
+                var turboList = StockDictionary.Instruments.Values.Where(s => !s.StockAnalysis.Excluded && s.Group == Groups.TURBO);
                 var downloadTasks = turboList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s)));
 
                 Task.WaitAll(downloadTasks.ToArray());
@@ -1512,7 +1512,7 @@ namespace StockAnalyzerApp
                         StockSplashScreen.ShowSplashScreen();
                     }
 
-                    if (StockDataProviderBase.DownloadSerieData(this.ViewModel.Instrument.StockSerie))
+                    if (StockDataProviderBase.DownloadSerieData(this.ViewModel.Instrument))
                     {
                         this.ViewModel.Instrument.ClearCache();
 
@@ -1554,7 +1554,7 @@ namespace StockAnalyzerApp
                     {
                         StockSplashScreen.ProgressText = "Downloading " + instrument.Group + " - " + instrument.DisplayName;
 
-                        StockDataProviderBase.DownloadSerieData(instrument.StockSerie);
+                        StockDataProviderBase.DownloadSerieData(instrument);
                         instrument.ClearCache();
 
                         StockSplashScreen.ProgressVal++;
@@ -2916,26 +2916,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        #region Stock Scanner Dlg
-        private StockScannerDlg stockScannerDlg = null;
-        private void stockScannerMenuItem_Click(object sender, EventArgs e)
-        {
-            if (stockScannerDlg == null)
-            {
-                stockScannerDlg = new StockScannerDlg(StockDictionary.Instance, this.ViewModel.Instrument.Group, this.ViewModel.BarDuration, this.ViewModel.Theme);
-                stockScannerDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
-                stockScannerDlg.FormClosing += new FormClosingEventHandler(delegate
-                {
-                    this.stockScannerDlg = null;
-                });
-                stockScannerDlg.Show();
-            }
-            else
-            {
-                stockScannerDlg.Activate();
-            }
-        }
-        #endregion
         #region Stock Split Dlg
         private StockSplitDlg stockSplitDlg = null;
         private void stockSplitMenuItem_Click(object sender, EventArgs e)

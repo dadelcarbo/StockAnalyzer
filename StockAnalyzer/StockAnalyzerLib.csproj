@@ -681,6 +681,7 @@
     <Compile Include="StockScripting\StockScriptUserControl.xaml.cs">
       <DependentUpon>StockScriptUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StockScripting\TestStockFilterImpl.cs" />
     <Compile Include="StockScripting\ViewModel.cs" />
     <Compile Include="StockSecurity\StockLicense.cs" />
     <Compile Include="StockSecurity\StockToolKit.cs" />

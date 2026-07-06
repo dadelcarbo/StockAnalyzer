@@ -521,7 +521,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         this.Progress = count;
                     if (this.DownloadIntraday && (this.group == StockAnalyzer.StockClasses.Groups.TURBO_5M || this.group == StockAnalyzer.StockClasses.Groups.TURBO))
                     {
-                        StockDataProviderBase.DownloadSerieData(instrument.StockSerie);
+                        StockDataProviderBase.DownloadSerieData(instrument);
                     }
 
                     var dataSerie = instrument.GetDataSerie(this.BarDuration);
@@ -537,7 +537,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     var openSerie = dataSerie.GetSerie(StockDataType.OPEN);
 
                     var endIndex = dataSerie.LastIndex;
-                    var lastBar = dataSerie.Values.ElementAt(endIndex);
+                    var lastBar = dataSerie.LastValue;
 
                     if (Liquidity >= 0 && Liquidity > lastBar.EXCHANGED / 1000000f)
                     {
@@ -602,7 +602,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     bool match = true;
                     if (screenerSerie != null)
                     {
-                        match = screenerSerie.MatchFilter(dataSerie, endIndex);
+                        match = screenerSerie.MatchFilter(dataSerie);
                         if (screenerOnly && !match)
                         {
                             continue;

@@ -29,7 +29,7 @@ namespace StockAnalyzer.StockScripting
 {
     public class <FILTER_NAME>StockFilterImpl : StockFilterBase
     {
-        protected override bool MatchFilter(StockSerie stockSerie, StockDailyValue bar, int index)
+        protected override bool MatchFilter(DataSerie dataSerie, StockDailyValue lastBar)
         {
             <FILTER_CODE>
         }

@@ -74,7 +74,6 @@ namespace StockAnalyzerApp
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stockScannerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockSplitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.palmaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.instrumentsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -524,7 +523,6 @@ namespace StockAnalyzerApp
             this.analysisMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
                 this.stockSplitMenuItem,
                 this.toolStripSeparator19,
-                this.stockScannerMenuItem,
                 this.palmaresMenuItem,
                 this.instrumentsMenuItem,
                 this.toolStripSeparator10,
@@ -539,13 +537,6 @@ namespace StockAnalyzerApp
             this.analysisMenuItem.Name = "analysisMenuItem";
             this.analysisMenuItem.Size = new System.Drawing.Size(62, 20);
             this.analysisMenuItem.Text = "Analysis";
-            // 
-            // stockScannerMenuItem
-            // 
-            this.stockScannerMenuItem.Name = "stockScannerMenuItem";
-            this.stockScannerMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.stockScannerMenuItem.Text = "Stock Scanner";
-            this.stockScannerMenuItem.Click += new System.EventHandler(this.stockScannerMenuItem_Click);
             // 
             // stockSplitMenuItem
             // 
@@ -1557,7 +1548,6 @@ namespace StockAnalyzerApp
         private ToolStripSeparator toolStripSeparator17;
         private ToolStripMenuItem eraseDrawingsToolStripMenuItem;
         private ToolStripMenuItem eraseAllDrawingsToolStripMenuItem;
-        private ToolStripMenuItem stockScannerMenuItem;
         private ToolStripMenuItem stockSplitMenuItem;
         private ToolStripSeparator toolStripSeparator18;
         private ToolStripMenuItem saveThemeMenuItem;

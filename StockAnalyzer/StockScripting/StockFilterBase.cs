@@ -5,19 +5,19 @@ namespace StockAnalyzer.StockScripting
 {
     public interface IStockFilter
     {
-        bool MatchFilter(DataSerie dataSerie, int index = -1);
+        bool MatchFilter(DataSerie dataSerie);
     }
     public abstract class StockFilterBase : IStockFilter
     {
-        public bool MatchFilter(DataSerie dataSerie, int index = -1)
+        public bool MatchFilter(DataSerie dataSerie)
         {
-            if (index > dataSerie.Values.Length - 1)
+            if (dataSerie?.Values == null || dataSerie.Values.Length == 0)
                 return false;
 
-            StockDailyValue currentBar = index == -1 ? dataSerie.LastValue : dataSerie.Values[index];
+            StockDailyValue currentBar = dataSerie.LastValue;
 
-            return MatchFilter(dataSerie, currentBar, index == -1 ? dataSerie.LastIndex : index);
+            return MatchFilter(dataSerie, currentBar);
         }
-        protected abstract bool MatchFilter(DataSerie dataSerie, StockDailyValue bar, int index);
+        protected abstract bool MatchFilter(DataSerie dataSerie, StockDailyValue lastBar);
     }
 }
