@@ -1,5 +1,8 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+﻿using FastBars;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
@@ -10,15 +13,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using StockAnalyzerApp.StockData;
-using StockAnalyzer.StockData;
-using FastBars;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
@@ -528,6 +529,29 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                         };
 
                         stockDictionary.Add(stockName, stockSerie);
+
+                        var instrument = new StockInstrument()
+                        {
+                            StockSerie = null,
+
+                            Id = abcId,
+                            AbcId = abcId,
+                            DisplayName = stockName,
+                            Isin = isin,
+                            DataProvider = StockDataProvider.ABC,
+                            Symbol = row[2],
+
+                            Group = config.Group
+                        };
+                        if (!StockDictionary.Instruments.ContainsKey(instrument.Id))
+                        {
+                            StockDictionary.Instruments.Add(instrument.Id, instrument);
+                        }
+                        else
+                        {
+                            StockLog.Write("Duplicate " + config.Group + ";" + line + " already in Instruments");
+                        }
+                        instrument.StockSerie = stockSerie;
                     }
                     else
                     {
@@ -595,23 +619,25 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                         if (excludeList.Contains(row[0]))
                             continue;
 
-                        StockSerie stockSerie = new StockSerie(row[1], string.IsNullOrEmpty(row[2]) ? row[3] : row[2], row[0], (Groups)Enum.Parse(typeof(Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
-                        stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN?.Substring(0, 2) switch
-                        {
-                            null => string.Empty,
-                            "FR" => "p",
-                            "QS" => "p",
-                            "BE" => "g",
-                            "NL" => "n",
-                            "DE" => "f",
-                            "IT" => "i",
-                            "ES" => "m",
-                            "PT" => "I",
-                            _ => string.Empty
-                        };
                         if (!stockDictionary.ContainsKey(row[1]))
                         {
+                            StockSerie stockSerie = new StockSerie(row[1], string.IsNullOrEmpty(row[2]) ? row[3] : row[2], row[0], (Groups)Enum.Parse(typeof(Groups), row[4]), StockDataProvider.ABC, BarDuration.Daily);
+                            stockSerie.ABCName = stockSerie.Symbol + stockSerie.ISIN?.Substring(0, 2) switch
+                            {
+                                null => string.Empty,
+                                "FR" => "p",
+                                "QS" => "p",
+                                "BE" => "g",
+                                "NL" => "n",
+                                "DE" => "f",
+                                "IT" => "i",
+                                "ES" => "m",
+                                "PT" => "I",
+                                _ => string.Empty
+                            };
                             stockDictionary.Add(row[1], stockSerie);
+
+                            StockDictionary.Instruments.Add(stockSerie.StockName, new StockInstrument(stockSerie));
                         }
                         else
                         {

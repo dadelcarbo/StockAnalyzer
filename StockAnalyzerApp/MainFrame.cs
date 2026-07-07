@@ -3503,7 +3503,7 @@ namespace StockAnalyzerApp
                 StockLog.Write($"Apply theme {this.ViewModel.Instrument.DisplayName}-{this.ViewModel.BarDuration}-{this.ViewModel.Theme}");
 
                 // Get DataSerie for bar duration
-                var dataSerie = StockDictionary.GetDataSerie(ViewModel.Instrument.DisplayName, this.ViewModel.BarDuration);
+                var dataSerie = ViewModel.Instrument.GetDataSerie(this.ViewModel.BarDuration);
                 if (dataSerie == null || dataSerie.Count == 0)
                 {
                     this.DeactivateGraphControls("Data for " + this.ViewModel.Instrument.DisplayName + " cannot be initialised");

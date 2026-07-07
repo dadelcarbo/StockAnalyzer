@@ -7,18 +7,13 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
-using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockScripting;
-using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockClasses
@@ -297,10 +292,6 @@ namespace StockAnalyzer.StockClasses
         }
         #endregion
 
-        public float GetValue(StockDataType dataType, int index)
-        {
-            return GetSerie(dataType).Values.ElementAt(index);
-        }
         public FloatSerie GetSerie(StockDataType dataType)
         {
             if (ValueSeries[(int)dataType] == null)
@@ -345,171 +336,6 @@ namespace StockAnalyzer.StockClasses
 
             return ValueSeries[(int)dataType];
         }
-
-        #region Indicator Management
-        public IStockTrailStop GetTrailStop(String trailStopName)
-        {
-            if (this.TrailStopCache != null && this.TrailStopCache.Name == trailStopName)
-            {
-                return this.TrailStopCache;
-            }
-            else
-            {
-                IStockTrailStop trailStop = StockTrailStopManager.CreateTrailStop(trailStopName);
-                if (trailStop != null && (this.HasVolume || !trailStop.RequiresVolumeData))
-                {
-                    StockLog.Write($"{trailStopName} to {this.StockName} - {this.BarDuration}");
-                    trailStop.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
-                    this.TrailStopCache = trailStop;
-                    return trailStop;
-                }
-                return null;
-            }
-        }
-        public IStockIndicator GetIndicator(String indicatorName)
-        {
-            if (this.IndicatorCache.ContainsKey(indicatorName))
-            {
-                return this.IndicatorCache[indicatorName];
-            }
-            else
-            {
-                IStockIndicator indicator = StockIndicatorManager.CreateIndicator(indicatorName);
-                if (indicator != null && (this.HasVolume || !indicator.RequiresVolumeData))
-                {
-                    StockLog.Write($"{indicatorName} to {this.StockName} - {this.BarDuration}", false);
-                    indicator.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
-                    AddIndicatorSerie(indicator, indicatorName);
-                    return indicator;
-                }
-                return null;
-            }
-        }
-
-        public IStockCloud GetCloud(String cloudName)
-        {
-            if (this.CloudCache.ContainsKey(cloudName))
-            {
-                return this.CloudCache[cloudName];
-            }
-            else
-            {
-                IStockCloud cloud = StockCloudManager.CreateCloud(cloudName);
-                if (cloud != null && (this.HasVolume || !cloud.RequiresVolumeData))
-                {
-                    StockLog.Write($"{cloudName} to {this.StockName} - {this.BarDuration}");
-                    cloud.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
-                    AddCloudSerie(cloud);
-                    return cloud;
-                }
-                return null;
-            }
-        }
-        public IStockAutoDrawing GetAutoDrawing(String autoDrawingName)
-        {
-            if (this.AutoDrawingCache != null && this.AutoDrawingCache.Name == autoDrawingName)
-            {
-                return this.AutoDrawingCache;
-            }
-            else
-            {
-                IStockAutoDrawing autoDrawing = StockAutoDrawingManager.CreateAutoDrawing(autoDrawingName);
-                if (autoDrawing != null && (this.HasVolume || !autoDrawing.RequiresVolumeData))
-                {
-                    StockLog.Write($"{autoDrawingName} to {this.StockName} - {this.BarDuration}");
-                    autoDrawing.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
-
-                    this.AutoDrawingCache = autoDrawing;
-                    return autoDrawing;
-                }
-                return null;
-            }
-        }
-        public IStockDecorator GetDecorator(string decoratorName, string decoratedItem)
-        {
-            string fullDecoratorName = decoratorName + "|" + decoratedItem;
-            if (this.DecoratorCache.ContainsKey(fullDecoratorName))
-            {
-                return this.DecoratorCache[fullDecoratorName];
-            }
-            else
-            {
-                IStockDecorator decorator = StockDecoratorManager.CreateDecorator(decoratorName, decoratedItem);
-                if (decorator != null && (this.HasVolume || !decorator.RequiresVolumeData))
-                {
-                    StockLog.Write($"{decoratorName} to {this.StockName} - {this.BarDuration}");
-                    decorator.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
-                    this.DecoratorCache.Add(fullDecoratorName, decorator);
-                    return decorator;
-                }
-                return null;
-            }
-        }
-        public IStockTrail GetTrail(string trailName, string trailedItem)
-        {
-            if (this.TrailCache != null && this.TrailCache.Name == trailName && this.TrailCache.TrailedItem == trailedItem)
-            {
-                return this.TrailCache;
-            }
-            else
-            {
-                IStockTrail trail = StockTrailManager.CreateTrail(trailName, trailedItem);
-                if (trail != null && (this.HasVolume || !trail.RequiresVolumeData))
-                {
-                    StockLog.Write($"{trailName} to {this.StockName} - {this.BarDuration}");
-                    trail.ApplyTo(StockDictionary.GetDataSerie(this.StockName, this.BarDuration));
-                    this.TrailCache = trail;
-                    return trail;
-                }
-                return null;
-            }
-        }
-
-        public IStockViewableSeries GetViewableItem(string name)
-        {
-            string[] nameFields = name.Split('|');
-            switch (nameFields[0])
-            {
-                case "INDICATOR":
-                    return this.GetIndicator(nameFields[1]);
-                case "CLOUD":
-                    return this.GetCloud(nameFields[1]);
-                case "TRAILSTOP":
-                    return this.GetTrailStop(nameFields[1]);
-                case "TRAIL":
-                    return this.GetTrail(nameFields[1], nameFields[2]);
-                case "AUTODRAWING":
-                    return this.GetAutoDrawing(nameFields[1]);
-                case "DECORATOR":
-                    return this.GetDecorator(nameFields[1], nameFields[2]);
-            }
-            throw new ArgumentException("No viewable item matching " + name + " has been found");
-        }
-
-        public void AddIndicatorSerie(IStockIndicator indicator, string name)
-        {
-            if (this.IndicatorCache.ContainsKey(name))
-            {
-                this.IndicatorCache[name] = indicator;
-            }
-            else
-            {
-                this.IndicatorCache.Add(name, indicator);
-            }
-        }
-        public void AddCloudSerie(IStockCloud indicator)
-        {
-            if (this.CloudCache.ContainsKey(indicator.Name))
-            {
-                this.CloudCache[indicator.Name] = indicator;
-            }
-            else
-            {
-                this.CloudCache.Add(indicator.Name, indicator);
-            }
-        }
-
-        #endregion
 
         #endregion
 

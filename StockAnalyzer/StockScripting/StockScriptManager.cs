@@ -33,50 +33,6 @@ namespace StockAnalyzer.StockScripting
     }
 }";
 
-        private bool MatchFilter(StockSerie stockSerie, StockDailyValue bar, int index)
-        {
-            var previousBar = stockSerie.ValueArray[index - 1];
-
-
-            var rebound = (bar.CLOSE - bar.LOW) / bar.CLOSE;
-
-            if (rebound > 0.05)
-                return true;
-            else
-                return false;
-
-
-            return stockSerie.GetTrailStop("TRAILATR(75,35,1.25,0.25,EMA)").GetEvents("Consolidation")[index];
-
-            if (bar.VARIATION < 0)
-                return false;
-
-            int period = 35;
-
-            var maxRor = stockSerie.GetIndicator("MAX(ROR(" + period + ")," + period + ")").Series[0][index];
-            if (maxRor < 0.3)
-                return false;
-
-            var stoch = stockSerie.CalculateLastFastOscillator(period * 2, InputType.Close);
-            if (stoch < 61)
-                return false;
-
-            var highSerie = stockSerie.GetSerie(StockDataType.HIGH);
-            var highPivot = highSerie.FindMax(stockSerie.LastIndex - period, stockSerie.LastIndex);
-
-            var lowSerie = stockSerie.GetSerie(StockDataType.LOW);
-            var lowPivot = lowSerie.FindMin(highPivot.Index, stockSerie.LastIndex);
-
-            var longRange = highPivot.Value - lowPivot.Value;
-            var shortRange = stockSerie.CalculateLastRange(2, InputType.Body);
-
-            if (longRange / shortRange < 10.0f)
-                return false;
-
-            return true;
-        }
-
-
         public CompilerResults CompilerResults { get; private set; }
         public IStockFilter CreateStockFilterInstance(StockScript stockScript)
         {

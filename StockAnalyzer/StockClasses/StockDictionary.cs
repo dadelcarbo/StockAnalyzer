@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockViewableItems;
+﻿using StockAnalyzer.StockClasses.StockDataProviders;
+using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockData;
@@ -26,6 +27,10 @@ namespace StockAnalyzer.StockClasses
             var instruments = new SortedDictionary<string, StockInstrument>();
             foreach (var serie in Instance.Values)
             {
+                if (serie.DataProvider == StockDataProvider.ABC)
+                {
+                    continue;
+                }
                 var instrument = new StockInstrument(serie);
                 instruments[instrument.Id] = instrument;
             }

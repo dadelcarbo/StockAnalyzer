@@ -331,7 +331,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                 else
                 {
                     Forward();
-                    var events = replaySerie.GetViewableItem(indicatorName) as IStockEvent;
+                    var events = replayDataSerie.GetViewableItem(indicatorName) as IStockEvent;
                     if (events == null)
                         return;
                     var boolSerie = events.Events[Array.IndexOf(events.EventNames, eventName)];

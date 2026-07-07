@@ -20,14 +20,35 @@ namespace StockAnalyzerApp.StockData
         public string DisplayName { get; set; }
         public string Isin { get; set; }
         public string Symbol { get; set; }
-        public string Ticker { get; set; }
+        public long Ticker { get; set; }
         public Groups Group { get; set; }
         public StockDataProvider DataProvider { get; set; }
+        public string AbcId { get; set; }
+
+        public char MarketPlace => AbcId?.Length == 13 ? AbcId[0] : 'p';
+        public Market Market => this.MarketPlace switch
+        {
+            'p' => Market.EURONEXT,
+            'g' => Market.EURONEXT,
+            'n' => Market.EURONEXT,
+            'l' => Market.EURONEXT,
+
+            'f' => Market.XETRA,
+            'i' => Market.XETRA,
+            'm' => Market.XETRA,
+
+            _ => Market.NYSE
+        };
+
         public long SaxoId { get; set; }
         public StockAnalysis StockAnalysis { get; set; }
 
         public StockSerie StockSerie { get; set; }
 
+        public StockInstrument()
+        {
+            this.StockAnalysis = new StockAnalysis();
+        }
         public StockInstrument(StockSerie serie)
         {
             this.StockSerie = serie;
@@ -35,7 +56,7 @@ namespace StockAnalyzerApp.StockData
             this.Id = serie.StockName;
             this.DisplayName = serie.StockName;
             this.Isin = serie.ISIN;
-            this.Ticker = serie.Symbol;
+            this.Ticker = serie.Ticker;
             this.DataProvider = serie.DataProvider;
             this.Symbol = serie.Symbol;
             this.SaxoId = serie.SaxoId;
