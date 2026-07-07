@@ -231,18 +231,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems
     {
         public ParamRangeStockName()
         {
-            this.MinValue = StockDictionary.Instance.Keys.First();
-            this.MaxValue = StockDictionary.Instance.Keys.Last();
+            this.MinValue = StockDictionary.Instruments.Keys.First();
+            this.MaxValue = StockDictionary.Instruments.Keys.Last();
         }
 
         public override bool isInRange(Object value)
         {
-            return StockDictionary.Instance.ContainsKey(value.ToString());
+            return StockDictionary.Instruments.ContainsKey(value.ToString());
         }
 
         public override bool isValidString(string valueString)
         {
-            return StockDictionary.Instance.ContainsKey(valueString);
+            return StockDictionary.Instruments.ContainsKey(valueString);
         }
 
         override public Type GetParamType()

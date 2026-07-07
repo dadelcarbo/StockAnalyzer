@@ -18,17 +18,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
 
-        public override void ApplyTo(DataSerie stockSerie)
+        public override void ApplyTo(DataSerie dataSerie)
         {
-            this.CreateEventSeries(stockSerie.Count);
-            var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            this.CreateEventSeries(dataSerie.Count);
+            var closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
 
-            // Get index close serie.
-            var indexSerie = StockDictionary.Instance[this.parameters[0] as string];
-            if (!indexSerie.Initialise())
-                return;
-
-            var indexCloseSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(this.parameters[0] as string, stockSerie.BarDuration);
+            var indexCloseSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(this.parameters[0] as string, dataSerie.BarDuration);
 
             var rsSerie = 100.0f * closeSerie / indexCloseSerie;
 

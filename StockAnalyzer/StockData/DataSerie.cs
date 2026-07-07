@@ -1904,7 +1904,11 @@ namespace StockAnalyzer.StockData
 
         public FloatSerie GenerateSecondarySerieFromOtherSerie(string instrumentId, BarDuration duration)
         {
-            var otherSerie = StockDictionary.Instruments[instrumentId].GetDataSerie(duration);
+            if (!StockDictionary.Instruments.TryGetValue(instrumentId, out var instrument))
+            {
+                return null;
+            }
+            var otherSerie = instrument.GetDataSerie(duration);
             if (otherSerie == null)
             {
                 return null;
@@ -2012,6 +2016,22 @@ namespace StockAnalyzer.StockData
                 }
                 return -1;
             }
+        }
+
+        public int IndexOfFirstLowerOrEquals(DateTime date)
+        {
+            if (this.Count == 0)
+            {
+                return -1;
+            }
+            if (date < Values[0].DATE) { return -1; }
+            int index;
+            for (index = Values.Length - 1; index > 0; index--)
+            {
+                if (Values[index].DATE <= date)
+                    break;
+            }
+            return index;
         }
 
         #endregion

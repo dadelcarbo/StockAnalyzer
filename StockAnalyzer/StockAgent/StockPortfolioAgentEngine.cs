@@ -32,8 +32,12 @@ namespace StockAnalyzer.StockAgent
         {
             var candidates = new List<Tuple<IStockPortfolioAgent, float>>();
 
-            var refSerie = StockDictionary.Instance[positionManagement.RegimeIndice];
-            refSerie.BarDuration = duration;
+            if (!StockDictionary.Instruments.TryGetValue(positionManagement.RegimeIndice, out var instrument))
+            {
+                StockLog.Write($"Regime Indice not found: {positionManagement.RegimeIndice}");
+                return;
+            }
+            var refSerie = instrument.GetDataSerie(duration);
             var refVarSerie = refSerie.GetSerie(StockDataType.VARIATION);
             BoolSerie regimeEvents = null;
             if (positionManagement.RegimePeriod > 0)
@@ -52,7 +56,7 @@ namespace StockAnalyzer.StockAgent
                 equityCurve[i] = new EquityValue { X = i, Y = equity, Ref = refEquity };
             }
 
-            foreach (var date in refSerie.Keys.Skip(minIndex))
+            foreach (var date in refSerie.Values.Skip(minIndex).Select(v => v.DATE))
             {
                 equity = cash;
                 refEquity *= 1.0f + refVarSerie[i];

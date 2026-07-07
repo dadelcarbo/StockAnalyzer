@@ -26,7 +26,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
         {
             try
             {
-                var stockDico = StockDictionary.Instance;
                 var jsonData = SaxoHttpClient.HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
                 // "https://fr-be.structured-products.saxo/page-api/search/*?productsSize=10&underlyingsSize=700&locale=fr_BE");
 
@@ -45,7 +44,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                         foreach (var newId in newIds)
                         {
                             var stockName = newId.Split(',')[1].ToUpper();
-                            if (stockDico.ContainsKey(stockName))
+                            if (StockDictionary.Instruments.ContainsKey(stockName))
                             {
                                 underlyingFile.Add(newId + stockName);
                             }
