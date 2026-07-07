@@ -20,9 +20,9 @@ namespace StockAnalyzerApp
         }
     }
 
-    public class ContextPersister : IDisposable
+    public class MainViewModelContextPersister : IDisposable
     {
-        public ContextPersister()
+        public MainViewModelContextPersister()
         {
             MainFrameViewModel.Instance.SaveContext();
             MainFrameViewModel.Instance.IsHistoryActive = false;
@@ -111,6 +111,18 @@ namespace StockAnalyzerApp
         #region Instrument
         StockInstrument instrument;
         public StockInstrument Instrument { get { return instrument; } set { SetProperty(ref instrument, value); } }
+
+        internal void SetInstrument(StockInstrument instrument, bool notifyPropertyChanged)
+        {
+            if (notifyPropertyChanged)
+            {
+                this.Instrument = instrument;
+            }
+            else
+            {
+                this.instrument = instrument;
+            }
+        }
         #endregion
 
         private int browsingHistoryIndex = 0;

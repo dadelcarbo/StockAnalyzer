@@ -670,7 +670,7 @@ namespace StockAnalyzerApp
             Settings.Default.ShowOrders = false;
             Settings.Default.ShowPositions = false;
 
-            using var cs = new ContextPersister();
+            using var cs = new MainViewModelContextPersister();
 
             try
             {
@@ -684,7 +684,6 @@ namespace StockAnalyzerApp
                 {
                     GenerateReportFromTemplate(reportTemplate, force);
                 }
-
 
                 #region PALMARES REPORT
 
@@ -1969,17 +1968,20 @@ namespace StockAnalyzerApp
 
         public string GetStockSnapshotAsHtml(StockInstrument instrument, string theme, bool mainGraphOnly, BarDuration duration, int nbBars = 0)
         {
-            this.ViewModel.SetBarDuration(duration, false);
-            this.ViewModel.Instrument = instrument;
 
             if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
             {
-                this.ViewModel.Theme = theme;
+                this.ViewModel.SetTheme(theme, false);
             }
             else
             {
-                this.ViewModel.Theme = EMPTY_THEME;
+                this.ViewModel.SetTheme(EMPTY_THEME, false);
             }
+            this.ViewModel.SetBarDuration(duration, false);
+            this.ViewModel.SetInstrument(instrument, false);
+
+            this.OnInstrumentChanged();
+
             if (nbBars > 0)
             {
                 var dataSerie = instrument.GetDataSerie(duration);
@@ -2644,7 +2646,7 @@ namespace StockAnalyzerApp
 
             this.Portfolio = portfolio;
 
-            using var p = new ContextPersister();
+            using var p = new MainViewModelContextPersister();
 
             string reportTemplate = File.ReadAllText(@"Resources\PortfolioTemplate.html").Replace("%HTML_TILE%", portfolio.Name + "Report " + DateTime.Today.ToShortDateString());
 
@@ -2681,7 +2683,7 @@ namespace StockAnalyzerApp
                 return;
             var htmlReportTemplate = File.ReadAllText(Folders.ReportTemplate);
 
-            using var cp = new ContextPersister();
+            using var cp = new MainViewModelContextPersister();
             try
             {
 
