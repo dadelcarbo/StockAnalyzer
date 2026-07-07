@@ -143,7 +143,7 @@ namespace StockAnalyzer.StockAgent
                         continue;
                     }
 
-                    for (int i = minIndex; i < this.Agent.DataSerie.Count; i++)
+                    for (int i = minIndex; i < this.Agent.DataSerie.Count - 1; i++)
                     {
                         switch (this.Agent.Decide(i))
                         {

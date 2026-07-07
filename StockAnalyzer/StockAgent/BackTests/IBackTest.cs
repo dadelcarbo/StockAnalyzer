@@ -31,6 +31,7 @@ namespace StockAnalyzer.StockAgent.BackTests
             {
                 this.Instrument = instrument;
                 this.DataSerie = instrument.GetDataSerie(duration);
+                this.DataSerie.ResetAllCache();
 
                 if (this.DataSerie == null || this.DataSerie.Count < minIndex)
                 {
