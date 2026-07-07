@@ -76,6 +76,11 @@ namespace StockAnalyzer.StockAgent
                 this.Instrument = instrument;
 
                 this.DataSerie = instrument.GetDataSerie(duration);
+                if (DataSerie == null || DataSerie.Count == 0)
+                {
+                    return false;
+                }
+                this.DataSerie.ResetAllCache();
 
                 closeSerie = this.DataSerie.GetSerie(StockDataType.CLOSE);
                 openSerie = this.DataSerie.GetSerie(StockDataType.OPEN);

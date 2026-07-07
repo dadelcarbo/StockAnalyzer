@@ -42,10 +42,11 @@ namespace StockAnalyzer.StockAgent
             try
             {
                 this.Duration = duration;
-                this.DataSerie = instrument.GetDataSerie(duration);
 
+                this.DataSerie = instrument.GetDataSerie(duration);
                 if (DataSerie == null || DataSerie.Count < minIndex)
                     return false;
+                this.DataSerie.ResetAllCache();
 
                 return Init();
             }

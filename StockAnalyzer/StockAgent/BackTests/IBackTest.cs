@@ -30,13 +30,13 @@ namespace StockAnalyzer.StockAgent.BackTests
             try
             {
                 this.Instrument = instrument;
-                this.DataSerie = instrument.GetDataSerie(duration);
-                this.DataSerie.ResetAllCache();
 
-                if (this.DataSerie == null || this.DataSerie.Count < minIndex)
+                this.DataSerie = instrument.GetDataSerie(duration);
+                if (DataSerie == null || DataSerie.Count < minIndex)
                 {
                     return false;
                 }
+                this.DataSerie.ResetAllCache();
 
                 closeSerie = DataSerie.GetSerie(StockDataType.CLOSE);
                 openSerie = DataSerie.GetSerie(StockDataType.OPEN);
