@@ -134,7 +134,7 @@ namespace StockAnalyzerApp
 
         public static MainFrameViewModel Instance => instance;
 
-        internal void AddHistory(string stockName, string theme)
+        internal void AddHistory(StockInstrument instrument, string theme)
         {
             if (!IsHistoryActive)
                 return;
@@ -142,14 +142,14 @@ namespace StockAnalyzerApp
             foreach (var item in this.browingHistory)
             {
                 index++;
-                if (item.StockName == stockName && item.Theme == theme && item.BarDuration == this.BarDuration)
+                if (item.Instrument == instrument && item.Theme == theme && item.BarDuration == this.BarDuration)
                 {
                     return; // Already in history
                 }
             }
             this.browingHistory.Add(new BrowsingEntry
             {
-                StockName = stockName,
+                Instrument = instrument,
                 BarDuration = this.BarDuration,
                 Theme = theme,
             });
@@ -162,7 +162,7 @@ namespace StockAnalyzerApp
             {
                 browsingHistoryIndex++;
                 var browsingEntry = browingHistory[browsingHistoryIndex];
-                StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged(browsingEntry.StockName, browsingEntry.BarDuration, browsingEntry.Theme, false);
+                StockAnalyzerForm.MainFrame.OnSelectedInstrumentAndDurationAndThemeChanged(browsingEntry.Instrument, browsingEntry.BarDuration, browsingEntry.Theme, false);
             }
         }
         internal void BrowseBack()
@@ -171,7 +171,7 @@ namespace StockAnalyzerApp
             {
                 browsingHistoryIndex--;
                 var browsingEntry = browingHistory[browsingHistoryIndex];
-                StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged(browsingEntry.StockName, browsingEntry.BarDuration, browsingEntry.Theme, false);
+                StockAnalyzerForm.MainFrame.OnSelectedInstrumentAndDurationAndThemeChanged(browsingEntry.Instrument, browsingEntry.BarDuration, browsingEntry.Theme, false);
             }
         }
     }

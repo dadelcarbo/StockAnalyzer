@@ -66,30 +66,26 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             BestTrends = new List<MomentumViewModel>();
             try
             {
-                foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.Group)))
+                foreach (var instrument in StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group)))
                 {
-                    if (stockSerie.Initialise())
+                    var dataSerie = instrument.GetDataSerie(this.barDuration);
+                    if (dataSerie == null || dataSerie.Count < period)
+                        continue;
+
+                    var indicatorSerie = dataSerie.GetIndicator($"ROR({this.period})").Series[0];
+                    var maxIndex = indicatorSerie.FindMaxIndex(period, dataSerie.Count - 1);
+                    var minIndex = dataSerie.GetSerie(StockDataType.CLOSE).FindMinIndex(maxIndex - period, maxIndex);
+
+                    BestTrends.Add(new MomentumViewModel
                     {
-                        var previousBarDuration = stockSerie.BarDuration;
-                        stockSerie.BarDuration = this.barDuration;
-                        if (stockSerie.Count <= period) continue;
-                        var indicatorSerie = stockSerie.GetIndicator($"ROR({this.period})").Series[0];
-                        var maxIndex = indicatorSerie.FindMaxIndex(period, stockSerie.Count - 1);
-                        var minIndex = stockSerie.GetSerie(StockDataType.CLOSE).FindMinIndex(maxIndex - period, maxIndex);
-
-                        BestTrends.Add(new MomentumViewModel
-                        {
-                            StockSerie = stockSerie,
-                            BarDuration = this.barDuration,
-                            StartIndex = minIndex,
-                            EndIndex = maxIndex,
-                            EndDate = stockSerie.Keys.ElementAt(maxIndex),
-                            StartDate = stockSerie.Keys.ElementAt(minIndex),
-                            Value = indicatorSerie[maxIndex]
-                        });
-
-                        stockSerie.BarDuration = previousBarDuration;
-                    }
+                        Instrument = instrument,
+                        BarDuration = this.barDuration,
+                        StartIndex = minIndex,
+                        EndIndex = maxIndex,
+                        EndDate = dataSerie.Values[maxIndex].DATE,
+                        StartDate = dataSerie.Values[minIndex].DATE,
+                        Value = indicatorSerie[maxIndex]
+                    });
                 }
             }
             catch (Exception e)

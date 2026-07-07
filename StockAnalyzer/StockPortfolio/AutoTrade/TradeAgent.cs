@@ -31,7 +31,6 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         public TradeAgent(TradeAgentDef agentDef)
         {
             this.AgentDef = agentDef;
-            StockDictionary.Instruments.TryGetValue(agentDef.StockName, out StockInstrument instrument);
 
             this.Strategy = TradeStrategyManager.CreateInstance("TrailAtr");
             this.Portfolio = StockPortfolio.Portfolios.FirstOrDefault(p => p.Name == agentDef.PortfolioName);
@@ -40,7 +39,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
         public TradeAgentDef AgentDef { get; private set; }
 
         [JsonIgnore]
-        public StockInstrument Instrument { get; set; }
+        public StockInstrument Instrument => this.AgentDef?.Instrument;
 
         [JsonIgnore]
         public StockPortfolio Portfolio { get; set; }

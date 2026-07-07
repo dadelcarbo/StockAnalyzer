@@ -27,8 +27,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
     {
         private System.Windows.Forms.Form Form { get; }
 
-        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
-        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndThemeChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationChangedEventHandler SelectedInstrumentChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationAndThemeChangedEventHandler SelectedInstrumentAndThemeChanged;
 
         public PalmaresViewModel ViewModel;
         public PalmaresControl(System.Windows.Forms.Form form)
@@ -170,7 +170,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             StockAnalyzerForm.MainFrame.Activate();
             if (string.IsNullOrEmpty(this.ViewModel.Theme) || !StockAnalyzerForm.MainFrame.Themes.Contains(this.ViewModel.Theme))
             {
-                this.SelectedStockChanged(line.Name, ViewModel.BarDuration, true);
+                this.SelectedInstrumentChanged(line.Instrument, ViewModel.BarDuration, true);
                 if (!string.IsNullOrEmpty(this.ViewModel.Stop))
                 {
                     StockAnalyzerForm.MainFrame.SetThemeFromIndicator($"TRAILSTOP|{this.ViewModel.Stop}");
@@ -178,7 +178,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             }
             else
             {
-                this.SelectedStockAndThemeChanged(line.Name, ViewModel.BarDuration, this.ViewModel.Theme, true);
+                this.SelectedInstrumentAndThemeChanged(line.Instrument, ViewModel.BarDuration, this.ViewModel.Theme, true);
             }
             this.Form.TopMost = false;
         }

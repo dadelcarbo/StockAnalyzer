@@ -64,15 +64,12 @@ namespace StockAnalyzerApp
 {
     public partial class StockAnalyzerForm : Form
     {
-        public delegate void SelectedStockChangedEventHandler(string stockName, bool activateMainWindow);
         public delegate void SelectedInstrumentChangedEventHandler(StockInstrument instrument, bool activateMainWindow);
 
-        public delegate void SelectedStockAndDurationChangedEventHandler(string stockName, BarDuration barDuration, bool activateMainWindow);
+        public delegate void SelectedInstrumentAndDurationChangedEventHandler(StockInstrument instrument, BarDuration barDuration, bool activateMainWindow);
 
-        public delegate void SelectedStockAndDurationAndThemeChangedEventHandler(string stockName, BarDuration barDuration, string theme, bool activateMainWindow);
         public delegate void SelectedInstrumentAndDurationAndThemeChangedEventHandler(StockInstrument instrument, BarDuration barDuration, string theme, bool activateMainWindow);
 
-        public delegate void SelectedStockAndDurationAndIndexChangedEventHandler(string stockName, int startIndex, int endIndex, BarDuration barDuration, bool activateMainWindow);
         public delegate void SelectedInstrumentAndDurationAndIndexChangedEventHandler(StockInstrument instrument, int startIndex, int endIndex, BarDuration barDuration, bool activateMainWindow);
 
         public delegate void SelectedStockGroupChangedEventHandler(Groups stockgroup);
@@ -1178,25 +1175,12 @@ namespace StockAnalyzerApp
             this.barDurationComboBox.SelectedIndexChanged += this.BarDurationChanged;
         }
 
-        public void OnSelectedStockChanged(string stockName, bool activate)
-        {
-            using (new MethodLogger(this))
-            {
-                this.ViewModel.Instrument = StockDictionary.Instruments[stockName];
-
-                if (activate)
-                {
-                    this.Activate();
-                }
-            }
-        }
-
-
         public void OnSelectedInstrumentChanged(StockInstrument instrument, bool activate)
         {
             using (new MethodLogger(this))
             {
-                this.ViewModel.Instrument = instrument;
+                this.ViewModel.SetInstrument(instrument, false);
+                this.OnInstrumentChanged();
 
                 if (activate)
                 {
@@ -1204,28 +1188,7 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        public void OnSelectedStockAndDurationAndThemeChanged(string stockName, BarDuration barDuration, string theme, bool activate)
-        {
-            using (new MethodLogger(this))
-            {
-                this.ViewModel.SetBarDuration(barDuration, false);
-                this.SetBarDurationCombo(barDuration);
 
-                if (string.IsNullOrEmpty(theme) || !themeDictionary.ContainsKey(theme))
-                {
-                    theme = EMPTY_THEME;
-                }
-                this.SetThemeCombo(theme);
-                this.ViewModel.SetTheme(theme, false);
-
-                this.ViewModel.Instrument = StockDictionary.Instruments[stockName];
-
-                if (activate)
-                {
-                    this.Activate();
-                }
-            }
-        }
         public void OnSelectedInstrumentAndDurationAndThemeChanged(StockInstrument instrument, BarDuration barDuration, string theme, bool activate)
         {
             using (new MethodLogger(this))
@@ -1240,7 +1203,8 @@ namespace StockAnalyzerApp
                 this.SetThemeCombo(theme);
                 this.ViewModel.SetTheme(theme, false);
 
-                this.ViewModel.Instrument = instrument;
+                this.ViewModel.SetInstrument(instrument, false);
+                this.OnInstrumentChanged();
 
                 if (activate)
                 {
@@ -1248,21 +1212,7 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        public void OnSelectedStockAndDurationChanged(string stockName, BarDuration barDuration, bool activate)
-        {
-            using (new MethodLogger(this))
-            {
-                this.ViewModel.SetBarDuration(barDuration, false);
-                this.SetBarDurationCombo(barDuration);
 
-                this.ViewModel.Instrument = StockDictionary.Instruments[stockName];
-
-                if (activate)
-                {
-                    this.Activate();
-                }
-            }
-        }
         public void OnSelectedInstrumentAndDurationChanged(StockInstrument instrument, BarDuration barDuration, bool activate)
         {
             using (new MethodLogger(this))
@@ -1270,7 +1220,8 @@ namespace StockAnalyzerApp
                 this.ViewModel.SetBarDuration(barDuration, false);
                 this.SetBarDurationCombo(barDuration);
 
-                this.ViewModel.Instrument = instrument;
+                this.ViewModel.SetInstrument(instrument, false);
+                this.OnInstrumentChanged();
 
                 if (activate)
                 {
@@ -1279,23 +1230,6 @@ namespace StockAnalyzerApp
             }
         }
 
-        public void OnSelectedStockAndDurationAndIndexChanged(string stockName, int startIndex, int endIndex, BarDuration barDuration, bool activate)
-        {
-            using (new MethodLogger(this))
-            {
-                this.ViewModel.SetBarDuration(barDuration, false);
-                this.SetBarDurationCombo(barDuration);
-
-                this.ViewModel.Instrument = StockDictionary.Instruments[stockName];
-
-                this.ChangeZoom(startIndex, endIndex);
-
-                if (activate)
-                {
-                    this.Activate();
-                }
-            }
-        }
         public void OnSelectedInstrumentAndDurationAndIndexChanged(StockInstrument instrument, int startIndex, int endIndex, BarDuration barDuration, bool activate)
         {
             using (new MethodLogger(this))
@@ -1303,7 +1237,8 @@ namespace StockAnalyzerApp
                 this.ViewModel.SetBarDuration(barDuration, false);
                 this.SetBarDurationCombo(barDuration);
 
-                this.ViewModel.Instrument = instrument;
+                this.ViewModel.SetInstrument(instrument, false);
+                this.OnInstrumentChanged();
 
                 this.ChangeZoom(startIndex, endIndex);
 
@@ -2184,8 +2119,8 @@ namespace StockAnalyzerApp
                 palmaresDlg.palmaresControl1.ViewModel.Group = this.ViewModel.Instrument.Group;
 
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
-                palmaresDlg.palmaresControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                palmaresDlg.palmaresControl1.SelectedStockAndThemeChanged += OnSelectedStockAndDurationAndThemeChanged;
+                palmaresDlg.palmaresControl1.SelectedInstrumentChanged += OnSelectedInstrumentAndDurationChanged;
+                palmaresDlg.palmaresControl1.SelectedInstrumentAndThemeChanged += OnSelectedInstrumentAndDurationAndThemeChanged;
                 palmaresDlg.Show();
             }
             else
@@ -2193,9 +2128,11 @@ namespace StockAnalyzerApp
                 palmaresDlg.Activate();
             }
         }
+
         private void palmaresDlg_FormClosing(object sender, FormClosingEventArgs e)
         {
-            palmaresDlg.palmaresControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
+            palmaresDlg.palmaresControl1.SelectedInstrumentChanged -= OnSelectedInstrumentAndDurationChanged;
+            palmaresDlg.palmaresControl1.SelectedInstrumentAndThemeChanged -= OnSelectedInstrumentAndDurationAndThemeChanged;
             this.palmaresDlg = null;
         }
         #endregion
@@ -2365,12 +2302,12 @@ namespace StockAnalyzerApp
             if (autoTradeDlg == null)
             {
                 autoTradeDlg = new AutoTradeDlg() { StartPosition = FormStartPosition.CenterScreen };
-                autoTradeDlg.autoTradeControl1.SelectedStockChanged += OnSelectedStockAndDurationChanged;
-                autoTradeDlg.autoTradeControl1.SelectedStockAndThemeChanged += OnSelectedStockAndDurationAndThemeChanged;
+                autoTradeDlg.autoTradeControl1.SelectedInstrumentChanged += OnSelectedInstrumentAndDurationChanged;
+                autoTradeDlg.autoTradeControl1.SelectedInstrumentAndThemeChanged += OnSelectedInstrumentAndDurationAndThemeChanged;
                 autoTradeDlg.FormClosing += (a, b) =>
                 {
-                    autoTradeDlg.autoTradeControl1.SelectedStockChanged -= OnSelectedStockAndDurationChanged;
-                    autoTradeDlg.autoTradeControl1.SelectedStockAndThemeChanged -= OnSelectedStockAndDurationAndThemeChanged;
+                    autoTradeDlg.autoTradeControl1.SelectedInstrumentChanged -= OnSelectedInstrumentAndDurationChanged;
+                    autoTradeDlg.autoTradeControl1.SelectedInstrumentAndThemeChanged -= OnSelectedInstrumentAndDurationAndThemeChanged;
                     this.autoTradeDlg = null;
                 };
                 autoTradeDlg.Show();
@@ -2390,7 +2327,7 @@ namespace StockAnalyzerApp
             if (agentTunningDialog == null)
             {
                 agentTunningDialog = new AgentSimulationDlg() { StartPosition = FormStartPosition.CenterScreen };
-                agentTunningDialog.agentSimulationControl.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+                agentTunningDialog.agentSimulationControl.SelectedInstrumentChanged += OnSelectedInstrumentAndDurationAndIndexChanged;
                 agentTunningDialog.FormClosed += (a, b) =>
                 {
                     agentTunningDialog = null;
@@ -2914,7 +2851,7 @@ namespace StockAnalyzerApp
             if (watchlistDlg == null)
             {
                 watchlistDlg = new WatchListDlg(StockWatchList.WatchLists);
-                watchlistDlg.SelectedStockChanged += new SelectedStockChangedEventHandler(OnSelectedStockChanged);
+                watchlistDlg.SelectedInstrumentChanged += new SelectedInstrumentChangedEventHandler(OnSelectedInstrumentChanged);
                 watchlistDlg.FormClosed += (a, b) =>
                 {
                     if (watchlistDlg.DialogResult == DialogResult.OK)
@@ -3319,7 +3256,7 @@ namespace StockAnalyzerApp
             {
                 bestTrendDlg = new BestTrendDlg(this.ViewModel.Instrument.Group.ToString(), this.ViewModel.BarDuration);
                 bestTrendDlg.Disposed += bestrendDialog_Disposed;
-                bestTrendDlg.bestTrend1.SelectedStockChanged += OnSelectedStockAndDurationAndIndexChanged;
+                bestTrendDlg.bestTrend1.SelectedInstrumentChanged += OnSelectedInstrumentAndDurationAndIndexChanged;
                 bestTrendDlg.Show();
             }
             else
@@ -3416,10 +3353,10 @@ namespace StockAnalyzerApp
             if (drawingDlg == null)
             {
                 drawingDlg = new DrawingDlg() { StartPosition = FormStartPosition.CenterScreen };
-                drawingDlg.drawingControl1.SelectedStockAndDurationChanged += OnSelectedStockAndDurationChanged;
+                drawingDlg.drawingControl1.SelectedInstrumentAndDurationChanged += OnSelectedInstrumentAndDurationChanged;
                 drawingDlg.Disposed += delegate
                 {
-                    drawingDlg.drawingControl1.SelectedStockAndDurationChanged -= OnSelectedStockAndDurationChanged;
+                    drawingDlg.drawingControl1.SelectedInstrumentAndDurationChanged -= OnSelectedInstrumentAndDurationChanged;
                     this.drawingDlg = null;
                 };
                 drawingDlg.Show();
@@ -3586,7 +3523,7 @@ namespace StockAnalyzerApp
                 }
 
                 // Add to browsing history
-                this.ViewModel.AddHistory(this.ViewModel.Instrument.DisplayName, this.ViewModel.Theme);
+                this.ViewModel.AddHistory(this.ViewModel.Instrument, this.ViewModel.Theme);
 
                 // Force resetting the secondary serie.
                 if (themeDictionary[this.ViewModel.Theme]["CloseGraph"].FindIndex(s => s.StartsWith("SECONDARY")) == -1)

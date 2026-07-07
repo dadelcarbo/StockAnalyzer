@@ -11,7 +11,7 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
         private readonly List<StockWatchList> watchLists;
 
         public event StockAnalyzerForm.StockWatchListsChangedEventHandler StockWatchListsChanged;
-        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedInstrumentChangedEventHandler SelectedInstrumentChanged;
 
         public WatchListDlg(List<StockWatchList> wl)
         {
@@ -97,9 +97,13 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
         }
         void stockListBox_MouseClick(object sender, EventArgs e)
         {
-            if (this.SelectedStockChanged != null && this.stockListBox.SelectedItem != null)
+            if (this.SelectedInstrumentChanged != null && this.stockListBox.SelectedItem != null)
             {
-                this.SelectedStockChanged(this.stockListBox.SelectedItem.ToString(), false);
+                var instrument = StockDictionary.GetInstrument(this.stockListBox.SelectedItem.ToString());
+                if (instrument != null)
+                {
+                    this.SelectedInstrumentChanged(instrument, false);
+                }
             }
         }
 

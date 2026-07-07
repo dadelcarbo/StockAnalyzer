@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.ObjectModel;
@@ -19,7 +20,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
 
         public string PortfolioName { get; set; }
 
-        public string StockName { get; set; }
+        public StockInstrument Instrument { get; set; }
 
         public BarDuration BarDuration { get; set; }
 
@@ -29,7 +30,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
 
         public override string ToString()
         {
-            return $"{Id}-{StrategyName}-{BarDuration}-{StockName}";
+            return $"{Id}-{StrategyName}-{BarDuration}-{Instrument?.DisplayName}";
         }
 
         static ObservableCollection<TradeAgentDef> agentDefs;

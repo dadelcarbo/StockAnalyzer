@@ -99,7 +99,7 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             this.stockListBox.FormattingEnabled = true;
             this.stockListBox.Location = new System.Drawing.Point(12, 68);
             this.stockListBox.Name = "stockListBox";
-            this.stockListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.stockListBox.SelectionMode = System.Windows.Forms.SelectionMode.One;
             this.stockListBox.Size = new System.Drawing.Size(229, 290);
             this.stockListBox.TabIndex = 4;
             this.stockListBox.ValueMember = "Name";

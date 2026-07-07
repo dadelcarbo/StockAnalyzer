@@ -11,8 +11,8 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
     {
         System.Windows.Forms.Form form;
 
-        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockChanged;
-        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndThemeChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationChangedEventHandler SelectedInstrumentChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationAndThemeChangedEventHandler SelectedInstrumentAndThemeChanged;
 
         public AutoTradeControl(System.Windows.Forms.Form form)
         {
@@ -48,11 +48,11 @@ namespace StockAnalyzerApp.CustomControl.AutoTradeDlg
             StockAnalyzerForm.MainFrame.Activate();
             if (!string.IsNullOrEmpty(agent.Theme))
             {
-                this.SelectedStockAndThemeChanged?.Invoke(agent.StockName, agent.BarDuration, agent.Theme, true);
+                this.SelectedInstrumentAndThemeChanged?.Invoke(agent.Instrument, agent.BarDuration, agent.Theme, true);
             }
             else
             {
-                this.SelectedStockChanged(agent.StockName, agent.BarDuration, true);
+                this.SelectedInstrumentChanged?.Invoke(agent.Instrument, agent.BarDuration, true);
                 // §§§§
                 //var alertDef = StockAlertConfig.AllAlertDefs.FirstOrDefault(a => a.Id == agent.AlertDefId);
                 //if (alertDef != null)

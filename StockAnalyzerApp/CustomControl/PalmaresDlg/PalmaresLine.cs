@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzerApp.StockData;
+using System;
 using System.ComponentModel;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg
@@ -8,6 +9,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         //public string Sector { get; set; }
         public string Group { get; set; }
         public string Symbol { get; set; }
+        public StockInstrument Instrument { get; set; }
         public string Name { get; set; }
         public bool Match { get; set; }
         public float Value { get; set; }

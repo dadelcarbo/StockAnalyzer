@@ -1554,6 +1554,14 @@ namespace StockAnalyzer.StockClasses
             }
             return Instance.Values.FirstOrDefault(s => s.ISIN == isin);
         }
+        public static StockInstrument GetInstrument(string id, string isin = null)
+        {
+            if (Instruments.ContainsKey(id))
+            {
+                return Instruments[id];
+            }
+            return string.IsNullOrEmpty(isin) ? null :  Instruments.Values.FirstOrDefault(s => s.Isin == isin);
+        }
         Stopwatch sw;
         public List<StockAlert> MatchAlert(StockAlertDef alertDef)
         {

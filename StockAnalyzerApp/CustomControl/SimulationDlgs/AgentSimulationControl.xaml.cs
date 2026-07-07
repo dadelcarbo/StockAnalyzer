@@ -12,7 +12,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
     public partial class AgentSimulationControl : System.Windows.Controls.UserControl
     {
         private readonly Form parent;
-        public event StockAnalyzerForm.SelectedStockAndDurationAndIndexChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationAndIndexChangedEventHandler SelectedInstrumentChanged;
 
         public AgentSimulationViewModel ViewModel { get; set; }
         public AgentSimulationControl(Form parentForm)
@@ -35,13 +35,13 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
             if (viewModel == null) return;
 
-            if (SelectedStockChanged != null)
+            if (SelectedInstrumentChanged != null)
             {
                 try
                 {
                     int exitIndex = viewModel.IsClosed ? viewModel.ExitIndex : viewModel.DataSerie.LastIndex;
 
-                    this.SelectedStockChanged(viewModel.Instrument.DisplayName, Math.Max(0, viewModel.EntryIndex - 100), Math.Min(viewModel.DataSerie.LastIndex, exitIndex + 100), ViewModel.BarDuration, true);
+                    this.SelectedInstrumentChanged(viewModel.Instrument, Math.Max(0, viewModel.EntryIndex - 100), Math.Min(viewModel.DataSerie.LastIndex, exitIndex + 100), ViewModel.BarDuration, true);
 
                     if (!string.IsNullOrEmpty(this.ViewModel.BestAgent?.DisplayIndicator))
                     {

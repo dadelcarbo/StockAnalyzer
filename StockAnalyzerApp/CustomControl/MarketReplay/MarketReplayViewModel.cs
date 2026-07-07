@@ -19,7 +19,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 {
     public class MarketReplayViewModel : NotifyPropertyChangedBase
     {
-        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedInstrumentChangedEventHandler SelectedInstrumentChanged;
 
         private readonly Groups selectedGroup;
         private readonly BarDuration barDuration;
@@ -190,7 +190,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.buyEnabled = true;
             this.sellEnabled = false;
 
-            this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
+            this.SelectedInstrumentChanged += StockAnalyzerForm.MainFrame.OnSelectedInstrumentChanged;
             StockAnalyzerForm.MainFrame.Portfolio = StockPortfolio.ReplayPortfolio;
 
             this.Positions = new ObservableCollection<MarketReplayPositionViewModel>();
@@ -281,7 +281,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                     }
                 }
                 if (!this.isSkipForwarding)
-                    this.SelectedStockChanged(replaySerie.StockName, false);
+                    this.SelectedInstrumentChanged(replayInstrument, false);
             }
             else
             {
@@ -339,12 +339,12 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
                     if (boolSerie[referenceSerieIndex])
                     {
                         isSkipForwarding = false;
-                        this.SelectedStockChanged(replaySerie.StockName, true);
+                        this.SelectedInstrumentChanged(replayInstrument, true);
                     }
                     if (++count == 5)
                     {
                         count = 0;
-                        this.SelectedStockChanged(replaySerie.StockName, true);
+                        this.SelectedInstrumentChanged(replayInstrument, true);
                     }
                 }
             }
@@ -428,7 +428,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             StockDictionary.Instruments.Add(name, replayInstrument = new StockInstrument(replaySerie));
 
-            this.SelectedStockChanged(name, true);
+            this.SelectedInstrumentChanged(replayInstrument, true);
 
             this.Stop = 0;
             openPosition = null;

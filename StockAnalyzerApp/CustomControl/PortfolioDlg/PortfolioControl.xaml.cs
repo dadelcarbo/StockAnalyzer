@@ -15,8 +15,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
     /// </summary>
     public partial class PortfolioControl : System.Windows.Controls.UserControl
     {
-        public event StockAnalyzerForm.SelectedStockChangedEventHandler SelectedStockChanged;
-        public event StockAnalyzerForm.SelectedStockAndDurationAndThemeChangedEventHandler SelectedStockAndDurationChanged;
+        public event StockAnalyzerForm.SelectedInstrumentChangedEventHandler SelectedInstrumentChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationAndThemeChangedEventHandler SelectedInstrumentAndDurationChanged;
 
         private System.Windows.Forms.Form Form { get; }
         public PortfolioControl(System.Windows.Forms.Form form)
@@ -24,8 +24,8 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             InitializeComponent();
 
             this.Form = form;
-            this.SelectedStockChanged += StockAnalyzerForm.MainFrame.OnSelectedStockChanged;
-            this.SelectedStockAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedStockAndDurationAndThemeChanged;
+            this.SelectedInstrumentChanged += StockAnalyzerForm.MainFrame.OnSelectedInstrumentChanged;
+            this.SelectedInstrumentAndDurationChanged += StockAnalyzerForm.MainFrame.OnSelectedInstrumentAndDurationAndThemeChanged;
             this.ordersGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.mixedOpenedPositionGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
             this.openedOrdersGridView.AddHandler(GridViewCell.MouseLeftButtonDownEvent, new MouseButtonEventHandler(MouseDownOnCell), true);
@@ -133,18 +133,18 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
             if (MainFrameViewModel.Instance.Instrument?.DisplayName == stockName)
                 return;
 
-            var stockSerie = StockDictionary.GetSerie(stockName, isin);
-            if (stockSerie != null && SelectedStockChanged != null)
+            var instrument = StockDictionary.GetInstrument(stockName, isin);
+            if (instrument != null)
             {
                 this.Form.TopMost = true;
                 StockAnalyzerForm.MainFrame.Activate();
                 if (duration != null)
                 {
-                    this.SelectedStockAndDurationChanged(stockSerie.StockName, duration.Value, theme, true);
+                    this.SelectedInstrumentAndDurationChanged(instrument, duration.Value, theme, true);
                 }
                 else
                 {
-                    this.SelectedStockChanged(stockSerie.StockName, true);
+                    this.SelectedInstrumentChanged(instrument, true);
                 }
                 this.Form.TopMost = false;
             }

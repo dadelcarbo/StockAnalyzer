@@ -15,7 +15,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
     /// </summary>
     public partial class BestTrendUserControl : UserControl
     {
-        public event StockAnalyzerForm.SelectedStockAndDurationAndIndexChangedEventHandler SelectedStockChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationAndIndexChangedEventHandler SelectedInstrumentChanged;
 
         private System.Windows.Forms.Form Form { get; }
         public BestTrendUserControl(System.Windows.Forms.Form form)
@@ -44,24 +44,25 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
 
             if (momentum == null) return;
 
-            if (SelectedStockChanged != null)
+            if (SelectedInstrumentChanged != null)
             {
                 try
                 {
                     DrawingItem.CreatePersistent = false;
-                    momentum.StockSerie.StockAnalysis.DeleteTransientDrawings();
+                    momentum.Instrument.StockAnalysis.DeleteTransientDrawings();
 
-                    if (!momentum.StockSerie.StockAnalysis.DrawingItems.ContainsKey(momentum.BarDuration))
+                    if (!momentum.Instrument.StockAnalysis.DrawingItems.ContainsKey(momentum.BarDuration))
                     {
-                        momentum.StockSerie.StockAnalysis.DrawingItems.Add(momentum.BarDuration, new StockDrawingItems());
+                        momentum.Instrument.StockAnalysis.DrawingItems.Add(momentum.BarDuration, new StockDrawingItems());
                     }
-                    momentum.StockSerie.StockAnalysis.DrawingItems[momentum.BarDuration].Add(
+                    var dataSerie = momentum.Instrument.GetDataSerie(momentum.BarDuration);
+                    momentum.Instrument.StockAnalysis.DrawingItems[momentum.BarDuration].Add(
                         new Rectangle2D(
-                            new PointF(momentum.StartIndex, momentum.StockSerie.GetSerie(StockDataType.LOW)[momentum.StartIndex]),
-                            new PointF(momentum.EndIndex, momentum.StockSerie.GetSerie(StockDataType.HIGH)[momentum.EndIndex])));
+                            new PointF(momentum.StartIndex, dataSerie.GetSerie(StockDataType.LOW)[momentum.StartIndex]),
+                            new PointF(momentum.EndIndex, dataSerie.GetSerie(StockDataType.HIGH)[momentum.EndIndex])));
 
                     DrawingItem.KeepTransient = true;
-                    this.SelectedStockChanged(momentum.StockSerie.StockName, Math.Max(0, momentum.StartIndex - 100), Math.Min(momentum.StockSerie.Count - 1, momentum.EndIndex + 100), momentum.BarDuration, true);
+                    this.SelectedInstrumentChanged(momentum.Instrument, Math.Max(0, momentum.StartIndex - 100), Math.Min(dataSerie.Count - 1, momentum.EndIndex + 100), momentum.BarDuration, true);
                     this.Form.TopMost = true;
                     this.Form.TopMost = false;
                 }

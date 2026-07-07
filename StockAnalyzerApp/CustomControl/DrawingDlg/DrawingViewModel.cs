@@ -1,16 +1,17 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
+using StockAnalyzerApp.StockData;
 
 namespace StockAnalyzerApp.CustomControl.DrawingDlg
 {
     public class DrawingViewModel : NotifyPropertyChangedBase
     {
-        public string StockName { get; internal set; }
+        public StockInstrument Instrument { get; internal set; }
         public BarDuration Duration { get; internal set; }
 
-        public DrawingViewModel(string stockName, BarDuration duration)
+        public DrawingViewModel(StockInstrument instrument, BarDuration duration)
         {
-            StockName = stockName;
+            Instrument = instrument;
             Duration = duration;
         }
     }

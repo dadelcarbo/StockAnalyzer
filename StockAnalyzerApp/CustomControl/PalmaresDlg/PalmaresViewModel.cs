@@ -659,6 +659,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     Lines.Add(new PalmaresLine
                     {
                         Match = match,
+                        Instrument = instrument,
                         Group = instrument.Group.ToString(),
                         Symbol = instrument.Symbol,
                         Name = instrument.DisplayName,

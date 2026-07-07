@@ -12,7 +12,7 @@ namespace StockAnalyzerApp.CustomControl.DrawingDlg
     /// </summary>
     public partial class DrawingControl : UserControl
     {
-        public event StockAnalyzerForm.SelectedStockAndDurationChangedEventHandler SelectedStockAndDurationChanged;
+        public event StockAnalyzerForm.SelectedInstrumentAndDurationChangedEventHandler SelectedInstrumentAndDurationChanged;
         private System.Windows.Forms.Form Form { get; }
         public DrawingControl(System.Windows.Forms.Form form)
         {
@@ -25,7 +25,7 @@ namespace StockAnalyzerApp.CustomControl.DrawingDlg
         {
             try
             {
-                if (this.SelectedStockAndDurationChanged == null) return;
+                if (this.SelectedInstrumentAndDurationChanged == null) return;
                 var row = ((UIElement)e.OriginalSource).ParentOfType<GridViewRow>();
                 if (row?.Item == null)
                     return;
@@ -33,7 +33,7 @@ namespace StockAnalyzerApp.CustomControl.DrawingDlg
                 if (item == null)
                     return;
 
-                this.SelectedStockAndDurationChanged(item.StockName, item.Duration, true);
+                this.SelectedInstrumentAndDurationChanged(item.Instrument, item.Duration, true);
                 this.Form.TopMost = true;
                 this.Form.TopMost = false;
             }

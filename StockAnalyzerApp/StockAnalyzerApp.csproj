@@ -597,12 +597,6 @@
     <Compile Include="CustomControl\SplitDlg\StockSplitDlg.Designer.cs">
       <DependentUpon>StockSplitDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomControl\StockAlertDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControl\StockAlertDlg.Designer.cs">
-      <DependentUpon>StockAlertDlg.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControl\ToolStripCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -829,9 +823,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SplitDlg\StockSplitDlg.resx">
       <DependentUpon>StockSplitDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\StockAlertDlg.resx">
-      <DependentUpon>StockAlertDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SectorDlg\SectorDlg.resx">
       <DependentUpon>SectorDlg.cs</DependentUpon>

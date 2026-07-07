@@ -21,59 +21,9 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                 {
                     Id = -1,
                     BarDuration = BarDuration.M_5,
-                    StockName = "TURBO_DAX5M LONG",
+                    Instrument = StockDictionary.GetInstrument("TURBO_DAX5M LONG"),
                     StrategyName = "TrailAtr",
                     PortfolioName = "AutoTradeTest",
-                    Draft = false,
-                    AutoStart = false
-                });
-                agentDefs.Add(new TradeAgentDef()
-                {
-                    Id = -2,
-                    BarDuration = BarDuration.M_5,
-                    StockName = "TURBO_DAX5M SHORT",
-                    StrategyName = "TrailAtr",
-                    PortfolioName = "AutoTradeTest",
-                    Draft = false,
-                    AutoStart = false
-                });
-                agentDefs.Add(new TradeAgentDef()
-                {
-                    Id = 1,
-                    BarDuration = BarDuration.M_5,
-                    StockName = "TURBO_DAX5M LONG",
-                    StrategyName = "TrailAtr",
-                    PortfolioName = "@SaxoTitre",
-                    Draft = false,
-                    AutoStart = false
-                });
-                agentDefs.Add(new TradeAgentDef()
-                {
-                    Id = 2,
-                    BarDuration = BarDuration.M_5,
-                    StockName = "TURBO_DAX5M SHORT",
-                    StrategyName = "TrailAtr",
-                    PortfolioName = "@SaxoTitre",
-                    Draft = false,
-                    AutoStart = false
-                });
-                agentDefs.Add(new TradeAgentDef()
-                {
-                    Id = 3,
-                    BarDuration = BarDuration.H_2,
-                    StockName = "TURBO_DAX LONG",
-                    StrategyName = "TrailAtr",
-                    PortfolioName = "@SaxoTitre",
-                    Draft = false,
-                    AutoStart = false
-                });
-                agentDefs.Add(new TradeAgentDef()
-                {
-                    Id = 4,
-                    BarDuration = BarDuration.H_2,
-                    StockName = "TURBO_DAX SHORT",
-                    StrategyName = "TrailAtr",
-                    PortfolioName = "@SaxoTitre",
                     Draft = false,
                     AutoStart = false
                 });
