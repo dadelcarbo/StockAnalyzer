@@ -57,7 +57,7 @@
                          Text="{Binding Description}" IsEnabled="{Binding Script, Converter={StaticResource NotNullToBooleanConverter}}"/>
 
                 <Label Grid.Row="2" Grid.Column="0">Code</Label>
-                <Label Grid.Row="2" Grid.Column="1">override bool MatchFilter(StockSerie stockSerie, StockDailyValue bar, int index)</Label>
+                <Label Grid.Row="2" Grid.Column="1">override bool MatchFilter(DataSerie dataSerie, StockDailyValue lastBar)</Label>
                 <TextBox Grid.Row="3" Grid.Column="1" Margin="2" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                          Text="{Binding Code}" IsEnabled="{Binding Script, Converter={StaticResource NotNullToBooleanConverter}}" FontFamily="Cascadia Mono" FontSize="13"/>
                 <StackPanel Grid.Row="3" Grid.Column="3">
