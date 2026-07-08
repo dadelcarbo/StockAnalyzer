@@ -57,6 +57,7 @@ using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
+using Telerik.Charting;
 using Telerik.Windows.Data;
 using Match = System.Text.RegularExpressions.Match;
 
@@ -736,6 +737,12 @@ namespace StockAnalyzerApp
                     Process.Start(reportFileName);
                 }
                 #endregion
+
+
+                foreach (var duration in new[] { BarDuration.Daily, BarDuration.Weekly, BarDuration.Monthly })
+                {
+                    GenerateAlertReport(duration);
+                }
             }
             catch (Exception ex)
             {
@@ -783,12 +790,17 @@ namespace StockAnalyzerApp
                 var theme = fields[2];
                 var nbBars = int.Parse(fields[3]);
 
-                if (StockDictionary.Instruments.TryGetValue(stockName, out var instrument))
+                var instrument = StockDictionary.GetInstrumentByName(stockName);
+                if (instrument != null)
                 {
                     var bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
                     string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                     htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
+                }
+                else
+                {
+                    htmlReportTemplate = htmlReportTemplate.Replace(match.Value, $"<h3>{stockName} - {duration}</h3><p>Instrument not found</p>");
                 }
             }
             htmlReportTemplate = htmlReportTemplate.Replace("%%Title%%", $"Report - {Path.GetFileNameWithoutExtension(templateFile)}");
@@ -813,7 +825,8 @@ namespace StockAnalyzerApp
 
             foreach (string stockName in watchlist.StockList)
             {
-                if (StockDictionary.Instruments.TryGetValue(stockName, out var instrument))
+                var instrument = StockDictionary.GetInstrumentByName(stockName);
+                if (instrument != null)
                 {
                     var duration = BarDuration.Daily;
                     var theme = REPORT_THEME;
@@ -865,7 +878,7 @@ namespace StockAnalyzerApp
                 var duration = palmaresViewModel.BarDuration;
                 var theme = palmaresViewModel.Theme;
                 var nbBars = 75;
-                var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments[line.Name], theme, true, duration, nbBars);
+                var bitmapString = this.GetStockSnapshotAsHtml(line.Instrument, theme, true, duration, nbBars);
 
                 string row = $"<tr><td style=\"font-size:11px;\"><a class=\"tooltip\">{line.Name}<span><img src=\"{bitmapString}\"></span></a></td> <td style=\"font-size:11px;\">{line.Group}</td> <td>{line.Value}</td> <td>{ToNaNString(line.Indicator1)}</td> <td>{ToNaNString(line.Indicator2)}</td> <td>{ToNaNString(line.Indicator3)}</td> <td>{line.Stok}</td> <td>{line.Highest}</td> <td>{line.LastDate.ToShortDateString()}</td> </tr>";
 
@@ -957,7 +970,8 @@ namespace StockAnalyzerApp
 
         private void SetCurrentInstrument(string instrumentName)
         {
-            if (StockDictionary.Instruments.TryGetValue(instrumentName, out var instrument))
+            var instrument = StockDictionary.GetInstrumentByName(instrumentName);
+            if (instrument != null)
             {
                 this.ViewModel.Instrument = instrument;
             }
@@ -1293,7 +1307,7 @@ namespace StockAnalyzerApp
                 // Cleanup missing stocks
                 foreach (var watchList in StockWatchList.WatchLists)
                 {
-                    watchList.StockList.RemoveAll(s => !StockDictionary.Instruments.ContainsKey(s));
+                    watchList.StockList.RemoveAll(s => StockDictionary.GetInstrumentByName(s) == null);
                 }
             }
         }
@@ -2674,7 +2688,8 @@ namespace StockAnalyzerApp
                     var theme = fields[2];
                     var nbBars = int.Parse(fields[3]);
 
-                    if (!StockDictionary.Instruments.TryGetValue(stockName, out var stockInstrument))
+                    var stockInstrument = StockDictionary.GetInstrumentByName(stockName);
+                    if (stockInstrument == null)
                         continue;
                     var bitmapString = this.GetStockSnapshotAsHtml(stockInstrument, theme, true, barDuration, nbBars);
                     string data = $"\r\n    <h3>{stockName}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
@@ -3111,7 +3126,8 @@ namespace StockAnalyzerApp
         }
         private void CheckSecondarySerieMenu(string stockName)
         {
-            if (StockDictionary.Instruments.TryGetValue(stockName, out var instrument))
+            var instrument = StockDictionary.GetInstrumentByName(stockName);
+            if (instrument != null)
             {
                 foreach (ToolStripMenuItem groupMenuItem in this.secondarySerieMenuItem.DropDownItems)
                 {

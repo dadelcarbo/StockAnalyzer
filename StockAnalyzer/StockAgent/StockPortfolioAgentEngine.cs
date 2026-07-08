@@ -32,7 +32,8 @@ namespace StockAnalyzer.StockAgent
         {
             var candidates = new List<Tuple<IStockPortfolioAgent, float>>();
 
-            if (!StockDictionary.Instruments.TryGetValue(positionManagement.RegimeIndice, out var instrument))
+            var instrument = StockDictionary.GetInstrumentByName(positionManagement.RegimeIndice);
+            if (instrument == null)
             {
                 StockLog.Write($"Regime Indice not found: {positionManagement.RegimeIndice}");
                 return;

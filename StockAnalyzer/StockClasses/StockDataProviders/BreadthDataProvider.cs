@@ -80,7 +80,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 stockSerie.PreInitialise();
             }
 
-            if (!StockDictionary.Instruments.TryGetValue("CAC40", out var instrument))
+            var instrument = StockDictionary.GetInstrumentByName("CAC40");
+            if (instrument == null)
             {
                 StockLog.Write("CAC40 instrument not found.");
                 return false;
