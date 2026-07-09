@@ -644,7 +644,7 @@ namespace StockAnalyzerApp
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
 
-            searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
+            searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Value.DisplayName).ToArray());
 
             // Ready to start
             StockSplashScreen.CloseForm(true);
@@ -909,7 +909,7 @@ namespace StockAnalyzerApp
                 {
                     Debug.WriteLine("Cond0");
                     this.searchCombo.Items.Clear();
-                    this.searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Key).ToArray());
+                    this.searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Value.DisplayName).ToArray());
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
                     typedSearch = null;
                     return;
@@ -924,11 +924,11 @@ namespace StockAnalyzerApp
                 var name = searchCombo.Text.ToUpper();
                 string[] match;
                 if (name.Length == 12)
-                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && (p.Key.ToUpper().Contains(name) || p.Value.Isin == name)).Select(p => p.Key).ToArray();
+                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && (p.Value.DisplayName.ToUpper().Contains(name) || p.Value.Isin == name)).Select(p => p.Value.DisplayName).ToArray();
                 else if (name.Length <= 3)
-                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && (p.Key.ToUpper().Contains(name) || (p.Value.Symbol != null && p.Value.Symbol.Contains(name)))).Select(p => p.Key).ToArray();
+                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && (p.Value.DisplayName.ToUpper().Contains(name) || (p.Value.Symbol != null && p.Value.Symbol.Contains(name)))).Select(p => p.Value.DisplayName).ToArray();
                 else
-                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && p.Key.ToUpper().Contains(name)).Select(p => p.Key).ToArray();
+                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && p.Value.DisplayName.ToUpper().Contains(name)).Select(p => p.Value.DisplayName).ToArray();
 
                 if (match.Length == 1)
                 {

@@ -1561,6 +1561,28 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                 {
                     stockSerie.Add(dailyValue.DATE, dailyValue);
                 }
+
+                fileName = Path.Combine(DataFolder + ABC_TMP_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+                if (File.Exists(fileName))
+                {
+                    DateTime lastDate = stockSerie.Keys.Last();
+                    using (StreamReader sr = new StreamReader(fileName))
+                    {
+                        while (!sr.EndOfStream)
+                        {
+                            string[] row = sr.ReadLine().Split(';');
+                            var date = DateTime.ParseExact(row[1], "dd/MM/yy", frenchCulture);
+                            if (date > lastDate)
+                            {
+                                lastDate = date;
+                                var value = new StockDailyValue(float.Parse(row[2], frenchCulture), float.Parse(row[3], frenchCulture), float.Parse(row[4], frenchCulture), float.Parse(row[5], frenchCulture), long.Parse(row[6]), date);
+                                stockSerie.Add(value.DATE, value);
+                            }
+                        }
+                    }
+                    File.Delete(fileName);
+                }
+
                 return true;
             }
 
@@ -1584,7 +1606,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     lastArchiveDate = stockSerie.Keys.Last();
             }
 
-            fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
+            fileName = Path.Combine(DataFolder + ABC_TMP_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
             if (File.Exists(fileName))
             {
                 DateTime date = DateTime.MinValue;
@@ -1600,34 +1622,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                             stockSerie.Add(value.DATE, value);
                         }
                     }
-                }
-                result = true;
-            }
-            fileName = Path.Combine(DataFolder + ABC_TMP_FOLDER, stockSerie.ISIN + "_" + stockSerie.Symbol + ".csv");
-            if (File.Exists(fileName))
-            {
-                bool needSave = false;
-                DateTime lastDate = stockSerie.Keys.Last();
-                using (StreamReader sr = new StreamReader(fileName))
-                {
-                    while (!sr.EndOfStream)
-                    {
-                        string[] row = sr.ReadLine().Split(';');
-                        var date = DateTime.ParseExact(row[1], "dd/MM/yy", frenchCulture);
-                        if (date > lastDate)
-                        {
-                            needSave = true;
-                            lastDate = date;
-                            var value = new StockDailyValue(float.Parse(row[2], frenchCulture), float.Parse(row[3], frenchCulture), float.Parse(row[4], frenchCulture), float.Parse(row[5], frenchCulture), long.Parse(row[6]), date);
-                            stockSerie.Add(value.DATE, value);
-                        }
-                    }
-                }
-                File.Delete(fileName);
-
-                if (loadArchive && needSave)
-                {
-                    SaveToCSV(stockSerie, lastArchiveDate < new DateTime(lastDate.Year, lastDate.Month, 1).AddMonths(-1));
                 }
                 result = true;
             }
