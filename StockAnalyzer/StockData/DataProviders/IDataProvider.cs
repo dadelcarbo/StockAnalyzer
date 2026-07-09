@@ -16,6 +16,7 @@ namespace StockAnalyzer.StockData.DataProviders
         Generated,
         Replay,
         SaxoIntraday,
+        SaxoTurbo,
         SaxoIntraday_M5,
         VontobelIntraday,
         BnpIntraday,

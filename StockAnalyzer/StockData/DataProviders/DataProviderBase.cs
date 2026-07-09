@@ -1,5 +1,4 @@
-﻿using FastBars;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
@@ -34,7 +33,7 @@ namespace StockAnalyzer.StockData.DataProviders
 
         private string GetInstrumentFilePath(StockInstrument instrument)
         {
-            return Path.Combine(DataFolder, $"{instrument.Isin}_{instrument.Symbol}.dat");
+            return string.IsNullOrEmpty(instrument.Symbol) ? Path.Combine(DataFolder, $"{instrument.Isin}.dat") : Path.Combine(DataFolder, $"{instrument.Isin}_{instrument.Symbol}.dat");
         }
 
         public DataSerie LoadData(StockInstrument instrument, BarDuration barDuration)
@@ -60,7 +59,8 @@ namespace StockAnalyzer.StockData.DataProviders
 
         static SortedDictionary<DataProvider, IDataProvider> DataProviders { get; } = new SortedDictionary<DataProvider, IDataProvider>()
         {
-            {DataProvider.ABC, new AbcBourse.AbcDataProvider() }
+            {DataProvider.ABC, new AbcBourse.AbcDataProvider() },
+            {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()}
         };
 
         public static IDataProvider GetDataProvider(DataProvider dataProvider)
@@ -107,7 +107,7 @@ namespace StockAnalyzer.StockData.DataProviders
                     continue;
                 if (StockDictionary.Instruments.ContainsKey(instrument.Id))
                 {
-                    StockLog.Write($"Duplicate instrument found in config file: {instrument.Id} line: {line}. Skipping.");
+                    StockLog.Write($"Duplicate instrument found in config file: {Provider} {instrument.Id} line: {line}. Skipping.");
                     continue;
                 }
                 StockDictionary.Instruments.Add(instrument.Id, instrument);

@@ -1,5 +1,4 @@
-﻿using FastBars;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using StockAnalyzer.StockClasses.StockDataProviders.Saxo;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
@@ -95,7 +94,8 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             else
             {
-                var dataSerie = new DataSerie(new StockInstrument(stockSerie), BarDuration.H_1, datFileName);
+                var bars = StockBar.Deserialize(datFileName);
+                var dataSerie = new DataSerie(new StockInstrument(stockSerie), BarDuration.H_1, bars);
                 foreach (var dailyValue in dataSerie.Values)
                 {
                     stockSerie.Add(dailyValue.DATE, dailyValue);

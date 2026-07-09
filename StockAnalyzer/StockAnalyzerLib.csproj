@@ -296,7 +296,8 @@
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoHttpClient.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoIntradayM5DataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoJSon.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockBar.cs" />
+    <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataProvider.cs" />
+    <Compile Include="StockData\StockBar.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoConfigEntry.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml.cs">
       <DependentUpon>SaxoDataProviderControl.xaml</DependentUpon>

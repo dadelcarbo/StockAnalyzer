@@ -1,5 +1,4 @@
-﻿using FastBars;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.StockData;

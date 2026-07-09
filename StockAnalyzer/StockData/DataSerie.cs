@@ -1,5 +1,4 @@
-﻿using FastBars;
-using StockAnalyzer.StockClasses;
+﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -14,10 +13,7 @@ using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows;
 
 namespace StockAnalyzer.StockData
 {
@@ -32,15 +28,6 @@ namespace StockAnalyzer.StockData
             this.Instrument = instrument;
             this.BarDuration = barDuration;
             this.Values = values;
-
-            ResetAllCache();
-        }
-        public DataSerie(StockInstrument instrument, BarDuration barDuration, string path)
-        {
-            this.Instrument = instrument;
-            this.BarDuration = barDuration;
-
-            this.Deserialize(path);
 
             ResetAllCache();
         }
@@ -1963,17 +1950,6 @@ namespace StockAnalyzer.StockData
         {
             var bars = this.Values.Select(x => new StockBar { open = x.OPEN, high = x.HIGH, low = x.LOW, close = x.CLOSE, volume = x.VOLUME, dateTicks = x.DATE.ToBinary() }).ToArray();
             StockBar.Serialize(path, bars);
-        }
-
-        private void Deserialize(string path)
-        {
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("DataSerie file not found: " + path);
-            }
-
-            var bars = StockBar.Deserialize(path);
-            this.Values = bars.Select(v => new StockDailyValue(v.open, v.high, v.low, v.close, v.volume, DateTime.FromBinary(v.dateTicks))).ToArray();
         }
 
         #endregion

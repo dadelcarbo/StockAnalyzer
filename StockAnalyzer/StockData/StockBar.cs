@@ -1,8 +1,11 @@
-﻿using System;
+﻿using StockAnalyzer.StockClasses;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace FastBars
+namespace StockAnalyzer.StockData
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public unsafe struct StockBar
@@ -20,6 +23,33 @@ namespace FastBars
         // ------------------------------------------------------------
         public static void Serialize(string path, StockBar[] bars)
         {
+            int size = sizeof(StockBar) * bars.Length;
+            byte[] buffer = new byte[size];
+
+            unsafe
+            {
+                fixed (StockBar* src = bars)
+                fixed (byte* dst = buffer)
+                {
+                    Buffer.MemoryCopy(src, dst, size, size);
+                }
+            }
+
+            File.WriteAllBytes(path, buffer);
+        }
+
+        public static void Serialize(string path, IEnumerable<StockDailyValue> dailyValues)
+        {
+            var bars = dailyValues.Select(v => new StockBar
+            {
+                open = v.OPEN,
+                high = v.HIGH,
+                low = v.LOW,
+                close = v.CLOSE,
+                volume = v.VOLUME,
+                dateTicks = v.DATE.ToBinary()
+            }).ToArray();
+
             int size = sizeof(StockBar) * bars.Length;
             byte[] buffer = new byte[size];
 

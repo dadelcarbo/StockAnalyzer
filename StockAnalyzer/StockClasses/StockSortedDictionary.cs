@@ -159,7 +159,6 @@ namespace StockAnalyzer.StockClasses
             }
         }
 
-
         //
         // Summary:
         //     Gets a collection containing the values in the System.Collections.Generic.SortedDictionary`2.
