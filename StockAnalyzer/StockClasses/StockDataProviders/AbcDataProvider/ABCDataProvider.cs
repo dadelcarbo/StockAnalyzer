@@ -536,7 +536,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
                             Id = abcId,
                             AbcId = abcId,
-                            DisplayName = stockName,
+                            Name = stockName,
                             Isin = isin,
                             DataProvider = StockDataProvider.ABC,
                             Symbol = row[2],

@@ -1,6 +1,7 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.DataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
@@ -495,6 +496,10 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressVal = 30;
 
             var download = Settings.Default.DownloadData && NetworkInterface.GetIsNetworkAvailable();
+
+            DataProviderBase.DownloadStarted += Notifiy_SplashProgressChanged;
+            DataProviderBase.Initialize(download);
+
             StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
             //

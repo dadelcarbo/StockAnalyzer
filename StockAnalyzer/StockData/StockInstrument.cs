@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.DataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockViewableItems;
@@ -13,16 +14,18 @@ using System.Xml.Serialization;
 
 namespace StockAnalyzerApp.StockData
 {
-    [DebuggerDisplay("{Id}")]
+    [DebuggerDisplay("{Id}-{DisplayName}")]
     public class StockInstrument
     {
         public string Id { get; set; }
-        public string DisplayName { get; set; }
+        public string Name { get; set; }
+        public string DisplayName => Name;
         public string Isin { get; set; }
         public string Symbol { get; set; }
         public long Ticker { get; set; }
         public Groups Group { get; set; }
         public StockDataProvider DataProvider { get; set; }
+        public DataProvider Provider { get; set; }
         public string AbcId { get; set; }
 
         public char MarketPlace => AbcId?.Length == 13 ? AbcId[0] : 'p';
@@ -54,7 +57,7 @@ namespace StockAnalyzerApp.StockData
             this.StockSerie = serie;
 
             this.Id = serie.StockName;
-            this.DisplayName = serie.StockName;
+            this.Name = serie.StockName;
             this.Isin = serie.ISIN;
             this.Ticker = serie.Ticker;
             this.DataProvider = serie.DataProvider;
