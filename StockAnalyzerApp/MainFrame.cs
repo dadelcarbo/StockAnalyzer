@@ -1,7 +1,7 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.DataProviders;
+using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
@@ -2642,7 +2642,6 @@ namespace StockAnalyzerApp
             using var cp = new MainViewModelContextPersister();
             try
             {
-
                 string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
                 string htmlBody = $"<h1 style=\"text-align: center;\">{duration} Report - {DateTime.Today.ToShortDateString()} {DateTime.Now.ToShortTimeString()}</h1>";
 
@@ -2708,7 +2707,6 @@ namespace StockAnalyzerApp
 
                 this.Size = previousSize;
                 this.WindowState = previousState;
-
 
                 var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", $"{duration} Report").Replace("%HTML_BODY%", htmlBody);
                 using (StreamWriter sw = new StreamWriter(fileName))

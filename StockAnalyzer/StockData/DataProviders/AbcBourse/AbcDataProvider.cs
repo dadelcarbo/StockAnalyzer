@@ -1,4 +1,5 @@
-﻿using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
@@ -6,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace StockAnalyzer.StockClasses.DataProviders.AbcBourse
+namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 {
     public class AbcDataProvider : DataProviderBase
     {

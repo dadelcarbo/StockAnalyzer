@@ -1,6 +1,5 @@
 ﻿using FastBars;
-using StockAnalyzer.StockClasses.DataProviders.AbcBourse;
-using StockAnalyzer.StockData;
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
@@ -9,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace StockAnalyzer.StockClasses.DataProviders
+namespace StockAnalyzer.StockData.DataProviders
 {
     public abstract class DataProviderBase : IDataProvider
     {
@@ -35,18 +34,25 @@ namespace StockAnalyzer.StockClasses.DataProviders
 
         private string GetInstrumentFilePath(StockInstrument instrument)
         {
-            return Path.Combine(DataFolder, $"{instrument.Isin}.dat");
+            return Path.Combine(DataFolder, $"{instrument.Isin}_{instrument.Symbol}.dat");
         }
 
-        public DataSerie GetData(StockInstrument instrument, BarDuration barDuration)
+        public DataSerie LoadData(StockInstrument instrument, BarDuration barDuration)
         {
-            var fileName = GetInstrumentFilePath(instrument);
-            if (File.Exists(fileName))
+            if (barDuration != DefaultDuration)
             {
-                var bars = StockBar.Deserialize(fileName);
-                if (bars != null && bars.Length > 0)
+                return instrument.GetDefaultDataSerie()?.ConvertToDurationFromDaily(barDuration);
+            }
+            else
+            {
+                var fileName = GetInstrumentFilePath(instrument);
+                if (File.Exists(fileName))
                 {
-                    return new DataSerie(instrument, barDuration, bars);
+                    var bars = StockBar.Deserialize(fileName);
+                    if (bars != null && bars.Length > 0)
+                    {
+                        return new DataSerie(instrument, barDuration, bars);
+                    }
                 }
             }
             return null;
@@ -56,7 +62,6 @@ namespace StockAnalyzer.StockClasses.DataProviders
         {
             {DataProvider.ABC, new AbcBourse.AbcDataProvider() }
         };
-
 
         public static IDataProvider GetDataProvider(DataProvider dataProvider)
         {

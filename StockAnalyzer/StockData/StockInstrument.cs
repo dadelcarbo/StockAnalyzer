@@ -1,5 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.DataProviders;
+using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockViewableItems;
@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Media.Animation;
 using System.Xml.Serialization;
 
 namespace StockAnalyzerApp.StockData
@@ -92,7 +91,7 @@ namespace StockAnalyzerApp.StockData
                 if (!dp.SupportsDuration(duration))
                     return null;
 
-                var dataSerie = dp.GetData(this, duration);
+                var dataSerie = dp.LoadData(this, duration);
                 if (dataSerie != null)
                 {
                     cache.Add(duration, dataSerie);
@@ -296,9 +295,6 @@ namespace StockAnalyzerApp.StockData
             }
             return null;
         }
-
-
-
 
         #endregion
     }

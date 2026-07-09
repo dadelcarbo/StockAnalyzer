@@ -1,8 +1,9 @@
+using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData;
 using StockAnalyzerApp.StockData;
 using System;
 
-namespace StockAnalyzer.StockClasses.DataProviders
+namespace StockAnalyzer.StockData.DataProviders
 {
     public enum DataProvider
     {
@@ -39,13 +40,13 @@ namespace StockAnalyzer.StockClasses.DataProviders
         void InitDictionary(bool download);
 
         /// <summary>
-        /// Get data from data provider for a given instrument and bar duration. Returns null if not available.
+        /// Load data from data provider for a given instrument and bar duration. Returns null if not available.
         /// data provider is in charge of loading or downloading.
         /// </summary>
         /// <param name="instrument"></param>
         /// <param name="barDuration"></param>
         /// <returns></returns>
-        DataSerie GetData(StockInstrument instrument, BarDuration barDuration);
+        DataSerie LoadData(StockInstrument instrument, BarDuration barDuration);
 
         /// <summary>
         /// Force download data from data provider for a given instrument. Returns true if download was successful.

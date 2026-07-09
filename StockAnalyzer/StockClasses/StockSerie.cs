@@ -1543,9 +1543,6 @@ namespace StockAnalyzer.StockClasses
 
             switch (timeSpan)
             {
-                case StockClasses.BarDuration.Daily:
-                    newBarList = dailyValueList;
-                    break;
                 case StockClasses.BarDuration.Weekly:
                     {
                         StockDailyValue newValue = null;

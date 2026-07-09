@@ -2046,5 +2046,111 @@ namespace StockAnalyzer.StockData
 
         #endregion
 
+        #region Bar Duration Conversion
+
+        public DataSerie ConvertToDurationFromDaily(BarDuration newDuration)
+        {
+            var newBarList = new List<StockDailyValue>();
+            if (newDuration == StockClasses.BarDuration.Weekly)
+            {
+                StockDailyValue newValue = null;
+                DayOfWeek previousDayOfWeek = DayOfWeek.Sunday;
+                DateTime beginDate = Values[0].DATE;
+
+                foreach (StockDailyValue dailyValue in Values)
+                {
+                    if (newValue == null)
+                    {
+                        newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                           dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                        beginDate = dailyValue.DATE;
+                        previousDayOfWeek = dailyValue.DATE.DayOfWeek;
+                        newValue.IsComplete = false;
+                    }
+                    else
+                    {
+                        if (previousDayOfWeek < dailyValue.DATE.DayOfWeek)
+                        {
+                            // We are in the week
+                            newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                            newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                            newValue.CLOSE = dailyValue.CLOSE;
+                            newValue.VOLUME += dailyValue.VOLUME;
+                            previousDayOfWeek = dailyValue.DATE.DayOfWeek;
+                        }
+                        else
+                        {
+                            // We switched to next week
+                            newValue.IsComplete = true;
+                            newBarList.Add(newValue);
+                            newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                            beginDate = dailyValue.DATE;
+                            previousDayOfWeek = dailyValue.DATE.DayOfWeek;
+                            newValue.IsComplete = false;
+                        }
+                    }
+                }
+                if (newValue != null)
+                {
+                    var lastDailyValue = Values.Last();
+                    if (lastDailyValue.DATE.DayOfWeek == DayOfWeek.Friday)
+                        newValue.IsComplete = lastDailyValue.IsComplete;
+                    newBarList.Add(newValue);
+                }
+            }
+            else if (newDuration == StockClasses.BarDuration.Monthly)
+            {
+                StockDailyValue newValue = null;
+                int previousMonth = Values[0].DATE.Month;
+                DateTime beginDate = Values[0].DATE;
+
+                foreach (StockDailyValue dailyValue in Values)
+                {
+                    if (newValue == null)
+                    {
+                        newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                           dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                        beginDate = dailyValue.DATE;
+                        previousMonth = dailyValue.DATE.Month;
+                        newValue.IsComplete = false;
+                    }
+                    else
+                    {
+                        if (previousMonth == dailyValue.DATE.Month)
+                        {
+                            // We are in the month
+                            newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                            newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                            newValue.VOLUME += dailyValue.VOLUME;
+                            newValue.CLOSE = dailyValue.CLOSE;
+                            previousMonth = dailyValue.DATE.Month;
+                        }
+                        else
+                        {
+                            // We switched to next month
+                            newValue.IsComplete = true;
+                            newBarList.Add(newValue);
+                            newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW,
+                               dailyValue.CLOSE, dailyValue.VOLUME, dailyValue.DATE);
+                            beginDate = dailyValue.DATE;
+                            previousMonth = dailyValue.DATE.Month;
+                            newValue.IsComplete = false;
+                        }
+                    }
+                }
+                if (newValue != null)
+                {
+                    // Check if bar complete
+                    var currentMonth = newValue.DATE.Month;
+                    var lastDailyValue = Values.Last().DATE;
+                    if (lastDailyValue.DayOfWeek == DayOfWeek.Friday && lastDailyValue.AddDays(3).Month != currentMonth)
+                        newValue.IsComplete = true;
+                    newBarList.Add(newValue);
+                }
+            }
+            return newBarList.Count > 0 ? new DataSerie(this.Instrument, newDuration, newBarList.ToArray()) : null;
+        }
+        #endregion
+
     }
 }
