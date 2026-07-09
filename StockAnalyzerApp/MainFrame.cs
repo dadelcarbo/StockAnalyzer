@@ -500,7 +500,7 @@ namespace StockAnalyzerApp
             DataProviderBase.DownloadStarted += Notifiy_SplashProgressChanged;
             DataProviderBase.Initialize(download);
 
-            StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
+            //StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
             //
             InitialiseThemeCombo();
@@ -513,7 +513,7 @@ namespace StockAnalyzerApp
 
             ABCDataProvider.AddToExcludedList(StockDictionary.Instruments.Values.Where(s => s.DataProvider == StockDataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.Isin));
 
-            var cac40DataSerie = StockDictionary.Instruments["CAC40"].GetDefaultDataSerie();
+            var cac40DataSerie = StockDictionary.GetInstrumentByName("CAC40").GetDefaultDataSerie();
 
             // Generate breadth 
             if (Settings.Default.GenerateBreadth)
@@ -2007,7 +2007,7 @@ namespace StockAnalyzerApp
             var dp = StockDataProviderBase.GetDataProvider(this.ViewModel.Instrument.DataProvider);
             var handled = dp.RemoveEntry(this.ViewModel.Instrument.StockSerie);
             // Flag as excluded
-            this.ViewModel.Instrument.StockSerie.StockAnalysis.Excluded = true;
+            this.ViewModel.Instrument.StockAnalysis.Excluded = true;
             if (!handled)
             {
                 SaveAnalysis(this.ViewModel.AnalysisFile);
@@ -3532,7 +3532,7 @@ namespace StockAnalyzerApp
                 }
 
                 // Delete transient drawing created by alert Detection
-                if (this.ViewModel.Instrument.StockSerie.StockAnalysis.DeleteTransientDrawings() > 0)
+                if (this.ViewModel.Instrument.StockAnalysis.DeleteTransientDrawings() > 0)
                 {
                     this.ViewModel.Instrument.StockSerie.ResetIndicatorCache();
                 }
@@ -3585,7 +3585,7 @@ namespace StockAnalyzerApp
                                 graphControl = this.graphIndicator3Control;
                                 break;
                             case "VOLUMEGRAPH":
-                                if (this.ViewModel.Instrument.StockSerie.HasVolume)
+                                if (dataSerie.HasVolume)
                                 {
                                     graphControl = this.graphVolumeControl;
                                     curveList.Add(new GraphCurveType(dataSerie.GetSerie(StockDataType.EXCHANGED), Pens.Green, true));
@@ -3759,12 +3759,12 @@ namespace StockAnalyzerApp
                                             false));
                                 }
                             }
-                            if (!this.ViewModel.Instrument.StockSerie.StockAnalysis.DrawingItems.ContainsKey(this.ViewModel.Instrument.StockSerie.BarDuration))
+                            if (!this.ViewModel.Instrument.StockAnalysis.DrawingItems.ContainsKey(this.ViewModel.BarDuration))
                             {
-                                this.ViewModel.Instrument.StockSerie.StockAnalysis.DrawingItems.Add(this.ViewModel.Instrument.StockSerie.BarDuration, new StockDrawingItems());
+                                this.ViewModel.Instrument.StockAnalysis.DrawingItems.Add(this.ViewModel.BarDuration, new StockDrawingItems());
                             }
                             graphControl.Initialize(curveList, horizontalLines, dataSerie,
-                                this.ViewModel.Instrument.StockSerie.StockAnalysis.DrawingItems[this.ViewModel.Instrument.StockSerie.BarDuration],
+                                this.ViewModel.Instrument.StockAnalysis.DrawingItems[this.ViewModel.BarDuration],
                                 startIndex, endIndex);
                         }
                         catch (Exception exception)

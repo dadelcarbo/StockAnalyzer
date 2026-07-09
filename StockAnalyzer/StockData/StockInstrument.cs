@@ -84,19 +84,18 @@ namespace StockAnalyzerApp.StockData
         {
             if (!cache.ContainsKey(duration))
             {
-                var dp = StockDataProviderBase.GetDataProvider(this.DataProvider);
+                var dp = DataProviderBase.GetDataProvider(this.Provider);
 
                 if (dp == null)
-                    throw new InvalidOperationException($"Data Provider {this.DataProvider} not found, cannot get data serie !");
+                    throw new InvalidOperationException($"Data Provider {this.Provider} not found, cannot get data serie !");
 
                 if (!dp.SupportsDuration(duration))
                     return null;
 
                 var dataSerie = dp.GetData(this, duration);
-
                 if (dataSerie != null)
                 {
-                    cache.Add(duration, new DataSerie(this, duration, StockSerie.ValueArray));
+                    cache.Add(duration, dataSerie);
                 }
                 else
                     return null;
@@ -106,7 +105,7 @@ namespace StockAnalyzerApp.StockData
 
         public DataSerie GetDefaultDataSerie()
         {
-            var dp = StockDataProviderBase.GetDataProvider(this.DataProvider);
+            var dp = DataProviderBase.GetDataProvider(this.Provider);
 
             if (dp == null)
                 throw new InvalidOperationException($"Data Provider {this.DataProvider} not found, cannot get data serie !");
@@ -114,7 +113,7 @@ namespace StockAnalyzerApp.StockData
             return GetDataSerie(dp.DefaultDuration);
         }
 
-        public BarDuration[] SupportedDurations => StockDataProviderBase.GetDataProvider(this.DataProvider)?.SupportedDurations;
+        public BarDuration[] SupportedDurations => DataProviderBase.GetDataProvider(this.Provider)?.SupportedDurations;
 
         #region Group Management
 

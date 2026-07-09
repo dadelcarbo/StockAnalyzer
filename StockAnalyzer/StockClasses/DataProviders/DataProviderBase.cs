@@ -1,4 +1,6 @@
-﻿using StockAnalyzer.StockData;
+﻿using FastBars;
+using StockAnalyzer.StockClasses.DataProviders.AbcBourse;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
@@ -17,6 +19,8 @@ namespace StockAnalyzer.StockClasses.DataProviders
 
         public abstract BarDuration DefaultDuration { get; }
 
+        public bool SupportsDuration(BarDuration duration) => this.SupportedDurations.Contains(duration);
+
         public abstract DataProvider Provider { get; }
 
         protected string DataFolder { get; private set; }
@@ -29,15 +33,39 @@ namespace StockAnalyzer.StockClasses.DataProviders
             throw new NotImplementedException();
         }
 
+        private string GetInstrumentFilePath(StockInstrument instrument)
+        {
+            return Path.Combine(DataFolder, $"{instrument.Isin}.dat");
+        }
+
         public DataSerie GetData(StockInstrument instrument, BarDuration barDuration)
         {
-            throw new NotImplementedException();
+            var fileName = GetInstrumentFilePath(instrument);
+            if (File.Exists(fileName))
+            {
+                var bars = StockBar.Deserialize(fileName);
+                if (bars != null && bars.Length > 0)
+                {
+                    return new DataSerie(instrument, barDuration, bars);
+                }
+            }
+            return null;
         }
 
         static SortedDictionary<DataProvider, IDataProvider> DataProviders { get; } = new SortedDictionary<DataProvider, IDataProvider>()
         {
             {DataProvider.ABC, new AbcBourse.AbcDataProvider() }
         };
+
+
+        public static IDataProvider GetDataProvider(DataProvider dataProvider)
+        {
+            if (DataProviders.TryGetValue(dataProvider, out var provider))
+            {
+                return provider;
+            }
+            return null;
+        }
 
         public static void Initialize(bool download)
         {
@@ -84,29 +112,15 @@ namespace StockAnalyzer.StockClasses.DataProviders
             PostInitDictionary(download);
         }
 
-        protected virtual void PreInitDictionary(bool download)
-        {
-            return;
-        }
+        protected virtual void PreInitDictionary(bool download) { }
 
-        protected virtual void PostInitDictionary(bool download)
-        {
-            return;
-        }
+        protected virtual void PostInitDictionary(bool download) { }
 
         protected abstract StockInstrument CreateInstrumentFromConfigLine(string line);
 
-        public void OpenInDataProvider(StockInstrument stockInstrument)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual void OpenInDataProvider(StockInstrument stockInstrument) { }
 
         public virtual bool RemoveEntry(StockInstrument instrument)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool SupportsDuration(BarDuration duration)
         {
             throw new NotImplementedException();
         }

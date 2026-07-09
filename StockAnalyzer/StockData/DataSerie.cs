@@ -45,6 +45,15 @@ namespace StockAnalyzer.StockData
             ResetAllCache();
         }
 
+        public DataSerie(StockInstrument instrument, BarDuration barDuration, StockBar[] bars)
+        {
+            Instrument = instrument;
+            BarDuration = barDuration;
+            Values = bars.Select(b => new StockDailyValue(b.open, b.high, b.low, b.close, b.volume, DateTime.FromBinary(b.dateTicks))).ToArray();
+
+            ResetAllCache();
+        }
+
         public void ResetAllCache()
         {
             this.ValueSeries = new FloatSerie[Enum.GetValues(typeof(StockDataType)).Length];
@@ -61,6 +70,7 @@ namespace StockAnalyzer.StockData
         public DateTime[] DateSerie => dateSerie ??= this.Values.Select(v => v.DATE).ToArray();
 
         public StockDailyValue[] Values;
+
         public StockDailyValue this[DateTime key] => this.Values?.FirstOrDefault(v => v.DATE == key);
 
 

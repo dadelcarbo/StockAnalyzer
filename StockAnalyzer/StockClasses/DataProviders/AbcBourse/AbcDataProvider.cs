@@ -120,6 +120,5 @@ namespace StockAnalyzer.StockClasses.DataProviders.AbcBourse
             }
             return false;
         }
-
     }
 }
