@@ -1,21 +1,20 @@
-﻿using Newtonsoft.Json;
-using Saxo.OpenAPI.TradingServices;
+﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
+using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockData.DataProviders.SaxoTurboDataProvider;
+using System.Text.Json;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
@@ -28,7 +27,6 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
     public class InstrumentViewModel : NotifyPropertyChangedBase
     {
-
         static public Array Groups => Enum.GetValues(typeof(Groups));
 
         private StockAnalyzer.StockClasses.Groups group;
@@ -48,10 +46,10 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             }
         }
 
-        static public Array DataProviders => Enum.GetValues(typeof(StockDataProvider));
+        static public Array DataProviders => Enum.GetValues(typeof(DataProvider));
 
-        private StockDataProvider dataProvider = StockDataProvider.ABC;
-        public StockDataProvider DataProvider
+        private DataProvider dataProvider = DataProvider.ABC;
+        public DataProvider DataProvider
         {
             get { return dataProvider; }
             set
@@ -134,9 +132,9 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
         private IEnumerable<LineViewModel> GetLines()
         {
-            return dataProvider == StockDataProvider.All ?
+            return dataProvider == DataProvider.All ?
                 StockDictionary.Instruments.Values.Where(s => s.BelongsToGroupFull(this.group)).Select(s => new LineViewModel() { Instrument = s }) :
-                StockDictionary.Instruments.Values.Where(s => s.DataProvider == dataProvider && s.BelongsToGroupFull(this.group)).Select(s => new LineViewModel() { Instrument = s });
+                StockDictionary.Instruments.Values.Where(s => s.Provider == dataProvider && s.BelongsToGroupFull(this.group)).Select(s => new LineViewModel() { Instrument = s });
         }
 
         private bool canceled = false;
@@ -226,7 +224,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             }
             try
             {
-                var result = JsonConvert.DeserializeObject<UnderlyingRoot>(jsonData);
+                var result = JsonSerializer.Deserialize<UnderlyingRoot>(jsonData);
                 var underlyings = result?.data?.filters?.firstLevel?.underlying?.list?.Values?.ToList();
 
                 foreach (var underlying in underlyings)

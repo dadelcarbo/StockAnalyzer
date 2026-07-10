@@ -1,8 +1,9 @@
 ﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
+using StockAnalyzer.StockData.DataProviders;
+using StockAnalyzer.StockData.DataProviders.AbcBourse;
+using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.ComponentModel;
@@ -13,12 +14,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
-using static StockAnalyzerApp.StockAnalyzerForm;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
     /// <summary>
-    /// Interaction logic for InstrumentControl.xaml(
+    /// Interaction logic for InstrumentControl.xaml
     /// </summary>
     public partial class InstrumentsControl : UserControl
     {
@@ -98,11 +98,11 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             try
             {
-                foreach (var serie in this.gridView.Items.Cast<StockSerie>())
+                foreach (var instrument in this.gridView.Items.Cast<StockInstrument>())
                 {
-                    StockSplashScreen.ProgressText = "Downloading " + serie.StockGroup + " - " + serie.StockName;
+                    StockSplashScreen.ProgressText = "Downloading " + instrument.Group + " - " + instrument.DisplayName;
 
-                    StockDataProviderBase.ForceDownloadSerieData(serie);
+                    // DataProviderBase.ForceDownloadData(instrument);
                 }
             }
             catch { }
@@ -123,20 +123,20 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             try
             {
-                var instruments = this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.DataProvider == StockDataProvider.ABC).Select(s => s.Instrument);
+                var instruments = this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.Provider == DataProvider.ABC).Select(s => s.Instrument);
                 if (instruments.Any())
                 {
-                    ABCDataProvider.AddToExcludedList(instruments.Select(s => s.Isin));
+                    AbcDataProvider.AddToExcludedList(instruments.Select(s => s.Isin));
                     foreach (var instrument in instruments)
                     {
                         instrument.StockAnalysis.Excluded = true;
                     }
                 }
 
-                foreach (var instrument in this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.DataProvider != StockDataProvider.ABC).Select(s => s.Instrument))
+                foreach (var instrument in this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.Provider != DataProvider.ABC).Select(s => s.Instrument))
                 {
-                    var dp = StockDataProviderBase.GetDataProvider(instrument.DataProvider);
-                    var handled = dp.RemoveEntry(instrument.StockSerie);
+                    var dp = DataProviderBase.GetDataProvider(instrument.Provider);
+                    var handled = dp.RemoveEntry(instrument);
 
                     instrument.StockAnalysis.Excluded = true;
                 }

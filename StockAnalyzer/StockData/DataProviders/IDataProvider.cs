@@ -9,21 +9,7 @@ namespace StockAnalyzer.StockData.DataProviders
     {
         All = 0,
         ABC,
-        Yahoo,
-        YahooIntraday,
-        SocGenIntraday,
-        Portfolio,
-        Generated,
-        Replay,
-        SaxoIntraday,
-        SaxoTurbo,
-        SaxoIntraday_M5,
-        VontobelIntraday,
-        BnpIntraday,
-        Saxo,
-        CNN,
-        Breadth,
-        yCharts
+        SaxoTurbo
     }
 
     public delegate void DownloadingEventHandler(string text);
