@@ -122,6 +122,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         {
             return true;
         }
+
         static readonly SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
         public bool DownloadIntradayData5m(StockSerie stockSerie)
         {

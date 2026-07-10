@@ -1882,36 +1882,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 
             var bars = dailyValues.Select(x => new StockBar { open = x.OPEN, high = x.HIGH, low = x.LOW, close = x.CLOSE, volume = x.VOLUME, dateTicks = x.DATE.ToBinary() }).ToArray();
             StockBar.Serialize(fileName, bars);
-
-            return;
-
-            if (dailyValues.Count() == 0)
-                return;
-
-            fileName = Path.Combine(DataFolder + ARCHIVE_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
-            var lastDate = dailyValues.Last().DATE;
-            var pivotDate = DateTime.MinValue;
-            if (forceArchive || !File.Exists(fileName))
-            {
-                pivotDate = new DateTime(lastDate.Year, lastDate.Month, 1).AddDays(-1);
-                if (dailyValues.Any(v => v.DATE <= pivotDate))
-                {
-                    using StreamWriter sw = new StreamWriter(fileName);
-                    foreach (var value in dailyValues.Where(v => v.DATE <= pivotDate))
-                    {
-                        sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
-                    }
-                }
-            }
-
-            fileName = Path.Combine(DataFolder + ABC_DAILY_FOLDER, instrument.Isin + "_" + instrument.Symbol + ".csv");
-            using (StreamWriter sw = new StreamWriter(fileName))
-            {
-                foreach (var value in dailyValues.Where(v => v.DATE > pivotDate && v.IsComplete))
-                {
-                    sw.WriteLine(value.DATE.ToString(DATEFORMAT) + ";" + value.OPEN.ToString(usCulture) + ";" + value.HIGH.ToString(usCulture) + ";" + value.LOW.ToString(usCulture) + ";" + value.CLOSE.ToString(usCulture) + ";" + value.VOLUME.ToString(usCulture));
-                }
-            }
         }
     }
 }

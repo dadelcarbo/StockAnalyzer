@@ -50,11 +50,18 @@ namespace StockAnalyzer.StockData.DataProviders
         DataSerie LoadData(StockInstrument instrument, BarDuration barDuration);
 
         /// <summary>
-        /// Force download data from data provider for a given instrument. Returns true if download was successful.
+        /// Download data from data provider for a given instrument. Returns null if not available.
         /// </summary>
         /// <param name="instrument"></param>
         /// <returns></returns>
-        bool ForceDownloadData(StockInstrument instrument);
+        DataSerie DownloadData(StockInstrument instrument);
+
+        /// <summary>
+        /// Force download data from data provider for a given instrument. Returns the downloaded data series.
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <returns></returns>
+        DataSerie ForceDownloadData(StockInstrument instrument);
 
         /// <summary>
         /// Open the stock instrument in the data provider's website.

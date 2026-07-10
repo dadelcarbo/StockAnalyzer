@@ -4,6 +4,7 @@ using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -25,13 +26,23 @@ namespace StockAnalyzer.StockData.DataProviders
         protected string ConfigFile { get; private set; }
 
         public static event DownloadingEventHandler DownloadStarted;
+        protected void NotifyProgress(string text)
+        {
+            if (DownloadStarted != null)
+            {
+                DownloadStarted(text);
+            }
+        }
+
+        static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
+        static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
         public void AddSplit(StockInstrument instrument, DateTime date, float before, float after)
         {
             throw new NotImplementedException();
         }
 
-        private string GetInstrumentFilePath(StockInstrument instrument)
+        protected string GetInstrumentFilePath(StockInstrument instrument)
         {
             return string.IsNullOrEmpty(instrument.Symbol) ? Path.Combine(DataFolder, $"{instrument.Isin}.dat") : Path.Combine(DataFolder, $"{instrument.Isin}_{instrument.Symbol}.dat");
         }
@@ -80,7 +91,11 @@ namespace StockAnalyzer.StockData.DataProviders
                 provider.Value.InitDictionary(download);
             }
         }
-
+        /// <summary>
+        /// DataSerie used to check id new download is required. If the last bar of the RefSerie is older than the last bar of the instrument, then a new download is required.
+        /// </summary>
+        protected DataSerie RefSerie { get; private set; }
+        protected bool needDownload { get; private set; } = true;
         public void InitDictionary(bool download)
         {
             this.DataFolder = Path.Combine(Folders.DataFolder, Provider.ToString());
@@ -111,6 +126,32 @@ namespace StockAnalyzer.StockData.DataProviders
                     continue;
                 }
                 StockDictionary.Instruments.Add(instrument.Id, instrument);
+
+                if (download && needDownload)
+                {
+                    if (RefSerie == null)
+                    {
+                        RefSerie = LoadData(instrument, DefaultDuration);
+
+                        // Download Instrument
+                        var newSerie = DownloadData(instrument);
+                        if (newSerie?.LastValue != null)
+                        {
+                            if (RefSerie?.LastValue == null || RefSerie.LastValue.DATE < newSerie.LastValue.DATE)
+                            {
+                                RefSerie = newSerie;
+                            }
+                            else
+                            {
+                                needDownload = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        DownloadData(instrument);
+                    }
+                }
             }
 
             // Process custom initialization for the data provider
@@ -135,9 +176,8 @@ namespace StockAnalyzer.StockData.DataProviders
             throw new NotImplementedException();
         }
 
-        public bool ForceDownloadData(StockInstrument instrument)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract DataSerie ForceDownloadData(StockInstrument instrument);
+
+        public abstract DataSerie DownloadData(StockInstrument instrument);
     }
 }

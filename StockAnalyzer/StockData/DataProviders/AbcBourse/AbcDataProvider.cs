@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerApp.StockData;
 using StockAnalyzerSettings;
@@ -120,6 +121,80 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 File.WriteAllLines(excludeFileName, excludeList);
             }
             return false;
+        }
+
+        public override DataSerie ForceDownloadData(StockInstrument instrument)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public override DataSerie DownloadData(StockInstrument instrument)
+        {
+            StockLog.Write($"DownloadABCData Group:{instrument.Group} - {instrument.DisplayName}");
+
+            if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                return null;
+
+            DataSerie dataSerie = LoadData(instrument, BarDuration.Daily);
+            if (dataSerie?.LastValue == null)
+                return ForceDownloadData(instrument);
+
+            NotifyProgress($"Downloading {instrument.DisplayName}");
+
+            string fileName = Path.Combine(ABC_TMP_FOLDER, instrument.AbcId + ".csv");
+            if (AbcClient.DownloadIsin(fileName, dataSerie.LastValue.DATE.AddDays(1), DateTime.Today, instrument.Isin))
+            {
+                var bars = this.LoadDataFromAbcFile(fileName);
+                if (bars != null && bars.Count(b => b.DATE > dataSerie.LastValue.DATE) > 0)
+                {
+                    var newBars = dataSerie.Values.Union(bars.Where(b => b.DATE > dataSerie.LastValue.DATE)).ToArray();
+
+                    StockBar.Serialize(GetInstrumentFilePath(instrument), newBars);
+                    DataSerie newSerie = new DataSerie(instrument, BarDuration.Daily, newBars);
+                }
+                else
+                {
+                    StockLog.Write($"No data for {instrument.DisplayName}");
+                }
+
+                File.Delete(fileName);
+            }
+
+            return dataSerie;
+        }
+
+        private IEnumerable<StockDailyValue> LoadDataFromAbcFile(string fileName)
+        {
+            List<StockDailyValue> bars = null;
+            if (File.Exists(fileName))
+            {
+                bars = new List<StockDailyValue>();
+                using StreamReader sr = new StreamReader(fileName);
+                while (!sr.EndOfStream)
+                {
+                    // File format
+                    // ISIN,Date,Open,High,Low,Close,Volume
+                    // FR0000120404;02/01/12;19.735;20.03;19.45;19.94;418165
+                    string line = sr.ReadLine().Trim();
+                    if (string.IsNullOrEmpty(line) || line.StartsWith("<") || line.StartsWith("/"))
+                        continue;
+                    string[] row = line.Split(';');
+                    if (row.Length < 7)
+                        return null;
+                    var readValue = new StockDailyValue(
+                        float.Parse(row[2], frenchCulture),
+                        float.Parse(row[3], frenchCulture),
+                        float.Parse(row[4], frenchCulture),
+                        float.Parse(row[5], frenchCulture),
+                        long.Parse(row[6], frenchCulture),
+                        DateTime.Parse(row[1], frenchCulture));
+
+                    if (readValue != null)
+                        bars.Add(readValue);
+                }
+            }
+            return bars;
         }
     }
 }

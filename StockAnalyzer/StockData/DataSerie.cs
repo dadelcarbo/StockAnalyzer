@@ -12,11 +12,13 @@ using StockAnalyzer.StockMath;
 using StockAnalyzerApp.StockData;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
 namespace StockAnalyzer.StockData
 {
+    [DebuggerDisplay("{Instrument?.Id}-{BarDuration}-{Values?.Length}")]
     public class DataSerie
     {
         public StockInstrument Instrument { get; }
@@ -1943,16 +1945,6 @@ namespace StockAnalyzer.StockData
 
             return newSerie;
         }
-
-
-        #region Serialization
-        public void Serialize(string path)
-        {
-            var bars = this.Values.Select(x => new StockBar { open = x.OPEN, high = x.HIGH, low = x.LOW, close = x.CLOSE, volume = x.VOLUME, dateTicks = x.DATE.ToBinary() }).ToArray();
-            StockBar.Serialize(path, bars);
-        }
-
-        #endregion
 
         #region IndexOf
 
