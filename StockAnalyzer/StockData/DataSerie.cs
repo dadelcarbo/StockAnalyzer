@@ -2016,6 +2016,37 @@ namespace StockAnalyzer.StockData
 
         #region Bar Duration Conversion
 
+        public DataSerie ConvertConvertToDuration(BarDuration newDuration)
+        {
+            if (this.BarDuration == BarDuration.H_1)
+            {
+                if (newDuration == StockClasses.BarDuration.H_2)
+                {
+                    return GenerateHourBar(2, newDuration);
+                }
+                else if (newDuration == StockClasses.BarDuration.H_3)
+                {
+                    return GenerateHourBar(3, newDuration);
+                }
+                else if (newDuration == StockClasses.BarDuration.H_4)
+                {
+                    return GenerateHourBar(4, newDuration);
+                }
+                else
+                {
+                    throw new NotImplementedException($"Conversion from {this.BarDuration} to {newDuration} is not implemented.");
+                }
+            }
+            else if (this.BarDuration == StockClasses.BarDuration.Daily)
+            {
+                return ConvertToDurationFromDaily(newDuration);
+            }
+            else
+            {
+                throw new NotImplementedException($"Conversion from {this.BarDuration} to {newDuration} is not implemented.");
+            }
+        }
+
         public DataSerie ConvertToDurationFromDaily(BarDuration newDuration)
         {
             var newBarList = new List<StockDailyValue>();
@@ -2116,8 +2147,57 @@ namespace StockAnalyzer.StockData
                     newBarList.Add(newValue);
                 }
             }
+            else
+            {
+                throw new ArgumentException($"Invalid new duration for conversion from daily bars ==> {newDuration}.");
+            }
             return newBarList.Count > 0 ? new DataSerie(this.Instrument, newDuration, newBarList.ToArray()) : null;
         }
+
+        private DataSerie GenerateHourBar(int nbHours, BarDuration newDuration)
+        {
+            List<StockDailyValue> newBarList = new List<StockDailyValue>();
+            StockDailyValue newValue = null;
+            DateTime closeDate = DateTime.Now;
+            foreach (var dailyValue in this.Values)
+            {
+                if (newValue == null)
+                {
+                    // New bar
+                    var openDate = new DateTime(dailyValue.DATE.Year, dailyValue.DATE.Month, dailyValue.DATE.Day, dailyValue.DATE.Hour, 0, 0);
+                    closeDate = openDate.AddHours(nbHours);
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, openDate);
+                    newValue.IsComplete = false;
+                }
+                else if (dailyValue.DATE.Date != newValue.DATE.Date || dailyValue.DATE >= closeDate)
+                {
+                    // Force bar end at the end of a day
+                    newValue.IsComplete = true;
+                    newBarList.Add(newValue);
+
+                    // New bar
+                    var openDate = new DateTime(dailyValue.DATE.Year, dailyValue.DATE.Month, dailyValue.DATE.Day, dailyValue.DATE.Hour, 0, 0);
+                    closeDate = openDate.AddHours(nbHours);
+
+                    newValue = new StockDailyValue(dailyValue.OPEN, dailyValue.HIGH, dailyValue.LOW, dailyValue.CLOSE, dailyValue.VOLUME, openDate);
+                    newValue.IsComplete = false;
+                }
+                else
+                {
+                    // Need to extend current bar
+                    newValue.HIGH = Math.Max(newValue.HIGH, dailyValue.HIGH);
+                    newValue.LOW = Math.Min(newValue.LOW, dailyValue.LOW);
+                    newValue.VOLUME += dailyValue.VOLUME;
+                    newValue.CLOSE = dailyValue.CLOSE;
+                }
+            }
+            if (newValue != null)
+            {
+                newBarList.Add(newValue);
+            }
+            return newBarList.Count > 0 ? new DataSerie(this.Instrument, newDuration, newBarList.ToArray()) : null;
+        }
+
         #endregion
 
     }

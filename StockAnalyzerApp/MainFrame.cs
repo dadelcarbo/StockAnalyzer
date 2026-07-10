@@ -746,7 +746,7 @@ namespace StockAnalyzerApp
 
                 foreach (var duration in new[] { BarDuration.Daily, BarDuration.Weekly, BarDuration.Monthly })
                 {
-                    GenerateAlertReport(duration);
+                    // GenerateAlertReport(duration);
                 }
             }
             catch (Exception ex)
@@ -2622,6 +2622,7 @@ namespace StockAnalyzerApp
                 Process.Start(fileName);
             }
         }
+
         public void GenerateAlertReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
         {
             StockSplashScreen.ProgressText = $"Generating alert report - {duration}";

@@ -51,7 +51,7 @@ namespace StockAnalyzer.StockData.DataProviders
         {
             if (barDuration != DefaultDuration)
             {
-                return instrument.GetDefaultDataSerie()?.ConvertToDurationFromDaily(barDuration);
+                return instrument.GetDefaultDataSerie()?.ConvertConvertToDuration(barDuration);
             }
             else
             {

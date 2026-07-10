@@ -97,7 +97,7 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                     var serializeBars = finalBars.Where(b => b.DATE.Date < DateTime.Now.Date || isLate).ToArray();
                     StockBar.Serialize(GetInstrumentFilePath(instrument), serializeBars);
 
-                    dataSerie = new DataSerie(instrument, BarDuration.Daily, finalBars);
+                    dataSerie = new DataSerie(instrument, BarDuration.H_1, finalBars);
                 }
 
                 return dataSerie;
