@@ -140,6 +140,7 @@ namespace StockAnalyzer.StockData.DataProviders
                             if (RefSerie?.LastValue == null || RefSerie.LastValue.DATE < newSerie.LastValue.DATE)
                             {
                                 RefSerie = newSerie;
+                                instrument.SetDataSerie(DefaultDuration, newSerie);
                             }
                             else
                             {
@@ -149,7 +150,8 @@ namespace StockAnalyzer.StockData.DataProviders
                     }
                     else
                     {
-                        DownloadData(instrument);
+                        var dataSerie = DownloadData(instrument);
+                        instrument.SetDataSerie(DefaultDuration, dataSerie);
                     }
                 }
             }

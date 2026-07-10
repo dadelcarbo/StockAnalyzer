@@ -101,6 +101,13 @@ namespace StockAnalyzerApp.StockData
             }
             return cache[duration];
         }
+        public void SetDataSerie(BarDuration duration, DataSerie dataSerie)
+        {
+            if (cache.ContainsKey(duration))
+                cache[duration] = dataSerie;
+            else
+                cache.Add(duration, dataSerie);
+        }
 
         public DataSerie GetDefaultDataSerie()
         {

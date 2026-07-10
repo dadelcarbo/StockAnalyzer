@@ -67,12 +67,24 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                 if (saxoData?.series?[0]?.data == null || saxoData?.series?[0]?.data.Count == 0)
                     return dataSerie;
 
-                DateTime lastDate = dataSerie?.LastValue != null ? dataSerie.LastValue.DATE : saxoData.series[0].data.First().x.AddTicks(-1);
+                DateTime lastDate;
+                if (dataSerie?.LastValue != null)
+                {
+                    if (dataSerie.LastValue.DATE >= saxoData.series[0].data.Last().x)
+                    {
+                        return dataSerie;
+                    }
+                    lastDate = dataSerie.LastValue.DATE;
+                }
+                else
+                {
+                    lastDate = saxoData.series[0].data.First().x.AddTicks(-1);
+                }
 
                 List<StockDailyValue> newBars = new List<StockDailyValue>();
                 foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
                 {
-                    var newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.ToLocalTime());
+                    var newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(1));
                     newBars.Add(newBar);
                 }
 
