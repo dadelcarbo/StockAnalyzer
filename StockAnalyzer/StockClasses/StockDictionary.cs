@@ -19,25 +19,8 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockDictionary : SortedDictionary<string, StockSerie>, IStockPriceProvider
     {
-        static private SortedDictionary<string, StockInstrument> instruments;
-        static public SortedDictionary<string, StockInstrument> Instruments => instruments ??= InitializeInstruments();
-
-        static private SortedDictionary<string, StockInstrument> InitializeInstruments()
-        {
-            var instruments = new SortedDictionary<string, StockInstrument>();
-            foreach (var serie in Instance.Values)
-            {
-                if (serie.DataProvider == StockDataProvider.ABC)
-                {
-                    continue;
-                }
-                var instrument = new StockInstrument(serie);
-                instruments[instrument.Id] = instrument;
-            }
-            return instruments;
-        }
-
-
+        static private SortedDictionary<string, StockInstrument> instruments = new SortedDictionary<string, StockInstrument>();
+        static public SortedDictionary<string, StockInstrument> Instruments => instruments;
 
         public DateTime ArchiveEndDate { get; private set; }
 
@@ -1332,7 +1315,7 @@ namespace StockAnalyzer.StockClasses
         }
         public static StockInstrument GetInstrumentByName(string name)
         {
-            return Instruments.Values.FirstOrDefault(i=>i.Name == name);
+            return Instruments.Values.FirstOrDefault(i => i.Name == name);
         }
         Stopwatch sw;
         public List<StockAlert> MatchAlert(StockAlertDef alertDef)

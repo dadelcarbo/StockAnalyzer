@@ -147,7 +147,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
                 lock (Instrument)
                 {
                     // Get StockSerie Data
-                    StockDataProviderBase.DownloadSerieData(Instrument);
+                    // DataProviderBase.DownloadSerieData(Instrument);
 
                     var dataSerie = Instrument.GetDataSerie(this.AgentDef.BarDuration);
 

@@ -276,6 +276,7 @@
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\AbcDataProvider.cs" />
+    <Compile Include="StockData\DataProviders\AbcBourse\ABCGroup.cs" />
     <Compile Include="StockData\DataProviders\DataProviderBase.cs" />
     <Compile Include="StockData\DataProviders\IDataProvider.cs" />
     <Compile Include="StockClasses\StockAlertValue.cs" />

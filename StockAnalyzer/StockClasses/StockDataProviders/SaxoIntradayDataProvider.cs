@@ -95,11 +95,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             else
             {
                 var bars = StockBar.Deserialize(datFileName);
-                var dataSerie = new DataSerie(new StockInstrument(stockSerie), BarDuration.H_1, bars);
-                foreach (var dailyValue in dataSerie.Values)
-                {
-                    stockSerie.Add(dailyValue.DATE, dailyValue);
-                }
             }
 
             return stockSerie.Count > 0;

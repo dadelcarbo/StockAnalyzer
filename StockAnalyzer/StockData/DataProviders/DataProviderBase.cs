@@ -37,6 +37,8 @@ namespace StockAnalyzer.StockData.DataProviders
         static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
+        public const int ARCHIVE_START_YEAR = 2026;
+
         public void AddSplit(StockInstrument instrument, DateTime date, float before, float after)
         {
             throw new NotImplementedException();

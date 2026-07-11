@@ -426,7 +426,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             CopyReferenceValues(referenceSerieIndex + 1);
 
-            StockDictionary.Instruments.Add(name, replayInstrument = new StockInstrument(replaySerie));
+            throw new NotImplementedException   ("StartReplay not implemented");
+//            StockDictionary.Instruments.Add(name, replayInstrument = new StockInstrument(replaySerie));
 
             this.SelectedInstrumentChanged(replayInstrument, true);
 

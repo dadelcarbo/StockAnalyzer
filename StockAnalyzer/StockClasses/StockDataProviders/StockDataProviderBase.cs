@@ -205,26 +205,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
             return dataProviders[dataProviderType];
         }
-        public static bool DownloadSerieData(StockInstrument instrument)
-        {
-            if (instrument == null)
-                return false;
-
-            IStockDataProvider dataProvider = GetDataProvider(instrument.DataProvider);
-            if (dataProvider == null)
-            {
-                return false;
-            }
-            else
-            {
-                bool res = dataProvider.DownloadDailyData(instrument.StockSerie);
-                if (dataProvider.SupportsIntradayDownload)
-                {
-                    res |= dataProvider.DownloadIntradayData(instrument.StockSerie);
-                }
-                return res;
-            }
-        }
 
         public static bool ForceDownloadSerieData(StockSerie serie)
         {

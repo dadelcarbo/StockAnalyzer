@@ -1,9 +1,8 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockData.DataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockData;
+using StockAnalyzer.StockData.DataProviders;
+using StockAnalyzer.StockData.DataProviders.AbcBourse;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
@@ -23,7 +22,6 @@ namespace StockAnalyzerApp.StockData
         public string Symbol { get; set; }
         public long Ticker { get; set; }
         public Groups Group { get; set; }
-        public StockDataProvider DataProvider { get; set; }
         public DataProvider Provider { get; set; }
         public string AbcId { get; set; }
 
@@ -50,21 +48,6 @@ namespace StockAnalyzerApp.StockData
         public StockInstrument()
         {
             this.StockAnalysis = new StockAnalysis();
-        }
-        public StockInstrument(StockSerie serie)
-        {
-            this.StockSerie = serie;
-
-            this.Id = serie.StockName;
-            this.Name = serie.StockName;
-            this.Isin = serie.ISIN;
-            this.Ticker = serie.Ticker;
-            this.DataProvider = serie.DataProvider;
-            this.Symbol = serie.Symbol;
-            this.SaxoId = serie.SaxoId;
-
-            this.Group = serie.StockGroup;
-            this.StockAnalysis = serie.StockAnalysis;
         }
 
         private SortedDictionary<BarDuration, DataSerie> cache = new SortedDictionary<BarDuration, DataSerie>();
@@ -114,7 +97,7 @@ namespace StockAnalyzerApp.StockData
             var dp = DataProviderBase.GetDataProvider(this.Provider);
 
             if (dp == null)
-                throw new InvalidOperationException($"Data Provider {this.DataProvider} not found, cannot get data serie !");
+                throw new InvalidOperationException($"Data Provider {this.Provider} not found, cannot get data serie !");
 
             return GetDataSerie(dp.DefaultDuration);
         }
@@ -141,8 +124,8 @@ namespace StockAnalyzerApp.StockData
                     return this.SaxoId > 0;
             }
 
-            if (DataProvider == StockDataProvider.ABC)
-                return ABCDataProvider.BelongsToGroup(this.StockSerie, group);
+            if (this.Provider == DataProvider.ABC)
+                return (DataProviderBase.GetDataProvider(this.Provider) as AbcDataProvider).BelongsToGroup(this, group);
 
             return false;
         }

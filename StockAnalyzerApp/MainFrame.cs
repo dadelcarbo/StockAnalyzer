@@ -302,7 +302,7 @@ namespace StockAnalyzerApp
                 {
                     id += " - " + this.ViewModel.Instrument.Isin;
                 }
-                id += " - " + ViewModel.Instrument.DataProvider;
+                id += " - " + ViewModel.Instrument.Provider;
                 this.Text = "Ultimate Chartist - " + this.ViewModel.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
@@ -511,20 +511,21 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading Drawing items ...";
             LoadAnalysis(this.ViewModel.AnalysisFile);
 
-            ABCDataProvider.AddToExcludedList(StockDictionary.Instruments.Values.Where(s => s.DataProvider == StockDataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.Isin));
+            ABCDataProvider.AddToExcludedList(StockDictionary.Instruments.Values.Where(s => s.Provider == DataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.Isin));
 
             var cac40DataSerie = StockDictionary.GetInstrumentByName("CAC40").GetDefaultDataSerie();
 
             // Generate breadth 
             if (Settings.Default.GenerateBreadth)
             {
-                foreach (var instrument in StockDictionary.Instruments.Values.Where(s => s.DataProvider == StockDataProvider.Breadth))
-                {
-                    StockSplashScreen.ProgressText = "Generating breadth data " + instrument.DisplayName;
-                    var dataSerie = instrument.GetDefaultDataSerie();
-                    if (!BreadthDataProvider.NeedGenerate)
-                        break;
-                }
+                throw new NotImplementedException("Breadth data generation not implemented yet");
+                //foreach (var instrument in StockDictionary.Instruments.Values.Where(s => s.Provider == DataProvider.Breadth))
+                //{
+                //    StockSplashScreen.ProgressText = "Generating breadth data " + instrument.DisplayName;
+                //    var dataSerie = instrument.GetDefaultDataSerie();
+                //    if (!BreadthDataProvider.NeedGenerate)
+                //        break;
+                //}
             }
 
             // Deserialize saved orders
@@ -1045,10 +1046,12 @@ namespace StockAnalyzerApp
                 var sw = Stopwatch.StartNew();
                 var groups = alertDefs.Select(a => a.Group).Distinct();
 
-                var turboList = StockDictionary.Instruments.Values.Where(s => !s.StockAnalysis.Excluded && s.Group == Groups.TURBO);
-                var downloadTasks = turboList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s)));
+                throw new NotImplementedException("GenerateIntradayReport not implemented yet");
 
-                Task.WaitAll(downloadTasks.ToArray());
+                //var turboList = StockDictionary.Instruments.Values.Where(s => !s.StockAnalysis.Excluded && s.Group == Groups.TURBO);
+                //var downloadTasks = turboList.Select(s => Task.Run(() => StockDataProviderBase.DownloadSerieData(s)));
+
+                //Task.WaitAll(downloadTasks.ToArray());
 
                 sw.Stop();
 
@@ -1482,19 +1485,20 @@ namespace StockAnalyzerApp
                         StockSplashScreen.ShowSplashScreen();
                     }
 
-                    if (StockDataProviderBase.DownloadSerieData(this.ViewModel.Instrument))
-                    {
-                        this.ViewModel.Instrument.ClearCache();
+                    throw new NotImplementedException("DownloadStock not implemented yet");
+                    //if (StockDataProviderBase.DownloadSerieData(this.ViewModel.Instrument))
+                    //{
+                    //    this.ViewModel.Instrument.ClearCache();
 
-                        if (this.ViewModel.Instrument.StockSerie.Initialise())
-                        {
-                            this.ApplyTheme();
-                        }
-                    }
-                    else
-                    {
-                        this.DeactivateGraphControls("Unable to download selected stock data...");
-                    }
+                    //    if (this.ViewModel.Instrument.StockSerie.Initialise())
+                    //    {
+                    //        this.ApplyTheme();
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    this.DeactivateGraphControls("Unable to download selected stock data...");
+                    //}
 
                     if (showSplash)
                     {
@@ -1524,7 +1528,9 @@ namespace StockAnalyzerApp
                     {
                         StockSplashScreen.ProgressText = "Downloading " + instrument.Group + " - " + instrument.DisplayName;
 
-                        StockDataProviderBase.DownloadSerieData(instrument);
+                        throw new NotImplementedException("DownloadStockGroup not implemented yet");
+
+                        // StockDataProviderBase.DownloadSerieData(instrument);
                         instrument.ClearCache();
 
                         StockSplashScreen.ProgressVal++;
@@ -1939,7 +1945,10 @@ namespace StockAnalyzerApp
             if (nbBars > 0)
             {
                 var dataSerie = instrument.GetDataSerie(duration);
-                this.ChangeZoom(dataSerie.LastIndex - nbBars, dataSerie.LastIndex);
+                if (dataSerie != null)
+                {
+                    this.ChangeZoom(dataSerie.LastIndex - nbBars, dataSerie.LastIndex);
+                }
             }
 
             return SnapshotAsHtml(mainGraphOnly);
@@ -2004,8 +2013,8 @@ namespace StockAnalyzerApp
         #region ANALYSYS TOOLBAR HANDLERS
         private void excludeButton_Click(object sender, EventArgs e)
         {
-            var dp = StockDataProviderBase.GetDataProvider(this.ViewModel.Instrument.DataProvider);
-            var handled = dp.RemoveEntry(this.ViewModel.Instrument.StockSerie);
+            var dp = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
+            var handled = dp.RemoveEntry(this.ViewModel.Instrument);
             // Flag as excluded
             this.ViewModel.Instrument.StockAnalysis.Excluded = true;
             if (!handled)
@@ -4285,7 +4294,7 @@ namespace StockAnalyzerApp
 
         internal void OpenInDataProvider()
         {
-            IStockDataProvider dataProvider = StockDataProviderBase.GetDataProvider(this.ViewModel.Instrument.DataProvider);
+            var dataProvider = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
             if (dataProvider == null)
             {
                 return;

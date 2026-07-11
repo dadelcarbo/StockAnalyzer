@@ -2,6 +2,7 @@
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockData;
+using StockAnalyzer.StockData.DataProviders;
 using System;
 using System.Linq;
 using System.Windows;
@@ -29,10 +30,10 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
 
         private void ApplySplitButton_Click(object sender, RoutedEventArgs e)
         {
-            var dataProvider = StockDataProviderBase.GetDataProvider(MainFrameViewModel.Instance.Instrument.DataProvider);
+            var dataProvider = DataProviderBase.GetDataProvider(MainFrameViewModel.Instance.Instrument.Provider);
             if (dataProvider == null) { return; }
 
-            dataProvider.AddSplit(MainFrameViewModel.Instance.Instrument.StockSerie, this.SplitDate, Before, After);
+            dataProvider.AddSplit(MainFrameViewModel.Instance.Instrument, this.SplitDate, Before, After);
 
             StockAnalyzerForm.MainFrame.ApplyTheme();
 

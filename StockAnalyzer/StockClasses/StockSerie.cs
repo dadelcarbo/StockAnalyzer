@@ -1439,8 +1439,8 @@ namespace StockAnalyzer.StockClasses
                     return this.SaxoId > 0;
             }
 
-            if (DataProvider == StockDataProvider.ABC)
-                return ABCDataProvider.BelongsToGroup(this, group);
+            //if (DataProvider == StockDataProvider.ABC)
+            //    return ABCDataProvider.BelongsToGroup(this, group);
 
             return false;
         }

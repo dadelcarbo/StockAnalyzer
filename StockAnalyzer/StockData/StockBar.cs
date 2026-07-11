@@ -37,6 +37,24 @@ namespace StockAnalyzer.StockData
 
             File.WriteAllBytes(path, buffer);
         }
+        public static void SerializeAppend(string path, StockBar[] bars)
+        {
+            int size = sizeof(StockBar) * bars.Length;
+            byte[] buffer = new byte[size];
+
+            unsafe
+            {
+                fixed (StockBar* src = bars)
+                fixed (byte* dst = buffer)
+                {
+                    Buffer.MemoryCopy(src, dst, size, size);
+                }
+            }
+            using (var stream = new FileStream(path, FileMode.Append, FileAccess.Write))
+            {
+                stream.Write(buffer, 0, size);
+            }
+        }
 
         public static void Serialize(string path, IEnumerable<StockDailyValue> dailyValues)
         {
