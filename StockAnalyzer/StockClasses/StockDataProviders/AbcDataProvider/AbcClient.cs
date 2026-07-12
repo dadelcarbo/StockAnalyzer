@@ -313,10 +313,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     var now = DateTime.Now;
 
                     requestTimestamps.RemoveAll(t => (now - t) > TimeSpan.FromSeconds(20));
+                    if (requestTimestamps.Count <= 1)
+                    {
+                        StockLog.Write($"ABC Bourse No Delay");
+                    }
                     if (requestTimestamps.Count < 5)
                     {
                         StockLog.Write($"ABC Bourse Short Delay");
-                        await Task.Delay(1000);
+                        await Task.Delay(500);
                     }
                     else
                     {

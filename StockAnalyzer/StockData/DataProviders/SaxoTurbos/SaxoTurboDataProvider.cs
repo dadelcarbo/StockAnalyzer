@@ -142,7 +142,7 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 
         }
 
-        public override DataSerie ForceDownloadData(StockInstrument instrument)
+        public override void ForceDownloadData(StockInstrument instrument)
         {
             throw new NotImplementedException();
         }

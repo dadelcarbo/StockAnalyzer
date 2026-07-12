@@ -43,11 +43,11 @@ namespace StockAnalyzer.StockData.DataProviders
         DataSerie DownloadData(StockInstrument instrument);
 
         /// <summary>
-        /// Force download data from data provider for a given instrument. Returns the downloaded data series.
+        /// Force download data from data provider for a given instrument.
         /// </summary>
         /// <param name="instrument"></param>
         /// <returns></returns>
-        DataSerie ForceDownloadData(StockInstrument instrument);
+        void ForceDownloadData(StockInstrument instrument);
 
         /// <summary>
         /// Open the stock instrument in the data provider's website.

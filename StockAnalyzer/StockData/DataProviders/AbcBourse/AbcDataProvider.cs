@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockData.DataProviders.AbcBourse
@@ -444,22 +445,82 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return false;
         }
 
-        public override DataSerie ForceDownloadData(StockInstrument instrument)
+        public override void ForceDownloadData(StockInstrument instrument)
         {
-            throw new NotImplementedException();
-        }
+            string filePattern = instrument.Isin + "_" + instrument.Symbol + "_" + instrument.Group.ToString() + "_*.csv";
+            string fileName;
+            StockLog.Write(instrument.DisplayName + " " + instrument.Isin);
+            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                StockLog.Write("Network is Available");
+                int nbFile = 0;
+                var isin = instrument.Isin;
+                if (instrument.Group == Groups.USA)
+                    isin += "u";
 
+                int year = DateTime.Today.Year;
+                for (year = DateTime.Today.Year - 1; year >= ARCHIVE_START_YEAR; year--)
+                {
+                    fileName = filePattern.Replace("*", year.ToString());
+                    if (!AbcClient.DownloadIsinYear(Path.Combine(ABC_TMP_FOLDER, fileName), year, isin))
+                    {
+                        Task.Delay(500).Wait();
+                        break;
+                    }
+                    nbFile++;
+                }
+                year = DateTime.Today.Year;
+                fileName = filePattern.Replace("*", year.ToString());
+                if (AbcClient.DownloadIsin(Path.Combine(ABC_TMP_FOLDER, fileName), new DateTime(year, 1, 1), DateTime.Today, isin))
+                {
+                    nbFile++;
+                }
+                if (nbFile == 0)
+                    return;
+
+                // Parse loaded files
+                List<StockBar> bars = new List<StockBar>();
+                foreach (var csvFileName in Directory.GetFiles(ABC_TMP_FOLDER, filePattern).OrderBy(f => f))
+                {
+                    foreach (var line in File.ReadAllLines(csvFileName))
+                    {
+                        if (string.IsNullOrEmpty(line) || line.StartsWith("<") || line.StartsWith("/"))
+                            break;
+                        string[] row = line.Split(';');
+                        bars.Add(new StockBar()
+                        {
+                            open = float.Parse(row[2], CultureInfo.InvariantCulture),
+                            high = float.Parse(row[3], CultureInfo.InvariantCulture),
+                            low = float.Parse(row[4], CultureInfo.InvariantCulture),
+                            close = float.Parse(row[5], CultureInfo.InvariantCulture),
+                            volume = long.Parse(row[6], frenchCulture),
+                            dateTicks = DateTime.Parse(row[1], frenchCulture).ToBinary()
+                        });
+                    }
+                    File.Delete(csvFileName);
+                }
+
+                StockBar.Serialize(GetInstrumentFilePath(instrument), bars.ToArray());
+            }
+            else
+            {
+                StockLog.Write("Network is not Available");
+            }
+        }
 
         public override DataSerie DownloadData(StockInstrument instrument)
         {
-            StockLog.Write($"DownloadABCData Group:{instrument.Group} - {instrument.DisplayName}");
+            taStockLog.Write($"DownloadABCData Group:{instrument.Group} - {instrument.DisplayName}");
 
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 return null;
 
             DataSerie dataSerie = LoadData(instrument, BarDuration.Daily);
             if (dataSerie?.LastValue == null)
-                return ForceDownloadData(instrument);
+            {
+                ForceDownloadData(instrument);
+                return instrument.GetDataSerie(BarDuration.Daily);
+            }
 
             NotifyProgress($"Downloading {instrument.DisplayName}");
 
@@ -493,10 +554,10 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
         /// <returns></returns>
         private IEnumerable<StockDailyValue> LoadDataFromAbcFile(string fileName)
         {
-            List<StockDailyValue> bars = null;
+            List<StockDailyValue> dailValues = null;
             if (File.Exists(fileName))
             {
-                bars = new List<StockDailyValue>();
+                dailValues = new List<StockDailyValue>();
                 using StreamReader sr = new StreamReader(fileName);
                 while (!sr.EndOfStream)
                 {
@@ -515,10 +576,10 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                         DateTime.Parse(row[1], frenchCulture));
 
                     if (readValue != null)
-                        bars.Add(readValue);
+                        dailValues.Add(readValue);
                 }
             }
-            return bars;
+            return dailValues;
         }
 
 
