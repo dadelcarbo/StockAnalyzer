@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using Telerik.Windows.Data;
 
 namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 {
@@ -34,7 +35,6 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             return $"https://fr-be.structured-products.saxo/page-api/charts/BE/isin/{ticker}/?timespan={period}&type=ohlc&benchmarks=";
         }
 
-        static readonly SortedDictionary<string, DateTime> DownloadHistory = new SortedDictionary<string, DateTime>();
         public override DataSerie DownloadData(StockInstrument instrument)
         {
             NotifyProgress($"Downloading {instrument.DisplayName}");
@@ -45,19 +45,6 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             DataSerie dataSerie = LoadData(instrument, BarDuration.H_1);
             try
             {
-                if (DownloadHistory.ContainsKey(instrument.Isin))
-                {
-                    if (DownloadHistory[instrument.Isin].AddMinutes(2) > DateTime.Now)
-                    {
-                        return dataSerie;
-                    }
-                    DownloadHistory[instrument.Isin] = DateTime.Now;
-                }
-                else
-                {
-                    DownloadHistory.Add(instrument.Isin, DateTime.Now);
-                }
-
                 string url = FormatIntradayURL(instrument.Isin, "1W");
                 var jsonData = HttpGetFromSaxo(url);
                 if (string.IsNullOrEmpty(jsonData))
@@ -139,7 +126,6 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                 StockLog.Write(ex);
             }
             return null;
-
         }
 
         public override void ForceDownloadData(StockInstrument instrument)
@@ -164,7 +150,45 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 
         protected override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
         {
-            return history.DownloadDate < DateTime.Now.AddMinutes(-2);
+            if (history.DownloadDate == DateTime.MinValue)
+                return true;
+
+            var closeTime = new TimeSpan(22, 00, 0);
+            var openTime = new TimeSpan(08, 0, 0);
+            var delay = new TimeSpan(0, 0, 5);
+
+            var now = DateTime.Now;
+            var isLate = now.TimeOfDay > closeTime;
+            var isEarly = now.TimeOfDay < openTime;
+
+            // Check if week-end
+            if ((now.DayOfWeek == DayOfWeek.Friday && isLate) ||
+                now.DayOfWeek == DayOfWeek.Saturday ||
+                now.DayOfWeek == DayOfWeek.Sunday ||
+                (now.DayOfWeek == DayOfWeek.Monday && isEarly))
+            {
+                if ((now.Date - history.LastDate.Date).TotalDays >= 3)
+                    return true;
+                if (history.LastDate.DayOfWeek == DayOfWeek.Friday && history.LastDate.AddHours(1).TimeOfDay == closeTime)
+                {
+                    return false;
+                }
+            }
+            else if (isEarly) // 
+            {
+                if ((history.LastDate.Date - now.Date).TotalDays <= 1)
+                {
+                    return false;
+                }
+            }
+            else if (isLate)
+            {
+                if (history.LastDate.AddHours(1) == now.Date.Add(closeTime))
+                {
+                    return false;
+                }
+            }
+            return now > history.DownloadDate.Add(delay);
         }
     }
 }

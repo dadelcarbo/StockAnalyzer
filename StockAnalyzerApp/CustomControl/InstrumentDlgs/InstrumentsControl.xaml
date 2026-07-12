@@ -72,7 +72,7 @@
                             <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Instrument.DisplayName}"/>
                             <telerik:GridViewDataColumn Header="Symbol" DataMemberBinding="{Binding Instrument.Symbol}"/>
                             <telerik:GridViewDataColumn Header="ABCName" DataMemberBinding="{Binding Instrument.StockSerie.ABCName}"/>
-                            <telerik:GridViewDataColumn Header="DataProvider" DataMemberBinding="{Binding Instrument.DataProvider}"/>
+                            <telerik:GridViewDataColumn Header="Provider" DataMemberBinding="{Binding Instrument.Provider}"/>
                             <telerik:GridViewDataColumn Header="Ticker" DataMemberBinding="{Binding Instrument.Ticker}"/>
                             <telerik:GridViewDataColumn Header="SaxoId" DataMemberBinding="{Binding Instrument.StockSerie.SaxoId}"/>
                             <telerik:GridViewDataColumn Header="Uic" DataMemberBinding="{Binding Instrument.StockSerie.Uic}"/>
@@ -80,7 +80,7 @@
                             <telerik:GridViewDataColumn Header="Underlying" DataMemberBinding="{Binding Instrument.StockSerie.Underlying}"/>
                             <telerik:GridViewDataColumn Header="Url" DataMemberBinding="{Binding Instrument.StockSerie.Url}"/>
 
-                            <telerik:GridViewDataColumn Header="Exchanged" DataMemberBinding="{Binding LastValue.Exchanged}"/>
+                            <telerik:GridViewDataColumn Header="Exchanged" DataMemberBinding="{Binding LastValue.EXCHANGED}"/>
                             <telerik:GridViewDataColumn Header="Close" DataMemberBinding="{Binding LastValue.CLOSE}"/>
                             <telerik:GridViewDataColumn Header="Last Date" DataMemberBinding="{Binding LastValue.DATE}"/>
                             <telerik:GridViewDataColumn Header="First Date" DataMemberBinding="{Binding FirstValue.DATE}"/>
