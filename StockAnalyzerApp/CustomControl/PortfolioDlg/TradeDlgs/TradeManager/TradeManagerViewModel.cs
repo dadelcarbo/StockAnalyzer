@@ -4,7 +4,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;

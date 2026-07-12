@@ -8,7 +8,7 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;

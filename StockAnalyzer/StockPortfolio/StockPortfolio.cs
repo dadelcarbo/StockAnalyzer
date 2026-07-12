@@ -7,7 +7,7 @@ using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;

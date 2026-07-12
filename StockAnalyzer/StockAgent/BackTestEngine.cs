@@ -1,6 +1,6 @@
 ﻿using StockAnalyzer.StockAgent.BackTests;
 using StockAnalyzer.StockClasses;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

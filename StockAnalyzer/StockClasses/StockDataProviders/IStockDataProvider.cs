@@ -1,5 +1,5 @@
 using StockAnalyzer.StockData;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders

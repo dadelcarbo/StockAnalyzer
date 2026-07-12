@@ -6,7 +6,7 @@ using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using System;
 using System.Text.Json.Serialization;
 

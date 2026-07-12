@@ -2,7 +2,7 @@
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System.IO;
 using System.Windows.Forms;

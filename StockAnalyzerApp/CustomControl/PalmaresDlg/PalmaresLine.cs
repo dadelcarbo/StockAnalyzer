@@ -1,4 +1,4 @@
-﻿using StockAnalyzerApp.StockData;
+﻿using StockAnalyzer.StockData;
 using System;
 using System.ComponentModel;
 

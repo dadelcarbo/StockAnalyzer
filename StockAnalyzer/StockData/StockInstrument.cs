@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockData;
 using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockData.DataProviders.AbcBourse;
 using StockAnalyzer.StockLogging;
@@ -10,8 +9,16 @@ using System.Diagnostics;
 using System.Windows;
 using System.Xml.Serialization;
 
-namespace StockAnalyzerApp.StockData
+namespace StockAnalyzer.StockData
 {
+    public enum Market
+    {
+        EURONEXT,
+        XETRA,
+        NYSE,
+        MIXED
+    }
+
     [DebuggerDisplay("{Id}-{DisplayName}")]
     public class StockInstrument
     {

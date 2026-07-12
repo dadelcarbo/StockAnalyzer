@@ -1,4 +1,4 @@
-﻿namespace StockAnalyzerApp.StockData
+﻿namespace StockAnalyzer.StockData
 {
     public interface IDataProvider
     {

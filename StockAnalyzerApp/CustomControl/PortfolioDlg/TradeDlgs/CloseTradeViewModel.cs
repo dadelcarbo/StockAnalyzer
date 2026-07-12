@@ -2,7 +2,7 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.GraphControls;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzerApp.CustomControl.PortfolioDlg.TradeDlgs

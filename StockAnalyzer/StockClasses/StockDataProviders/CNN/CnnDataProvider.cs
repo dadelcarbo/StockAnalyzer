@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Diagnostics;
 using System.Text.Json;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.CNN
 {

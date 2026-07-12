@@ -6,7 +6,7 @@ using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

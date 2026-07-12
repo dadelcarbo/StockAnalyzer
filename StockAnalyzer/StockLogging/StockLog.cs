@@ -124,13 +124,17 @@ namespace StockAnalyzer.StockLogging
             }
         }
 
+        static public bool ShowDetails { get; set; } = false;
         static public void Write(string logText, bool isActive = true)
         {
             if (isActive && StockLog.Logger.isEnabled)
             {
                 StackTrace st = new StackTrace(1, true);
                 StackFrame sf = st.GetFrame(0);
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} {sf.GetMethod().Name}";
+
+                var suffix = ShowDetails ? $"(Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} " : string.Empty;
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {suffix}{sf.GetMethod().Name}";
+
                 StockLog.Logger.sw.WriteLine($"{prefix}: {logText}");
             }
         }
@@ -138,7 +142,8 @@ namespace StockAnalyzer.StockLogging
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} {type.Name}::{sf.GetMethod().Name}";
+                var suffix = ShowDetails ? $"(Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} " : string.Empty;
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {suffix}{type.Name}::{sf.GetMethod().Name}";
                 StockLog.Logger.sw.WriteLine($"{prefix}: Entry {text}");
             }
         }
@@ -146,7 +151,8 @@ namespace StockAnalyzer.StockLogging
         {
             if (StockLog.Logger.isEnabled && StockLog.Logger.isMethodLoggingEnabled)
             {
-                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} (Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} {type.Name}::{sf.GetMethod().Name}";
+                var suffix = ShowDetails ? $"(Thread:{Thread.CurrentThread.ManagedThreadId}) {CultureInfo.CurrentCulture} " : string.Empty;
+                var prefix = $"{sf.GetFileName()}({sf.GetFileLineNumber()},{sf.GetFileColumnNumber()}): {DateTime.Now.TimeOfDay} {suffix}{type.Name}::{sf.GetMethod().Name}";
                 StockLog.Logger.sw.WriteLine($"{prefix}: Exit");
             }
         }

@@ -1,6 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -22,8 +22,10 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public abstract DataProvider Provider { get; }
 
+        protected string DataRootFolder { get; private set; }
         protected string DataFolder { get; private set; }
         protected string ConfigFile { get; private set; }
+        protected string HistoryFile { get; private set; }
 
         public static event DownloadingEventHandler DownloadStarted;
         protected void NotifyProgress(string text)
@@ -98,10 +100,14 @@ namespace StockAnalyzer.StockData.DataProviders
         /// </summary>
         protected DataSerie RefSerie { get; private set; }
         protected bool needDownload { get; private set; } = true;
+
+        protected List<InstrumentDownloadHistory> InstrumentsHistory = new List<InstrumentDownloadHistory>();
         public void InitDictionary(bool download)
         {
-            this.DataFolder = Path.Combine(Folders.DataFolder, Provider.ToString());
+            this.DataRootFolder = Path.Combine(Folders.DataFolder, Provider.ToString());
+            this.DataFolder = Path.Combine(DataRootFolder, "Dat");
             this.ConfigFile = Path.Combine(Folders.PersonalFolder, $"Provider_{Provider}.cfg");
+            this.HistoryFile = Path.Combine(DataRootFolder, $"History_{Provider}.cfg");
 
             if (!Directory.Exists(DataFolder))
             {
@@ -110,6 +116,14 @@ namespace StockAnalyzer.StockData.DataProviders
             if (!File.Exists(ConfigFile))
             {
                 File.Create(ConfigFile).Dispose();
+            }
+            if (!File.Exists(HistoryFile))
+            {
+                File.Create(HistoryFile).Dispose();
+            }
+            else
+            {
+                InstrumentsHistory = InstrumentDownloadHistory.Load(HistoryFile);
             }
 
             // Process custom initialization for the data provider
@@ -131,32 +145,53 @@ namespace StockAnalyzer.StockData.DataProviders
 
                 if (download && needDownload)
                 {
+                    var history = GetDownloadHistory(instrument);
                     if (RefSerie == null)
                     {
-                        RefSerie = LoadData(instrument, DefaultDuration);
-
-                        // Download Instrument
-                        var newSerie = DownloadData(instrument);
-                        if (newSerie?.LastValue != null)
+                        if (NeedDownload(instrument, history))
                         {
-                            if (RefSerie?.LastValue == null || RefSerie.LastValue.DATE < newSerie.LastValue.DATE)
+                            RefSerie = LoadData(instrument, DefaultDuration);
+
+                            // Download Instrument
+                            var newSerie = DownloadData(instrument);
+                            if (newSerie?.LastValue != null)
                             {
-                                RefSerie = newSerie;
-                                instrument.SetDataSerie(DefaultDuration, newSerie);
+                                if (RefSerie?.LastValue == null || RefSerie.LastValue.DATE < newSerie.LastValue.DATE)
+                                {
+                                    RefSerie = newSerie;
+                                    instrument.SetDataSerie(DefaultDuration, newSerie);
+                                }
+                                else
+                                {
+                                    needDownload = false;
+                                }
+                                history.LastDate = RefSerie.LastValue.DATE;
+                                history.DownloadDate = DateTime.Now;
                             }
-                            else
-                            {
-                                needDownload = false;
-                            }
+                        }
+                        else
+                        {
+                            needDownload = false;
                         }
                     }
                     else
                     {
-                        var dataSerie = DownloadData(instrument);
-                        instrument.SetDataSerie(DefaultDuration, dataSerie);
+                        if (NeedDownload(instrument, history))
+                        {
+                            var dataSerie = DownloadData(instrument);
+                            if (dataSerie != null)
+                            {
+                                instrument.SetDataSerie(DefaultDuration, dataSerie);
+
+                                history.LastDate = dataSerie.LastValue.DATE;
+                                history.DownloadDate = DateTime.Now;
+                            }
+                        }
                     }
                 }
             }
+
+            InstrumentDownloadHistory.Save(HistoryFile, InstrumentsHistory);
 
             // Process custom initialization for the data provider
             PostInitDictionary(download);
@@ -183,5 +218,18 @@ namespace StockAnalyzer.StockData.DataProviders
         public abstract void ForceDownloadData(StockInstrument instrument);
 
         public abstract DataSerie DownloadData(StockInstrument instrument);
+
+        protected abstract bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history);
+
+        public InstrumentDownloadHistory GetDownloadHistory(StockInstrument instrument)
+        {
+            var instrumentHistory = InstrumentsHistory.FirstOrDefault(h => h.Id == instrument.Id);
+            if (instrumentHistory == null)
+            {
+                instrumentHistory = new InstrumentDownloadHistory(instrument, DateTime.MinValue, DateTime.MinValue);
+                InstrumentsHistory.Add(instrumentHistory);
+            }
+            return instrumentHistory;
+        }
     }
 }

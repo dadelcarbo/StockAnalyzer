@@ -2,7 +2,7 @@
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -16,13 +16,6 @@ using System.Windows.Forms;
 
 namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 {
-    public enum Market
-    {
-        EURONEXT,
-        XETRA,
-        NYSE,
-        MIXED
-    }
     public class AbcDataProvider : DataProviderBase
     {
         public override string DisplayName => "ABC Bourse";
@@ -57,20 +50,20 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 
         protected override void PreInitDictionary(bool download)
         {
-            ABC_WEB_CACHE_FOLDER = Path.Combine(DataFolder, "WebCache");
+            ABC_WEB_CACHE_FOLDER = Path.Combine(DataRootFolder, "WebCache");
             if (!Directory.Exists(ABC_WEB_CACHE_FOLDER))
             {
                 Directory.CreateDirectory(ABC_WEB_CACHE_FOLDER);
             }
             AbcClient.CacheFolder = ABC_WEB_CACHE_FOLDER;
 
-            ABC_PROCESSED_FOLDER = Path.Combine(DataFolder, @"Processed");
+            ABC_PROCESSED_FOLDER = Path.Combine(DataRootFolder, @"Processed");
             if (!Directory.Exists(ABC_PROCESSED_FOLDER))
             {
                 Directory.CreateDirectory(ABC_PROCESSED_FOLDER);
             }
 
-            ABC_TMP_FOLDER = Path.Combine(DataFolder, "Tmp");
+            ABC_TMP_FOLDER = Path.Combine(DataRootFolder, "Tmp");
             if (!Directory.Exists(ABC_TMP_FOLDER))
             {
                 Directory.CreateDirectory(ABC_TMP_FOLDER);
@@ -83,13 +76,13 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     File.Delete(file);
                 }
             }
-            ABC_DAILY_CFG_GROUP_FOLDER = Path.Combine(DataFolder, @"lbl\group");
+            ABC_DAILY_CFG_GROUP_FOLDER = Path.Combine(DataRootFolder, @"lbl\group");
             if (!Directory.Exists(ABC_DAILY_CFG_GROUP_FOLDER))
             {
                 Directory.CreateDirectory(ABC_DAILY_CFG_GROUP_FOLDER);
             }
 
-            ABC_DAILY_CFG_FOLDER = Path.Combine(DataFolder, @"lbl\cfg");
+            ABC_DAILY_CFG_FOLDER = Path.Combine(DataRootFolder, @"lbl\cfg");
             if (!Directory.Exists(ABC_DAILY_CFG_FOLDER))
             {
                 Directory.CreateDirectory(ABC_DAILY_CFG_FOLDER);
@@ -101,8 +94,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             }
 
             configPath = Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
-            historyFileName = Path.Combine(ABC_DAILY_CFG_FOLDER, "DownloadHistory.txt");
-            groupHistoryFileName = Path.Combine(ABC_DAILY_CFG_FOLDER, "GroupDownloadHistory.txt");
+            groupHistoryFileName = Path.Combine(DataRootFolder, "GroupDownloadHistory.txt");
         }
         /// <summary>
         /// Creates a StockInstrument from a configuration line. Format: FR0003500008;CAC40;;PX1;INDICES Format:
@@ -179,7 +171,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             }
             #endregion
 
-            GetDownloadHistory(historyFileName);
             groupDownloadHistory = AbcGroupDownloadHistory.Load(groupHistoryFileName);
 
             if (download)
@@ -201,9 +192,10 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                         AbcGroupDownloadHistory.Save(groupHistoryFileName, groupDownloadHistory);
 
                         NotifyProgress($"Processing data for {groupConfig.Group}");
+                        Task.Delay(10);
                         LoadDataFromFolder(ABC_TMP_FOLDER);
 
-                        AbcDownloadHistory.Save(historyFileName, downloadHistory);
+                        InstrumentDownloadHistory.Save(HistoryFile, InstrumentsHistory);
                     }
                 }
                 catch (AggregateException aex)
@@ -245,15 +237,12 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 if (!StockDictionary.Instruments.TryGetValue(abcId, out var instrument))
                     continue;
 
-                var history = downloadHistory.FirstOrDefault(h => h.Id == instrument.Id);
-                if (history == null)
+                var history = GetDownloadHistory(instrument);
+                if (history.LastDate == DateTime.MinValue)
                 {
                     var dataSerie = instrument.GetDataSerie(BarDuration.Daily);
 
-                    var lastDate = dataSerie?.LastValue == null ? DateTime.MinValue : dataSerie.LastValue.DATE;
-
-                    history = new AbcDownloadHistory(instrument.Id, lastDate, instrument.DisplayName, instrument.Group.ToString());
-                    downloadHistory.Add(history);
+                    history.LastDate = dataSerie?.LastValue == null ? DateTime.MinValue : dataSerie.LastValue.DATE;
                 }
 
                 var newBars = serieData.Where(row => DateTime.Parse(row[1], frenchCulture) > history.LastDate).Select(row => new StockBar()
@@ -271,6 +260,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     StockBar.SerializeAppend(GetInstrumentFilePath(instrument), newBars);
 
                     history.LastDate = DateTime.FromBinary(newBars.Last().dateTicks);
+                    history.DownloadDate = DateTime.Now;
                 }
             }
         }
@@ -279,10 +269,8 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return true;
         }
 
-        List<AbcDownloadHistory> downloadHistory;
         List<AbcGroupDownloadHistory> groupDownloadHistory;
 
-        string historyFileName;
         string groupHistoryFileName;
 
         static readonly Dictionary<Market, TimeSpan> marketDownloadTimes = new Dictionary<Market, TimeSpan>
@@ -406,29 +394,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             }
         }
 
-        private void GetDownloadHistory(string historyFileName)
-        {
-            // Individual stock history
-            downloadHistory = AbcDownloadHistory.Load(historyFileName);
-            if (downloadHistory.Count == 0)
-            {
-                foreach (var group in StockDictionary.Instruments.Values.Where(s => s.Provider == DataProvider.ABC).GroupBy(s => s.Group))
-                {
-                    NotifyProgress($"Generating download history for {group.Key}");
-                    foreach (var instrument in group)
-                    {
-                        var lastDate = this.GetLastDate(instrument);
-                        if (lastDate > DateTime.MinValue)
-                        {
-                            var history = new AbcDownloadHistory(instrument.Id, lastDate, instrument.DisplayName, instrument.Group.ToString());
-                            downloadHistory.Add(history);
-                        }
-                    }
-                }
-
-                AbcDownloadHistory.Save(historyFileName, downloadHistory);
-            }
-        }
         public DateTime GetLastDate(StockInstrument instrument)
         {
             var dataSerie = instrument.GetDataSerie(BarDuration.Daily);
@@ -510,7 +475,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 
         public override DataSerie DownloadData(StockInstrument instrument)
         {
-            taStockLog.Write($"DownloadABCData Group:{instrument.Group} - {instrument.DisplayName}");
+            StockLog.Write($"DownloadABCData Group:{instrument.Group} - {instrument.DisplayName}");
 
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 return null;
@@ -797,5 +762,9 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return groupList != null && groupList.Contains(instrument.Id);
         }
 
+        protected override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
+        {
+            return history.DownloadDate < DateTime.Today;
+        }
     }
 }

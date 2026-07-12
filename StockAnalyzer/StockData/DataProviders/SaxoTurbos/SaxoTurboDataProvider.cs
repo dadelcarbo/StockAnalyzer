@@ -1,7 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData.DataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerApp.StockData;
+using StockAnalyzer.StockData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -160,6 +160,11 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                 Group = Groups.TURBO,
                 Provider = DataProvider.SaxoTurbo
             };
+        }
+
+        protected override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
+        {
+            return history.DownloadDate < DateTime.Now.AddMinutes(-2);
         }
     }
 }

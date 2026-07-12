@@ -1,5 +1,4 @@
-﻿using Saxo.OpenAPI.TradingServices;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,10 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {
