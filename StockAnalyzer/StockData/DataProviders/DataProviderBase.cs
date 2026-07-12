@@ -219,7 +219,7 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public abstract DataSerie DownloadData(StockInstrument instrument);
 
-        protected abstract bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history);
+        public abstract bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history = null);
 
         public InstrumentDownloadHistory GetDownloadHistory(StockInstrument instrument)
         {

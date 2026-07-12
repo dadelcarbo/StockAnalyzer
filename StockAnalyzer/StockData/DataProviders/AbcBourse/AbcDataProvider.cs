@@ -762,8 +762,14 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return groupList != null && groupList.Contains(instrument.Id);
         }
 
-        protected override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
+        public override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
         {
+            if (history == null)
+            {
+                history = InstrumentsHistory.FirstOrDefault(h => h.Id == instrument.Id);
+                if (history == null)
+                    return true;
+            }
             return history.DownloadDate < DateTime.Today;
         }
     }

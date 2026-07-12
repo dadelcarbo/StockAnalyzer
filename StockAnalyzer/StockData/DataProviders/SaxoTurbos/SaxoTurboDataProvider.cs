@@ -148,8 +148,14 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             };
         }
 
-        protected override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
+        public override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
         {
+            if (history == null)
+            {
+                history = InstrumentsHistory.FirstOrDefault(h => h.Id == instrument.Id);
+                if (history == null)
+                    return true;
+            }
             if (history.DownloadDate == DateTime.MinValue)
                 return true;
 
@@ -161,8 +167,8 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             var isLate = now.TimeOfDay > closeTime;
             var isEarly = now.TimeOfDay < openTime;
 
-            // Check if week-end
-            if ((now.DayOfWeek == DayOfWeek.Friday && isLate) ||
+            
+            if ((now.DayOfWeek == DayOfWeek.Friday && isLate) || // Check if week-end
                 now.DayOfWeek == DayOfWeek.Saturday ||
                 now.DayOfWeek == DayOfWeek.Sunday ||
                 (now.DayOfWeek == DayOfWeek.Monday && isEarly))

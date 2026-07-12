@@ -1472,7 +1472,7 @@ namespace StockAnalyzerApp
         {
             using (new MethodLogger(this))
             {
-                if (this.ViewModel.Instrument?.StockSerie != null)
+                if (this.ViewModel.Instrument != null)
                 {
                     this.Cursor = Cursors.WaitCursor;
                     if (showSplash)
@@ -1485,20 +1485,9 @@ namespace StockAnalyzerApp
                         StockSplashScreen.ShowSplashScreen();
                     }
 
-                    throw new NotImplementedException("DownloadStock not implemented yet");
-                    //if (StockDataProviderBase.DownloadSerieData(this.ViewModel.Instrument))
-                    //{
-                    //    this.ViewModel.Instrument.ClearCache();
-
-                    //    if (this.ViewModel.Instrument.StockSerie.Initialise())
-                    //    {
-                    //        this.ApplyTheme();
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    this.DeactivateGraphControls("Unable to download selected stock data...");
-                    //}
+                    var dataProvider = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
+                    if (dataProvider != null && dataProvider.NeedDownload(this.ViewModel.Instrument))
+                        dataProvider.DownloadData(this.ViewModel.Instrument);
 
                     if (showSplash)
                     {

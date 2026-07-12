@@ -43,6 +43,15 @@ namespace StockAnalyzer.StockData.DataProviders
         DataSerie DownloadData(StockInstrument instrument);
 
         /// <summary>
+        /// Check if download is required
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <param name="history"></param>
+        /// <returns></returns>
+        bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history = null);
+
+
+        /// <summary>
         /// Force download data from data provider for a given instrument.
         /// </summary>
         /// <param name="instrument"></param>
