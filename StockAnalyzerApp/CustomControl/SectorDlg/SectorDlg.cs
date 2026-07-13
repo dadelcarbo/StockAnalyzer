@@ -1,6 +1,4 @@
-﻿using StockAnalyzer.StockClasses;
-using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.SectorDlg
 {

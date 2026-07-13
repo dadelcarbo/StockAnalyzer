@@ -1,10 +1,7 @@
-﻿using ExcelDataReader.Log;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.IO.MemoryMappedFiles;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace StockAnalyzer.StockClasses
 {

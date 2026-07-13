@@ -321,7 +321,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
                     else
                     {
                         StockLog.Write($"ABC Bourse Long Delay");
-                        await Task.Delay(2000);
+                        await Task.Delay(1000);
                     }
                     requestTimestamps.Add(now);
 

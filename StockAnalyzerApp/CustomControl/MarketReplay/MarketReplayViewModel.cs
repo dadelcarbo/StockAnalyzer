@@ -6,7 +6,6 @@ using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockPortfolio;
-using StockAnalyzer.StockData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

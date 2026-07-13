@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
 {

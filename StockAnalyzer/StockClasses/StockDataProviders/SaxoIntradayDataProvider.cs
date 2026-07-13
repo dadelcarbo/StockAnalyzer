@@ -5,7 +5,6 @@ using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDa
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
-using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;

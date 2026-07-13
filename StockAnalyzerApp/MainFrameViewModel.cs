@@ -1,10 +1,8 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData;
-using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 
 namespace StockAnalyzerApp
 {

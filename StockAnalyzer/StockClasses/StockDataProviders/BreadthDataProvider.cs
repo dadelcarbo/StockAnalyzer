@@ -2,7 +2,6 @@
 using StockAnalyzerSettings;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {

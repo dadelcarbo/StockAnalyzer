@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems;
+﻿using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockMath;
 using System;
 

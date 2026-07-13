@@ -1,6 +1,5 @@
 ﻿using StockAnalyzer.StockData;
 using System;
-using System.Linq;
 
 namespace StockAnalyzer.StockClasses
 {

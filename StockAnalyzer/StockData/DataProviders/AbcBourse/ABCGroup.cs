@@ -1,6 +1,4 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockData;
-using StockAnalyzer.StockData.DataProviders.AbcBourse;
 using System.Diagnostics;
 
 namespace StockAnalyzer.StockData.DataProviders.AbcBourse

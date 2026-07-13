@@ -1,8 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
@@ -167,7 +165,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             // Intialize Groups
             foreach (var config in abcGroupConfig)
             {
-                InitAbcGroup(config, download);
+                InitAbcGroup(config, true);
             }
             #endregion
 

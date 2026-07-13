@@ -1,12 +1,10 @@
-﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockViewableItems;
+﻿using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrails;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzerApp.CustomControl.ColorPalette;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;

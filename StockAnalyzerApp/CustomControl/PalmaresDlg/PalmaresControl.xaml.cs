@@ -2,11 +2,9 @@
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockScripting;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;

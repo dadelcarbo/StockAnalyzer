@@ -1,19 +1,9 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockViewableItems;
-using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
-using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockMath;
-using StockAnalyzer.StockData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows.Media;
 
 namespace StockAnalyzer.StockClasses
 {

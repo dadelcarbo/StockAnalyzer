@@ -1,6 +1,4 @@
-﻿using StockAnalyzer.StockClasses;
-
-namespace StockAnalyzer.StockAgent.EntryStops
+﻿namespace StockAnalyzer.StockAgent.EntryStops
 {
     class StockEntryStop_None : StockEntryStopBase
     {

@@ -1,6 +1,4 @@
-﻿using StockAnalyzer.StockClasses;
-
-namespace StockAnalyzer.StockAgent.Agents
+﻿namespace StockAnalyzer.StockAgent.Agents
 {
     public class StupidAgent : StockAgentBase
     {

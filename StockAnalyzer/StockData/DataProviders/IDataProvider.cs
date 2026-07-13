@@ -1,6 +1,4 @@
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockData;
-using StockAnalyzer.StockData;
 using System;
 
 namespace StockAnalyzer.StockData.DataProviders

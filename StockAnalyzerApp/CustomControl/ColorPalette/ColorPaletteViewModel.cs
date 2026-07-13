@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer;
-using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzerSettings;
 using System;
@@ -9,7 +8,6 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Telerik.Windows.Controls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace StockAnalyzerApp.CustomControl.ColorPalette
 {

@@ -1,6 +1,4 @@
 ﻿using Saxo.OpenAPI.TradingServices;
-using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies;

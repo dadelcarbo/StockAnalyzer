@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
 using System;
@@ -11,8 +10,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;

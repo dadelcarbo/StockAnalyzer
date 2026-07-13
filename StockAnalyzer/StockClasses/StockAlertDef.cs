@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
-using static StockAnalyzer.StockClasses.StockSerie;
 
 namespace StockAnalyzer.StockClasses
 {

@@ -1,6 +1,4 @@
-﻿using StockAnalyzer.StockClasses;
-
-namespace StockAnalyzer.StockAgent.EntryTargets
+﻿namespace StockAnalyzer.StockAgent.EntryTargets
 {
     class StockEntryTarget_None : StockEntryTargetBase
     {

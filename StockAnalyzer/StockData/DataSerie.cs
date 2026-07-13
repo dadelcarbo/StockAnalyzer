@@ -9,7 +9,6 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockMath;
-using StockAnalyzer.StockData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

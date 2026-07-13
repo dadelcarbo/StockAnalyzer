@@ -58,7 +58,6 @@ using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
 using System.Xml.Serialization;
-using Telerik.Charting;
 using Telerik.Windows.Data;
 using Match = System.Text.RegularExpressions.Match;
 
@@ -1494,6 +1493,8 @@ namespace StockAnalyzerApp
                         StockSplashScreen.CloseForm(true);
                     }
                     this.Cursor = Cursors.Arrow;
+
+                    ApplyTheme();
                 }
             }
         }

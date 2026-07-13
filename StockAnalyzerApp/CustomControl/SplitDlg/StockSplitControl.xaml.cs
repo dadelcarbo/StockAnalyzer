@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
-using StockAnalyzer.StockData;
 using StockAnalyzer.StockData.DataProviders;
 using System;
 using System.Linq;

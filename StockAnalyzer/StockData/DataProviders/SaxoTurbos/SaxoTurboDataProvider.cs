@@ -1,9 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData.DataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockData;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,7 +18,6 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
         public override BarDuration DefaultDuration => BarDuration.H_1;
 
         public override DataProvider Provider => DataProvider.SaxoTurbo;
-
 
         /// <summary>
         /// 
@@ -68,16 +65,11 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                     lastDate = saxoData.series[0].data.First().x.AddTicks(-1);
                 }
 
-                List<StockDailyValue> newBars = new List<StockDailyValue>();
-                foreach (var bar in saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).ToList())
-                {
-                    var newBar = new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(1));
-                    newBars.Add(newBar);
-                }
+                var newBars = saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).Select(bar => new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(1))).ToArray();
 
-                if (newBars.Count > 0)
+                if (newBars.Length > 0)
                 {
-                    var finalBars = dataSerie.Values.Union(newBars.Where(b => b.DATE > dataSerie.LastValue.DATE)).ToArray();
+                    var finalBars = dataSerie == null ? newBars : dataSerie.Values.Union(newBars.Where(b => b.DATE > dataSerie.LastValue.DATE)).ToArray();
 
                     // Serialize todays bar only if time is greater that 22:10 pm
                     var isLate = DateTime.Now.TimeOfDay > new TimeSpan(22, 10, 0);
