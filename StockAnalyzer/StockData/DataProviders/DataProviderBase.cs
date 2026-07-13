@@ -99,7 +99,8 @@ namespace StockAnalyzer.StockData.DataProviders
         {
             {DataProvider.ABC, new AbcBourse.AbcDataProvider() },
             {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()},
-            {DataProvider.Vontobel, new Vontobel.VontobelDataProvider()}
+            {DataProvider.Vontobel, new Vontobel.VontobelDataProvider()},
+            {DataProvider.SocGen, new SocGen.SocGenDataProvider()}
         };
 
         public static IDataProvider GetDataProvider(DataProvider dataProvider)

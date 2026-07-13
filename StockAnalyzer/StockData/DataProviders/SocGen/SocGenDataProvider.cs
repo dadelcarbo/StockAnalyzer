@@ -7,28 +7,26 @@ using System.Net.Http;
 using System.Text.Json;
 using Telerik.Windows.Data;
 
-namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
+namespace StockAnalyzer.StockData.DataProviders.SocGen
 {
-    public class SaxoTurboDataProvider : DataProviderBase
+    public class SocGenDataProvider : DataProviderBase
     {
-        public override string DisplayName => "Saxo Turbos";
+        public override string DisplayName => "Soc. Gen.";
         public override BarDuration[] SupportedDurations => new BarDuration[] { BarDuration.H_1, BarDuration.H_2, BarDuration.H_3, BarDuration.H_4 };
 
         public override BarDuration DefaultDuration => BarDuration.H_1;
 
-        public override DataProvider Provider => DataProvider.SaxoTurbo;
+        public override DataProvider Provider => DataProvider.SocGen;
 
         /// <summary>
-        /// 
+        /// Return 1Week data of tick based data. Need to evaluate 1 hour bars
         /// </summary>
         /// <param name="ticker"></param>
-        /// <param name="period">1D - 1 minute bars from begining of the current day<br/>
-        /// 2D - 5 minutes bars from the last 24 Hours<br/>
-        /// 1W - 1 hour bar for 1 week period</param>
         /// <returns></returns>
-        string FormatIntradayURL(string ticker, string period)
+        public string FormatIntradayURL(long ticker)
         {
-            return $"https://fr-be.structured-products.saxo/page-api/charts/BE/isin/{ticker}/?timespan={period}&type=ohlc&benchmarks=";
+            return $"https://sgbourse.fr/EmcWebApi/api/Prices/Intraday?productId={ticker}";
+            //return $"https://sgbourse.fr/EmcWebApi/api/Prices/Intraday/Asset?assetId={ticker}";
         }
 
         public override DataSerie DownloadData(StockInstrument instrument)
@@ -41,19 +39,19 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             DataSerie dataSerie = LoadData(instrument, BarDuration.H_1);
             try
             {
-                string url = FormatIntradayURL(instrument.Isin, "1W");
-                var jsonData = HttpGetFromSaxo(url);
+                string url = FormatIntradayURL(instrument.Ticker);
+                var jsonData = HttpGetFromSocGen(url);
                 if (string.IsNullOrEmpty(jsonData))
                     return dataSerie;
 
-                var saxoData = JsonSerializer.Deserialize<SaxoJSon>(jsonData);
-                if (saxoData?.series?[0]?.data == null || saxoData?.series?[0]?.data.Count == 0)
+                var data = JsonSerializer.Deserialize<Datum[]>(jsonData);
+                if (data == null || data.Length == 0)
                     return dataSerie;
 
                 DateTime lastDate;
                 if (dataSerie?.LastValue != null)
                 {
-                    if (dataSerie.LastValue.DATE >= saxoData.series[0].data.Last().x)
+                    if (dataSerie.LastValue.DATE >= data.Last().Date)
                     {
                         return dataSerie;
                     }
@@ -61,10 +59,10 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                 }
                 else
                 {
-                    lastDate = saxoData.series[0].data.First().x.AddTicks(-1);
+                    lastDate = data.First().Date.AddTicks(-1);
                 }
 
-                var newBars = saxoData.series[0].data.Where(b => b.x > lastDate && b.y > 0).Select(bar => new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(1))).ToArray();
+                var newBars = data.Where(b => b.Date > lastDate).Select(bar => new StockDailyValue(bar.Bid, bar.Bid, bar.Bid, bar.Bid, 0, bar.Date)).ToArray();
 
                 if (newBars.Length > 0)
                 {
@@ -94,7 +92,7 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
         }
 
         static private HttpClient httpClient = null;
-        private static string HttpGetFromSaxo(string url)
+        private static string HttpGetFromSocGen(string url)
         {
             try
             {
@@ -136,12 +134,13 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 
             return new StockInstrument()
             {
-                Id = row[1],
-                Name = row[2],
-                Isin = row[1],
-                Symbol = string.Empty,
+                Id = row[0],
+                Name = row[3],
+                Isin = row[0],
+                Symbol = row[1],
+                Ticker = long.Parse(row[2]),
                 Group = Groups.TURBO,
-                Provider = DataProvider.SaxoTurbo,
+                Provider = DataProvider.SocGen,
                 Market = Market.TURBO
             };
         }

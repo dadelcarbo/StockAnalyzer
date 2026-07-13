@@ -147,7 +147,8 @@ namespace StockAnalyzer.StockData.DataProviders.Vontobel
                 Isin = row[0],
                 Symbol = row[2],
                 Group = Groups.TURBO,
-                Provider = DataProvider.Vontobel
+                Provider = DataProvider.Vontobel,
+                Market = Market.TURBO
             };
         }
 
