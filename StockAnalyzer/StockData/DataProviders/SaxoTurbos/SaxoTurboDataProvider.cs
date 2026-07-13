@@ -147,13 +147,16 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 
         TimeSpan closeTime = new TimeSpan(22, 00, 0);
         TimeSpan openTime = new TimeSpan(08, 0, 0);
-        TimeSpan delay = new TimeSpan(0, 5, 0);
+        TimeSpan shortDelay = new TimeSpan(0, 1, 0);
+        TimeSpan longDelay = new TimeSpan(2, 0, 0);
 
         public override bool NeedDownload(StockInstrument instrument)
         {
             var history = GetDownloadHistory(instrument);
             if (history.LastDate == DateTime.MinValue)
                 return true;
+            if (history.DownloadDate.Add(longDelay) > DateTime.Now)
+                return false;
 
             var now = DateTime.Now;
             var isLate = now.TimeOfDay > closeTime;
@@ -179,13 +182,15 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             {
                 return history.LastDate.AddHours(1) != now.Date.Add(closeTime);
             }
-            return now > history.DownloadDate.Add(delay);
+            return true;
         }
 
         protected override bool UpdateIntradayDataSpecific(StockInstrument instrument)
         {
-            // Return false as already download thanks to NeedDownload implementation.
-            return false;
+            if (GetDownloadHistory(instrument).DownloadDate.Add(shortDelay) > DateTime.Now)
+                return false;
+
+            return DownloadData(instrument) != null;
         }
     }
 }

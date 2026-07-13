@@ -747,7 +747,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 
         public override bool NeedDownload(StockInstrument instrument)
         {
-            var history = InstrumentsHistory.FirstOrDefault(h => h.Id == instrument.Id);
+            var history = GetDownloadHistory(instrument);
             if (history.LastDate == DateTime.MinValue)
                 return true;
 

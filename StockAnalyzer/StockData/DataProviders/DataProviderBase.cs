@@ -249,16 +249,16 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public bool IsMarketOpened(StockInstrument instrument)
         {
-            MarketHoursTable.TryGetValue(instrument.Market, out var marketHours);
-            if (marketHours != null)
+            if (MarketHoursTable.TryGetValue(instrument.Market, out var marketHours))
             {
                 return marketHours.IsOpened;
             }
-            throw new NotImplementedException($"Market {instrument.Market} has no defined hours");
+            return false;
         }
 
         public bool UpdateIntradayData(StockInstrument instrument)
         {
+            StockLog.Write($"UpdateIntradayData: {instrument.DisplayName}");
             if (!IsMarketOpened(instrument))
                 return false;
 
