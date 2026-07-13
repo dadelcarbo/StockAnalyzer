@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
@@ -61,7 +60,7 @@ namespace StockAnalyzer.StockData.DataProviders
         static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
-        public const int ARCHIVE_START_YEAR = 2025;
+        public const int ARCHIVE_START_YEAR = 2020;
 
         public void AddSplit(StockInstrument instrument, DateTime date, float before, float after)
         {

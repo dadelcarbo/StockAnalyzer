@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -11,7 +10,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Telerik.Windows.Automation.Peers;
 
 namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 {

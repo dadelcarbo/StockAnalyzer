@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockData.DataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Linq;

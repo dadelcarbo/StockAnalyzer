@@ -45,18 +45,18 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
         {
             if (AllGroupSeries)
             {
-                foreach (var stockSerie in StockDictionary.Instance.Values.Where(s => s.StockGroup == MainFrameViewModel.Instance.Instrument.StockSerie.StockGroup))
+                foreach (var instrument in StockDictionary.Instruments.Values.Where(s => s.Group == MainFrameViewModel.Instance.Instrument.Group))
                 {
-                    var dataProvider = StockDataProviderBase.GetDataProvider(stockSerie.DataProvider);
+                    var dataProvider = DataProviderBase.GetDataProvider(instrument.Provider);
                     if (dataProvider == null) { continue; }
-                    dataProvider.ApplyTrimBefore(stockSerie, this.TrimBeforeDate);
+                    dataProvider.ApplyTrimBefore(instrument, this.TrimBeforeDate);
                 }
             }
             else
             {
-                var dataProvider = StockDataProviderBase.GetDataProvider(MainFrameViewModel.Instance.Instrument.StockSerie.DataProvider);
+                var dataProvider = DataProviderBase.GetDataProvider(MainFrameViewModel.Instance.Instrument.Provider);
                 if (dataProvider == null) { return; }
-                dataProvider.ApplyTrimBefore(MainFrameViewModel.Instance.Instrument.StockSerie, this.TrimBeforeDate);
+                dataProvider.ApplyTrimBefore(MainFrameViewModel.Instance.Instrument, this.TrimBeforeDate);
             }
             StockAnalyzerForm.MainFrame.ApplyTheme();
 

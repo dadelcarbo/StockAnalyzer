@@ -1,20 +1,20 @@
 ﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockData.DataProviders;
-using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockData;
+using StockAnalyzer.StockData.DataProviders;
+using StockAnalyzer.StockData.DataProviders.SaxoTurbos;
+using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockData.DataProviders.SaxoTurboDataProvider;
-using System.Text.Json;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StockAnalyzer.StockData.DataProviders.SaxoTurboDataProvider
+namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 {
     public class R
     {

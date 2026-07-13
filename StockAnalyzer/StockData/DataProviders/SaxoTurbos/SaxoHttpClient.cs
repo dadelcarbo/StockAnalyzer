@@ -3,7 +3,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 
-namespace StockAnalyzer.StockData.DataProviders.SaxoTurboDataProvider
+namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 {
     public class SaxoHttpClient
     {
