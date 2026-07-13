@@ -6,11 +6,34 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
+    public class MarketHours
+    {
+        public TimeSpan Open { get; set; }
+        public TimeSpan Close { get; set; }
+
+        /// <summary>
+        /// Specifyies what time download is available. For US time is 24h + 6h (as data available at 6:00 am the next day)
+        /// </summary>
+        public TimeSpan DownloadAvailability { get; set; }
+
+
+        public bool IsOpened => DateTime.Now.TimeOfDay >= Open && DateTime.Now.TimeOfDay <= Close;
+    }
+
     public abstract class DataProviderBase : IDataProvider
     {
+        SortedDictionary<Market, MarketHours> MarketHoursTable = new SortedDictionary<Market, MarketHours>() {
+            { Market.EURONEXT , new MarketHours() { Open = new TimeSpan(9,0,0), Close = new TimeSpan(17,35,00), DownloadAvailability = new TimeSpan(18,0,0)} },
+            { Market.XETRA , new MarketHours() { Open = new TimeSpan(9,0,0), Close = new TimeSpan(17,35,00), DownloadAvailability = new TimeSpan(21,0,0)} },
+            { Market.NYSE,  new MarketHours() { Open = new TimeSpan(15,30,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(30,0,0)} },
+            { Market.SAXO ,  new MarketHours() { Open = new TimeSpan(8,0,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(22,0,0)} },
+            { Market.MIXED ,  new MarketHours() { Open = new TimeSpan(8,0,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(21,0,0)} }
+        };
+
         public abstract string DisplayName { get; }
 
         public abstract BarDuration[] SupportedDurations { get; }
@@ -144,10 +167,9 @@ namespace StockAnalyzer.StockData.DataProviders
 
                 if (download && needDownload)
                 {
-                    var history = GetDownloadHistory(instrument);
                     if (RefSerie == null)
                     {
-                        if (NeedDownload(instrument, history))
+                        if (NeedDownload(instrument))
                         {
                             RefSerie = LoadData(instrument, DefaultDuration);
 
@@ -164,8 +186,6 @@ namespace StockAnalyzer.StockData.DataProviders
                                 {
                                     needDownload = false;
                                 }
-                                history.LastDate = RefSerie.LastValue.DATE;
-                                history.DownloadDate = DateTime.Now;
                             }
                         }
                         else
@@ -175,15 +195,12 @@ namespace StockAnalyzer.StockData.DataProviders
                     }
                     else
                     {
-                        if (NeedDownload(instrument, history))
+                        if (NeedDownload(instrument))
                         {
                             var dataSerie = DownloadData(instrument);
                             if (dataSerie != null)
                             {
                                 instrument.SetDataSerie(DefaultDuration, dataSerie);
-
-                                history.LastDate = dataSerie.LastValue.DATE;
-                                history.DownloadDate = DateTime.Now;
                             }
                         }
                     }
@@ -218,7 +235,7 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public abstract DataSerie DownloadData(StockInstrument instrument);
 
-        public abstract bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history = null);
+        public abstract bool NeedDownload(StockInstrument instrument);
 
         public InstrumentDownloadHistory GetDownloadHistory(StockInstrument instrument)
         {
@@ -230,5 +247,25 @@ namespace StockAnalyzer.StockData.DataProviders
             }
             return instrumentHistory;
         }
+
+        public bool IsMarketOpened(StockInstrument instrument)
+        {
+            MarketHoursTable.TryGetValue(instrument.Market, out var marketHours);
+            if (marketHours != null)
+            {
+                return marketHours.IsOpened;
+            }
+            throw new NotImplementedException($"Market {instrument.Market} has no defined hours");
+        }
+
+        public bool UpdateIntradayData(StockInstrument instrument)
+        {
+            if (!IsMarketOpened(instrument))
+                return false;
+
+            return UpdateIntradayDataSpecific(instrument);
+        }
+
+        protected abstract bool UpdateIntradayDataSpecific(StockInstrument instrument);
     }
 }

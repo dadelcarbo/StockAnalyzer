@@ -44,10 +44,8 @@ namespace StockAnalyzer.StockData.DataProviders
         /// Check if download is required
         /// </summary>
         /// <param name="instrument"></param>
-        /// <param name="history"></param>
         /// <returns></returns>
-        bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history = null);
-
+        bool NeedDownload(StockInstrument instrument);
 
         /// <summary>
         /// Force download data from data provider for a given instrument.
@@ -55,6 +53,13 @@ namespace StockAnalyzer.StockData.DataProviders
         /// <param name="instrument"></param>
         /// <returns></returns>
         void ForceDownloadData(StockInstrument instrument);
+
+        /// <summary>
+        /// Download data in intraday (used for UI refresh)
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <returns>True if a new value has been downloaded</returns>
+        bool UpdateIntradayData(StockInstrument instrument);
 
         /// <summary>
         /// Open the stock instrument in the data provider's website.

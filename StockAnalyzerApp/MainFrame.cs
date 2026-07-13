@@ -1485,9 +1485,13 @@ namespace StockAnalyzerApp
                     }
 
                     var dataProvider = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
-                    if (dataProvider != null && dataProvider.NeedDownload(this.ViewModel.Instrument))
-                        dataProvider.DownloadData(this.ViewModel.Instrument);
+                    if (dataProvider != null)
+                    {
+                        if (dataProvider.NeedDownload(this.ViewModel.Instrument))
+                            dataProvider.DownloadData(this.ViewModel.Instrument);
 
+                        dataProvider.UpdateIntradayData(this.ViewModel.Instrument);
+                    }
                     if (showSplash)
                     {
                         StockSplashScreen.CloseForm(true);

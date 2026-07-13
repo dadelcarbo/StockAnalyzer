@@ -54,6 +54,12 @@ namespace StockAnalyzer.StockData
             this.dateSerie = null;
         }
 
+        public void AddBar(StockDailyValue stockDailyValue)
+        {
+            this.ResetAllCache();
+            this.Values = this.Values.Append(stockDailyValue).ToArray();
+        }
+
         protected DateTime[] dateSerie;
         public DateTime[] DateSerie => dateSerie ??= this.Values.Select(v => v.DATE).ToArray();
 

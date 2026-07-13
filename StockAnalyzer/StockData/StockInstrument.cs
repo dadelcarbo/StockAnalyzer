@@ -16,7 +16,8 @@ namespace StockAnalyzer.StockData
         EURONEXT,
         XETRA,
         NYSE,
-        MIXED
+        MIXED,
+        SAXO
     }
 
     [DebuggerDisplay("{Id}-{DisplayName}")]
@@ -27,25 +28,12 @@ namespace StockAnalyzer.StockData
         public string DisplayName => Name;
         public string Isin { get; set; }
         public string Symbol { get; set; }
+        public char AbcSuffix { get; set; }
         public long Ticker { get; set; }
         public Groups Group { get; set; }
         public DataProvider Provider { get; set; }
-        public string AbcId { get; set; }
 
-        public char MarketPlace => AbcId?.Length == 13 ? AbcId[0] : 'p';
-        public Market Market => this.MarketPlace switch
-        {
-            'p' => Market.EURONEXT,
-            'g' => Market.EURONEXT,
-            'n' => Market.EURONEXT,
-            'l' => Market.EURONEXT,
-
-            'f' => Market.XETRA,
-            'i' => Market.XETRA,
-            'm' => Market.XETRA,
-
-            _ => Market.NYSE
-        };
+        public Market Market { get; set; }
 
         public long SaxoId { get; set; }
         public StockAnalysis StockAnalysis { get; set; }
@@ -93,10 +81,8 @@ namespace StockAnalyzer.StockData
         }
         public void SetDataSerie(BarDuration duration, DataSerie dataSerie)
         {
-            if (cache.ContainsKey(duration))
-                cache[duration] = dataSerie;
-            else
-                cache.Add(duration, dataSerie);
+            this.ClearCache();
+            cache.Add(duration, dataSerie);
         }
 
         public DataSerie GetDefaultDataSerie()

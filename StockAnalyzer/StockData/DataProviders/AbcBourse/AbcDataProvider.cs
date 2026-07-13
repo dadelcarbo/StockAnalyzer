@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Telerik.Windows.Automation.Peers;
 
 namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 {
@@ -95,7 +96,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             groupHistoryFileName = Path.Combine(DataRootFolder, "GroupDownloadHistory.txt");
         }
         /// <summary>
-        /// Creates a StockInstrument from a configuration line. Format: FR0003500008;CAC40;;PX1;INDICES Format:
+        /// Creates a StockInstrument from a configuration line. Format: FR0003500008;CAC40;;PX1;INDICES
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
@@ -108,27 +109,18 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 if (excludeList.Contains(row[0]))
                     return null;
 
+                var id = row[0];
+                var abcSuffix = id.Length > 12 ? id[12] : 'p';
                 var instrument = new StockInstrument()
                 {
-                    Id = row[0],
+                    Id = id,
                     Name = row[1],
-                    Isin = row[0],
+                    Isin = id.Substring(0, 12),
                     Symbol = row[3],
+                    AbcSuffix = abcSuffix,
                     Provider = DataProvider.ABC,
-                    Group = (Groups)Enum.Parse(typeof(Groups), row[4])
-                };
-                instrument.AbcId = instrument.Symbol + instrument.Isin?.Substring(0, 2) switch
-                {
-                    null => string.Empty,
-                    "FR" => "p",
-                    "QS" => "p",
-                    "BE" => "g",
-                    "NL" => "n",
-                    "DE" => "f",
-                    "IT" => "i",
-                    "ES" => "m",
-                    "PT" => "I",
-                    _ => string.Empty
+                    Group = (Groups)Enum.Parse(typeof(Groups), row[4]),
+                    Market = Market.EURONEXT
                 };
 
                 return instrument;
@@ -238,7 +230,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 var history = GetDownloadHistory(instrument);
                 if (history.LastDate == DateTime.MinValue)
                 {
-                    var dataSerie = instrument.GetDataSerie(BarDuration.Daily);
+                    var dataSerie = instrument.GetDataSerie(DefaultDuration);
 
                     history.LastDate = dataSerie?.LastValue == null ? DateTime.MinValue : dataSerie.LastValue.DATE;
                 }
@@ -394,7 +386,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 
         public DateTime GetLastDate(StockInstrument instrument)
         {
-            var dataSerie = instrument.GetDataSerie(BarDuration.Daily);
+            var dataSerie = instrument.GetDataSerie(DefaultDuration);
             return dataSerie?.LastValue?.DATE == null ? DateTime.MinValue : dataSerie.LastValue.DATE;
         }
 
@@ -478,16 +470,16 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
                 return null;
 
-            DataSerie dataSerie = LoadData(instrument, BarDuration.Daily);
+            DataSerie dataSerie = LoadData(instrument, DefaultDuration);
             if (dataSerie?.LastValue == null)
             {
                 ForceDownloadData(instrument);
-                return instrument.GetDataSerie(BarDuration.Daily);
+                return instrument.GetDataSerie(DefaultDuration);
             }
 
             NotifyProgress($"Downloading {instrument.DisplayName}");
 
-            string fileName = Path.Combine(ABC_TMP_FOLDER, instrument.AbcId + ".csv");
+            string fileName = Path.Combine(ABC_TMP_FOLDER, instrument.Id + ".csv");
             if (AbcClient.DownloadIsin(fileName, dataSerie.LastValue.DATE.AddDays(1), DateTime.Today, instrument.Isin))
             {
                 var bars = this.LoadDataFromAbcFile(fileName);
@@ -496,7 +488,13 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     var newBars = dataSerie.Values.Union(bars.Where(b => b.DATE > dataSerie.LastValue.DATE)).ToArray();
 
                     StockBar.Serialize(GetInstrumentFilePath(instrument), newBars);
-                    DataSerie newSerie = new DataSerie(instrument, BarDuration.Daily, newBars);
+                    DataSerie newSerie = new DataSerie(instrument, DefaultDuration, newBars);
+
+                    instrument.SetDataSerie(DefaultDuration, newSerie);
+
+                    var history = GetDownloadHistory(instrument);
+                    history.LastDate = RefSerie.LastValue.DATE;
+                    history.DownloadDate = DateTime.Now;
                 }
                 else
                 {
@@ -602,12 +600,12 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     string[] row = line.Split(';');
                     string stockName = row[1].ToUpper().Replace(",", " "); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
 
-                    var abcId = row[0];
-                    var isin = abcId.Substring(0, 12);
+                    var id = row[0];
+                    var isin = id.Substring(0, 12);
                     if (excludeList.Contains(isin))
                         continue;
 
-                    if (!StockDictionary.Instruments.ContainsKey(stockName))
+                    if (!StockDictionary.Instruments.ContainsKey(id))
                     {
                         var existingInstrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == isin);
                         if (existingInstrument != null)
@@ -616,40 +614,25 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                             continue;
                         }
 
-                        var abcSuffix = abcId.Length > 12 ? abcId[12] : 'p';
-                        //StockSerie stockSerie = new StockSerie(stockName, row[2], isin, config.Group, StockDataProvider.ABC, BarDuration.Daily)
-                        //{
-                        //    AbcId = abcId,
-                        //    ABCName = row[2] + abcSuffix
-                        //};
-
-                        //StockDictionary.Instruments.Add(stockName, stockSerie);
-
+                        var abcSuffix = id.Length > 12 ? id[12] : 'p';
                         var instrument = new StockInstrument()
                         {
                             StockSerie = null,
 
-                            Id = abcId,
-                            AbcId = abcId,
+                            Id = id,
                             Name = stockName,
                             Isin = isin,
                             Provider = DataProvider.ABC,
                             Symbol = row[2],
-
-                            Group = config.Group
+                            AbcSuffix = abcSuffix,
+                            Group = config.Group,
+                            Market = config.Market
                         };
-                        if (!StockDictionary.Instruments.ContainsKey(instrument.Id))
-                        {
-                            StockDictionary.Instruments.Add(instrument.Id, instrument);
-                        }
-                        else
-                        {
-                            StockLog.Write("Duplicate " + config.Group + ";" + line + " already in Instruments");
-                        }
+                        StockDictionary.Instruments.Add(instrument.Id, instrument);
                     }
                     else
                     {
-                        StockLog.Write("Duplicate " + config.Group + ";" + line + " already in group " + StockDictionary.Instruments[stockName].Group);
+                        StockLog.Write("Duplicate " + config.Group + ";" + line + " already in group " + StockDictionary.Instruments[id].Group);
                     }
                 }
             }
@@ -760,15 +743,51 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return groupList != null && groupList.Contains(instrument.Id);
         }
 
-        public override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
+        TimeSpan closeTime = new TimeSpan(17, 35, 0);
+        TimeSpan openTime = new TimeSpan(09, 0, 0);
+        TimeSpan delay = new TimeSpan(0, 0, 5);
+
+        public override bool NeedDownload(StockInstrument instrument)
         {
-            if (history == null)
+            var history = InstrumentsHistory.FirstOrDefault(h => h.Id == instrument.Id);
+            if (history.LastDate == DateTime.MinValue)
+                return true;
+
+            var now = DateTime.Now;
+            var isLate = now.TimeOfDay > closeTime;
+
+            if (now.DayOfWeek == DayOfWeek.Saturday || // Check if week-end
+                now.DayOfWeek == DayOfWeek.Sunday ||
+                (now.DayOfWeek == DayOfWeek.Monday && !isLate))
             {
-                history = InstrumentsHistory.FirstOrDefault(h => h.Id == instrument.Id);
-                if (history == null)
+                if ((now.Date - history.LastDate.Date).TotalDays > 3)
                     return true;
+
+                return history.LastDate.DayOfWeek != DayOfWeek.Friday;
             }
-            return history.DownloadDate < DateTime.Today;
+            else if (isLate)
+            {
+                return history.LastDate != now.Date;
+            }
+
+            return (now.Date - history.LastDate.Date).TotalDays > 1;
         }
+
+        protected override bool UpdateIntradayDataSpecific(StockInstrument instrument)
+        {
+            var dailyValue = AbcClient.DownloadDailyValue(instrument.Symbol + instrument.AbcSuffix);
+            if (dailyValue == null)
+                return false;
+
+            instrument.ClearCache();
+            var dataSerie = instrument.GetDefaultDataSerie();
+            if (dataSerie == null)
+                return false;
+
+            dataSerie.AddBar(dailyValue);
+
+            return true;
+        }
+
     }
 }

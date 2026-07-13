@@ -76,7 +76,13 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                     var serializeBars = finalBars.Where(b => b.DATE.Date < DateTime.Now.Date || isLate).ToArray();
                     StockBar.Serialize(GetInstrumentFilePath(instrument), serializeBars);
 
-                    dataSerie = new DataSerie(instrument, BarDuration.H_1, finalBars);
+                    dataSerie = new DataSerie(instrument, DefaultDuration, finalBars);
+
+                    instrument.SetDataSerie(DefaultDuration, dataSerie);
+
+                    var history = GetDownloadHistory(instrument);
+                    history.LastDate = dataSerie.LastValue.DATE;
+                    history.DownloadDate = DateTime.Now;
                 }
 
                 return dataSerie;
@@ -140,32 +146,26 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             };
         }
 
-        public override bool NeedDownload(StockInstrument instrument, InstrumentDownloadHistory history)
-        {
-            if (history == null)
-            {
-                history = InstrumentsHistory.FirstOrDefault(h => h.Id == instrument.Id);
-                if (history == null)
-                    return true;
-            }
-            if (history.DownloadDate == DateTime.MinValue)
-                return true;
+        TimeSpan closeTime = new TimeSpan(22, 00, 0);
+        TimeSpan openTime = new TimeSpan(08, 0, 0);
+        TimeSpan delay = new TimeSpan(0, 5, 0);
 
-            var closeTime = new TimeSpan(22, 00, 0);
-            var openTime = new TimeSpan(08, 0, 0);
-            var delay = new TimeSpan(0, 0, 5);
+        public override bool NeedDownload(StockInstrument instrument)
+        {
+            var history = GetDownloadHistory(instrument);
+            if (history.LastDate == DateTime.MinValue)
+                return true;
 
             var now = DateTime.Now;
             var isLate = now.TimeOfDay > closeTime;
             var isEarly = now.TimeOfDay < openTime;
 
-            
             if ((now.DayOfWeek == DayOfWeek.Friday && isLate) || // Check if week-end
                 now.DayOfWeek == DayOfWeek.Saturday ||
                 now.DayOfWeek == DayOfWeek.Sunday ||
                 (now.DayOfWeek == DayOfWeek.Monday && isEarly))
             {
-                if ((now.Date - history.LastDate.Date).TotalDays >= 3)
+                if ((now.Date - history.LastDate.Date).TotalDays > 3)
                     return true;
                 if (history.LastDate.DayOfWeek == DayOfWeek.Friday && history.LastDate.AddHours(1).TimeOfDay == closeTime)
                 {
@@ -174,19 +174,19 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             }
             else if (isEarly) // 
             {
-                if ((history.LastDate.Date - now.Date).TotalDays <= 1)
-                {
-                    return false;
-                }
+                return history.LastDate.AddHours(1) != now.Date.AddDays(-1).Add(closeTime);
             }
             else if (isLate)
             {
-                if (history.LastDate.AddHours(1) == now.Date.Add(closeTime))
-                {
-                    return false;
-                }
+                return history.LastDate.AddHours(1) != now.Date.Add(closeTime);
             }
             return now > history.DownloadDate.Add(delay);
+        }
+
+        protected override bool UpdateIntradayDataSpecific(StockInstrument instrument)
+        {
+            // Return false as already download thanks to NeedDownload implementation.
+            return false;
         }
     }
 }
