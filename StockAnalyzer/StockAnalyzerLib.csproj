@@ -303,6 +303,8 @@
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoHttpClient.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoJSon.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataProvider.cs" />
+    <Compile Include="StockData\DataProviders\Vontobel\VontobelDataProvider.cs" />
+    <Compile Include="StockData\DataProviders\Vontobel\VontobelModel.cs" />
     <Compile Include="StockData\StockBar.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoConfigEntry.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml.cs">

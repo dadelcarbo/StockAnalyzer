@@ -60,6 +60,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
 using Match = System.Text.RegularExpressions.Match;
+using StockAnalyzer.StockData.DataProviders.AbcBourse;
 
 namespace StockAnalyzerApp
 {
@@ -326,9 +327,6 @@ namespace StockAnalyzerApp
                     return;
                 }
 
-                // this.currentStockSerie = this.ViewModel.Instrument.StockSerie;
-
-
                 ApplyTheme();
             }
 
@@ -499,7 +497,7 @@ namespace StockAnalyzerApp
             DataProviderBase.DownloadStarted += Notifiy_SplashProgressChanged;
             DataProviderBase.Initialize(download);
 
-            //StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
+            StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
             //
             InitialiseThemeCombo();
@@ -510,7 +508,7 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading Drawing items ...";
             LoadAnalysis(this.ViewModel.AnalysisFile);
 
-            ABCDataProvider.AddToExcludedList(StockDictionary.Instruments.Values.Where(s => s.Provider == DataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.Isin));
+            AbcDataProvider.AddToExcludedList(StockDictionary.Instruments.Values.Where(s => s.Provider == DataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.Id));
 
             var cac40DataSerie = StockDictionary.GetInstrumentByName("CAC40").GetDefaultDataSerie();
 
@@ -1414,9 +1412,11 @@ namespace StockAnalyzerApp
                     StockSplashScreen.ShowSplashScreen();
                 }
 
-                if (!StockDataProviderBase.ForceDownloadSerieData(this.ViewModel.Instrument.StockSerie))
+                var dataProvider = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
+                if (dataProvider != null)
                 {
-                    this.DeactivateGraphControls("Unable to download selected stock data...");
+                    dataProvider.ForceDownloadData(this.ViewModel.Instrument);
+                    dataProvider.UpdateIntradayData(this.ViewModel.Instrument);
                 }
                 else
                 {
@@ -1428,6 +1428,8 @@ namespace StockAnalyzerApp
                     StockSplashScreen.CloseForm(true);
                 }
                 this.Cursor = Cursors.Arrow;
+
+                ApplyTheme();
             }
         }
         private void ForceDownloadStockGroup()
@@ -1477,7 +1479,7 @@ namespace StockAnalyzerApp
                     if (showSplash)
                     {
                         StockSplashScreen.FadeInOutSpeed = 0.25;
-                        StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.StockSerie.StockGroup + " - " + this.ViewModel.Instrument.DisplayName;
+                        StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
                         StockSplashScreen.ProgressVal = 0;
                         StockSplashScreen.ProgressMax = 100;
                         StockSplashScreen.ProgressMin = 0;
@@ -3525,18 +3527,18 @@ namespace StockAnalyzerApp
 
                 StockLog.Write($"Apply theme {this.ViewModel.Instrument.DisplayName}-{this.ViewModel.BarDuration}-{this.ViewModel.Theme}");
 
+                // Delete transient drawing created by alert Detection
+                if (this.ViewModel.Instrument.StockAnalysis.DeleteTransientDrawings() > 0)
+                {
+                    this.ViewModel.Instrument.ClearCache();
+                }
+
                 // Get DataSerie for bar duration
                 var dataSerie = ViewModel.Instrument.GetDataSerie(this.ViewModel.BarDuration);
                 if (dataSerie == null || dataSerie.Count == 0)
                 {
                     this.DeactivateGraphControls("Data for " + this.ViewModel.Instrument.DisplayName + " cannot be initialised");
                     return;
-                }
-
-                // Delete transient drawing created by alert Detection
-                if (this.ViewModel.Instrument.StockAnalysis.DeleteTransientDrawings() > 0)
-                {
-                    this.ViewModel.Instrument.StockSerie.ResetIndicatorCache();
                 }
 
                 if (dataSerie.Count < MIN_BAR_DISPLAY)
@@ -3692,7 +3694,7 @@ namespace StockAnalyzerApp
                                                         ((GraphRangedControl)graphControl).RangeMax = float.NaN;
                                                     }
                                                 }
-                                                if (!(stockIndicator.RequiresVolumeData && !this.ViewModel.Instrument.StockSerie.HasVolume))
+                                                if (!(stockIndicator.RequiresVolumeData && !dataSerie.HasVolume))
                                                 {
                                                     curveList.Indicators.Add(stockIndicator);
                                                 }

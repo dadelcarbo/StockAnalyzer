@@ -7,7 +7,8 @@ namespace StockAnalyzer.StockData.DataProviders
     {
         All = 0,
         ABC,
-        SaxoTurbo
+        SaxoTurbo,
+        Vontobel
     }
 
     public delegate void DownloadingEventHandler(string text);

@@ -17,7 +17,7 @@ namespace StockAnalyzer.StockData
         XETRA,
         NYSE,
         MIXED,
-        SAXO
+        TURBO
     }
 
     [DebuggerDisplay("{Id}-{DisplayName}")]

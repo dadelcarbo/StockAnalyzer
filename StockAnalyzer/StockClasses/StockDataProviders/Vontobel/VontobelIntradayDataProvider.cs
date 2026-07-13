@@ -59,16 +59,17 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Vontobel
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="ticker"></param>
+        /// <param name="Isin"></param>
         /// <param name="period">
         /// 0 - 1D 5 Minutes Bars<br/>
         /// 1 - 2D 5 Minutes Bars<br/>
         /// 2 - 1W 5 Minutes Bars<br/>
         /// 3 - 1M 1 Hour Bars<br/>
         /// <returns></returns>
-        public string FormatIntradayURL(string ticker, string period)
+        public string FormatIntradayURL(string Isin, string period)
         {
-            return $"https://markets.vontobel.com/api/v1/charts/products/{ticker}/detail/{period}/0?c=fr-fr&it=1";
+            return $"https://markets.vontobel.com/api/v1/charts/products/{Isin}/detail/{period}/0?c=fr-fr&it=1";
+                 // "https://markets.vontobel.com/api/v1/charts/products/DE000VK7VMJ7/detail/2?c=fr-fr";
         }
 
         public override bool DownloadDailyData(StockSerie stockSerie)

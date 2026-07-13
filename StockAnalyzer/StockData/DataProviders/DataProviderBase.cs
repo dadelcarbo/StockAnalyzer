@@ -29,9 +29,11 @@ namespace StockAnalyzer.StockData.DataProviders
             { Market.EURONEXT , new MarketHours() { Open = new TimeSpan(9,0,0), Close = new TimeSpan(17,35,00), DownloadAvailability = new TimeSpan(18,0,0)} },
             { Market.XETRA , new MarketHours() { Open = new TimeSpan(9,0,0), Close = new TimeSpan(17,35,00), DownloadAvailability = new TimeSpan(21,0,0)} },
             { Market.NYSE,  new MarketHours() { Open = new TimeSpan(15,30,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(30,0,0)} },
-            { Market.SAXO ,  new MarketHours() { Open = new TimeSpan(8,0,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(22,0,0)} },
+            { Market.TURBO ,  new MarketHours() { Open = new TimeSpan(8,0,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(22,0,0)} },
             { Market.MIXED ,  new MarketHours() { Open = new TimeSpan(8,0,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(21,0,0)} }
         };
+
+        protected static readonly DateTime refDate = new DateTime(1970, 01, 01);
 
         public abstract string DisplayName { get; }
 
@@ -60,7 +62,7 @@ namespace StockAnalyzer.StockData.DataProviders
         static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
-        public const int ARCHIVE_START_YEAR = 2020;
+        public const int ARCHIVE_START_YEAR = 2025;
 
         public void AddSplit(StockInstrument instrument, DateTime date, float before, float after)
         {
@@ -96,7 +98,8 @@ namespace StockAnalyzer.StockData.DataProviders
         static SortedDictionary<DataProvider, IDataProvider> DataProviders { get; } = new SortedDictionary<DataProvider, IDataProvider>()
         {
             {DataProvider.ABC, new AbcBourse.AbcDataProvider() },
-            {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()}
+            {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()},
+            {DataProvider.Vontobel, new Vontobel.VontobelDataProvider()}
         };
 
         public static IDataProvider GetDataProvider(DataProvider dataProvider)
