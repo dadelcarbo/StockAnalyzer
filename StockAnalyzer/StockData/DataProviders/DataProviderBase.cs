@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
@@ -236,7 +237,54 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public abstract void ForceDownloadData(StockInstrument instrument);
 
-        public abstract DataSerie DownloadData(StockInstrument instrument);
+        protected IDataHttpClient dataClient;
+        public virtual DataSerie DownloadData(StockInstrument instrument)
+        {
+            try
+            {
+                if (this.dataClient == null)
+                    throw new InvalidOperationException($"DataProvider {Provider} doesn't have a dataClient initialized");
+
+                NotifyProgress($"Downloading {instrument.DisplayName}");
+
+                DataSerie dataSerie = LoadData(instrument, BarDuration.H_1);
+                DateTime startDate = dataSerie?.LastValue != null ? dataSerie.LastValue.DATE.Date : DateTime.MinValue;
+
+                // Improvement check if last day is complete
+
+                var newBars = this.dataClient.GetData(instrument, startDate);
+
+                if (newBars != null && newBars.Length > 0)
+                {
+                    var finalBars = dataSerie == null ? newBars : dataSerie.Values.Where(v => v.DATE < startDate).Union(newBars).ToArray();
+
+                    // Serialize todays bar only if time is greater that 22:10 pm
+                    var isLate = DateTime.Now.TimeOfDay > new TimeSpan(22, 10, 0);
+                    var serializeBars = finalBars.Where(b => b.DATE.Date < DateTime.Now.Date || isLate).ToArray();
+                    StockBar.Serialize(GetInstrumentFilePath(instrument), serializeBars);
+
+                    dataSerie = new DataSerie(instrument, DefaultDuration, finalBars);
+
+                    instrument.SetDataSerie(DefaultDuration, dataSerie);
+
+                    var history = GetDownloadHistory(instrument);
+                    history.LastDate = dataSerie.LastValue.DATE;
+                    history.DownloadDate = DateTime.Now;
+                }
+                else
+                {
+                    StockLog.Write($"Download {instrument.DisplayName} failed");
+                }
+
+                return dataSerie;
+
+            }
+            catch (Exception ex)
+            {
+                StockLog.Write(ex);
+            }
+            return null;
+        }
 
         public abstract bool NeedDownload(StockInstrument instrument);
 

@@ -678,7 +678,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return true;
         }
 
-        static SortedDictionary<Groups, List<string>> groupSeries = new SortedDictionary<Groups, List<string>>();
+        static SortedDictionary<Groups, SortedSet<string>> groupSeries = new SortedDictionary<Groups, SortedSet<string>>();
         public bool BelongsToGroup(StockInstrument instrument, Groups group)
         {
             if (group == instrument.Group || group == Groups.ALL_STOCKS)
@@ -707,37 +707,20 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             var groupList = groupSeries[group];
             if (groupList == null)
             {
-                groupList = new List<string>();
                 var abcGroup = abcGroupConfig.FirstOrDefault(g => g.Group == group);
                 // parse group definition
                 string fileName = Path.Combine(ABC_DAILY_CFG_GROUP_FOLDER, $"{abcGroup.AbcGroup}.csv");
                 if (File.Exists(fileName))
                 {
-                    using StreamReader sr = new StreamReader(fileName, true);
-                    string line;
-                    sr.ReadLine(); // Skip first line
-                    while (!sr.EndOfStream)
-                    {
-                        line = sr.ReadLine();
-                        if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line))
-                        {
-                            string[] row = line.Split(';');
-                            var serie = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == row[0]);
-                            if (serie != null)
-                            {
-                                groupList.Add(serie.DisplayName);
-                            }
-                        }
-                    }
-                    groupSeries[group] = groupList;
+                    groupSeries[group] = groupList = new SortedSet<string>(File.ReadAllLines(fileName)
+                        .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+                        .Select(line => line.Split(';')[0]));
                 }
                 else
                 {
                     MessageBox.Show($"Group definition file not found for Group: {group}", "ABD DataProvider Group error");
                 }
             }
-
-
             return groupList != null && groupList.Contains(instrument.Id);
         }
 

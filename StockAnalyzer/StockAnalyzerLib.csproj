@@ -280,6 +280,7 @@
     <Compile Include="StockData\DataProviders\AbcBourse\ABCGroup.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\AbcGroupDownloadHistory.cs" />
     <Compile Include="StockData\DataProviders\DataProviderBase.cs" />
+    <Compile Include="StockData\DataProviders\IDataHttpClient.cs" />
     <Compile Include="StockData\DataProviders\IDataProvider.cs" />
     <Compile Include="StockClasses\StockAlertValue.cs" />
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcClient.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoIntradayM5DataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoJSon.cs" />
     <Compile Include="StockData\DataProviders\InstrumentDownloadHistory.cs" />
+    <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataClient.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoHttpClient.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoJSon.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataProvider.cs" />

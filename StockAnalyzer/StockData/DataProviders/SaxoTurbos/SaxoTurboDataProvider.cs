@@ -11,12 +11,18 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 {
     public class SaxoTurboDataProvider : DataProviderBase
     {
+        public SaxoTurboDataProvider()
+        {
+            this.dataClient = new SaxoTurboDataClient();
+        }
+
         public override string DisplayName => "Saxo Turbos";
         public override BarDuration[] SupportedDurations => new BarDuration[] { BarDuration.H_1, BarDuration.H_2, BarDuration.H_3, BarDuration.H_4 };
 
         public override BarDuration DefaultDuration => BarDuration.H_1;
 
         public override DataProvider Provider => DataProvider.SaxoTurbo;
+
 
         /// <summary>
         /// 
@@ -31,7 +37,7 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             return $"https://fr-be.structured-products.saxo/page-api/charts/BE/isin/{ticker}/?timespan={period}&type=ohlc&benchmarks=";
         }
 
-        public override DataSerie DownloadData(StockInstrument instrument)
+        public DataSerie DownloadData2(StockInstrument instrument)
         {
             NotifyProgress($"Downloading {instrument.DisplayName}");
 
