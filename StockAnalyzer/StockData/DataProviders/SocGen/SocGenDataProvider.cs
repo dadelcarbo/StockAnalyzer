@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using System.Diagnostics;
 
 namespace StockAnalyzer.StockData.DataProviders.SocGen
 {
@@ -36,6 +37,12 @@ namespace StockAnalyzer.StockData.DataProviders.SocGen
                 Provider = DataProvider.SocGen,
                 Market = Market.TURBO
             };
+        }
+
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
+        {
+            var url = $"https://bourse.societegenerale.fr/product-details/{stockInstrument.StockSerie.Symbol.ToLower()}";
+            Process.Start(url);
         }
     }
 }

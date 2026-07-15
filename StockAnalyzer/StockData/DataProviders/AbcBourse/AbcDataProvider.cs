@@ -1,8 +1,10 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -272,7 +274,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
         {
             if (DateTime.Now > history.NextDownload)
             {
-                var startDate = history.NextDownload == DateTime.MinValue ? new DateTime(ARCHIVE_START_YEAR, 1, 1) : history.LastDownload.Date.AddDays(-3);
+                var startDate = history.NextDownload == DateTime.MinValue ? new DateTime(Settings.Default.LoadStartYear, 1, 1) : history.LastDownload.Date.AddDays(-3);
                 if (DownloadMonthlyFileFromABC(ABC_TMP_FOLDER, startDate, DateTime.Today, groupConfig, false))
                 {
                     history.LastDownload = DateTime.Now;
@@ -402,20 +404,19 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
         {
             string filePattern = instrument.Isin + "_" + instrument.Symbol + "_" + instrument.Group.ToString() + "_*.csv";
             string fileName;
-            StockLog.Write(instrument.DisplayName + " " + instrument.Isin);
+            StockLog.Write(instrument.DisplayName + " " + instrument.Id);
+
+            instrument.ClearCache();
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 StockLog.Write("Network is Available");
                 int nbFile = 0;
-                var isin = instrument.Isin;
-                if (instrument.Group == Groups.USA)
-                    isin += "u";
 
                 int year = DateTime.Today.Year;
-                for (year = DateTime.Today.Year - 1; year >= ARCHIVE_START_YEAR; year--)
+                for (year = DateTime.Today.Year - 1; year >= Settings.Default.LoadStartYear; year--)
                 {
                     fileName = filePattern.Replace("*", year.ToString());
-                    if (!AbcClient.DownloadIsinYear(Path.Combine(ABC_TMP_FOLDER, fileName), year, isin))
+                    if (!AbcClient.DownloadIsinYear(Path.Combine(ABC_TMP_FOLDER, fileName), year, instrument.Id))
                     {
                         Task.Delay(10).Wait();
                         break;
@@ -424,7 +425,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 }
                 year = DateTime.Today.Year;
                 fileName = filePattern.Replace("*", year.ToString());
-                if (AbcClient.DownloadIsin(Path.Combine(ABC_TMP_FOLDER, fileName), new DateTime(year, 1, 1), DateTime.Today, isin))
+                if (AbcClient.DownloadIsin(Path.Combine(ABC_TMP_FOLDER, fileName), new DateTime(year, 1, 1), DateTime.Today, instrument.Id))
                 {
                     nbFile++;
                 }
@@ -768,6 +769,12 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             dataSerie.AddBar(dailyValue);
 
             return true;
+        }
+
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
+        {
+            string url = $"https://www.abcbourse.com/graphes/display.aspx?s={stockInstrument.Symbol}{stockInstrument.AbcSuffix}";
+            Process.Start(url);
         }
 
     }

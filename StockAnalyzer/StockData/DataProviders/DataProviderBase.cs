@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -62,8 +63,6 @@ namespace StockAnalyzer.StockData.DataProviders
 
         static protected CultureInfo frenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         static protected CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
-
-        public const int ARCHIVE_START_YEAR = 2025;
 
         public void AddSplit(StockInstrument instrument, DateTime date, float before, float after)
         {
@@ -225,7 +224,7 @@ namespace StockAnalyzer.StockData.DataProviders
 
         protected abstract StockInstrument CreateInstrumentFromConfigLine(string line);
 
-        public virtual void OpenInDataProvider(StockInstrument stockInstrument) { }
+        public abstract void OpenInDataProvider(StockInstrument stockInstrument);
 
         public virtual bool Remove(StockInstrument instrument)
         {
@@ -264,6 +263,8 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public virtual void ForceDownloadData(StockInstrument instrument)
         {
+            StockLog.Write($"ForceDownloadData{instrument.DisplayName}");
+
             var history = GetDownloadHistory(instrument);
             history.LastDate = history.DownloadDate = DateTime.MinValue;
 
@@ -394,6 +395,11 @@ namespace StockAnalyzer.StockData.DataProviders
             return UpdateIntradayDataSpecific(instrument);
         }
 
+        /// <summary>
+        /// Default version is adapted intraday product such as SaxoTurbo, SocGen...
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <returns></returns>
         protected virtual bool UpdateIntradayDataSpecific(StockInstrument instrument)
         {
             if (GetDownloadHistory(instrument).DownloadDate.Add(shortDelay) > DateTime.Now)

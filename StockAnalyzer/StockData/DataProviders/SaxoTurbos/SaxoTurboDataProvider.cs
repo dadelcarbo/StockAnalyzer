@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using System.Diagnostics;
 
 namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 {
@@ -31,5 +32,9 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
             };
         }
 
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
+        {
+            Process.Start($"https://fr-be.structured-products.saxo/products/{stockInstrument.Isin}");
+        }
     }
 }

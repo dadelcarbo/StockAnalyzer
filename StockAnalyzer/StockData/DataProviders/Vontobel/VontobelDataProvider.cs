@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using System;
+using System.Diagnostics;
 
 namespace StockAnalyzer.StockData.DataProviders.Vontobel
 {
@@ -37,10 +38,10 @@ namespace StockAnalyzer.StockData.DataProviders.Vontobel
             };
         }
 
-        TimeSpan closeTime = new TimeSpan(22, 00, 0);
-        TimeSpan openTime = new TimeSpan(08, 0, 0);
-        TimeSpan shortDelay = new TimeSpan(0, 1, 0);
-        TimeSpan longDelay = new TimeSpan(2, 0, 0);
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
+        {
+            Process.Start($"https://markets.vontobel.com/fr-fr/produits/leverage/leverage-short/{stockInstrument.Isin}");
+        }
 
     }
 }

@@ -317,12 +317,12 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     if (requestTimestamps.Count < 5)
                     {
                         StockLog.Write($"ABC Bourse Short Delay");
-                        await Task.Delay(500);
+                        await Task.Delay(1000);
                     }
                     else
                     {
                         StockLog.Write($"ABC Bourse Long Delay");
-                        await Task.Delay(2000);
+                        await Task.Delay(3000);
                     }
                     requestTimestamps.Add(now);
 
@@ -458,7 +458,8 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 // Note: Adjust the XPath or CSS selectors based on the actual HTML structure
                 string dateTime = doc.GetElementbyId("lastTrade")?.InnerText.Trim().Replace("- ", "") ?? null;
                 string close = doc.GetElementbyId("lastcx")?.InnerText.Trim().Replace(",", ".").Replace("&nbsp;", "") ?? null;
-                close = close.Substring(0, close.IndexOf(" ")).Trim();
+                if (close.Contains(' '))
+                    close = close.Substring(0, close.IndexOf(" ")).Trim();
 
                 string open = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Ouverture')]/following-sibling::td").InnerText.Trim().Replace(",", ".");
                 string high = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Plus haut')]/following-sibling::td").InnerText.Trim().Replace(",", ".");
