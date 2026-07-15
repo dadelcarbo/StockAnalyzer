@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.SplitDlg"
+             xmlns:vm="clr-namespace:StockAnalyzerApp"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="600" d:Background="White">
     <StackPanel DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:StockSplitControl}}}">
@@ -11,7 +12,7 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
                     <Label Content="Date"></Label>
-                    <DatePicker SelectedDate="{Binding SplitDate}" VerticalContentAlignment="Center"></DatePicker>
+                    <DatePicker SelectedDate="{Binding SplitDate}" VerticalAlignment="Center" Height="26"></DatePicker>
                     <Label Content="After"></Label>
                     <TextBox Text="{Binding After}" Width="30" VerticalContentAlignment="Center"></TextBox>
                     <Label Content="Before"></Label>
@@ -22,28 +23,23 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Trim before">
+        
+        <GroupBox Header="Trim Data">
             <Grid>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
-                    <Label Content="Date"></Label>
-                    <DatePicker SelectedDate="{Binding TrimBeforeDate}" VerticalContentAlignment="Center"></DatePicker>
-                    <Label Content="All series in group" VerticalContentAlignment="Center"></Label>
-                    <CheckBox IsChecked="{Binding AllGroupSeries}" VerticalAlignment="Center"></CheckBox>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                        <Label Content="Date"></Label>
+                        <DatePicker SelectedDate="{Binding TrimDate}" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Center"></DatePicker>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                        <CheckBox IsChecked="{Binding AllProviderInstruments}" VerticalAlignment="Center"></CheckBox>
+                        <Label Content="All from data Provider " VerticalContentAlignment="Center"></Label>
+                        <Label Content="{Binding Instrument.Provider, Source={x:Static vm:MainFrameViewModel.Instance}}" VerticalContentAlignment="Center"></Label>
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                    <Button Content="Apply" Click="ApplyTrimButton_Click" Margin="2"></Button>
-                </StackPanel>
-            </Grid>
-        </GroupBox>
-
-        <GroupBox Header="Clean ABC Data">
-            <Grid>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
-                    <Label Content="Clean after"></Label>
-                    <DatePicker SelectedDate="{Binding TrimAfterDate}" VerticalContentAlignment="Center"></DatePicker>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                    <Button Content="Apply" Click="ApplyABCClean_Click" Margin="2"></Button>
+                <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <Button x:Name="trimBeforeBtn" Content="Before" Click="ApplyTrimButton_Click" Margin="2"></Button>
+                    <Button x:Name="trimAfterBtn" Content="After" Click="ApplyTrimButton_Click" Margin="2"></Button>
                 </StackPanel>
             </Grid>
         </GroupBox>

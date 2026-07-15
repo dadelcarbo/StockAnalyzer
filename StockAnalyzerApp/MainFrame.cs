@@ -3,7 +3,6 @@ using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
@@ -2010,7 +2009,7 @@ namespace StockAnalyzerApp
         private void excludeButton_Click(object sender, EventArgs e)
         {
             var dp = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
-            var handled = dp.RemoveEntry(this.ViewModel.Instrument);
+            var handled = dp.Remove(this.ViewModel.Instrument);
             // Flag as excluded
             this.ViewModel.Instrument.StockAnalysis.Excluded = true;
             if (!handled)

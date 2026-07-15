@@ -1,8 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
 using StockAnalyzer.StockLogging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;

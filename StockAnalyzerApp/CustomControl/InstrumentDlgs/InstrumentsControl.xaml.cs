@@ -136,7 +136,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 foreach (var instrument in this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.Provider != DataProvider.ABC).Select(s => s.Instrument))
                 {
                     var dp = DataProviderBase.GetDataProvider(instrument.Provider);
-                    var handled = dp.RemoveEntry(instrument);
+                    var handled = dp.Remove(instrument);
 
                     instrument.StockAnalysis.Excluded = true;
                 }

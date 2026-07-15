@@ -388,7 +388,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return dataSerie?.LastValue?.DATE == null ? DateTime.MinValue : dataSerie.LastValue.DATE;
         }
 
-        public override bool RemoveEntry(StockInstrument instrument)
+        public override bool Remove(StockInstrument instrument)
         {
             if (!string.IsNullOrEmpty(instrument.Isin) && !excludeList.Contains(instrument.Isin))
             {
@@ -417,7 +417,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     fileName = filePattern.Replace("*", year.ToString());
                     if (!AbcClient.DownloadIsinYear(Path.Combine(ABC_TMP_FOLDER, fileName), year, isin))
                     {
-                        Task.Delay(500).Wait();
+                        Task.Delay(10).Wait();
                         break;
                     }
                     nbFile++;
@@ -442,10 +442,10 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                         string[] row = line.Split(';');
                         bars.Add(new StockBar()
                         {
-                            open = float.Parse(row[2], CultureInfo.InvariantCulture),
-                            high = float.Parse(row[3], CultureInfo.InvariantCulture),
-                            low = float.Parse(row[4], CultureInfo.InvariantCulture),
-                            close = float.Parse(row[5], CultureInfo.InvariantCulture),
+                            open = float.Parse(row[2], frenchCulture),
+                            high = float.Parse(row[3], frenchCulture),
+                            low = float.Parse(row[4], frenchCulture),
+                            close = float.Parse(row[5], frenchCulture),
                             volume = long.Parse(row[6], frenchCulture),
                             dateTicks = DateTime.Parse(row[1], frenchCulture).ToBinary()
                         });
@@ -483,7 +483,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 var bars = this.LoadDataFromAbcFile(fileName);
                 if (bars != null && bars.Count(b => b.DATE > dataSerie.LastValue.DATE) > 0)
                 {
-                    var newBars = dataSerie.Values.Union(bars.Where(b => b.DATE > dataSerie.LastValue.DATE)).ToArray();
+                    var newBars = dataSerie.Values.Concat(bars).ToArray();
 
                     StockBar.Serialize(GetInstrumentFilePath(instrument), newBars);
                     DataSerie newSerie = new DataSerie(instrument, DefaultDuration, newBars);
@@ -491,7 +491,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     instrument.SetDataSerie(DefaultDuration, newSerie);
 
                     var history = GetDownloadHistory(instrument);
-                    history.LastDate = RefSerie.LastValue.DATE;
+                    history.LastDate = newSerie.LastValue.DATE;
                     history.DownloadDate = DateTime.Now;
                 }
                 else

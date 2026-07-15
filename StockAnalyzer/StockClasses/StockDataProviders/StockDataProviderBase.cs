@@ -1,7 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.Bnp;
-using StockAnalyzer.StockClasses.StockDataProviders.CNN;
-using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
 using StockAnalyzer.StockData;

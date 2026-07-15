@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
@@ -20,7 +19,6 @@ namespace StockAnalyzer.StockData.DataProviders
         /// </summary>
         public TimeSpan DownloadAvailability { get; set; }
 
-
         public bool IsOpened => DateTime.Now.TimeOfDay >= Open && DateTime.Now.TimeOfDay <= Close;
     }
 
@@ -33,6 +31,8 @@ namespace StockAnalyzer.StockData.DataProviders
             { Market.TURBO ,  new MarketHours() { Open = new TimeSpan(8,0,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(22,0,0)} },
             { Market.MIXED ,  new MarketHours() { Open = new TimeSpan(8,0,0), Close = new TimeSpan(22,00,00), DownloadAvailability = new TimeSpan(21,0,0)} }
         };
+
+        protected TimeSpan shortDelay = new TimeSpan(0, 2, 0);
 
         protected static readonly DateTime refDate = new DateTime(1970, 01, 01);
 
@@ -225,17 +225,56 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public virtual void OpenInDataProvider(StockInstrument stockInstrument) { }
 
-        public virtual bool RemoveEntry(StockInstrument instrument)
+        public virtual bool Remove(StockInstrument instrument)
         {
             throw new NotImplementedException();
         }
 
-        public void ApplyTrimBefore(StockInstrument instrument, DateTime upToDate)
+        public void KeepOnyBars(StockInstrument instrument, Func<StockDailyValue, bool> predicate)
         {
-            throw new NotImplementedException();
+            var dataSerie = instrument.GetDefaultDataSerie();
+            if (dataSerie?.Values == null || dataSerie.Values.Length == 0)
+                return;
+
+            var nbBars = dataSerie.Values.Length;
+            var remainingBars = dataSerie.Values.Where(predicate).ToArray();
+            var filePath = GetInstrumentFilePath(instrument);
+            var history = GetDownloadHistory(instrument);
+            if (remainingBars.Length == 0)
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+                history.LastDate = DateTime.MinValue;
+            }
+            else
+            {
+                StockBar.Serialize(filePath, remainingBars);
+                history.LastDate = remainingBars.Last().DATE;
+            }
+            history.DownloadDate = DateTime.MinValue;
+
+            InstrumentDownloadHistory.Save(HistoryFile, InstrumentsHistory);
+
+            instrument.ClearCache();
         }
 
-        public abstract void ForceDownloadData(StockInstrument instrument);
+        public virtual void ForceDownloadData(StockInstrument instrument)
+        {
+            var history = GetDownloadHistory(instrument);
+            history.LastDate = history.DownloadDate = DateTime.MinValue;
+
+            if (File.Exists(GetInstrumentFilePath(instrument)))
+            {
+                File.Delete(GetInstrumentFilePath(instrument));
+            }
+
+            instrument.ClearCache();
+
+            this.DownloadData(instrument);
+
+        }
 
         protected IDataHttpClient dataClient;
         public virtual DataSerie DownloadData(StockInstrument instrument)
@@ -317,6 +356,12 @@ namespace StockAnalyzer.StockData.DataProviders
             return UpdateIntradayDataSpecific(instrument);
         }
 
-        protected abstract bool UpdateIntradayDataSpecific(StockInstrument instrument);
+        protected virtual bool UpdateIntradayDataSpecific(StockInstrument instrument)
+        {
+            if (GetDownloadHistory(instrument).DownloadDate.Add(shortDelay) > DateTime.Now)
+                return false;
+
+            return DownloadData(instrument) != null;
+        }
     }
 }

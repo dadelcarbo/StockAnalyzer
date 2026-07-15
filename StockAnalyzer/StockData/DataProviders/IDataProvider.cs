@@ -75,11 +75,16 @@ namespace StockAnalyzer.StockData.DataProviders
         /// </summary>
         /// <param name="stockSerie"></param>
         /// <returns></returns>
-        bool RemoveEntry(StockInstrument instrument);
+        bool Remove(StockInstrument instrument);
 
         void AddSplit(StockInstrument instrument, DateTime date, float before, float after);
 
-        void ApplyTrimBefore(StockInstrument instrument, DateTime upToDate);
+        /// <summary>
+        /// Trim data. Predicate indicates the condition of data to be kept.
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <param name="predicate"></param>
+        void KeepOnyBars(StockInstrument instrument, Func<StockDailyValue,bool> predicate);
 
         bool SupportsDuration(BarDuration duration);
 
