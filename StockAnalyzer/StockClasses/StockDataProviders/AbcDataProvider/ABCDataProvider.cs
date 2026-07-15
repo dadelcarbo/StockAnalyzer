@@ -1553,7 +1553,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             if (!stockSerie.Initialise())
                 return;
 
-            var split = new StockSplit() { StockName = stockSerie.StockName, Date = date, Before = before, After = after };
+            var split = new StockSplit() { Instrument = stockSerie.StockName, Date = date, Before = before, After = after };
             StockSplit.Splits.Add(split);
             StockSplit.Save();
 
@@ -1569,7 +1569,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
             if (stockSerie.Count == 0)
                 return;
 
-            foreach (var split in StockSplit.Splits.Where(s => s.StockName == stockSerie.StockName).OrderBy(s => s.Date))
+            foreach (var split in StockSplit.Splits.Where(s => s.Instrument == stockSerie.StockName).OrderBy(s => s.Date))
             {
                 float ratio = split.Before / split.After;
                 foreach (var value in stockSerie.Values.Where(v => v.DATE < split.Date))

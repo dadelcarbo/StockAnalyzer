@@ -80,11 +80,11 @@ namespace StockAnalyzer.StockData.DataProviders
         void AddSplit(StockInstrument instrument, DateTime date, float before, float after);
 
         /// <summary>
-        /// Trim data. Predicate indicates the condition of data to be kept.
+        /// Keep only data matching predicate
         /// </summary>
         /// <param name="instrument"></param>
-        /// <param name="predicate"></param>
-        void KeepOnyBars(StockInstrument instrument, Func<StockDailyValue,bool> predicate);
+        /// <param name="predicate">Condition that specifies which data to be kept</param>
+        void KeepOnlyBars(StockInstrument instrument, Func<StockDailyValue,bool> predicate);
 
         bool SupportsDuration(BarDuration duration);
 

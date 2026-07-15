@@ -66,7 +66,7 @@ namespace StockAnalyzerApp.CustomControl.SplitDlg
 
             foreach (var instrument in instruments)
             {
-                dataProvider.KeepOnyBars(instrument, trimPredicate);
+                dataProvider.KeepOnlyBars(instrument, trimPredicate);
             }
 
             StockAnalyzerForm.MainFrame.ApplyTheme();

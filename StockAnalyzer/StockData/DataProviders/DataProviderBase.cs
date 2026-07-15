@@ -67,7 +67,9 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public void AddSplit(StockInstrument instrument, DateTime date, float before, float after)
         {
-            throw new NotImplementedException();
+            var split = new StockSplit() { Instrument = instrument.Id, Date = date, Before = before, After = after };
+            StockSplit.Splits.Add(split);
+            StockSplit.Save();
         }
 
         protected string GetInstrumentFilePath(StockInstrument instrument)
@@ -230,7 +232,7 @@ namespace StockAnalyzer.StockData.DataProviders
             throw new NotImplementedException();
         }
 
-        public void KeepOnyBars(StockInstrument instrument, Func<StockDailyValue, bool> predicate)
+        public void KeepOnlyBars(StockInstrument instrument, Func<StockDailyValue, bool> predicate)
         {
             var dataSerie = instrument.GetDefaultDataSerie();
             if (dataSerie?.Values == null || dataSerie.Values.Length == 0)

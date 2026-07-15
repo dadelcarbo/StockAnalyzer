@@ -10,7 +10,7 @@ namespace StockAnalyzer.StockClasses
 {
     public class StockSplit
     {
-        public string StockName { get; set; }
+        public string Instrument { get; set; }
         public DateTime Date { get; set; }
         public float Before { get; set; }
         public float After { get; set; }
