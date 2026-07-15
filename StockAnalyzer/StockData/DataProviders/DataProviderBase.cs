@@ -219,9 +219,9 @@ namespace StockAnalyzer.StockData.DataProviders
             PostInitDictionary(download);
         }
 
-        protected virtual void PreInitDictionary(bool download) { }
+        protected abstract void PreInitDictionary(bool download);
 
-        protected virtual void PostInitDictionary(bool download) { }
+        protected abstract void PostInitDictionary(bool download);
 
         protected abstract StockInstrument CreateInstrumentFromConfigLine(string line);
 
@@ -275,7 +275,6 @@ namespace StockAnalyzer.StockData.DataProviders
             instrument.ClearCache();
 
             this.DownloadData(instrument);
-
         }
 
         protected IDataHttpClient dataClient;
@@ -327,7 +326,44 @@ namespace StockAnalyzer.StockData.DataProviders
             return null;
         }
 
-        public abstract bool NeedDownload(StockInstrument instrument);
+        TimeSpan closeTime = new TimeSpan(22, 00, 0);
+        TimeSpan openTime = new TimeSpan(08, 0, 0);
+        TimeSpan longDelay = new TimeSpan(2, 0, 0);
+
+        public virtual bool NeedDownload(StockInstrument instrument)
+        {
+            var history = GetDownloadHistory(instrument);
+            if (history.LastDate == DateTime.MinValue)
+                return true;
+            if (history.DownloadDate.Add(longDelay) > DateTime.Now)
+                return false;
+
+            var now = DateTime.Now;
+            var isLate = now.TimeOfDay > closeTime;
+            var isEarly = now.TimeOfDay < openTime;
+
+            if ((now.DayOfWeek == DayOfWeek.Friday && isLate) || // Check if week-end
+                now.DayOfWeek == DayOfWeek.Saturday ||
+                now.DayOfWeek == DayOfWeek.Sunday ||
+                (now.DayOfWeek == DayOfWeek.Monday && isEarly))
+            {
+                if ((now.Date - history.LastDate.Date).TotalDays > 3)
+                    return true;
+                if (history.LastDate.DayOfWeek == DayOfWeek.Friday && history.LastDate.AddHours(1).TimeOfDay == closeTime)
+                {
+                    return false;
+                }
+            }
+            else if (isEarly) // 
+            {
+                return history.LastDate.AddHours(1) != now.Date.AddDays(-1).Add(closeTime);
+            }
+            else if (isLate)
+            {
+                return history.LastDate.AddHours(1) != now.Date.Add(closeTime);
+            }
+            return true;
+        }
 
         public InstrumentDownloadHistory GetDownloadHistory(StockInstrument instrument)
         {

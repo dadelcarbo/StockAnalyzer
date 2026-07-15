@@ -6,26 +6,26 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
+namespace StockAnalyzer.StockData.DataProviders.Vontobel
 {
-    public class SaxoTurboDataClient : IDataHttpClient
+    internal class VontobelDataClient : IDataHttpClient
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ticker"></param>
-        /// <param name="period">1D - 1 minute bars from begining of the current day<br/>
-        /// 2D - 5 minutes bars from the last 24 Hours<br/>
-        /// 1W - 1 hour bar for 1 week period</param>
-        /// <returns></returns>
         public string FormatUrl(StockInstrument instrument)
         {
-            string period = "1W";
-            return $"https://fr-be.structured-products.saxo/page-api/charts/BE/isin/{instrument.Isin}/?timespan={period}&type=ohlc&benchmarks=";
+            /// Period specification
+            /// 0 - 1D 5 Minutes Bars<br/>
+            /// 1 - 2D 5 Minutes Bars<br/>
+            /// 2 - 1W 5 Minutes Bars<br/>
+            /// 3 - 1M 1 Hour Bars<br/>
+            int period = 3;
+            return $"https://markets.vontobel.com/api/v1/charts/products/{instrument.Isin}/detail/{period}?c=fr-fr&it=1";
+
+            // https://markets.vontobel.com/api/v1/charts/products/DE000VK7VM44/detail/3?c=fr-fr
         }
 
+
         private HttpClient httpClient = null;
-        protected string HttpGetContentAsString(StockInstrument instrument)
+        private string HttpGetFromVontobel(string url)
         {
             try
             {
@@ -36,9 +36,6 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 
                     httpClient = new HttpClient(handler);
                 }
-
-                var url = FormatUrl(instrument);
-
                 using var request = new HttpRequestMessage();
                 request.Method = HttpMethod.Get;
                 request.RequestUri = new Uri(url);
@@ -60,22 +57,32 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 
         }
 
+
+        protected static readonly DateTime refDate = new DateTime(1970, 01, 01);
         public StockDailyValue[] GetData(StockInstrument instrument, DateTime startDate)
         {
             try
             {
-                var jsonData = HttpGetContentAsString(instrument);
+                var url = FormatUrl(instrument);
+
+                var jsonData = HttpGetFromVontobel(url);
                 if (jsonData == null)
                     return null;
 
-                var saxoData = JsonSerializer.Deserialize<SaxoJSon>(jsonData);
-                if (saxoData?.series?[0]?.data == null || saxoData?.series?[0]?.data.Count == 0)
+                var vontobelData = JsonSerializer.Deserialize<VontobelJSon>(jsonData);
+
+                if (vontobelData == null || !vontobelData.isSuccess || vontobelData.payload == null)
                     return null;
 
-                return saxoData.series[0].data
-                    .Where(b => b.x > startDate && b.y > 0)
-                    .Select(bar => new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(1)))
+                var startDateUnix = (startDate - refDate).TotalMilliseconds;
+                var newBars = vontobelData.payload.series[0].points.Reverse().
+                    Where(bar => bar.timestamp > startDateUnix).
+                    Select(bar => new StockDailyValue(bar.bid, bar.bid, bar.bid, bar.bid, 0, refDate.AddMilliseconds(bar.timestamp).ToLocalTime()))
                     .ToArray();
+                if (newBars.Count() > 0)
+                {
+                    return newBars;
+                }
             }
             catch (Exception ex)
             {

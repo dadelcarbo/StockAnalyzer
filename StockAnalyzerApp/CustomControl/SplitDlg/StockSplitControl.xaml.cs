@@ -1,12 +1,8 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockData.DataProviders;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;

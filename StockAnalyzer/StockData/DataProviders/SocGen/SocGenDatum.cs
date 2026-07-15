@@ -2,7 +2,7 @@
 
 namespace StockAnalyzer.StockData.DataProviders.SocGen
 {
-    public class Datum
+    public class SocGenDatum
     {
         public float Ask { get; set; }
         public float Bid { get; set; }
