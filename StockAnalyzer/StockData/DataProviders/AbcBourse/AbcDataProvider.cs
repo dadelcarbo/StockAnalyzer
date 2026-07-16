@@ -716,6 +716,11 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     groupSeries[group] = groupList = new SortedSet<string>(File.ReadAllLines(fileName)
                         .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
                         .Select(line => line.Split(';')[0]));
+
+                    if (group == Groups.SPIRICA)
+                    {
+                        groupSeries[group] = groupList = new SortedSet<string>(StockDictionary.Instruments.Values.Where(i => groupList.Contains(i.Isin)).Select(i => i.Id));
+                    }
                 }
                 else
                 {
