@@ -18,13 +18,13 @@ namespace StockAnalyzer.StockClasses
         /// </summary>
         VARIATION,
         /// <summary>
-        /// ATR: Average True Range, includes gap from previous bar
-        /// </summary>
-        ATR,
-        /// <summary>
         /// ADR: Average Bar Range, ignores gap from previous bar
         /// </summary>
         ADR,
+        /// <summary>
+        /// ADR: Average Bar Range, ignores gap from previous bar
+        /// </summary>
+        ATR,
         /// <summary>
         /// Represents the number of exchanged stocks.
         /// </summary>
@@ -60,12 +60,6 @@ namespace StockAnalyzer.StockClasses
         /// </summary>
         public float ADR => HIGH - LOW;
         public float NADR => ADR / CLOSE;
-
-        /// <summary>
-        /// ATR Average True Range (with gap)
-        /// </summary>
-        public float ATR { get; set; }
-        public float NATR => ATR / CLOSE;
 
         private static readonly CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 

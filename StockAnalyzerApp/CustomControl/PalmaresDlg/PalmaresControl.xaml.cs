@@ -442,5 +442,13 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
             else
                 mtg.Activate();
         }
+
+        private void gridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
+        {
+            if (e.Column.Header.ToString() == "Instrument" )
+            {
+                e.Cancel = true;
+            }
+        }
     }
 }

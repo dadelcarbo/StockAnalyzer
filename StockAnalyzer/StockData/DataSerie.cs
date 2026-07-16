@@ -30,7 +30,8 @@ namespace StockAnalyzer.StockData
             this.BarDuration = barDuration;
             this.Values = values;
 
-            ResetAllCache();
+            this.Initialize();
+            this.ResetAllCache();
         }
 
         public DataSerie(StockInstrument instrument, BarDuration barDuration, StockBar[] bars)
@@ -39,7 +40,8 @@ namespace StockAnalyzer.StockData
             BarDuration = barDuration;
             Values = bars.Select(b => new StockDailyValue(b.open, b.high, b.low, b.close, b.volume, DateTime.FromBinary(b.dateTicks))).ToArray();
 
-            ResetAllCache();
+            this.Initialize();
+            this.ResetAllCache();
         }
 
         public void ResetAllCache()
@@ -52,6 +54,18 @@ namespace StockAnalyzer.StockData
             this.TrailStopCache = null;
             this.TrailCache = null;
             this.dateSerie = null;
+        }
+
+        private void Initialize()
+        {
+            var previousBar = this.Values[0];
+            previousBar.VARIATION = (previousBar.OPEN - previousBar.CLOSE) / previousBar.CLOSE;
+            for (int i = 1; i < this.Values.Length; i++)
+            {
+                var bar = this.Values[i];
+                bar.VARIATION = (bar.CLOSE - previousBar.CLOSE) / previousBar.CLOSE;
+                previousBar = bar;
+            }
         }
 
         public void AddBar(StockDailyValue stockDailyValue)
@@ -128,11 +142,11 @@ namespace StockAnalyzer.StockData
                     case StockDataType.VARIATION:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VARIATION).ToArray(), "VARIATION");
                         break;
-                    case StockDataType.ATR:
-                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ATR).ToArray(), "ATR");
-                        break;
                     case StockDataType.ADR:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ADR).ToArray(), "ADR");
+                        break;
+                    case StockDataType.ATR:
+                        ValueSeries[(int)dataType] = CalculateAtr();
                         break;
                     case StockDataType.VOLUME:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VOLUME * 1.0f).ToArray(), "VOLUME");
@@ -144,6 +158,22 @@ namespace StockAnalyzer.StockData
             }
 
             return ValueSeries[(int)dataType];
+        }
+
+        private FloatSerie CalculateAtr()
+        {
+            var atrSerie = new FloatSerie(Values.Length, "ATR");
+
+            var previousBar = this.Values[0];
+            atrSerie[0] = previousBar.ADR;
+            for (int i = 0; i < this.Values.Length; i++)
+            {
+                var bar = this.Values[i];
+                atrSerie[i] = Math.Max(bar.HIGH, previousBar.CLOSE) - Math.Min(bar.LOW, previousBar.CLOSE);
+                previousBar = bar;
+            }
+
+            return atrSerie;
         }
 
         public void GetHighLowSeries(out FloatSerie lowSerie, out FloatSerie highSerie, InputType inputType, int smoothingPeriod = -1)

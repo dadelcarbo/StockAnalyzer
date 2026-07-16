@@ -319,9 +319,6 @@ namespace StockAnalyzer.StockClasses
                     case StockDataType.VARIATION:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.VARIATION).ToArray(), "VARIATION");
                         break;
-                    case StockDataType.ATR:
-                        ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ATR).ToArray(), "ATR");
-                        break;
                     case StockDataType.ADR:
                         ValueSeries[(int)dataType] = new FloatSerie(this.Values.Select(d => d.ADR).ToArray(), "ADR");
                         break;
@@ -461,13 +458,11 @@ namespace StockAnalyzer.StockClasses
             }
 
             StockDailyValue previousValue = this.Values.FirstOrDefault();
-            previousValue.ATR = previousValue.ADR;
             previousValue.VARIATION = (previousValue.CLOSE - previousValue.OPEN) / previousValue.OPEN;
 
             foreach (StockDailyValue dailyValue in this.Values.Skip(1))
             {
                 dailyValue.VARIATION = (dailyValue.CLOSE - previousValue.CLOSE) / previousValue.CLOSE;
-                dailyValue.ATR = Math.Max(dailyValue.HIGH, previousValue.CLOSE) - Math.Min(dailyValue.LOW, previousValue.CLOSE);
                 previousValue = dailyValue;
             }
             this.LastValue = previousValue;
