@@ -468,12 +468,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 var low = ParseHtmlElementAsFloat(doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Plus bas')]/following-sibling::td").InnerText);
                 var volume = ParseHtmlElementAsLong(doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Volume')]/following-sibling::td").InnerText);
 
-                // Print the results
-                Console.WriteLine($"Open: {open}");
-                Console.WriteLine($"High: {high}");
-                Console.WriteLine($"Low: {low}");
-                Console.WriteLine($"Volume: {volume}");
-
                 return new StockDailyValue(open, high, low, close, volume, DateTime.Parse(dateTime))
                 { IsComplete = false };
             }

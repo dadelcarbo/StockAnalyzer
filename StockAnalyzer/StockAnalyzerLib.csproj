@@ -301,6 +301,7 @@
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoIntradayM5DataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoJSon.cs" />
     <Compile Include="StockData\DataProviders\InstrumentDownloadHistory.cs" />
+    <Compile Include="StockData\DataProviders\MarketHours.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataClient.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoHttpClient.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoJSon.cs" />

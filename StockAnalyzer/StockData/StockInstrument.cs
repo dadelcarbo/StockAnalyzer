@@ -11,15 +11,6 @@ using System.Xml.Serialization;
 
 namespace StockAnalyzer.StockData
 {
-    public enum Market
-    {
-        EURONEXT,
-        XETRA,
-        NYSE,
-        MIXED,
-        TURBO
-    }
-
     [DebuggerDisplay("{Id}-{DisplayName}")]
     public class StockInstrument
     {
