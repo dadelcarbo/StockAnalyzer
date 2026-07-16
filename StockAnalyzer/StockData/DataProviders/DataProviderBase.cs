@@ -73,7 +73,8 @@ namespace StockAnalyzer.StockData.DataProviders
 
         protected string GetInstrumentFilePath(StockInstrument instrument)
         {
-            return string.IsNullOrEmpty(instrument.Symbol) ? Path.Combine(DataFolder, $"{instrument.Isin}.dat") : Path.Combine(DataFolder, $"{instrument.Isin}_{instrument.Symbol}.dat");
+            // Use ID to prevent discrepencies between different market/currency price. (Isin could be ull for some data Provider).
+            return string.IsNullOrEmpty(instrument.Symbol) ? Path.Combine(DataFolder, $"{instrument.Id}.dat") : Path.Combine(DataFolder, $"{instrument.Id}_{instrument.Symbol}.dat");
         }
 
         public DataSerie LoadData(StockInstrument instrument, BarDuration barDuration)

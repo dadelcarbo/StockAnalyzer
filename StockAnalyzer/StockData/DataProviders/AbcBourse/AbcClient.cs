@@ -3,12 +3,16 @@ using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Web;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 {
@@ -456,24 +460,21 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 
                 // Extract Open, High, Low, Close, and Volume
                 // Note: Adjust the XPath or CSS selectors based on the actual HTML structure
-                string dateTime = doc.GetElementbyId("lastTrade")?.InnerText.Trim().Replace("- ", "") ?? null;
-                string close = doc.GetElementbyId("lastcx")?.InnerText.Trim().Replace(",", ".").Replace("&nbsp;", "") ?? null;
-                if (close.Contains(' '))
-                    close = close.Substring(0, close.IndexOf(" ")).Trim();
+                string dateTime = doc.GetElementbyId("lastTrade")?.InnerText.Replace("- ", "");
+                var close = ParseHtmlElementAsFloat(doc.GetElementbyId("lastcx")?.InnerText);
 
-                string open = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Ouverture')]/following-sibling::td").InnerText.Trim().Replace(",", ".");
-                string high = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Plus haut')]/following-sibling::td").InnerText.Trim().Replace(",", ".");
-                string low = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Plus bas')]/following-sibling::td").InnerText.Trim().Replace(",", ".");
-                string volume = doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Volume')]/following-sibling::td").InnerText.Trim().Replace("&#xA0;", "");
+                var open = ParseHtmlElementAsFloat(doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Ouverture')]/following-sibling::td").InnerText);
+                var high = ParseHtmlElementAsFloat(doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Plus haut')]/following-sibling::td").InnerText);
+                var low = ParseHtmlElementAsFloat(doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Plus bas')]/following-sibling::td").InnerText);
+                var volume = ParseHtmlElementAsLong(doc.DocumentNode.SelectSingleNode("//td[contains(text(),'Volume')]/following-sibling::td").InnerText);
 
                 // Print the results
                 Console.WriteLine($"Open: {open}");
                 Console.WriteLine($"High: {high}");
                 Console.WriteLine($"Low: {low}");
-                Console.WriteLine($"Close: {close}");
                 Console.WriteLine($"Volume: {volume}");
 
-                return new StockDailyValue(float.Parse(open), float.Parse(high), float.Parse(low), float.Parse(close), long.Parse(volume), DateTime.Parse(dateTime))
+                return new StockDailyValue(open, high, low, close, volume, DateTime.Parse(dateTime))
                 { IsComplete = false };
             }
             catch (Exception ex)
@@ -483,5 +484,28 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             }
         }
 
+        static public CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
+        static float ParseHtmlElementAsFloat(string htmlValue)
+        {
+            var val = HttpUtility.HtmlDecode(htmlValue);
+            var decoded = string.Empty;
+            foreach (var c in val)
+            {
+                if (char.IsDigit(c) || c == ',')
+                    decoded += c;
+            }
+            return float.Parse(decoded, FrenchCulture);
+        }
+        static long ParseHtmlElementAsLong(string htmlValue)
+        {
+            var val = HttpUtility.HtmlDecode(htmlValue);
+            var decoded = string.Empty;
+            foreach (var c in val)
+            {
+                if (char.IsDigit(c) || c == ',')
+                    decoded += c;
+            }
+            return long.Parse(decoded, FrenchCulture);
+        }
     }
 }
