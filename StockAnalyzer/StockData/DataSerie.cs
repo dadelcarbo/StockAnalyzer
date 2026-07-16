@@ -74,7 +74,8 @@ namespace StockAnalyzer.StockData
 
         public int Count => Values == null ? 0 : Values.Length;
 
-        public bool HasVolume { get; private set; }
+        bool? hasVolume = null;
+        public bool HasVolume => hasVolume ??= LastValue?.VOLUME > 0;
         /// <summary>
         /// Indicates if a stock has good liquitiy on the last (period) bars by average a exchange in million of Euro.
         /// </summary>
