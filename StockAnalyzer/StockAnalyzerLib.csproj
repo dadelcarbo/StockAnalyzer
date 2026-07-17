@@ -279,6 +279,9 @@
     <Compile Include="StockData\DataProviders\AbcBourse\AbcDataProvider.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\ABCGroup.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\AbcGroupDownloadHistory.cs" />
+    <Compile Include="StockData\DataProviders\Cnn\CnnDataClient.cs" />
+    <Compile Include="StockData\DataProviders\Cnn\CnnDataProvider.cs" />
+    <Compile Include="StockData\DataProviders\Cnn\CnnJson.cs" />
     <Compile Include="StockData\DataProviders\DataProviderBase.cs" />
     <Compile Include="StockData\DataProviders\IDataHttpClient.cs" />
     <Compile Include="StockData\DataProviders\IDataProvider.cs" />
@@ -314,6 +317,7 @@
     <Compile Include="StockData\DataProviders\Vontobel\VontobelModel.cs" />
     <Compile Include="StockData\DataProviders\Yahoo\YahooDataClient.cs" />
     <Compile Include="StockData\DataProviders\Yahoo\YahooDataProvider.cs" />
+    <Compile Include="StockData\DataProviders\Yahoo\YahooJson.cs" />
     <Compile Include="StockData\StockBar.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoConfigEntry.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml.cs">

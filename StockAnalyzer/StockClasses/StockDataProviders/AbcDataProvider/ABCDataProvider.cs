@@ -1163,7 +1163,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         /// <param name="stockSerie"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        protected override bool ParseCSVFile(StockSerie stockSerie, string fileName)
+        public override bool ParseCSVFile(StockSerie stockSerie, string fileName)
         {
             if (File.Exists(fileName))
             {

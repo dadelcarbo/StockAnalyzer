@@ -266,7 +266,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         #endregion
         #region CSV FILE IO
 
-        protected virtual bool ParseCSVFile(StockSerie stockSerie, string fileName)
+        public virtual bool ParseCSVFile(StockSerie stockSerie, string fileName)
         {
             if (File.Exists(fileName))
             {

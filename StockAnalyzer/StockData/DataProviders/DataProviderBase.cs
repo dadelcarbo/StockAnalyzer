@@ -16,7 +16,8 @@ namespace StockAnalyzer.StockData.DataProviders
         SaxoTurbo,
         Vontobel,
         SocGen,
-        Yahoo
+        Yahoo,
+        Cnn
     }
     public abstract class DataProviderBase : IDataProvider
     {
@@ -26,7 +27,8 @@ namespace StockAnalyzer.StockData.DataProviders
             {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()},
             {DataProvider.Vontobel, new Vontobel.VontobelDataProvider()},
             {DataProvider.SocGen, new SocGen.SocGenDataProvider()},
-            {DataProvider.Yahoo, new Yahoo.YahooDataProvider()}
+            {DataProvider.Yahoo, new Yahoo.YahooDataProvider()},
+            {DataProvider.Cnn, new Cnn.CnnDataProvider()}
         };
 
 
