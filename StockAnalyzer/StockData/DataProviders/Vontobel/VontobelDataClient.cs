@@ -76,14 +76,20 @@ namespace StockAnalyzer.StockData.DataProviders.Vontobel
                     return null;
 
                 var startDateUnix = (startDate - refDate).TotalMilliseconds;
-                var newBars = vontobelData.payload.series[0].points.Reverse().
+                var bars = vontobelData.payload.series[0].points.Reverse().
                     Where(bar => bar.timestamp > startDateUnix).
                     Select(bar => new StockDailyValue(bar.bid, bar.bid, bar.bid, bar.bid, 0, refDate.AddMilliseconds(bar.timestamp).ToLocalTime()))
                     .ToArray();
-                if (newBars.Count() > 0)
+
+                if (MarketHours.MarketHoursTable[instrument.Market].IsOpened)
                 {
-                    return newBars;
+                    foreach (var bar in bars.Where(b => b.DATE.Date == DateTime.Today && b.DATE.Hour == DateTime.Now.Hour))
+                    {
+                        bar.IsComplete = false;
+                    }
                 }
+
+                return bars;
             }
             catch (Exception ex)
             {

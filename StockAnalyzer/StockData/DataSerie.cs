@@ -83,8 +83,9 @@ namespace StockAnalyzer.StockData
 
 
         public int LastIndex => Values == null ? -1 : Values.Length - 1;
-        public int LastCompleteIndex => this.LastIndex > 0 ? this.Values[LastIndex].IsComplete ? this.LastIndex : this.LastIndex : -1;
+        public int LastCompleteIndex => this.LastIndex > 0 ? this.Values[LastIndex].IsComplete ? this.LastIndex : this.LastIndex - 1 : -1;
         public StockDailyValue LastValue => Values == null || Values.Length == 0 ? null : Values[Values.Length - 1];
+        public StockDailyValue LastCompleteValue => LastCompleteIndex < 0 ? null : Values[LastCompleteIndex];
 
         public int Count => Values == null ? 0 : Values.Length;
 

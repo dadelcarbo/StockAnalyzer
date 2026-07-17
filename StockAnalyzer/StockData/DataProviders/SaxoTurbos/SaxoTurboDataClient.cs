@@ -72,10 +72,20 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                 if (saxoData?.series?[0]?.data == null || saxoData?.series?[0]?.data.Count == 0)
                     return null;
 
-                return saxoData.series[0].data
+                var bars = saxoData.series[0].data
                     .Where(b => b.x > startDate && b.y > 0)
                     .Select(bar => new StockDailyValue(bar.y, bar.h, bar.l, bar.c, 0, bar.x.AddHours(1)))
                     .ToArray();
+
+                if (MarketHours.MarketHoursTable[instrument.Market].IsOpened)
+                {
+                    foreach (var bar in bars.Where(b => b.DATE.Date == DateTime.Today && b.DATE.Hour == DateTime.Now.Hour))
+                    {
+                        bar.IsComplete = false;
+                    }
+                }
+
+                return bars;
             }
             catch (Exception ex)
             {

@@ -58,7 +58,7 @@ namespace StockAnalyzer.StockData
 
         public static void Serialize(string path, IEnumerable<StockDailyValue> dailyValues)
         {
-            var bars = dailyValues.Select(v => new StockBar
+            var bars = dailyValues.Where(b => b.IsComplete).Select(v => new StockBar
             {
                 open = v.OPEN,
                 high = v.HIGH,

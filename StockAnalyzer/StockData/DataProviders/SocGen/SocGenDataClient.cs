@@ -37,8 +37,17 @@ namespace StockAnalyzer.StockData.DataProviders.SocGen
                 if (tickBars == null || !tickBars.Any())
                     return null;
 
-                return GenerateHourBarFromTickBar(tickBars)?.ToArray();
+                var bars = GenerateHourBarFromTickBar(tickBars)?.ToArray();
 
+                if (MarketHours.MarketHoursTable[instrument.Market].IsOpened)
+                {
+                    foreach (var bar in bars.Where(b => b.DATE.Date == DateTime.Today && b.DATE.Hour == DateTime.Now.Hour))
+                    {
+                        bar.IsComplete = false;
+                    }
+                }
+
+                return bars;
             }
             catch (Exception ex)
             {

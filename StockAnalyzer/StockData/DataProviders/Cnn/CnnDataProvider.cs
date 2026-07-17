@@ -28,7 +28,16 @@ namespace StockAnalyzer.StockData.DataProviders.Cnn
 
         protected override StockInstrument CreateInstrumentFromConfigLine(string line)
         {
-            throw new NotImplementedException();
+            var fields = line.Split(',');
+            var longName = fields[0];
+            return new StockInstrument
+            {
+                Name = longName,
+                Id = longName,
+                Group = (Groups)Enum.Parse(typeof(Groups), fields[1]),
+                Provider = DataProvider.Cnn,
+                Market = (Market)Enum.Parse(typeof(Market), fields[2])
+            };
         }
 
         protected override void PostInitDictionary(bool download)
@@ -38,16 +47,6 @@ namespace StockAnalyzer.StockData.DataProviders.Cnn
         protected override void PreInitDictionary(bool download)
         {
             this.dataClient = new CnnDataClient();
-
-            var longName = "FEAR_GREED";
-            StockDictionary.Instruments.Add(longName, new StockInstrument
-            {
-                Name = longName,
-                Id = longName,
-                Group = Groups.INDICATOR,
-                Provider = DataProvider.Cnn,
-                Market = Market.NYSE
-            });
         }
 
     }

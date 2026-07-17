@@ -285,24 +285,21 @@ namespace StockAnalyzer.StockData.DataProviders
                 DateTime startDate = dataSerie?.LastValue != null ? dataSerie.LastValue.DATE.Date : DateTime.MinValue;
 
                 // Improvement check if last day is complete
-
                 var newBars = this.dataClient.GetData(instrument, startDate);
 
                 if (newBars != null && newBars.Length > 0)
                 {
-                    var finalBars = dataSerie == null ? newBars : dataSerie.Values.Where(v => v.DATE < startDate).Union(newBars).ToArray();
+                    var pivotDate = newBars[0].DATE;
+                    var finalBars = dataSerie == null ? newBars : dataSerie.Values.Where(v => v.DATE < pivotDate).Union(newBars).ToArray();
 
-                    // Serialize todays bar only if time is greater that 22:10 pm
-                    var isLate = DateTime.Now.TimeOfDay > new TimeSpan(22, 10, 0);
-                    var serializeBars = finalBars.Where(b => b.DATE.Date < DateTime.Now.Date || isLate).ToArray();
-                    StockBar.Serialize(GetInstrumentFilePath(instrument), serializeBars);
+                    StockBar.Serialize(GetInstrumentFilePath(instrument), finalBars);
 
                     dataSerie = new DataSerie(instrument, DefaultDuration, finalBars);
 
                     instrument.SetDataSerie(DefaultDuration, dataSerie);
 
                     var history = GetDownloadHistory(instrument);
-                    history.LastDate = dataSerie.LastValue.DATE;
+                    history.LastDate = dataSerie.LastCompleteValue.DATE;
                     history.DownloadDate = DateTime.Now;
                 }
                 else

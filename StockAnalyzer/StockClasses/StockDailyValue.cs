@@ -61,6 +61,9 @@ namespace StockAnalyzer.StockClasses
         public float ADR => HIGH - LOW;
         public float NADR => ADR / CLOSE;
 
+        public bool IsComplete { get; set; } = true;
+
+
         private static readonly CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
         public float GetStockData(StockDataType dataType)
@@ -191,8 +194,6 @@ namespace StockAnalyzer.StockClasses
         }
         #endregion
 
-        private bool isComplete = true;
-        public bool IsComplete { get { return isComplete; } set { isComplete = value; } }
 
         #region Serialization
 

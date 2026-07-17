@@ -497,14 +497,6 @@ namespace StockAnalyzerApp
             DataProviderBase.DownloadStarted += Notifiy_SplashProgressChanged;
             DataProviderBase.Initialize(download);
 
-            //CnnDataProvider cnnDP = new CnnDataProvider();
-            //cnnDP.InitDictionary(StockDictionary.Instance, true);
-            //var fngSerie = StockDictionary.Instance["FEAR_GREED"];
-            //cnnDP.ParseCSVFile(fngSerie, @"C:\ProgramData\UltimateChartist\data2\archive\daily\Cnn\FnG_FEAR_GREED_BREADTH.csv");
-            //StockBar.Serialize("C:\\ProgramData\\UltimateChartistNew\\Data\\Cnn\\Dat\\FEAR_GREED.dat", fngSerie.Values);
-
-
-
 
             //foreach( var group in StockDictionary.Instruments.Values.Where(i=>i.Provider != DataProvider.ABC).GroupBy(i=>i.Provider))
             //{
