@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
-using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,8 +9,28 @@ using System.Linq;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
+    public enum DataProvider
+    {
+        All = 0,
+        ABC,
+        SaxoTurbo,
+        Vontobel,
+        SocGen,
+        Yahoo
+    }
     public abstract class DataProviderBase : IDataProvider
     {
+        static SortedDictionary<DataProvider, IDataProvider> DataProviders { get; } = new SortedDictionary<DataProvider, IDataProvider>()
+        {
+            {DataProvider.ABC, new AbcBourse.AbcDataProvider() },
+            {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()},
+            {DataProvider.Vontobel, new Vontobel.VontobelDataProvider()},
+            {DataProvider.SocGen, new SocGen.SocGenDataProvider()},
+            {DataProvider.Yahoo, new Yahoo.YahooDataProvider()}
+        };
+
+
+
         protected TimeSpan shortDelay = new TimeSpan(0, 2, 0);
 
         protected static readonly DateTime refDate = new DateTime(1970, 01, 01);
@@ -76,14 +95,6 @@ namespace StockAnalyzer.StockData.DataProviders
             }
             return null;
         }
-
-        static SortedDictionary<DataProvider, IDataProvider> DataProviders { get; } = new SortedDictionary<DataProvider, IDataProvider>()
-        {
-            {DataProvider.ABC, new AbcBourse.AbcDataProvider() },
-            {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()},
-            {DataProvider.Vontobel, new Vontobel.VontobelDataProvider()},
-            {DataProvider.SocGen, new SocGen.SocGenDataProvider()}
-        };
 
         public static IDataProvider GetDataProvider(DataProvider dataProvider)
         {
@@ -268,7 +279,7 @@ namespace StockAnalyzer.StockData.DataProviders
 
                 NotifyProgress($"Downloading {instrument.DisplayName}");
 
-                DataSerie dataSerie = LoadData(instrument, BarDuration.H_1);
+                DataSerie dataSerie = LoadData(instrument, DefaultDuration);
                 DateTime startDate = dataSerie?.LastValue != null ? dataSerie.LastValue.DATE.Date : DateTime.MinValue;
 
                 // Improvement check if last day is complete

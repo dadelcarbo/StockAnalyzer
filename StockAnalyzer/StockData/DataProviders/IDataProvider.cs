@@ -3,15 +3,6 @@ using System;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
-    public enum DataProvider
-    {
-        All = 0,
-        ABC,
-        SaxoTurbo,
-        Vontobel,
-        SocGen
-    }
-
     public delegate void DownloadingEventHandler(string text);
 
     public interface IDataProvider
@@ -84,7 +75,7 @@ namespace StockAnalyzer.StockData.DataProviders
         /// </summary>
         /// <param name="instrument"></param>
         /// <param name="predicate">Condition that specifies which data to be kept</param>
-        void KeepOnlyBars(StockInstrument instrument, Func<StockDailyValue,bool> predicate);
+        void KeepOnlyBars(StockInstrument instrument, Func<StockDailyValue, bool> predicate);
 
         bool SupportsDuration(BarDuration duration);
 

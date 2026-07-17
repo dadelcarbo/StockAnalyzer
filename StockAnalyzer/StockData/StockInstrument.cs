@@ -271,5 +271,10 @@ namespace StockAnalyzer.StockData
         }
 
         #endregion
+
+        public string ToDef()
+        {
+            return $"{Id},{Name},{Isin},{Symbol},{Ticker},{Group},{Market}";
+        }
     }
 }

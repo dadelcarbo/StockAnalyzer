@@ -17,6 +17,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows;
+using StockAnalyzer.StockData.DataProviders;
 
 namespace StockAnalyzer.StockPortfolio
 {
@@ -381,60 +382,68 @@ namespace StockAnalyzer.StockPortfolio
 
         #region SAXO Integration Management
 
-        private static readonly SortedDictionary<long, StockSerie> UicToSerieCache = new SortedDictionary<long, StockSerie>();
+        private static readonly SortedDictionary<long, StockInstrument> UicToSerieCache = new SortedDictionary<long, StockInstrument>();
 
-        public StockSerie GetStockSerieFromUic(long uic)
+        public StockInstrument GetInstrumentFromUic(long uic)
         {
             using var ml = new MethodLogger(this);
             if (UicToSerieCache.ContainsKey(uic))
                 return UicToSerieCache[uic];
 
-            StockSerie stockSerie = null;
+            StockInstrument instrument = null;
             var saxoInstrument = instrumentService.GetInstrumentById(uic);
             if (saxoInstrument == null)
             {
-                stockSerie = new StockSerie(uic.ToString(), uic.ToString(), Groups.ALL, StockDataProvider.Generated, BarDuration.Daily);
-                UicToSerieCache.Add(uic, stockSerie);
-                StockLog.Write($"Instrument: {uic} not found !");
-                return stockSerie;
+                throw new NotImplementedException("GetInstrumentFromUic instrument null");
+                //instrument = new StockSerie(uic.ToString(), uic.ToString(), Groups.ALL, StockDataProvider.Generated, BarDuration.Daily);
+                //UicToSerieCache.Add(uic, instrument);
+                //StockLog.Write($"Instrument: {uic} not found !");
+                //return instrument;
             }
 
             // Find StockSerie by ISIN
             if (!string.IsNullOrEmpty(saxoInstrument.Isin))
             {
-                stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == saxoInstrument.Isin);
-                if (stockSerie != null)
+                instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == saxoInstrument.Isin);
+                if (instrument != null)
                 {
-                    UicToSerieCache.Add(uic, stockSerie);
-                    return stockSerie;
+                    UicToSerieCache.Add(uic, instrument);
+                    return instrument;
                 }
-                stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.ISIN == saxoInstrument.Isin);
-                if (stockSerie != null)
+                instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == saxoInstrument.Isin);
+                if (instrument != null)
                 {
-                    UicToSerieCache.Add(uic, stockSerie);
-                    return stockSerie;
+                    UicToSerieCache.Add(uic, instrument);
+                    return instrument;
                 }
             }
 
             // Find instrument in stock Dictionnary by Symbol
             var symbol = saxoInstrument.Symbol.Split(':')[0];
             var stockName = saxoInstrument.Description.ToUpper().Replace("SA", "").Replace("SCA", "").Trim();
-            stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => (s.Symbol == symbol) || s.StockName == stockName);
-            if (stockSerie == null)
+            instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => (s.Symbol == symbol) || s.Name == stockName);
+            if (instrument == null)
             {
+                //throw new NotImplementedException("GetInstrumentFromUic instrument null");
                 if (saxoInstrument.ExchangeId == "CATS_SAXO" || saxoInstrument.AssetType == "WarrantOpenEndKnockOut")
                 {
-                    stockSerie = new StockSerie(saxoInstrument.Description, symbol, Groups.TURBO, StockDataProvider.SaxoIntraday, BarDuration.H_1);
-                    stockSerie.ISIN = symbol;
+                    instrument = new StockInstrument()
+                    {
+                        Id = symbol,
+                        Name = saxoInstrument.Description,
+                        Symbol = symbol,
+                        Group = Groups.TURBO,
+                        Provider = DataProvider.SaxoTurbo
+                    };
                 }
             }
-            if (string.IsNullOrEmpty(saxoInstrument.Isin) && !string.IsNullOrEmpty(stockSerie?.ISIN))
+            if (string.IsNullOrEmpty(saxoInstrument.Isin) && !string.IsNullOrEmpty(instrument?.Isin))
             {
-                saxoInstrument.Isin = stockSerie.ISIN;
+                saxoInstrument.Isin = instrument.Isin;
                 instrumentService.GetInstrumentByIsin(saxoInstrument.Isin);
             }
-            UicToSerieCache.Add(uic, stockSerie);
-            return stockSerie;
+            UicToSerieCache.Add(uic, instrument);
+            return instrument;
         }
 
         Account account = null;
@@ -547,9 +556,9 @@ namespace StockAnalyzer.StockPortfolio
                 {
                     foreach (var order in saxoOpenedOrders)
                     {
-                        var stockSerie = GetStockSerieFromUic(order.Uic);
+                        var stockSerie = GetInstrumentFromUic(order.Uic);
                         var saxoOrder = new SaxoOrder(order);
-                        saxoOrder.StockName = stockSerie == null ? order.Uic.ToString() : stockSerie.StockName;
+                        saxoOrder.StockName = stockSerie == null ? order.Uic.ToString() : stockSerie.DisplayName;
 
                         this.SaxoOpenOrders.Add(saxoOrder);
                     }
@@ -630,7 +639,7 @@ namespace StockAnalyzer.StockPortfolio
             }
             else
             {
-                var lastCacDate = StockDictionary.Instance["CAC40"].LastValue.DATE.Date;
+                var lastCacDate = StockDictionary.Instruments["FR0003500008p"].GetDefaultDataSerie().LastValue.DATE; // CAC40
                 var lastDate = this.AccountValue.Last().Date;
                 if (lastDate <= lastCacDate)
                 {
@@ -658,7 +667,7 @@ namespace StockAnalyzer.StockPortfolio
                     {
                         var order = new SaxoOrder(activityOrder);
                         this.SaxoOrders.Add(order);
-                        var stockSerie = GetStockSerieFromUic(order.Uic);
+                        var stockSerie = GetInstrumentFromUic(order.Uic);
                         if (stockSerie == null)
                         {
                             StockLog.Write($"StockSerie for UIC:{order.Uic} not found");
@@ -670,8 +679,8 @@ namespace StockAnalyzer.StockPortfolio
                         }
                         else
                         {
-                            order.StockName = stockSerie.StockName;
-                            order.Isin = stockSerie.ISIN;
+                            order.StockName = stockSerie.Name;
+                            order.Isin = stockSerie.Isin;
                         }
                         ProcessFullyFilledOrder(activityOrder, order);
                     }

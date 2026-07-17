@@ -312,6 +312,8 @@
     <Compile Include="StockData\DataProviders\Vontobel\VontobelDataClient.cs" />
     <Compile Include="StockData\DataProviders\Vontobel\VontobelDataProvider.cs" />
     <Compile Include="StockData\DataProviders\Vontobel\VontobelModel.cs" />
+    <Compile Include="StockData\DataProviders\Yahoo\YahooDataClient.cs" />
+    <Compile Include="StockData\DataProviders\Yahoo\YahooDataProvider.cs" />
     <Compile Include="StockData\StockBar.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoConfigEntry.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml.cs">

@@ -496,7 +496,17 @@ namespace StockAnalyzerApp
             DataProviderBase.DownloadStarted += Notifiy_SplashProgressChanged;
             DataProviderBase.Initialize(download);
 
-            StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
+            //foreach( var group in StockDictionary.Instruments.Values.Where(i=>i.Provider != DataProvider.ABC).GroupBy(i=>i.Provider))
+            //{
+            //    Console.WriteLine(group.ToString());
+
+            //    foreach(var i in group)
+            //    {
+            //        Console.WriteLine(i.ToDef());
+            //    }
+            //}
+
+            //StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
 
             //
             InitialiseThemeCombo();
@@ -2460,14 +2470,15 @@ namespace StockAnalyzerApp
             string reportBody = html;
             foreach (var position in positions)
             {
-                StockSerie stockSerie = portfolio.GetStockSerieFromUic(position.Uic);
+                var instrument = portfolio.GetInstrumentFromUic(position.Uic);
 
-                if (stockSerie != null && stockSerie.Initialise() && stockSerie.Values.Count() > 50)
+                if (instrument != null)
                 {
-                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(StockDictionary.Instruments[stockSerie.StockName], position.Theme, false, position.BarDuration);
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(StockDictionary.Instruments[instrument.Id], position.Theme, false, position.BarDuration);
 
-                    var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", stockSerie.StockName) + "\r\n";
-                    var lastValue = stockSerie.ValueArray.Last();
+                    var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", instrument.DisplayName) + "\r\n";
+                    var dataSerie = instrument.GetDefaultDataSerie();
+                    var lastValue = dataSerie.LastValue;
                     var risk = (position.Stop - position.EntryValue) / position.EntryValue;
                     var portfolioRisk = (position.Stop - position.EntryValue) * position.EntryQty / portfolio.TotalValue;
                     var positionReturn = (lastValue.CLOSE - position.EntryValue) / position.EntryValue;
@@ -2483,7 +2494,7 @@ namespace StockAnalyzerApp
                         Replace("%COL6%", positionReturn.ToString("P2")).
                         Replace("%COL7%", portfolioReturn.ToString("P2")).
                         Replace("%COL8%", riskReward.ToString("0.##"));
-                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", stockSerie.StockName).Replace("%DURATION%", position.BarDuration.ToString()).Replace("%IMG%", bitmapString) + "\r\n";
+                    picturehtml += stockPictureTemplate.Replace("%STOCKNAME%", instrument.DisplayName).Replace("%DURATION%", position.BarDuration.ToString()).Replace("%IMG%", bitmapString) + "\r\n";
                 }
                 else
                 {
@@ -2504,10 +2515,11 @@ namespace StockAnalyzerApp
                 }
             }
 
-            var portfolioSerie = StockDictionary.Instruments[portfolio.Name];
-
-            var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio2", false, BarDuration.Daily, 350);
-            picturehtml = stockPictureTemplate.Replace("%STOCKNAME%", portfolio.Name).Replace(" - %DURATION%", "").Replace("%IMG%", portfolioSerieBitmapString) + "\r\n" + picturehtml;
+            if (StockDictionary.Instruments.TryGetValue(portfolio.Name, out var portfolioSerie))
+            {
+                var portfolioSerieBitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(portfolioSerie, "_Portfolio2", false, BarDuration.Daily, 350);
+                picturehtml = stockPictureTemplate.Replace("%STOCKNAME%", portfolio.Name).Replace(" - %DURATION%", "").Replace("%IMG%", portfolioSerieBitmapString) + "\r\n" + picturehtml;
+            }
 
             reportBody += @" 
 </tbody>
@@ -2549,13 +2561,14 @@ namespace StockAnalyzerApp
 
             foreach (var order in portfolio.SaxoOpenOrders.Where(o => o.BuySell == "Buy"))
             {
-                StockSerie stockSerie = portfolio.GetStockSerieFromUic(order.Uic);
-                if (stockSerie != null)
+                var instrument = portfolio.GetInstrumentFromUic(order.Uic);
+                if (instrument != null)
                 {
-                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(StockDictionary.Instruments[stockSerie.StockName], order.Theme, false, order.BarDuration, 350);
+                    var bitmapString = StockAnalyzerForm.MainFrame.GetStockSnapshotAsHtml(StockDictionary.Instruments[instrument.Id], order.Theme, false, order.BarDuration, 350);
 
                     var stockNameHtml = stockNamePortfolioTemplate.Replace("%STOCKNAME%", order.StockName) + "\r\n";
-                    var lastValue = stockSerie.LastValue;
+                    var dataSerie = instrument.GetDefaultDataSerie();
+                    var lastValue = dataSerie.LastValue;
                     var risk = (order.Stop - order.Price.Value) / order.Price.Value;
                     var portfolioRisk = (order.Stop - order.Price.Value) * order.Qty / portfolio.TotalValue;
                     var positionReturn = (lastValue.CLOSE - order.Price.Value) / order.Price.Value;
@@ -2567,7 +2580,7 @@ namespace StockAnalyzerApp
                     Replace("%COL3%", order.Stop.ToString("#.##")).
                     Replace("%COL4%", risk.ToString("P2")).
                     Replace("%COL5%", portfolioRisk.ToString("P2"));
-                    orderPictureHtml += stockPictureTemplate.Replace("%STOCKNAME%", stockSerie.StockName).Replace("%DURATION%", order.BarDuration.ToString()).Replace("%IMG%", bitmapString) + "\r\n";
+                    orderPictureHtml += stockPictureTemplate.Replace("%STOCKNAME%", instrument.DisplayName).Replace("%DURATION%", order.BarDuration.ToString()).Replace("%IMG%", bitmapString) + "\r\n";
                 }
                 else
                 {

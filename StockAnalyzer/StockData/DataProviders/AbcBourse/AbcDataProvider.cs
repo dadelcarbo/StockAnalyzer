@@ -42,7 +42,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 
         string ABC_WEB_CACHE_FOLDER;
         string ABC_TMP_FOLDER;
-        string ABC_PROCESSED_FOLDER;
         string ABC_DAILY_CFG_GROUP_FOLDER;
         string ABC_DAILY_CFG_FOLDER;
         string configPath;
@@ -55,12 +54,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 Directory.CreateDirectory(ABC_WEB_CACHE_FOLDER);
             }
             AbcClient.CacheFolder = ABC_WEB_CACHE_FOLDER;
-
-            ABC_PROCESSED_FOLDER = Path.Combine(DataRootFolder, @"Processed");
-            if (!Directory.Exists(ABC_PROCESSED_FOLDER))
-            {
-                Directory.CreateDirectory(ABC_PROCESSED_FOLDER);
-            }
 
             ABC_TMP_FOLDER = Path.Combine(DataRootFolder, "Tmp");
             if (!Directory.Exists(ABC_TMP_FOLDER))
@@ -206,14 +199,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             {
                 var lines = fileGroup.SelectMany(f => File.ReadAllLines(f));
                 LoadDataFromAbcLines(lines);
-
-                foreach (var f in fileGroup)
-                {
-                    var destFile = f.Replace(ABC_TMP_FOLDER, ABC_PROCESSED_FOLDER);
-                    if (File.Exists(destFile))
-                        File.Delete(destFile);
-                    File.Move(f, destFile);
-                }
             }
         }
 
