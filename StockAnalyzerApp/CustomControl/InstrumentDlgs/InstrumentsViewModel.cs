@@ -29,7 +29,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
     {
         static public IEnumerable<Groups> Groups => StockDictionary.Instance.GetValidGroups();
 
-        private StockAnalyzer.StockClasses.Groups group;
+        private Groups group;
         public Groups Group
         {
             get { return group; }

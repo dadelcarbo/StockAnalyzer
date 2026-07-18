@@ -44,12 +44,18 @@ namespace StockAnalyzer.StockClasses
                 validGroups = new List<Groups>();
                 foreach (Groups group in Enum.GetValues(typeof(Groups)))
                 {
-                    if (!Instruments.Values.Any(s => s.BelongsToGroup(group)) || group == Groups.ALL ||
-                        group == Groups.NONE)
+                    if (group == Groups.ALL || group == Groups.NONE)
                     {
-                        continue;
+                        validGroups.Add(group);
                     }
-                    validGroups.Add(group);
+                    else
+                    {
+                        if (!Instruments.Values.Any(s => s.BelongsToGroup(group)))
+                        {
+                            continue;
+                        }
+                        validGroups.Add(group);
+                    }
                 }
             }
             return validGroups;

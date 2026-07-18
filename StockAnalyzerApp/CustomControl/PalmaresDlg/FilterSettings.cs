@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using System.Collections.Generic;
 
 namespace StockAnalyzerApp.CustomControl.PalmaresDlg

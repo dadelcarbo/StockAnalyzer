@@ -1,6 +1,7 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         public SectorViewModel()
         {
             this.BarDuration = BarDuration.Daily;
-            this.group = StockAnalyzer.StockClasses.Groups.SECTORS_STOXX;
+            this.group = StockAnalyzer.StockData.Groups.SECTORS_STOXX;
         }
 
         BarDuration barDuration;

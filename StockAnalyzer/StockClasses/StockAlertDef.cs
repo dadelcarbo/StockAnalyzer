@@ -1,4 +1,5 @@
-﻿using StockAnalyzerSettings;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.IO;

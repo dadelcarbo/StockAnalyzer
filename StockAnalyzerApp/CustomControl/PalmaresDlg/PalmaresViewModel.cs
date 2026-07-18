@@ -5,6 +5,7 @@ using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockScripting;
 using StockAnalyzerSettings;
@@ -494,7 +495,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 #endregion
                 if (this.DownloadIntraday)
                 {
-                    if (this.group != StockAnalyzer.StockClasses.Groups.TURBO)
+                    if (this.group != StockAnalyzer.StockData.Groups.TURBO)
                     {
                         var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
                         dataProvider.DownloadAllGroupsIntraday();
@@ -518,7 +519,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     count++;
                     if (count % 10 == 0)
                         this.Progress = count;
-                    if (this.DownloadIntraday && (this.group == StockAnalyzer.StockClasses.Groups.TURBO_5M || this.group == StockAnalyzer.StockClasses.Groups.TURBO))
+                    if (this.DownloadIntraday && (this.group == StockAnalyzer.StockData.Groups.TURBO_5M || this.group == StockAnalyzer.StockData.Groups.TURBO))
                     {
                         throw new NotImplementedException("DownloadIntraday for TURBO not implemented yet");
                         //StockDataProviderBase.DownloadSerieData(instrument);

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using System.Windows.Forms;
 
 namespace StockAnalyzerApp.CustomControl.MarketReplay

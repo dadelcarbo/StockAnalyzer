@@ -12,6 +12,7 @@ using System.Windows;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using StockAnalyzer.StockData;
 
 namespace StockAnalyzer.StockPortfolio.Saxo
 {
