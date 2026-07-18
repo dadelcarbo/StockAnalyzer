@@ -5,12 +5,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.InstrumentDlgs" 
+             xmlns:helpers="clr-namespace:StockAnalyzer.StockHelpers;assembly=StockAnalyzer"
              xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="1000" Background="AntiqueWhite"
              d:DataContext="{d:DesignInstance Type=local:InstrumentViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <helpers:FloatToCurrencyConverter x:Key="FloatToCurrencyConverter"/>
         <local:SaxoMappingStyleSelector x:Key="SaxoMappingStyleSelector" >
             <local:SaxoMappingStyleSelector.NotFoundStyle>
                 <Style TargetType="telerik:GridViewCell">
@@ -62,9 +64,8 @@
                     </StackPanel>
                     <telerik:RadGridView FontSize="9" Name="gridView" Grid.Row="1" Margin="1,1,1,1" ShowGroupPanel="True" RowIndicatorVisibility="Collapsed"
                              ItemsSource="{Binding Lines}" IsReadOnly="True" AutoGenerateColumns="False"
-                             SelectionChanged="RadGridView_SelectionChanged" FrozenColumnCount="5" Grid.ColumnSpan="2">
+                             SelectionChanged="RadGridView_SelectionChanged" FrozenColumnCount="4" Grid.ColumnSpan="2">
                         <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn Header="Excluded" DataMemberBinding="{Binding Instrument.StockAnalysis.Excluded}"/>
                             <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding Instrument.Group}"/>
 
                             <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Instrument.Id}"/>
@@ -75,16 +76,18 @@
                             <telerik:GridViewDataColumn Header="Market" DataMemberBinding="{Binding Instrument.Market}"/>
                             <telerik:GridViewDataColumn Header="Provider" DataMemberBinding="{Binding Instrument.Provider}"/>
                             <telerik:GridViewDataColumn Header="Ticker" DataMemberBinding="{Binding Instrument.Ticker}"/>
-                            <telerik:GridViewDataColumn Header="SaxoId" DataMemberBinding="{Binding Instrument.StockSerie.SaxoId}"/>
-                            <telerik:GridViewDataColumn Header="Uic" DataMemberBinding="{Binding Instrument.StockSerie.Uic}"/>
-                            
-                            <telerik:GridViewDataColumn Header="Underlying" DataMemberBinding="{Binding Instrument.StockSerie.Underlying}"/>
-                            <telerik:GridViewDataColumn Header="Url" DataMemberBinding="{Binding Instrument.StockSerie.Url}"/>
 
-                            <telerik:GridViewDataColumn Header="Exchanged" DataMemberBinding="{Binding LastValue.EXCHANGED}"/>
+                            <telerik:GridViewDataColumn Header="Exchanged" DataMemberBinding="{Binding LastValue.EXCHANGED, Converter={StaticResource FloatToCurrencyConverter}}"/>
                             <telerik:GridViewDataColumn Header="Close" DataMemberBinding="{Binding LastValue.CLOSE}"/>
                             <telerik:GridViewDataColumn Header="Last Date" DataMemberBinding="{Binding LastValue.DATE}"/>
                             <telerik:GridViewDataColumn Header="First Date" DataMemberBinding="{Binding FirstValue.DATE}"/>
+
+                            <telerik:GridViewDataColumn Header="SaxoId" DataMemberBinding="{Binding Instrument.StockSerie.SaxoId}"/>
+                            <telerik:GridViewDataColumn Header="Uic" DataMemberBinding="{Binding Instrument.StockSerie.Uic}"/>
+
+                            <telerik:GridViewDataColumn Header="Underlying" DataMemberBinding="{Binding Instrument.StockSerie.Underlying}"/>
+                            <telerik:GridViewDataColumn Header="Url" DataMemberBinding="{Binding Instrument.StockSerie.Url}"/>
+
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>

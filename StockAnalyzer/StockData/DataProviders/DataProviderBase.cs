@@ -219,9 +219,20 @@ namespace StockAnalyzer.StockData.DataProviders
 
         public abstract void OpenInDataProvider(StockInstrument stockInstrument);
 
-        public virtual bool Remove(StockInstrument instrument)
+        public virtual void Remove(IEnumerable<StockInstrument> instruments)
         {
-            throw new NotImplementedException();
+            if (File.Exists(ConfigFile))
+            {
+                var lines = File.ReadAllLines(ConfigFile).ToList();
+
+                foreach (var instrument in instruments)
+                {
+                    lines.RemoveAll(l => l.Contains(instrument.Id));
+                    StockDictionary.Instruments.Remove(instrument.Id);
+                }
+
+                File.WriteAllLines(ConfigFile, lines);
+            }
         }
 
         public void KeepOnlyBars(StockInstrument instrument, Func<StockDailyValue, bool> predicate)
@@ -290,12 +301,11 @@ namespace StockAnalyzer.StockData.DataProviders
                 if (newBars != null && newBars.Length > 0)
                 {
                     var pivotDate = newBars[0].DATE;
-                    var finalBars = dataSerie == null ? newBars : dataSerie.Values.Where(v => v.DATE < pivotDate).Union(newBars).ToArray();
+                    newBars = dataSerie == null ? newBars : dataSerie.Values.Where(v => v.DATE < pivotDate).Union(newBars).ToArray();
 
-                    StockBar.Serialize(GetInstrumentFilePath(instrument), finalBars);
+                    StockBar.Serialize(GetInstrumentFilePath(instrument), newBars);
 
-                    dataSerie = new DataSerie(instrument, DefaultDuration, finalBars);
-
+                    dataSerie = new DataSerie(instrument, DefaultDuration, newBars);
                     instrument.SetDataSerie(DefaultDuration, dataSerie);
 
                     var history = GetDownloadHistory(instrument);

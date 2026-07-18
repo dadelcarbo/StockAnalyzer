@@ -374,7 +374,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected override void OnSizeChanged(EventArgs e)
         {
             using MethodLogger ml = new MethodLogger(this, false);
-            if (this.GetType().ToString() == "StockAnalyzerApp.CustomControl.GraphControls.GraphCloseControl")
+            if (this is GraphCloseControl)
             {
                 if (this.alternateString == "App too small..." && this.FindForm().WindowState != FormWindowState.Normal)
                 {

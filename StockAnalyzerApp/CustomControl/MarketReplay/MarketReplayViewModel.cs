@@ -410,7 +410,7 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
             this.replaySerie = new StockSerie(name, name, this.selectedGroup, StockDataProvider.Replay, BarDuration.Daily);
 
             // Select random serie
-            var series = StockDictionary.Instance.Values.Where(v => !v.StockAnalysis.Excluded && v.BelongsToGroup(this.selectedGroup)).ToList();
+            var series = StockDictionary.Instance.Values.Where(v => v.BelongsToGroup(this.selectedGroup)).ToList();
             var rnd = new Random();
 
             referenceSerie = series[rnd.Next(0, series.Count)];
@@ -425,8 +425,8 @@ namespace StockAnalyzerApp.CustomControl.MarketReplay
 
             CopyReferenceValues(referenceSerieIndex + 1);
 
-            throw new NotImplementedException   ("StartReplay not implemented");
-//            StockDictionary.Instruments.Add(name, replayInstrument = new StockInstrument(replaySerie));
+            throw new NotImplementedException("StartReplay not implemented");
+            //            StockDictionary.Instruments.Add(name, replayInstrument = new StockInstrument(replaySerie));
 
             this.SelectedInstrumentChanged(replayInstrument, true);
 

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockDrawing;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Drawing;
@@ -68,24 +69,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.mainSerie = CurveList.Find(c => c.DataSerie.Name == "EXCHANGED").DataSerie;
 
             float lastValue = this.mainSerie[EndIndex];
-            string lastValueString = string.Empty;
-            if (lastValue > 1000000000)
-            {
-                lastValueString += (lastValue / 1000000000).ToString("0.##") + "G€";
-            }
-            else
-                if (lastValue > 1000000)
-                {
-                    lastValueString += (lastValue / 1000000).ToString("0.##") + "M€";
-                }
-                else if (lastValue > 1000)
-                {
-                    lastValueString += (lastValue / 1000).ToString("0.##") + "K€";
-                }
-                else
-                {
-                    lastValueString += lastValue.ToString("0.##") + "€";
-                }
+            string lastValueString = FloatToCurrencyConverter.Convert(lastValue);
 
             aGraphic.DrawString(lastValueString, axisFont, legendBrush, GraphRectangle.Right + 1, GraphRectangle.Top + 8);
 
@@ -175,7 +159,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         var volume = this.dataSerie.Values[this.lastMouseIndex].VOLUME;
                         var exchanged = curveType.DataSerie[this.lastMouseIndex];
                         value += BuildTabbedString("VOLUME", volume, 12) + "\r\n";
-                        value += BuildTabbedString("EXCHANGED", exchanged / 1000000, 12) + "\r\n";
+                        value += BuildTabbedString("EXCHANGED", FloatToCurrencyConverter.Convert(exchanged), 12) + "\r\n";
                     }
                     else
                     {
@@ -195,7 +179,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
                 PointF point = new PointF(Math.Min(mousePoint.X + 10, GraphRectangle.Right - size.Width), GraphRectangle.Top + 5);
 
-                this.DrawString(this.foregroundGraphic, value, font, Brushes.Black, this.BackgroundBrush, point, true);
+                this.DrawString(this.foregroundGraphic, value, font, this.TextForegroundBrush, this.TextBackgroundBrush, point, true);
             }
         }
 

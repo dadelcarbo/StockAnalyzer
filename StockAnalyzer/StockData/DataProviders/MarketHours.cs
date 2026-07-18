@@ -22,7 +22,8 @@ namespace StockAnalyzer.StockData.DataProviders
         /// </summary>
         public TimeSpan DownloadAvailability { get; set; }
 
-        public bool IsOpened => DateTime.Now.TimeOfDay >= Open && DateTime.Now.TimeOfDay <= Close;
+        public bool IsOpened => (DateTime.Today.DayOfWeek != DayOfWeek.Sunday && DateTime.Today.DayOfWeek != DayOfWeek.Saturday) &&
+            DateTime.Now.TimeOfDay >= Open && DateTime.Now.TimeOfDay <= Close;
 
         static SortedDictionary<Market, MarketHours> marketHoursTable => new SortedDictionary<Market, MarketHours>() {
             { Market.EURONEXT , new MarketHours() { Open = new TimeSpan(9,0,0), Close = new TimeSpan(17,35,00), DownloadAvailability = new TimeSpan(18,0,0)} },

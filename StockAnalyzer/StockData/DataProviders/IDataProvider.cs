@@ -1,5 +1,6 @@
 using StockAnalyzer.StockClasses;
 using System;
+using System.Collections.Generic;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
@@ -62,11 +63,11 @@ namespace StockAnalyzer.StockData.DataProviders
         void OpenInDataProvider(StockInstrument stockInstrument);
 
         /// <summary>
-        /// Return true if removed, otherwise need to exclude
+        /// Exclude instrument from provider.
         /// </summary>
-        /// <param name="stockSerie"></param>
+        /// <param name="instruments"></param>
         /// <returns></returns>
-        bool Remove(StockInstrument instrument);
+        void Remove(IEnumerable<StockInstrument> instruments);
 
         void AddSplit(StockInstrument instrument, DateTime date, float before, float after);
 

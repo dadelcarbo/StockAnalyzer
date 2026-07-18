@@ -60,7 +60,6 @@ using System.Xml.Serialization;
 using Telerik.Windows.Data;
 using Match = System.Text.RegularExpressions.Match;
 using StockAnalyzer.StockData.DataProviders.AbcBourse;
-using StockAnalyzer.StockClasses.StockDataProviders.CNN;
 
 namespace StockAnalyzerApp
 {
@@ -519,8 +518,6 @@ namespace StockAnalyzerApp
             StockSplashScreen.ProgressText = "Reading Drawing items ...";
             LoadAnalysis(this.ViewModel.AnalysisFile);
 
-            AbcDataProvider.AddToExcludedList(StockDictionary.Instruments.Values.Where(s => s.Provider == DataProvider.ABC && s.StockAnalysis.Excluded).Select(s => s.Id));
-
             var cac40DataSerie = StockDictionary.GetInstrumentByName("CAC40").GetDefaultDataSerie();
 
             // Generate breadth 
@@ -658,7 +655,7 @@ namespace StockAnalyzerApp
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
 
-            searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Value.DisplayName).ToArray());
+            searchCombo.Items.AddRange(StockDictionary.Instruments.Select(p => p.Value.DisplayName).ToArray());
 
             // Ready to start
             StockSplashScreen.CloseForm(true);
@@ -690,7 +687,8 @@ namespace StockAnalyzerApp
                 {
                     this.WindowState = FormWindowState.Normal;
                 }
-                this.Size = new Size(500, 400);
+
+                this.Size = new Size(500, 600);
 
                 foreach (var reportTemplate in Directory.EnumerateFiles(Folders.ReportTemplates, "*.html"))
                 {
@@ -698,8 +696,6 @@ namespace StockAnalyzerApp
                 }
 
                 #region PALMARES REPORT
-
-                this.Size = new Size(500, 600);
 
                 var reportFileName = Path.Combine(Folders.Report, "Palmares.html");
                 var reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
@@ -923,7 +919,7 @@ namespace StockAnalyzerApp
                 {
                     Debug.WriteLine("Cond0");
                     this.searchCombo.Items.Clear();
-                    this.searchCombo.Items.AddRange(StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded).Select(p => p.Value.DisplayName).ToArray());
+                    this.searchCombo.Items.AddRange(StockDictionary.Instruments.Select(p => p.Value.DisplayName).ToArray());
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
                     typedSearch = null;
                     return;
@@ -938,11 +934,11 @@ namespace StockAnalyzerApp
                 var name = searchCombo.Text.ToUpper();
                 string[] match;
                 if (name.Length == 12)
-                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && (p.Value.DisplayName.ToUpper().Contains(name) || p.Value.Isin == name)).Select(p => p.Value.DisplayName).ToArray();
+                    match = StockDictionary.Instruments.Where(p => p.Value.DisplayName.ToUpper().Contains(name) || p.Value.Isin == name).Select(p => p.Value.DisplayName).ToArray();
                 else if (name.Length <= 3)
-                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && (p.Value.DisplayName.ToUpper().Contains(name) || (p.Value.Symbol != null && p.Value.Symbol.Contains(name)))).Select(p => p.Value.DisplayName).ToArray();
+                    match = StockDictionary.Instruments.Where(p => (p.Value.DisplayName.ToUpper().Contains(name) || (p.Value.Symbol != null && p.Value.Symbol.Contains(name)))).Select(p => p.Value.DisplayName).ToArray();
                 else
-                    match = StockDictionary.Instruments.Where(p => !p.Value.StockAnalysis.Excluded && p.Value.DisplayName.ToUpper().Contains(name)).Select(p => p.Value.DisplayName).ToArray();
+                    match = StockDictionary.Instruments.Where(p => p.Value.DisplayName.ToUpper().Contains(name)).Select(p => p.Value.DisplayName).ToArray();
 
                 if (match.Length == 1)
                 {
@@ -1454,8 +1450,7 @@ namespace StockAnalyzerApp
                 StockSplashScreen.FadeInOutSpeed = 0.25;
                 StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
 
-                var stockSeries =
-                   StockDictionary.Instance.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
+                var stockSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.ViewModel.Instrument.Group));
 
                 StockSplashScreen.ProgressVal = 0;
                 StockSplashScreen.ProgressMax = stockSeries.Count();
@@ -1524,7 +1519,7 @@ namespace StockAnalyzerApp
                     StockSplashScreen.FadeInOutSpeed = 0.25;
                     StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
 
-                    var instruments = StockDictionary.Instruments.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(this.ViewModel.Instrument.Group));
+                    var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.ViewModel.Instrument.Group));
 
                     StockSplashScreen.ProgressVal = 0;
                     StockSplashScreen.ProgressMax = instruments.Count();
@@ -2021,13 +2016,7 @@ namespace StockAnalyzerApp
         private void excludeButton_Click(object sender, EventArgs e)
         {
             var dp = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
-            var handled = dp.Remove(this.ViewModel.Instrument);
-            // Flag as excluded
-            this.ViewModel.Instrument.StockAnalysis.Excluded = true;
-            if (!handled)
-            {
-                SaveAnalysis(this.ViewModel.AnalysisFile);
-            }
+            dp.Remove(new[] { this.ViewModel.Instrument });
         }
 
         private void saxoTurboButton_Click(object sender, EventArgs e)
@@ -2119,7 +2108,7 @@ namespace StockAnalyzerApp
                 groupMenuItems[i] = new ToolStripMenuItem(group);
 
                 // 
-                var groupInstruments = StockDictionary.Instruments.Values.Where(s => s.Group.ToString() == group && !s.StockAnalysis.Excluded);
+                var groupInstruments = StockDictionary.Instruments.Values.Where(s => s.Group.ToString() == group);
                 if (groupInstruments.Count() != 0)
                 {
                     ToolStripMenuItem[] secondarySerieMenuItems = new ToolStripMenuItem[groupInstruments.Count()];
@@ -2181,6 +2170,7 @@ namespace StockAnalyzerApp
                 instrumentsDlg = new InstrumentDlg() { StartPosition = FormStartPosition.CenterScreen };
 
                 instrumentsDlg.instrumentsControl1.ViewModel.Group = this.ViewModel.Instrument.Group;
+                instrumentsDlg.instrumentsControl1.ViewModel.DataProvider = DataProvider.All;
 
                 instrumentsDlg.FormClosing += new FormClosingEventHandler(instrumentsDlg_FormClosing);
                 instrumentsDlg.instrumentsControl1.SelectedInstrumentChanged += OnSelectedInstrumentChanged;

@@ -1543,7 +1543,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         {
             if (stockInstrument.StockSerie.ABCName != null)
             {
-                string url = $"https://www.abcbourse.com/graphes/display.aspx?s={stockInstrument.StockSerie.ABCName}";
+                string url = $"https://www.abcbourse.com/graphes/display.aspx?s={stockInstrument.Symbol}{stockInstrument.AbcSuffix}";
                 Process.Start(url);
             }
         }

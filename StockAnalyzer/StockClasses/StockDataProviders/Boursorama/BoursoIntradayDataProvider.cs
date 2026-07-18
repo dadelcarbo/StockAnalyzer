@@ -319,7 +319,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bourso
 
         public override void OpenInDataProvider(StockInstrument stockInstrument)
         {
-            string url = $"https://finance.yahoo.com/quote/{stockInstrument.StockSerie.Symbol}";
+            string url = $"https://finance.yahoo.com/quote/{stockInstrument.Symbol}";
             Process.Start(url);
         }
 

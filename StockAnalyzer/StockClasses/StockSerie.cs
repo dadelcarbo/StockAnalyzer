@@ -1418,7 +1418,6 @@ namespace StockAnalyzer.StockClasses
 
         public bool BelongsToGroup(Groups group)
         {
-            if (StockAnalysis != null && StockAnalysis.Excluded) return false;
             return BelongsToGroupFull(group);
         }
         public bool BelongsToGroupFull(Groups group)

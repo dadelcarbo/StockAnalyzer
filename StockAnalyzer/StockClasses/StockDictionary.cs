@@ -1316,7 +1316,7 @@ namespace StockAnalyzer.StockClasses
             var alerts = new List<StockAlert>();
             try
             {
-                foreach (var instrument in Instruments.Values.Where(s => !s.StockAnalysis.Excluded && s.BelongsToGroup(alertDef.Group)))
+                foreach (var instrument in Instruments.Values.Where(s => s.BelongsToGroup(alertDef.Group)))
                 {
                     var alert = instrument.MatchAlertDef(alertDef);
                     if (alert != null)

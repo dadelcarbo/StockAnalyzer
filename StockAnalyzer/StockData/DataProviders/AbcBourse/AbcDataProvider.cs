@@ -25,19 +25,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 
         #region Exclude list
         static string excludeFileName = Path.Combine(Folders.PersonalFolder, "AbcExclude.txt");
-        static List<string> excludeList = new List<string>();
-
-        public static void AddToExcludedList(IEnumerable<string> isins)
-        {
-            foreach (var isin in isins)
-            {
-                if (!string.IsNullOrEmpty(isin) && !excludeList.Contains(isin))
-                {
-                    excludeList.Add(isin);
-                }
-            }
-            File.WriteAllLines(excludeFileName, excludeList);
-        }
+        static HashSet<string> excludeList = new HashSet<string>();
         #endregion
 
         string ABC_WEB_CACHE_FOLDER;
@@ -82,7 +70,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 
             if (File.Exists(excludeFileName))
             {
-                excludeList = File.ReadAllLines(excludeFileName).ToList();
+                excludeList = new HashSet<string>(File.ReadAllLines(excludeFileName));
             }
 
             configPath = Path.Combine(Folders.PersonalFolder, "AbcDownloadConfig.txt");
@@ -375,14 +363,18 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return dataSerie?.LastValue?.DATE == null ? DateTime.MinValue : dataSerie.LastValue.DATE;
         }
 
-        public override bool Remove(StockInstrument instrument)
+        public override void Remove(IEnumerable<StockInstrument> instruments)
         {
-            if (!string.IsNullOrEmpty(instrument.Isin) && !excludeList.Contains(instrument.Isin))
+            foreach (var instrument in instruments)
             {
-                excludeList.Add(instrument.Isin);
-                File.WriteAllLines(excludeFileName, excludeList);
+                if (!excludeList.Contains(instrument.Id))
+                {
+                    excludeList.Add(instrument.Id);
+
+                    StockDictionary.Instruments.Remove(instrument.Id);
+                }
             }
-            return false;
+            File.WriteAllLines(excludeFileName, excludeList);
         }
 
         public override void ForceDownloadData(StockInstrument instrument)
@@ -582,22 +574,22 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && IsinMatchGroup(config, line))
                 {
                     string[] row = line.Split(';');
-                    string stockName = row[1].ToUpper().Replace(",", " "); // .Replace(" - ", " ").Replace("-", " ").Replace("  ", " ");
+                    string stockName = row[1].ToUpper().Replace(",", " ");
 
                     var id = row[0];
-                    var isin = id.Substring(0, 12);
-                    if (excludeList.Contains(isin))
+                    if (excludeList.Contains(id))
                         continue;
 
                     if (!StockDictionary.Instruments.ContainsKey(id))
                     {
-                        var existingInstrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == isin);
+                        var existingInstrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Id == id);
                         if (existingInstrument != null)
                         {
-                            StockLog.Write($"Duplicate ISIN {isin}:{config.Group}:{stockName} already listed from {existingInstrument.Group}:{existingInstrument.DisplayName}");
+                            StockLog.Write($"Duplicate  Id {id}:{config.Group}:{stockName} already listed from {existingInstrument.Group}:{existingInstrument.DisplayName}");
                             continue;
                         }
 
+                        var isin = id.Substring(0, 12);
                         var abcSuffix = id.Length > 12 ? id[12] : 'p';
                         var instrument = new StockInstrument()
                         {

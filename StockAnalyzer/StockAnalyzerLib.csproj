@@ -294,8 +294,6 @@
     <Compile Include="StockClasses\StockDataProviders\Bnp\BnpModel.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoJson.cs" />
-    <Compile Include="StockClasses\StockDataProviders\CNN\CnnDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\CNN\CnnJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoIntradayH1DataProvider.cs" />
@@ -435,6 +433,7 @@
     <Compile Include="StockDrawing\Box.cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockHelpers\ColorJsonConverter.cs" />
+    <Compile Include="StockHelpers\FloatToCurrencyConverter.cs" />
     <Compile Include="StockHelpers\HtmlHelper.cs" />
     <Compile Include="StockHelpers\Persister.cs" />
     <Compile Include="StockHelpers\StockTimer.cs" />

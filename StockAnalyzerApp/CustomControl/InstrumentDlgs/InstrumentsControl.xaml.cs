@@ -123,24 +123,15 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
             try
             {
-                var instruments = this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.Provider == DataProvider.ABC).Select(s => s.Instrument);
-                if (instruments.Any())
+                var instrumentGroups = this.gridView.Items.Cast<LineViewModel>().Select(s => s.Instrument).GroupBy(i => i.Provider);
+                if (instrumentGroups.Any())
                 {
-                    AbcDataProvider.AddToExcludedList(instruments.Select(s => s.Isin));
-                    foreach (var instrument in instruments)
+                    foreach (var instruments in instrumentGroups)
                     {
-                        instrument.StockAnalysis.Excluded = true;
+                        var dp = DataProviderBase.GetDataProvider(instruments.Key);
+                        dp.Remove(instruments);
                     }
                 }
-
-                foreach (var instrument in this.gridView.Items.Cast<LineViewModel>().Where(s => s.Instrument.Provider != DataProvider.ABC).Select(s => s.Instrument))
-                {
-                    var dp = DataProviderBase.GetDataProvider(instrument.Provider);
-                    var handled = dp.Remove(instrument);
-
-                    instrument.StockAnalysis.Excluded = true;
-                }
-
             }
             catch { }
 

@@ -41,7 +41,6 @@ namespace StockAnalyzer.StockData.DataProviders.Cnn
                     {
                         lastBar.IsComplete = false;
                     }
-                    lastBar.IsComplete = false;
 
                     return newBarArray;
                 }
