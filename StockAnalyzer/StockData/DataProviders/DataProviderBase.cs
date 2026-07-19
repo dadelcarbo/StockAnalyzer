@@ -107,6 +107,7 @@ namespace StockAnalyzer.StockData.DataProviders
             return null;
         }
 
+        static public string SaxoUnderlyingFile => Path.Combine(Folders.PersonalFolder, "SaxoUnderlyings.cfg");
         public static void Initialize(bool download)
         {
             foreach (var provider in DataProviders)
@@ -114,7 +115,36 @@ namespace StockAnalyzer.StockData.DataProviders
                 StockLog.Write($"Initializing data provider: {provider.Key}");
                 provider.Value.InitDictionary(download);
             }
+
+            // Bid saxo Ids
+            InitSaxoIds(SaxoUnderlyingFile);
         }
+
+
+        private static void InitSaxoIds(string fileName)
+        {
+            string line;
+            if (File.Exists(fileName))
+            {
+                using var sr = new StreamReader(fileName, true);
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                    if (line.StartsWith("$")) break;
+
+                    var row = line.Split(',');
+                    var instrumentId = row[2];
+                    if (string.IsNullOrEmpty(instrumentId))
+                        continue;
+                    if (StockDictionary.Instruments.TryGetValue(instrumentId, out var instrument))
+                    {
+                        instrument.SaxoId = long.Parse(row[0]);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// DataSerie used to check id new download is required. If the last bar of the RefSerie is older than the last bar of the instrument, then a new download is required.
         /// </summary>

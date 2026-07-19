@@ -30,7 +30,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
     public class PalmaresViewModel : NotifyPropertyChangedBase
     {
-        static public Array Groups => Enum.GetValues(typeof(Groups));
+        static public IEnumerable<Groups> Groups => StockDictionary.Instance.GetValidGroups();
 
         private Groups group;
         public Groups Group
@@ -507,6 +507,11 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 await Task.Delay(10);
 
                 var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
+                if (instruments.Count == 0)
+                {
+                    MessageBox.Show($"No instruments found in group {this.group}", "Error", MessageBoxButton.OK);
+                    return;
+                }
                 this.Progress = 0;
                 this.NbStocks = instruments.Count;
                 int count = 0;

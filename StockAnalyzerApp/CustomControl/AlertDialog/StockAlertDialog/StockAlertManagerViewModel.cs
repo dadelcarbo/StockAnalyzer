@@ -108,7 +108,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         private Groups group;
         public Groups Group { get => group; set => SetProperty(ref group, value); }
 
-        public Array Groups => Enum.GetValues(typeof(Groups));
+        static public IEnumerable<Groups> Groups => StockDictionary.Instance.GetValidGroups();
 
         private string theme;
         public string Theme { get => theme; set => SetProperty(ref theme, value); }
