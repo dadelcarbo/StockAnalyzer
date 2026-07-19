@@ -666,7 +666,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         Name = instrument.DisplayName,
                         Value = lastValue,
                         Highest = highestIn,
-                        Volume = lastBar.EXCHANGED / 1000000f,
+                        Exchanged = lastBar.EXCHANGED,
                         Indicator1 = stockIndicator1,
                         Indicator2 = stockIndicator2,
                         Indicator3 = stockIndicator3,

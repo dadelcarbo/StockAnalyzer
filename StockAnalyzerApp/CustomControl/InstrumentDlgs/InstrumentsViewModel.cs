@@ -10,6 +10,7 @@ using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -125,7 +126,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         {
             this.Lines = new ObservableCollection<LineViewModel>();
 
-            this.SaxoUnderlyings = new ObservableCollection<SaxoUnderlying>(SaxoUnderlying.Load());
+            this.SaxoUnderlyings = new ObservableCollection<SaxoUnderlyingViewModel>(SaxoUnderlying.Load().Select(s => new SaxoUnderlyingViewModel(s)));
 
             ProgressVisibility = Visibility.Collapsed;
         }
@@ -200,14 +201,19 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             this.RunStatus = "Load";
         }
 
-        public ObservableCollection<SaxoUnderlying> SaxoUnderlyings { get; set; }
+        public ObservableCollection<SaxoUnderlyingViewModel> SaxoUnderlyings { get; set; }
 
         private CommandBase saveCommand;
         public ICommand SaveCommand => saveCommand ??= new CommandBase(Save);
 
         private void Save()
         {
-            SaxoUnderlying.Save(this.SaxoUnderlyings);
+            SaxoUnderlying.Save(this.SaxoUnderlyings.Select(s => new SaxoUnderlying
+            {
+                Id = s.Id,
+                SaxoName = s.SaxoName,
+                InstrumentId = s.InstrumentId,
+            }));
         }
 
         private CommandBase refreshCommand;
@@ -231,11 +237,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 {
                     if (this.SaxoUnderlyings.FirstOrDefault(u => u.Id == underlying.value) == null)
                     {
-                        this.SaxoUnderlyings.Add(new SaxoUnderlying()
-                        {
-                            Id = underlying.value,
-                            SaxoName = underlying.label
-                        });
+                        this.SaxoUnderlyings.Add(new SaxoUnderlyingViewModel(underlying.value, underlying.label));
                     }
                 }
 

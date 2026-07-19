@@ -2041,16 +2041,7 @@ namespace StockAnalyzerApp
 
         private void copyIsinBtn_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(this.ViewModel.Instrument?.Isin))
-            {
-                Clipboard.SetText(this.ViewModel.Instrument?.Isin);
-                return;
-            }
-            if (!string.IsNullOrEmpty(this.ViewModel.Instrument.DisplayName))
-            {
-                Clipboard.SetText(this.ViewModel.Instrument.DisplayName);
-                return;
-            }
+            Clipboard.SetText(this.ViewModel.Instrument.Id);
         }
 
         #endregion

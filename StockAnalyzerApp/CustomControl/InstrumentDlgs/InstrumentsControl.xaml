@@ -107,7 +107,8 @@
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Id}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Saxo Name" DataMemberBinding="{Binding SaxoName}" IsReadOnly="True"/>
-                            <telerik:GridViewDataColumn Header="Serie Name" DataMemberBinding="{Binding SerieName}" CellStyleSelector="{StaticResource SaxoMappingStyleSelector}"/>
+                            <telerik:GridViewDataColumn Header="Instrument Id" DataMemberBinding="{Binding InstrumentId}" CellStyleSelector="{StaticResource SaxoMappingStyleSelector}"/>
+                            <telerik:GridViewDataColumn Header="Instrument Name" DataMemberBinding="{Binding InstrumentName}" IsReadOnly="True" CellStyleSelector="{StaticResource SaxoMappingStyleSelector}"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>

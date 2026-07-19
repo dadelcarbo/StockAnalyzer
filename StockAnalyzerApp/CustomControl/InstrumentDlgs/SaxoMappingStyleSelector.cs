@@ -14,13 +14,13 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         {
             if (item == null)
                 return null;
-            if (item is SaxoUnderlying)
+            if (item is SaxoUnderlyingViewModel)
             {
-                var mapping = item as SaxoUnderlying;
+                var mapping = item as SaxoUnderlyingViewModel;
                 if (mapping == null)
                     return null;
 
-                if (!string.IsNullOrEmpty(mapping.SerieName) && StockDictionary.Instance.ContainsKey(mapping.SerieName))
+                if (!string.IsNullOrEmpty(mapping.InstrumentId) && StockDictionary.Instruments.ContainsKey(mapping.InstrumentId))
                 {
                     return base.SelectStyle(item, container);
                 }

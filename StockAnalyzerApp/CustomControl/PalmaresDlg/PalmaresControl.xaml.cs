@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using StockAnalyzer.StockHelpers;
 using System.Windows.Input;
 using System.Xml.Serialization;
 using Telerik.Windows.Controls;
@@ -132,10 +134,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 column.IsVisible = true;
                 column.DataFormatString = "P2";
             }
-
-            column = gridView.Columns["Volume"] as GridViewDataColumn;
-            column.IsVisible = true;
-            column.DataFormatString = "F2";
 
             column = gridView.Columns["BarVariation"] as GridViewDataColumn;
             column.IsVisible = true;
@@ -445,10 +443,19 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
         private void gridView_AutoGeneratingColumn(object sender, GridViewAutoGeneratingColumnEventArgs e)
         {
-            if (e.Column.Header.ToString() == "Instrument" )
+            if (e.Column.Header.ToString() == "Instrument")
             {
                 e.Cancel = true;
             }
+            else if (e.Column.Header.ToString() == "Exchanged")
+            {
+                var dataColumn = e.Column as GridViewDataColumn;
+                if (dataColumn != null)
+                {
+                    // Use FloatToCurrencyConverter for Exchanged values
+                    dataColumn.DataMemberBinding.Converter = new FloatToCurrencyConverter();
+            }
         }
     }
+}
 }

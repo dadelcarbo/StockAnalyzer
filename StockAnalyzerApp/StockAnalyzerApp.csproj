@@ -327,6 +327,7 @@
     </Compile>
     <Compile Include="CustomControl\InstrumentDlgs\InstrumentsViewModel.cs" />
     <Compile Include="CustomControl\InstrumentDlgs\SaxoMappingStyleSelector.cs" />
+    <Compile Include="CustomControl\InstrumentDlgs\SaxoUnderlyingViewModel.cs" />
     <Compile Include="CustomControl\PalmaresDlg\FilterSettings.cs" />
     <Compile Include="CustomControl\PalmaresDlg\OperatorConverter.cs" />
     <Compile Include="CustomControl\PortfolioDlg\OrderViewModel.cs" />

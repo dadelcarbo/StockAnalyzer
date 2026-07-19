@@ -5,12 +5,13 @@ using System.Linq;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
 {
-    [DebuggerDisplay("Id={Id}, SaxoName={SaxoName}, SerieName={SerieName}")]
+    [DebuggerDisplay("Id={Id}, SaxoName={SaxoName}, InstrumentId={InstrumentId}")]
     public class SaxoUnderlying
     {
         public long Id { get; set; }
         public string SaxoName { get; set; }
-        public string SerieName { get; set; }
+
+        public string InstrumentId { get; set; }
 
         public static IList<SaxoUnderlying> Load()
         {
@@ -21,14 +22,14 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                 {
                     Id = long.Parse(parts[0]),
                     SaxoName = parts[1],
-                    SerieName = parts.Length > 2 ? parts[2] : string.Empty
+                    InstrumentId = parts.Length > 2 ? parts[2] : null
                 };
             }).ToList();
         }
 
         public static void Save(IEnumerable<SaxoUnderlying> underlyings)
         {
-            File.WriteAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile, underlyings.Select(u => $"{u.Id},{u.SaxoName},{u.SerieName}"));
+            File.WriteAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile, underlyings.Select(u => $"{u.Id},{u.SaxoName},{u.InstrumentId}"));
         }
     }
 }

@@ -143,35 +143,40 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         {
             if (e.AddedCells.Count > 0)
             {
-                if (e.AddedCells[0].Item is SaxoUnderlying)
+                if (e.AddedCells[0].Item is SaxoUnderlyingViewModel saxoUnderlying)
                 {
-                    var item = e.AddedCells[0].Item as SaxoUnderlying;
-
-                    var serieName = string.IsNullOrEmpty(item.SerieName) ? item.SaxoName : item.SerieName;
-                    if (StockDictionary.Instance.ContainsKey(serieName))
+                    var serieName = string.IsNullOrEmpty(saxoUnderlying.InstrumentId) ? saxoUnderlying.SaxoName : saxoUnderlying.InstrumentId;
+                    if (StockDictionary.Instruments.TryGetValue(serieName, out var instrument))
                     {
                         this.Form.TopMost = true;
                         StockAnalyzerForm.MainFrame.Activate();
-                        this.SelectedInstrumentChanged(StockDictionary.Instruments[serieName], true);
+                        this.SelectedInstrumentChanged(instrument, true);
 
                         this.Form.TopMost = false;
                     }
                     else
                     {
+                        var previousInstrument = MainFrameViewModel.Instance.Instrument;
                         this.Form.TopMost = true;
-                        StockAnalyzerForm.MainFrame.searchCombo.Text = serieName;
+                        StockAnalyzerForm.MainFrame.searchCombo.Text = saxoUnderlying.SaxoName.Split(' ')[0].Replace('/','-');
                         StockAnalyzerForm.MainFrame.searchCombo.Focus();
+
+                        if (MainFrameViewModel.Instance.Instrument != previousInstrument)
+                        {
+                            saxoUnderlying.InstrumentId = MainFrameViewModel.Instance.Instrument.Id;
+                        }
+
 
                         this.Form.TopMost = false;
                     }
                 }
                 else if (e.AddedCells[0].Item is SaxoInstrument)
                 {
-                    var item = e.AddedCells[0].Item as SaxoInstrument;
-                    if (string.IsNullOrEmpty(item.Isin))
+                    var saxoInstrument = e.AddedCells[0].Item as SaxoInstrument;
+                    if (string.IsNullOrEmpty(saxoInstrument.Isin))
                         return;
 
-                    var instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == item.Isin);
+                    var instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == saxoInstrument.Isin);
                     if (instrument == null)
                         return;
 

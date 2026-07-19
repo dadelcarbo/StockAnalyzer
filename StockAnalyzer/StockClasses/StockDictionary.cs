@@ -1311,7 +1311,7 @@ namespace StockAnalyzer.StockClasses
         }
         public static StockInstrument GetInstrumentByName(string name)
         {
-            return Instruments.Values.FirstOrDefault(i => i.Name == name);
+            return Instruments.Values.FirstOrDefault(i => string.Compare(i.Name, name, true) == 0);
         }
         Stopwatch sw;
         public List<StockAlert> MatchAlert(StockAlertDef alertDef)

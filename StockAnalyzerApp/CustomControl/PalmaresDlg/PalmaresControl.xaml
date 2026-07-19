@@ -15,7 +15,7 @@
         <local:OperatorToStringConverter x:Key="OperatorConverter"/>
         <local:OperatorToVisibilityConverter x:Key="OperatorToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid DataContext="{Binding Source={StaticResource ViewModel}}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -28,7 +28,9 @@
                         <Label Content="Group " Width="50"/>
                         <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="120" VerticalAlignment="Center"/>
                         <Label>Duration</Label>
-                        <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80" VerticalAlignment="Center"/>
+                        <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" 
+                                  ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" 
+                                  Width="80" VerticalAlignment="Center"/>
                         <Label Content="Theme"/>
                         <ComboBox SelectedItem="{Binding Theme, ValidatesOnDataErrors=True}" 
                                   ItemsSource="{Binding Themes}" Width="160" VerticalAlignment="Center" />
