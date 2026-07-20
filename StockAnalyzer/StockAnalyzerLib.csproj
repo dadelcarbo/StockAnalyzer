@@ -289,8 +289,6 @@
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcGroupDownloadHistory.cs" />
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcDownloadHistory.cs" />
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\ABCGroup.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SaxoDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
     <Compile Include="StockData\DataProviders\InstrumentDownloadHistory.cs" />
     <Compile Include="StockData\DataProviders\MarketHours.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataClient.cs" />
@@ -321,7 +319,6 @@
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoJson.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoProduct.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoUnderlying.cs" />
-    <Compile Include="StockClasses\StockDataProviders\YahooDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\yCharts\ychartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\yCharts\ychartsDataProvider.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
@@ -437,9 +434,7 @@
     <Compile Include="StockPortfolio\StockOrderBase.cs" />
     <Compile Include="StockPortfolio\StockPositionBase.cs" />
     <Compile Include="StockPortfolio\StockTradeOperation.cs" />
-    <Compile Include="StockClasses\StockDataProviders\BarChartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SocGenIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataSource.cs" />
     <Compile Include="StockClasses\StockDataProviders\PortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
@@ -463,18 +458,6 @@
     <Compile Include="StockClasses\BarDuration.cs" />
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\ABCDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\InvestingDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\InvestingIntradayDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.Designer.cs">
-      <DependentUpon>DataProviderString.fr-FR.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="StockClasses\StockDataProviders\DataProviderString.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DataProviderString.resx</DependentUpon>
-    </Compile>
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockText.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
@@ -684,14 +667,6 @@
     <EmbeddedResource Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderDlg.resx">
       <DependentUpon>SaxoDataProviderDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DataProviderString.fr-FR.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DataProviderString.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.fr-FR.resx" />
     <EmbeddedResource Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.resx">

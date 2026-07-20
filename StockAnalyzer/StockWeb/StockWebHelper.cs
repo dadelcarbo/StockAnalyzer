@@ -134,30 +134,5 @@ namespace StockAnalyzer.StockWeb
             return success;
         }
         #endregion
-        #region Investing.com
-
-        public IEnumerable<StockDetails> GetInvestingStockDetails(string searchText, string exchange = "")
-        {
-            string urlTemplate = $"{StockDataProviderBase.URL_PREFIX_INVESTING}/search?limit=30&query=%SEARCHTEXT%&type=&exchange=%EXCHANGE%";
-            string url = urlTemplate.Replace("%SEARCHTEXT%", searchText);
-            url = url.Replace("%EXCHANGE%", exchange);
-
-            try
-            {
-                var response = InvestingIntradayDataProvider.HttpGetFromInvesting(url);
-                if (!string.IsNullOrEmpty(response))
-                {
-                    if (string.IsNullOrWhiteSpace(response) || response == "[]") return new List<StockDetails>(); ;
-
-                    return StockDetails.FromJson(response);
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new StockWebHelperException($"Error getting stock details for {searchText}", ex);
-            }
-        }
-        #endregion
     }
 }
