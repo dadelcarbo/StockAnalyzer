@@ -15,6 +15,9 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 
         public static IList<SaxoUnderlying> Load()
         {
+            if (!File.Exists(SaxoTurboDataProvider.SaxoUnderlyingFile))
+                return new List<SaxoUnderlying>();
+
             return File.ReadAllLines(SaxoTurboDataProvider.SaxoUnderlyingFile).Select(l =>
             {
                 var parts = l.Split(',');
@@ -29,7 +32,7 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 
         public static void Save(IEnumerable<SaxoUnderlying> underlyings)
         {
-            File.WriteAllLines(SaxoTurboDataProvider.SaxoUnderlyingFile, underlyings.Select(u => $"{u.Id},{u.SaxoName},{u.InstrumentId}"));
+            File.WriteAllLines(SaxoTurboDataProvider.SaxoUnderlyingFile, underlyings.OrderBy(u=>u.SaxoName).Select(u => $"{u.Id},{u.SaxoName},{u.InstrumentId}"));
         }
     }
 }

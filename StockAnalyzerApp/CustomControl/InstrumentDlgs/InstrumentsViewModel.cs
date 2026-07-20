@@ -232,14 +232,46 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 var result = JsonSerializer.Deserialize<UnderlyingRoot>(jsonData);
                 var underlyings = result?.data?.filters?.firstLevel?.underlying?.list?.Values?.ToList();
 
+                if (underlyings == null)
+                {
+                    MessageBox.Show("Error parsing data from Saxo Turbo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Detect Removed Underlyings
+                var toBeRemoved = new List<SaxoUnderlyingViewModel>();
+                foreach (var underlying in this.SaxoUnderlyings)
+                {
+                    if (underlyings.Any(u => u.value == underlying.Id))
+                        continue;
+                    toBeRemoved.Add(underlying);
+                }
+                foreach (var underlying in toBeRemoved)
+                {
+                    this.SaxoUnderlyings.Remove(underlying);
+                }
+                if (toBeRemoved.Count > 0)
+                {
+                    MessageBox.Show(toBeRemoved.Select(u => $"{u.Id} - {u.SaxoName}").Aggregate((i, j) => i + Environment.NewLine + j),
+                        "Removed Underlyings");
+                }
+
+                // Detect Added underlyings
+                var toBeAdded = new List<SaxoUnderlyingViewModel>();
                 foreach (var underlying in underlyings)
                 {
                     if (this.SaxoUnderlyings.FirstOrDefault(u => u.Id == underlying.value) == null)
                     {
-                        this.SaxoUnderlyings.Add(new SaxoUnderlyingViewModel(underlying.value, underlying.label));
+                        var newUnderlying = new SaxoUnderlyingViewModel(underlying.value, underlying.label);
+                        toBeAdded.Add(newUnderlying);
+                        this.SaxoUnderlyings.Add(newUnderlying);
                     }
                 }
-
+                if (toBeAdded.Count > 0)
+                {
+                    MessageBox.Show(toBeAdded.Select(u => $"{u.Id} - {u.SaxoName} - {u.InstrumentName}").Aggregate((i, j) => i + Environment.NewLine + j),
+                        "New Underlyings");
+                }
             }
             catch (Exception ex)
             {
