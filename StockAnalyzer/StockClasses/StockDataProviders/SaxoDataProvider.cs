@@ -1,6 +1,5 @@
 ﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
@@ -10,7 +9,7 @@ using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class SaxoDataProvider : StockDataProviderBase, IConfigDialog
+    public class SaxoDataProvider : StockDataProviderBase
     {
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\Saxo";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\Saxo";

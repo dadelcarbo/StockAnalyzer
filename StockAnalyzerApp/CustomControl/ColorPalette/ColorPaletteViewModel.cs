@@ -1,5 +1,5 @@
 ﻿using StockAnalyzer;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.ObjectModel;

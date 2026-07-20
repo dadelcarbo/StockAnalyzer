@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
 using StockAnalyzerApp;
 using StockAnalyzer.StockData;
@@ -14,7 +13,7 @@ using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class SocGenIntradayDataProvider : StockDataProviderBase, IConfigDialog
+    public class SocGenIntradayDataProvider : StockDataProviderBase
     {
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\SocGenIntraday";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\SocGenIntraday";

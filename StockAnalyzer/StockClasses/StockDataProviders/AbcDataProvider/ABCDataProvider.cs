@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
@@ -27,7 +26,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         MIXED
     }
 
-    public class ABCDataProvider : StockDataProviderBase, IConfigDialog
+    public class ABCDataProvider : StockDataProviderBase
     {
         private static readonly string ABC_INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\ABC";
         private static readonly string ABC_DAILY_FOLDER = DAILY_SUBFOLDER + @"\ABC";
@@ -1295,11 +1294,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider
         }
 
         #region IConfigDialog Implementation
-        public DialogResult ShowDialog(StockDictionary stockDico)
-        {
-            EuronextDataProviderConfigDlg configDlg = new EuronextDataProviderConfigDlg(stockDico) { StartPosition = FormStartPosition.CenterScreen };
-            return configDlg.ShowDialog();
-        }
 
         public override string DisplayName => "ABCBourse";
         #endregion

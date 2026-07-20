@@ -1,4 +1,4 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+﻿using StockAnalyzer.StockHelpers;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.ObjectModel;

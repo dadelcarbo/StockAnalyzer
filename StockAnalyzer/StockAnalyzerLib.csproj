@@ -289,15 +289,8 @@
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcGroupDownloadHistory.cs" />
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcDownloadHistory.cs" />
     <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\ABCGroup.cs" />
-    <Compile Include="StockClasses\StockDataProviders\Bnp\BnpIntradayDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\Bnp\BnpModel.cs" />
-    <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoIntradayDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoHttpClient.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoIntradayM5DataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoJSon.cs" />
     <Compile Include="StockData\DataProviders\InstrumentDownloadHistory.cs" />
     <Compile Include="StockData\DataProviders\MarketHours.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataClient.cs" />
@@ -328,16 +321,7 @@
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoJson.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoProduct.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoUnderlying.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.Designer.cs">
-      <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StockClasses\StockDataProviders\Vontobel\VontobelIntradayDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\Vontobel\VontobelModel.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\Yahoo\YahooJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\yCharts\ychartJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\yCharts\ychartsDataProvider.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
@@ -490,25 +474,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DataProviderString.resx</DependentUpon>
-    </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\CommandBase.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.Designer.cs">
-      <DependentUpon>EuronextDataProviderConfigDlg.cs</DependentUpon>
-    </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\IConfigDialog.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigControl.xaml.cs">
-      <DependentUpon>InvestingConfigControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigEntry.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigViewModel.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingIntradayDataProviderConfigDlg.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingIntradayDataProviderConfigDlg.Designer.cs">
-      <DependentUpon>InvestingIntradayDataProviderConfigDlg.cs</DependentUpon>
     </Compile>
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockText.cs" />
@@ -720,14 +685,6 @@
       <DependentUpon>SaxoDataProviderDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.fr-FR.resx">
-      <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.resx">
-      <DependentUpon>YahooDataProviderConfigDlg.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.fr-FR.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DataProviderString.fr-FR.Designer.cs</LastGenOutput>
@@ -735,15 +692,6 @@
     <EmbeddedResource Include="StockClasses\StockDataProviders\DataProviderString.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DataProviderString.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.fr-FR.resx">
-      <DependentUpon>EuronextDataProviderConfigDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\EuronextDataProviderConfigDlg.resx">
-      <DependentUpon>EuronextDataProviderConfigDlg.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingIntradayDataProviderConfigDlg.resx">
-      <DependentUpon>InvestingIntradayDataProviderConfigDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.fr-FR.resx" />
     <EmbeddedResource Include="StockClasses\StockViewableItems\StockDecorators\StockDecorators.resx">
@@ -786,10 +734,6 @@
     <Page Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="StockClasses\StockDataProviders\StockDataProviderDlgs\InvestingConfigControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="StockScripting\StockScriptUserControl.xaml">
       <SubType>Designer</SubType>

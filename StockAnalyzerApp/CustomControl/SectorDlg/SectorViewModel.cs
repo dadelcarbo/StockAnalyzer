@@ -1,6 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using System;

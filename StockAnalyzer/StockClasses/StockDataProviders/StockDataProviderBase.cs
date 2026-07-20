@@ -1,8 +1,4 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
-using StockAnalyzer.StockClasses.StockDataProviders.Bnp;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.Vontobel;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
@@ -149,51 +145,9 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 IStockDataProvider dataProvider = null;
                 switch (dataProviderType)
                 {
-                    //case StockDataProvider.ABC:
-                    //    dataProvider = new ABCDataProvider();
-                    //    break;
                     case StockDataProvider.Portfolio:
                         dataProvider = new PortfolioDataProvider();
                         break;
-                    //case StockDataProvider.Breadth:
-                    //    dataProvider = new BreadthDataProvider();
-                    //    break;
-                    //case StockDataProvider.Investing:
-                    //    dataProvider = new InvestingDataProvider();
-                    //    break;
-                    //case StockDataProvider.InvestingIntraday:
-                    //    dataProvider = new InvestingIntradayDataProvider();
-                    //    break;
-                    case StockDataProvider.SocGenIntraday:
-                        dataProvider = new SocGenIntradayDataProvider();
-                        break;
-                    //case StockDataProvider.SaxoIntraday:
-                    //    dataProvider = new SaxoIntradayDataProvider();
-                    //    break;
-                    //case StockDataProvider.SaxoIntraday_M5:
-                    //    dataProvider = new SaxoIntradayM5DataProvider();
-                    //    break;
-                    //case StockDataProvider.VontobelIntraday:
-                    //    dataProvider = new VontobelIntradayDataProvider();
-                    //    break;
-                    case StockDataProvider.BnpIntraday:
-                        dataProvider = new BnpIntradayDataProvider();
-                        break;
-                    //case StockDataProvider.Saxo:
-                    //    dataProvider = new SaxoDataProvider();
-                    //    break;
-                    //case StockDataProvider.CNN:
-                    //    dataProvider = new CnnDataProvider();
-                    //    break;
-                    //case StockDataProvider.Yahoo:
-                    //    dataProvider = new YahooDataProvider();
-                    //    break;
-                    //case StockDataProvider.YahooIntraday:
-                    //    dataProvider = new YahooIntradayDataProvider();
-                    //    break;
-                    //case StockDataProvider.yCharts:
-                    //    dataProvider = new ychartsDataProvider();
-                    //    break;
                     default:
                         break;
                 }
@@ -244,23 +198,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             }
         }
 
-        private static List<IConfigDialog> configDialogs = null;
-        public static List<IConfigDialog> GetConfigDialogs()
-        {
-            if (configDialogs == null)
-            {
-                configDialogs = new List<IConfigDialog>
-                {
-                    new ABCDataProvider(),
-                    new YahooDataProvider(),
-                    new SocGenIntradayDataProvider(),
-                    new VontobelIntradayDataProvider(),
-                    new InvestingIntradayDataProvider(),
-                    new BnpIntradayDataProvider()
-                };
-            }
-            return configDialogs;
-        }
         #endregion
         #region CSV FILE IO
 

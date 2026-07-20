@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.yCharts;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
@@ -15,7 +14,7 @@ using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class ychartsDataProvider : StockDataProviderBase, IConfigDialog
+    public class ychartsDataProvider : StockDataProviderBase
     {
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\ycharts";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\ycharts";

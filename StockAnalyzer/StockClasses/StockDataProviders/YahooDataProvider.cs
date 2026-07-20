@@ -1,6 +1,4 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
@@ -10,10 +8,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Windows.Forms;
+using StockAnalyzer.StockData.DataProviders.Yahoo;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class YahooDataProvider : StockDataProviderBase, IConfigDialog
+    public class YahooDataProvider : StockDataProviderBase
     {
         private static readonly string FOLDER = @"\daily\Yahoo";
         private static readonly string ARCHIVE_FOLDER = @"\archive\daily\Yahoo";
@@ -381,11 +380,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return res;
         }
 
-        public DialogResult ShowDialog(StockDictionary stockDico)
-        {
-            var configDlg = new YahooDataProviderConfigDlg(stockDico, Path.Combine(Folders.PersonalFolder, CONFIG_FILE_USER)) { StartPosition = FormStartPosition.CenterScreen };
-            return configDlg.ShowDialog();
-        }
 
         public override string DisplayName => "Yahoo";
 

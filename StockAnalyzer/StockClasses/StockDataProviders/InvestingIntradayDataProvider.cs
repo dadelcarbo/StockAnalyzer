@@ -1,5 +1,4 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -12,7 +11,7 @@ using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
 {
-    public class InvestingIntradayDataProvider : StockDataProviderBase, IConfigDialog
+    public class InvestingIntradayDataProvider : StockDataProviderBase
     {
         static private readonly string ARCHIVE_FOLDER = INTRADAY_ARCHIVE_SUBFOLDER + @"\InvestingIntraday";
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\InvestingIntraday";
@@ -328,12 +327,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 StockLog.Write(e);
             }
             return res;
-        }
-
-        public DialogResult ShowDialog(StockDictionary stockDico)
-        {
-            var configDlg = new InvestingIntradayDataProviderConfigDlg(stockDico, CONFIG_FILE_USER) { StartPosition = FormStartPosition.CenterScreen };
-            return configDlg.ShowDialog();
         }
 
         public override string DisplayName => "Investing Intraday";

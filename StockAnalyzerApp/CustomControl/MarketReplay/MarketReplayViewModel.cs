@@ -2,7 +2,7 @@
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockPortfolio;
