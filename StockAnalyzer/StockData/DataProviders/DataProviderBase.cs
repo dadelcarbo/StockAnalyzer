@@ -23,7 +23,7 @@ namespace StockAnalyzer.StockData.DataProviders
     }
     public abstract class DataProviderBase : IDataProvider
     {
-        static SortedDictionary<DataProvider, IDataProvider> DataProviders { get; } = new SortedDictionary<DataProvider, IDataProvider>()
+        public static SortedDictionary<DataProvider, IDataProvider> DataProviders { get; } = new SortedDictionary<DataProvider, IDataProvider>()
         {
             {DataProvider.ABC, new AbcBourse.AbcDataProvider() },
             {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()},

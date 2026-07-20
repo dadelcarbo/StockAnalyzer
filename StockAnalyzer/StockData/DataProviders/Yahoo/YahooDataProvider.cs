@@ -34,8 +34,28 @@ namespace StockAnalyzer.StockData.DataProviders.Yahoo
         protected override void PostInitDictionary(bool download) { }
         public override void OpenInDataProvider(StockInstrument stockInstrument)
         {
-            Process.Start($"https://finance.yahoo.com/quote/{stockInstrument.StockSerie.Symbol}");
+            if (stockInstrument.Provider == DataProvider.Yahoo)
+            {
+                Process.Start($"https://finance.yahoo.com/quote/{stockInstrument.StockSerie.Symbol}");
+            }
+            else
+            {
+                var searchText = string.IsNullOrEmpty(stockInstrument.Isin) ? stockInstrument.Name : stockInstrument.Isin;
+                var searchResult = (dataClient as YahooDataClient)?.SearchFromYahoo(searchText);
+                if (searchResult?.quotes != null && searchResult.quotes.Count > 0)
+                {
+                    string url = $"https://finance.yahoo.com/quote/{searchResult.quotes[0].symbol}/";
+                    Process.Start(url);
+                }
+                else
+                {
+                    string url = $"https://finance.yahoo.com/lookup/?s={stockInstrument.Name}";
+                    Process.Start(url);
+                }
+            }
         }
+
+
 
     }
 }

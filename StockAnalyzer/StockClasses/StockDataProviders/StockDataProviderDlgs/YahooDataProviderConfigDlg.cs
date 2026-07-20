@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
+using StockAnalyzer.StockData.DataProviders.Yahoo;
 using System;
 using System.IO;
 using System.Linq;
@@ -96,7 +97,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs
             {
                 this.Cursor = Cursors.WaitCursor;
 
-                YahooSearchResult searchResult = YahooDataProvider.SearchFromYahoo(this.symbolTextBox.Text.Replace("^", "%5E"));
+                var searchResult = YahooDataClient.Instance.SearchFromYahoo(this.symbolTextBox.Text.Replace("^", "%5E"));
                 if (searchResult != null && searchResult.count > 0)
                 {
                     succeeded = true;

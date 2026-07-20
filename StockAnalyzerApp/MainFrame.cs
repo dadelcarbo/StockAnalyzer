@@ -1,9 +1,6 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings;
 using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
@@ -101,7 +98,7 @@ namespace StockAnalyzerApp
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         public static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
-        public List<StockPortfolio> Portfolios => PortfolioDataProvider.Portfolios;
+        public List<StockPortfolio> Portfolios => StockAnalyzer.StockClasses.StockDataProviders.PortfolioDataProvider.Portfolios;
 
         public ToolStripProgressBar ProgressBar => this.progressBar;
 
@@ -535,10 +532,10 @@ namespace StockAnalyzerApp
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portfolio data...";
 
-            var portfolioDataProvider = PortfolioDataProvider.GetDataProvider(StockDataProvider.Portfolio);
+            var portfolioDataProvider = StockAnalyzer.StockClasses.StockDataProviders.PortfolioDataProvider.GetDataProvider(StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.Portfolio);
             portfolioDataProvider.InitDictionary(StockDictionary.Instance, false);
             InitialisePortfolioCombo();
-            Portfolio = PortfolioDataProvider.Portfolios.First();
+            Portfolio = StockAnalyzer.StockClasses.StockDataProviders.PortfolioDataProvider.Portfolios.First();
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
@@ -1450,19 +1447,23 @@ namespace StockAnalyzerApp
                 StockSplashScreen.FadeInOutSpeed = 0.25;
                 StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + this.ViewModel.Instrument.DisplayName;
 
-                var stockSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.ViewModel.Instrument.Group));
+                var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.ViewModel.Instrument.Group));
 
                 StockSplashScreen.ProgressVal = 0;
-                StockSplashScreen.ProgressMax = stockSeries.Count();
+                StockSplashScreen.ProgressMax = instruments.Count();
                 StockSplashScreen.ProgressMin = 0;
                 StockSplashScreen.ShowSplashScreen();
 
-                foreach (var stockSerie in stockSeries)
+                foreach (var instrumentGroups in instruments.GroupBy(i => i.Provider))
                 {
-                    StockSplashScreen.ProgressText = "Downloading " + this.ViewModel.Instrument.Group + " - " + stockSerie.StockName;
-                    StockDataProviderBase.ForceDownloadSerieData(stockSerie);
+                    var dp = DataProviderBase.GetDataProvider(instrumentGroups.Key);
+                    foreach (var instrument in instrumentGroups)
+                    {
+                        StockSplashScreen.ProgressText = $"Downloading {instrument.Group}-{instrument.Provider}{instrument.DisplayName}";
+                        dp.ForceDownloadData(instrument);
 
-                    StockSplashScreen.ProgressVal++;
+                        StockSplashScreen.ProgressVal++;
+                    }
                 }
 
                 this.SaveAnalysis(this.ViewModel.AnalysisFile);
@@ -3885,7 +3886,7 @@ namespace StockAnalyzerApp
         private void InitialisePortfolioCombo()
         {
             // Initialise Combo values
-            portfolioComboBox.ComboBox.DataSource = PortfolioDataProvider.Portfolios;
+            portfolioComboBox.ComboBox.DataSource = StockAnalyzer.StockClasses.StockDataProviders.PortfolioDataProvider.Portfolios;
             portfolioComboBox.ComboBox.DisplayMember = "Name";
             portfolioComboBox.ComboBox.ValueMember = "Name";
         }
@@ -4205,7 +4206,7 @@ namespace StockAnalyzerApp
             ToolStripMenuItem dataProviderSubMenuItem;
 
             // Create group menu items
-            foreach (IConfigDialog configDlg in StockDataProviderBase.GetConfigDialogs())
+            foreach (var configDlg in DataProviderBase.DataProviders.Values)
             {
                 dataProviderSubMenuItem = new ToolStripMenuItem(configDlg.DisplayName);
                 dataProviderSubMenuItem.Click += new EventHandler(configDataProviderMenuItem_Click);
@@ -4216,12 +4217,10 @@ namespace StockAnalyzerApp
         }
         private void configDataProviderMenuItem_Click(object sender, EventArgs e)
         {
-            var configDialog = ((IConfigDialog)((ToolStripMenuItem)sender).Tag);
-            if (configDialog.ShowDialog(StockDictionary.Instance) == DialogResult.OK)
+            var dataProvider = ((IDataProvider)((ToolStripMenuItem)sender).Tag);
+            if (dataProvider.ShowConfigDialog(null) == DialogResult.OK)
             {
-                var dataProvider = (IStockDataProvider)configDialog;
-                dataProvider.InitDictionary(StockDictionary.Instance, true);
-                this.CreateSecondarySerieMenuItem();
+                dataProvider.InitDictionary(false);
             }
         }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4294,20 +4293,8 @@ namespace StockAnalyzerApp
         }
         internal void OpenInYahoo()
         {
-            if (string.IsNullOrWhiteSpace(this.ViewModel.Instrument.Isin))
-                return;
-
-            YahooSearchResult searchResult = YahooDataProvider.SearchFromYahoo(this.ViewModel.Instrument.Isin);
-            if (searchResult?.quotes != null && searchResult.quotes.Count > 0)
-            {
-                string url = $"https://finance.yahoo.com/quote/{searchResult.quotes[0].symbol}/";
-                Process.Start(url);
-            }
-            else
-            {
-                string url = $"https://finance.yahoo.com/lookup/?s={this.ViewModel.Instrument.DisplayName}";
-                Process.Start(url);
-            }
+            var dataProvider = DataProviderBase.GetDataProvider(DataProvider.Yahoo);
+            dataProvider.OpenInDataProvider(this.ViewModel.Instrument);
         }
         internal void OpenSaxoIntradyConfigDlg(long saxoId)
         {
