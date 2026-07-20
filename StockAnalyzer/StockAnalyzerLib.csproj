@@ -713,6 +713,7 @@
     <Compile Include="StockWeb\StockMail.cs" />
     <Compile Include="StockWeb\StockFTP.cs" />
     <Compile Include="StockWeb\StockWebHelper.cs" />
+    <Compile Include="UltimatePortfolio\Portfolio.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -916,7 +916,7 @@ namespace StockAnalyzerApp
                 }
                 if (string.IsNullOrEmpty(searchCombo.Text) && !string.IsNullOrEmpty(typedSearch))
                 {
-                    Debug.WriteLine("Cond0");
+                    StockLog.Write("Cond0");
                     this.searchCombo.Items.Clear();
                     this.searchCombo.Items.AddRange(StockDictionary.Instruments.Select(p => p.Value.DisplayName).ToArray());
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
@@ -926,7 +926,7 @@ namespace StockAnalyzerApp
                 typedSearch = searchCombo.Text.ToUpper();
                 if (this.searchCombo.Items.Count == 1 && this.searchCombo.Items[0].ToString() == searchCombo.Text)
                 {
-                    Debug.WriteLine("Cond2");
+                    StockLog.Write("Cond2");
                     return; // Prevent infinite loop
                 }
 
@@ -941,14 +941,15 @@ namespace StockAnalyzerApp
 
                 if (match.Length == 1)
                 {
-                    Debug.WriteLine("Cond3");
+                    StockLog.Write("Cond3");
                     searchCombo.Text = name;
+                    this.searchCombo.DroppedDown = false;
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
                     this.SetCurrentInstrument(match.First());
                 }
                 else
                 {
-                    Debug.WriteLine("Cond4");
+                    StockLog.Write("Cond4");
                     this.searchCombo.Items.Clear();
                     this.searchCombo.Items.AddRange(match);
                     this.searchCombo.DroppedDown = true;
@@ -959,7 +960,7 @@ namespace StockAnalyzerApp
                     // Automatically pop up drop-down
                 }
 
-                Debug.WriteLine("Cond5");
+                StockLog.Write("Cond5");
             }
             catch (Exception exception)
             {
