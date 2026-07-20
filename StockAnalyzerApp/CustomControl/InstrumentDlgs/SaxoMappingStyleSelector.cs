@@ -1,6 +1,5 @@
 using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;

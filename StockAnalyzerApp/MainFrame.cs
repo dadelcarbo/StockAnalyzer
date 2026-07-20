@@ -59,7 +59,6 @@ using System.Xml;
 using System.Xml.Serialization;
 using Telerik.Windows.Data;
 using Match = System.Text.RegularExpressions.Match;
-using StockAnalyzer.StockData.DataProviders.AbcBourse;
 
 namespace StockAnalyzerApp
 {

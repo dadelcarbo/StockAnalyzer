@@ -2,7 +2,6 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockData;
-using System.Runtime.CompilerServices;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {

@@ -1,5 +1,4 @@
 ﻿using StockAnalyzer.StockClasses;
-using System;
 using System.Diagnostics;
 
 namespace StockAnalyzer.StockData.DataProviders.Vontobel

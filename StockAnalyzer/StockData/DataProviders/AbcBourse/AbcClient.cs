@@ -9,10 +9,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using System.Web;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace StockAnalyzer.StockData.DataProviders.AbcBourse
 {

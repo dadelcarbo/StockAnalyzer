@@ -1,10 +1,11 @@
 ﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockData;
+using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders
@@ -40,16 +41,51 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
             return DownloadDailyData(stockSerie);
         }
 
-
         static readonly ChartService chartService = new ChartService();
 
         public override bool DownloadDailyData(StockSerie stockSerie)
         {
-            var bars = chartService.GetData(stockSerie.Uic, stockSerie.BarDuration);
+            int horizon;
+            switch (stockSerie.BarDuration)
+            {
+                case BarDuration.Daily:
+                    horizon = 1440;
+                    break;
+                case BarDuration.Weekly:
+                    horizon = 10080;
+                    break;
+                case BarDuration.Monthly:
+                    horizon = 43200;
+                    break;
+                case BarDuration.M_5:
+                    horizon = 5;
+                    break;
+                case BarDuration.M_10:
+                    horizon = 10;
+                    break;
+                case BarDuration.M_15:
+                    horizon = 15;
+                    break;
+                case BarDuration.M_30:
+                    horizon = 30;
+                    break;
+                case BarDuration.H_1:
+                    horizon = 60;
+                    break;
+                case BarDuration.H_2:
+                    horizon = 120;
+                    break;
+                case BarDuration.H_4:
+                    horizon = 240;
+                    break;
+                default:
+                    throw new StockAnalyzerException($"Duration: {stockSerie.BarDuration} is not supported in Saxo OpenAPI");
+            }
+            var bars = chartService.GetData(stockSerie.Uic, horizon);
             if (bars == null || bars.Length == 0)
                 return false;
             stockSerie.IsInitialised = false;
-            foreach (var bar in bars)
+            foreach (var bar in bars.Select(ohlc => new StockDailyValue(ohlc.Open, ohlc.High, ohlc.Low, ohlc.Close, (long)ohlc.Volume, ohlc.Time)))
             {
                 stockSerie.Add(bar.DATE, bar);
             }
@@ -100,7 +136,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
 
         public override string DisplayName => "Saxo";
 
-        public override void  OpenInDataProvider(StockInstrument stockInstrument)
+        public override void OpenInDataProvider(StockInstrument stockInstrument)
         {
             //Process.Start($"https://fr-be.structured-products.saxo/products/{stockSerie.ISIN}");
         }

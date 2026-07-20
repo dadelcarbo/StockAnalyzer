@@ -4,7 +4,6 @@ using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockData;
