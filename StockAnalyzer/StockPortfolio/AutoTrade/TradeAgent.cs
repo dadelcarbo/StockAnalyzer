@@ -73,7 +73,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade
             else
             {
                 // Check is opened position for this instrument.
-                var saxoPosition = this.Portfolio.SaxoGetPosition(Instrument.StockSerie);
+                var saxoPosition = this.Portfolio.SaxoGetPosition(Instrument);
                 if (saxoPosition != null)
                 {
                     var positionId = long.Parse(saxoPosition.PositionId);

@@ -400,7 +400,7 @@ namespace StockAnalyzer.StockPortfolio
                 //return instrument;
             }
 
-            // Find StockSerie by ISIN
+            // Find Instrument by ISIN
             if (!string.IsNullOrEmpty(saxoInstrument.Isin))
             {
                 instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == saxoInstrument.Isin);
@@ -597,21 +597,6 @@ namespace StockAnalyzer.StockPortfolio
             }
         }
 
-        public PriceInfo GetPrice(StockSerie stockSerie)
-        {
-            if (string.IsNullOrEmpty(stockSerie?.ISIN))
-                return null;
-
-            if (!this.SaxoSilentLogin())
-                return null;
-
-            var saxoInstrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN);
-            if (saxoInstrument == null)
-                return null;
-
-            return instrumentService.GetInstrumentPrice(saxoInstrument, this.account);
-        }
-
         public async Task<PriceInfo> GetPriceAsync(StockInstrument stockInstrument)
         {
             if (string.IsNullOrEmpty(stockInstrument?.Isin))
@@ -666,10 +651,10 @@ namespace StockAnalyzer.StockPortfolio
                     {
                         var order = new SaxoOrder(activityOrder);
                         this.SaxoOrders.Add(order);
-                        var stockSerie = GetInstrumentFromUic(order.Uic);
-                        if (stockSerie == null)
+                        var instrument = GetInstrumentFromUic(order.Uic);
+                        if (instrument == null)
                         {
-                            StockLog.Write($"StockSerie for UIC:{order.Uic} not found");
+                            StockLog.Write($"Instrument for UIC:{order.Uic} not found");
                             var saxoInstrument = instrumentService.GetInstrumentById(order.Uic);
                             if (saxoInstrument == null)
                                 return;
@@ -678,8 +663,8 @@ namespace StockAnalyzer.StockPortfolio
                         }
                         else
                         {
-                            order.StockName = stockSerie.Name;
-                            order.Isin = stockSerie.Isin;
+                            order.StockName = instrument.Name;
+                            order.Isin = instrument.Isin;
                         }
                         ProcessFullyFilledOrder(activityOrder, order);
                     }
@@ -845,12 +830,12 @@ namespace StockAnalyzer.StockPortfolio
             }
         }
 
-        public Position SaxoGetPosition(StockSerie stockSerie)
+        public Position SaxoGetPosition(StockInstrument instrument)
         {
             using var ml = new MethodLogger(this, true, this.Name);
             try
             {
-                var saxoInstrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
+                var saxoInstrument = instrumentService.GetInstrumentByIsin(instrument.Isin == null ? instrument.Symbol : instrument.Isin);
                 if (saxoInstrument == null)
                     return null;
 
@@ -876,28 +861,23 @@ namespace StockAnalyzer.StockPortfolio
 
         public long SaxoBuyOrder(StockInstrument instrument, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = false)
         {
-            return SaxoBuyOrder(instrument.StockSerie, orderType, qty, stopValue, orderValue, t1);
-        }
-
-        public long SaxoBuyOrder(StockSerie stockSerie, OrderType orderType, int qty, float stopValue = 0, float orderValue = 0, bool t1 = false)
-        {
-            using var ml = new MethodLogger(this, true, $"{this.Name} Buy {qty}-{orderType}-{stockSerie.StockName}  Stop:{stopValue}");
+            using var ml = new MethodLogger(this, true, $"{this.Name} Buy {qty}-{orderType}-{instrument.DisplayName}  Stop:{stopValue}");
             try
             {
                 if (!this.SaxoLogin())
                     return 0;
 
-                var saxoInstrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
+                var saxoInstrument = instrumentService.GetInstrumentByIsin(instrument.Isin == null ? instrument.Symbol : instrument.Isin);
                 if (saxoInstrument == null)
                 {
-                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Instrument: {instrument.DisplayName}:{instrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return 0;
                 }
 
                 var instrumentDetail = instrumentService.GetInstrumentDetailsById(saxoInstrument.Identifier, saxoInstrument.AssetType, account);
                 if (instrumentDetail == null)
                 {
-                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"InstrumentDetails: {instrument.DisplayName}:{instrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return 0;
                 }
                 decimal stop = instrumentDetail.RoundToTickSize(stopValue);
@@ -1176,36 +1156,6 @@ namespace StockAnalyzer.StockPortfolio
                 if (instrumentDetail == null)
                 {
                     MessageBox.Show($"InstrumentDetails: {stockInstrument.DisplayName}:{stockInstrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
-                }
-                return instrumentDetail;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            return null;
-        }
-
-        public InstrumentDetails GetInstrumentDetails(StockSerie stockSerie)
-        {
-            using var ml = new MethodLogger(this, true, this.Name);
-            try
-            {
-                if (!this.SaxoSilentLogin())
-                    return null;
-
-                var saxoInstrument = instrumentService.GetInstrumentByIsin(stockSerie.ISIN == null ? stockSerie.Symbol : stockSerie.ISIN);
-                if (saxoInstrument == null)
-                {
-                    MessageBox.Show($"Instrument: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
-                }
-
-                var instrumentDetail = instrumentService.GetInstrumentDetailsById(saxoInstrument.Identifier, saxoInstrument.AssetType, account);
-                if (instrumentDetail == null)
-                {
-                    MessageBox.Show($"InstrumentDetails: {stockSerie.StockName}:{stockSerie.ISIN} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return null;
                 }
                 return instrumentDetail;
