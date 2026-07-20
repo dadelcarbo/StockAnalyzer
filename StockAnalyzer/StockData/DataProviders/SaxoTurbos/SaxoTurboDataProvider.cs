@@ -1,5 +1,7 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 {
@@ -35,6 +37,20 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
         public override void OpenInDataProvider(StockInstrument stockInstrument)
         {
             Process.Start($"https://fr-be.structured-products.saxo/products/{stockInstrument.Isin}");
+        }
+
+        public override DialogResult ShowConfigDialog(object param)
+        {
+            var configDlg = new SaxoDataProviderDlg() { StartPosition = FormStartPosition.CenterScreen };
+            if (param != null && param is long saxoId)
+            {
+                configDlg.ViewModel.Initialize(saxoId);
+            }
+            else
+            {
+                configDlg.ViewModel.Initialize(0);
+            }
+            return configDlg.ShowDialog();
         }
     }
 }

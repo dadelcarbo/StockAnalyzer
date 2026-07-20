@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider;
+using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
-using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
+namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
 {
     public class SaxoDataProviderViewModel : NotifyPropertyChangedBase
     {
         public SaxoDataProviderViewModel()
         {
-            this.configFile = Path.Combine(Folders.PersonalFolder, SaxoIntradayDataProvider.UserConfigFileName);
+            this.configFile = DataProviderBase.GetDataProvider(DataProvider.SaxoTurbo).ConfigFile;
         }
 
         public void Initialize(long saxoId)
@@ -33,7 +33,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                     var underlyings = result?.data?.filters?.firstLevel?.underlying?.list;
                     this.Underlyings = underlyings.Values.ToList();
                     // Load config file
-                    List<string> underlyingFile = File.Exists(SaxoIntradayDataProvider.SaxoUnderlyingFile) ? File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).ToList() : new List<string>();
+                    List<string> underlyingFile = File.Exists(this.configFile) ? File.ReadAllLines(this.configFile).ToList() : new List<string>();
                     var ids = underlyingFile.Select(l => long.Parse(l.Split(',')[0])).ToList();
 
                     var newIds = this.Underlyings.Where(u => !ids.Contains(u.value)).Select(u => u.value + "," + u.label + ",").ToList();
@@ -52,7 +52,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
                             }
                         }
 
-                        File.WriteAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile, underlyingFile);
+                        File.WriteAllLines(this.configFile, underlyingFile);
 
                         MessageBox.Show("New Uderlying detected: " + Environment.NewLine + newIds.Aggregate((i, j) => i + Environment.NewLine + j));
                     }

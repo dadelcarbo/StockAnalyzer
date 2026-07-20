@@ -267,7 +267,6 @@
     <Compile Include="StockAgent\Agents\EMA2LinesAgent.cs" />
     <Compile Include="StockAgent\IStockEntryStop.cs" />
     <Compile Include="StockAgent\IStockParameterized.cs" />
-    <Compile Include="StockAgent\IStopStrategy.cs" />
     <Compile Include="StockAgent\PositionManagement.cs" />
     <Compile Include="StockAgent\BackTestEngine.cs" />
     <Compile Include="StockAgent\StockEntryTargetBase.cs" />
@@ -295,8 +294,6 @@
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Boursorama\BoursoJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SaxoIntradayDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SaxoIntradayH1DataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoJSon.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoHttpClient.cs" />
     <Compile Include="StockClasses\StockDataProviders\SaxoTurboDataProvider\SaxoIntradayM5DataProvider.cs" />
@@ -317,20 +314,20 @@
     <Compile Include="StockData\DataProviders\Yahoo\YahooDataProvider.cs" />
     <Compile Include="StockData\DataProviders\Yahoo\YahooJson.cs" />
     <Compile Include="StockData\StockBar.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoConfigEntry.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml.cs">
+    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoConfigEntry.cs" />
+    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderControl.xaml.cs">
       <DependentUpon>SaxoDataProviderControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderDlg.cs">
+    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderDlg.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderDlg.Designer.cs">
+    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderDlg.Designer.cs">
       <DependentUpon>SaxoDataProviderDlg.cs</DependentUpon>
     </Compile>
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderViewModel.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoJson.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoProduct.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoUnderlying.cs" />
+    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderViewModel.cs" />
+    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoJson.cs" />
+    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoProduct.cs" />
+    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoUnderlying.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderDlgs\YahooDataProviderConfigDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -339,7 +336,6 @@
     </Compile>
     <Compile Include="StockClasses\StockDataProviders\Vontobel\VontobelIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Vontobel\VontobelModel.cs" />
-    <Compile Include="StockClasses\StockDataProviders\YahooIntradayDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\YahooDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\Yahoo\YahooJson.cs" />
     <Compile Include="StockClasses\StockDataProviders\yCharts\ychartJson.cs" />
@@ -433,6 +429,7 @@
     <Compile Include="StockDrawing\Box.cs" />
     <Compile Include="StockDrawing\WinRatio.cs" />
     <Compile Include="StockHelpers\ColorJsonConverter.cs" />
+    <Compile Include="StockHelpers\CommandBase.cs" />
     <Compile Include="StockHelpers\FloatToCurrencyConverter.cs" />
     <Compile Include="StockHelpers\HtmlHelper.cs" />
     <Compile Include="StockHelpers\Persister.cs" />
@@ -720,7 +717,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderDlg.resx">
+    <EmbeddedResource Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderDlg.resx">
       <DependentUpon>SaxoDataProviderDlg.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -787,7 +784,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="StockClasses\StockDataProviders\StockDataProviderDlgs\SaxoDataProviderDialog\SaxoDataProviderControl.xaml">
+    <Page Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

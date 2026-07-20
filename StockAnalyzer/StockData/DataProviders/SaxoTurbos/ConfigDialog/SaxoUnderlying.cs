@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
+namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
 {
     [DebuggerDisplay("Id={Id}, SaxoName={SaxoName}, InstrumentId={InstrumentId}")]
     public class SaxoUnderlying
@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
         public static IList<SaxoUnderlying> Load()
         {
-            return File.ReadAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile).Select(l =>
+            return File.ReadAllLines(SaxoTurboDataProvider.SaxoUnderlyingFile).Select(l =>
             {
                 var parts = l.Split(',');
                 return new SaxoUnderlying
@@ -29,7 +29,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.Sa
 
         public static void Save(IEnumerable<SaxoUnderlying> underlyings)
         {
-            File.WriteAllLines(SaxoIntradayDataProvider.SaxoUnderlyingFile, underlyings.Select(u => $"{u.Id},{u.SaxoName},{u.InstrumentId}"));
+            File.WriteAllLines(SaxoTurboDataProvider.SaxoUnderlyingFile, underlyings.Select(u => $"{u.Id},{u.SaxoName},{u.InstrumentId}"));
         }
     }
 }

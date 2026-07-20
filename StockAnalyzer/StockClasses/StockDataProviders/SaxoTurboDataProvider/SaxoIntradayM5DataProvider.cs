@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockWeb;
 using StockAnalyzer.StockData;
@@ -13,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Windows.Forms;
+using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 
 namespace StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider
 {
@@ -389,7 +388,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.SaxoTurboDataProvider
 
         public override bool RemoveEntry(StockSerie stockSerie)
         {
-            SaxoConfigEntry.RemoveEntry(stockSerie.ISIN, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
+            //SaxoConfigEntry.RemoveEntry(stockSerie.ISIN, Path.Combine(Folders.PersonalFolder, CONFIG_FILE));
 
             return true;
         }

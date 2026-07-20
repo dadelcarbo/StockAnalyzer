@@ -252,9 +252,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 configDialogs = new List<IConfigDialog>
                 {
                     new ABCDataProvider(),
-                    new SaxoIntradayDataProvider(),
                     new YahooDataProvider(),
-                    new YahooIntradayDataProvider(),
                     new SocGenIntradayDataProvider(),
                     new VontobelIntradayDataProvider(),
                     new InvestingIntradayDataProvider(),

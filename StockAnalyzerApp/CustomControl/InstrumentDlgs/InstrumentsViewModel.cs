@@ -1,11 +1,11 @@
 ﻿using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
-using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockData.DataProviders.SaxoTurbos;
+using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
+using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using System;
 using System.Collections.Generic;

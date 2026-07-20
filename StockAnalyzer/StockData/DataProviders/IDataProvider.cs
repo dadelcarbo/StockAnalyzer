@@ -1,6 +1,7 @@
 using StockAnalyzer.StockClasses;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
@@ -11,6 +12,12 @@ namespace StockAnalyzer.StockData.DataProviders
         string DisplayName { get; }
 
         DataProvider Provider { get; }
+
+        string ConfigFile { get; }
+
+        BarDuration[] SupportedDurations { get; }
+        BarDuration DefaultDuration { get; }
+        bool SupportsDuration(BarDuration duration);
 
         /// <summary>
         /// Initialize the dictionary of available instruments. If download is true, it will download the list of instruments from the data provider.
@@ -78,10 +85,11 @@ namespace StockAnalyzer.StockData.DataProviders
         /// <param name="predicate">Condition that specifies which data to be kept</param>
         void KeepOnlyBars(StockInstrument instrument, Func<StockDailyValue, bool> predicate);
 
-        bool SupportsDuration(BarDuration duration);
-
-        BarDuration[] SupportedDurations { get; }
-
-        BarDuration DefaultDuration { get; }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        DialogResult ShowConfigDialog(object param);
     }
 }

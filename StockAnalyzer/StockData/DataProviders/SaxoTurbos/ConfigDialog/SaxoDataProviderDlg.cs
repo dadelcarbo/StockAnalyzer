@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
+namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
 {
     public partial class SaxoDataProviderDlg : Form
     {

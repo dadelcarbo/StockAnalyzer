@@ -3,9 +3,11 @@ using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace StockAnalyzer.StockData.DataProviders
 {
@@ -49,7 +51,7 @@ namespace StockAnalyzer.StockData.DataProviders
 
         protected string DataRootFolder { get; private set; }
         protected string DataFolder { get; private set; }
-        protected string ConfigFile { get; private set; }
+        public string ConfigFile { get; private set; }
         protected string HistoryFile { get; private set; }
 
         public static event DownloadingEventHandler DownloadStarted;
@@ -436,6 +438,14 @@ namespace StockAnalyzer.StockData.DataProviders
                 return false;
 
             return DownloadData(instrument) != null;
+        }
+
+        public virtual DialogResult ShowConfigDialog(object param)
+        {
+            var path = Path.Combine(this.ConfigFile);
+            Process.Start(path);
+
+            return DialogResult.OK;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
+namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
 {
     #region Underlying
 

@@ -1,7 +1,6 @@
 ﻿using Saxo.OpenAPI.AuthenticationServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs;
 using StockAnalyzer.StockClasses.StockDataProviders.Yahoo;
@@ -11,6 +10,8 @@ using StockAnalyzer.StockClasses.StockViewableItems.StockClouds;
 using StockAnalyzer.StockClasses.StockViewableItems.StockDecorators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
+using StockAnalyzer.StockData;
+using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
@@ -35,7 +36,6 @@ using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.SplitDlg;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
 using StockAnalyzerApp.CustomControl.WatchlistDlgs;
-using StockAnalyzer.StockData;
 using StockAnalyzerApp.StockScripting;
 using StockAnalyzerSettings;
 using StockAnalyzerSettings.Properties;
@@ -4311,15 +4311,14 @@ namespace StockAnalyzerApp
         }
         internal void OpenSaxoIntradyConfigDlg(long saxoId)
         {
-            SaxoIntradayDataProvider dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.SaxoIntraday) as SaxoIntradayDataProvider;
+            var dataProvider = DataProviderBase.GetDataProvider(DataProvider.SaxoTurbo);
             if (dataProvider == null)
             {
                 return;
             }
-            if (dataProvider.ShowDialog(saxoId) == DialogResult.OK)
+            if (dataProvider.ShowConfigDialog(saxoId) == DialogResult.OK)
             {
-                dataProvider.InitDictionary(StockDictionary.Instance, true);
-                this.CreateSecondarySerieMenuItem();
+                dataProvider.InitDictionary(false);
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿
-namespace StockAnalyzer.StockClasses.StockDataProviders.StockDataProviderDlgs.SaxoDataProviderDialog
+namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
 {
     partial class SaxoDataProviderDlg
     {

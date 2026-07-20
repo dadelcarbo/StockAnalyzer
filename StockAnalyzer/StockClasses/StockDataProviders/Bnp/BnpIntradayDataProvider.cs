@@ -21,7 +21,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders.Bnp
         static private readonly string INTRADAY_FOLDER = INTRADAY_SUBFOLDER + @"\BnpIntraday";
         static private readonly string CONFIG_FILE = "BnpIntradayDownload.cfg";
 
-
         public string UserConfigFileName => CONFIG_FILE;
 
         public override void InitDictionary(StockDictionary stockDictionary, bool download)
