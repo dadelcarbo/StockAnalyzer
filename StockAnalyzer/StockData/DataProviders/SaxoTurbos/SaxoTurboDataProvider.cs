@@ -1,6 +1,9 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
+using StockAnalyzerSettings;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 
 namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
@@ -13,6 +16,8 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
         public override BarDuration DefaultDuration => BarDuration.H_1;
 
         public override DataProvider Provider => DataProvider.SaxoTurbo;
+
+        static public string SaxoUnderlyingFile => Path.Combine(Folders.PersonalFolder, "SaxoUnderlyings.cfg");
 
         protected override void PreInitDictionary(bool download) => this.dataClient = new SaxoTurboDataClient();
 
@@ -51,6 +56,30 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
                 configDlg.ViewModel.Initialize(0);
             }
             return configDlg.ShowDialog();
+        }
+
+        public static void InitSaxoIds()
+        {
+            string line;
+            if (File.Exists(SaxoUnderlyingFile))
+            {
+                using var sr = new StreamReader(SaxoUnderlyingFile, true);
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                    if (line.StartsWith("$")) break;
+
+                    var row = line.Split(',');
+                    var instrumentId = row[2];
+                    if (string.IsNullOrEmpty(instrumentId))
+                        continue;
+                    if (StockDictionary.Instruments.TryGetValue(instrumentId, out var instrument))
+                    {
+                        instrument.SaxoId = long.Parse(row[0]);
+                    }
+                }
+            }
         }
     }
 }

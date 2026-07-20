@@ -1,7 +1,5 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockClasses.StockDataProviders.AbcDataProvider;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockClasses.StockViewableItems.StockIndicators;
 using StockAnalyzer.StockClasses.StockViewableItems.StockTrailStops;
@@ -495,11 +493,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 #endregion
                 if (this.DownloadIntraday)
                 {
-                    if (this.group != StockAnalyzer.StockData.Groups.TURBO)
-                    {
-                        var dataProvider = StockDataProviderBase.GetDataProvider(StockDataProvider.ABC) as ABCDataProvider;
-                        dataProvider.DownloadAllGroupsIntraday();
-                    }
+                    throw new NotImplementedException("Intraday download in Palmares");
                 }
 
                 Lines = new ObservableCollection<PalmaresLine>();

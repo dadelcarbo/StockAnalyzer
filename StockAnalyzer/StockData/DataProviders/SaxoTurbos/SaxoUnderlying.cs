@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
+namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos
 {
     [DebuggerDisplay("Id={Id}, SaxoName={SaxoName}, InstrumentId={InstrumentId}")]
     public class SaxoUnderlying

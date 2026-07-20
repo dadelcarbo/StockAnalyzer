@@ -285,10 +285,6 @@
     <Compile Include="StockData\DataProviders\IDataHttpClient.cs" />
     <Compile Include="StockData\DataProviders\IDataProvider.cs" />
     <Compile Include="StockClasses\StockAlertValue.cs" />
-    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcClient.cs" />
-    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcGroupDownloadHistory.cs" />
-    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\AbcDownloadHistory.cs" />
-    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\ABCGroup.cs" />
     <Compile Include="StockData\DataProviders\InstrumentDownloadHistory.cs" />
     <Compile Include="StockData\DataProviders\MarketHours.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataClient.cs" />
@@ -318,9 +314,7 @@
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoDataProviderViewModel.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoJson.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoProduct.cs" />
-    <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoUnderlying.cs" />
-    <Compile Include="StockClasses\StockDataProviders\yCharts\ychartJson.cs" />
-    <Compile Include="StockClasses\StockDataProviders\yCharts\ychartsDataProvider.cs" />
+    <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoUnderlying.cs" />
     <Compile Include="StockClasses\StockSerieLocker.cs" />
     <Compile Include="StockClasses\StockSortedDictionary.cs" />
     <Compile Include="StockClasses\StockSplit.cs" />
@@ -456,7 +450,6 @@
     <Compile Include="StockClasses\StockAlertDef.cs" />
     <Compile Include="StockClasses\StockAlert.cs" />
     <Compile Include="StockClasses\BarDuration.cs" />
-    <Compile Include="StockClasses\StockDataProviders\AbcDataProvider\ABCDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
     <Compile Include="StockClasses\StockDataProviders\StockDataProviderBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockText.cs" />

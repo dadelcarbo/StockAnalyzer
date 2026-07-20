@@ -15,9 +15,10 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
 {
     public class SaxoDataProviderViewModel : NotifyPropertyChangedBase
     {
+        SaxoTurboDataProvider dataProvider;
         public SaxoDataProviderViewModel()
         {
-            this.configFile = DataProviderBase.GetDataProvider(DataProvider.SaxoTurbo).ConfigFile;
+            dataProvider = DataProviderBase.GetDataProvider(DataProvider.SaxoTurbo) as SaxoTurboDataProvider;
         }
 
         public void Initialize(long saxoId)
@@ -25,15 +26,15 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
             try
             {
                 var jsonData = SaxoHttpClient.HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
-                // "https://fr-be.structured-products.saxo/page-api/search/*?productsSize=10&underlyingsSize=700&locale=fr_BE");
 
                 if (!string.IsNullOrEmpty(jsonData))
                 {
                     var result = JsonConvert.DeserializeObject<UnderlyingRoot>(jsonData);
                     var underlyings = result?.data?.filters?.firstLevel?.underlying?.list;
                     this.Underlyings = underlyings.Values.ToList();
+
                     // Load config file
-                    List<string> underlyingFile = File.Exists(this.configFile) ? File.ReadAllLines(this.configFile).ToList() : new List<string>();
+                    List<string> underlyingFile = File.Exists(SaxoTurboDataProvider.SaxoUnderlyingFile) ? File.ReadAllLines(SaxoTurboDataProvider.SaxoUnderlyingFile).ToList() : new List<string>();
                     var ids = underlyingFile.Select(l => long.Parse(l.Split(',')[0])).ToList();
 
                     var newIds = this.Underlyings.Where(u => !ids.Contains(u.value)).Select(u => u.value + "," + u.label + ",").ToList();
@@ -52,12 +53,12 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
                             }
                         }
 
-                        File.WriteAllLines(this.configFile, underlyingFile);
+                        File.WriteAllLines(SaxoTurboDataProvider.SaxoUnderlyingFile, underlyingFile);
 
                         MessageBox.Show("New Uderlying detected: " + Environment.NewLine + newIds.Aggregate((i, j) => i + Environment.NewLine + j));
                     }
                 }
-                this.Entries = new ObservableCollection<SaxoConfigEntry>(SaxoConfigEntry.LoadFromFile(this.configFile));
+                this.Entries = new ObservableCollection<SaxoConfigEntry>(SaxoConfigEntry.LoadFromFile(dataProvider.ConfigFile));
 
                 if (saxoId != 0)
                 {
@@ -134,7 +135,6 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
             this.Products = newProducts;
         }
 
-        readonly string configFile;
 
 
 
@@ -161,7 +161,6 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
             this.Entries.Insert(0, new SaxoConfigEntry { Underlying = this.selectedProduct.Underlying.ToString(), ISIN = this.selectedProduct.ISIN, StockName = stockName });
         }
 
-
         private CommandBase saveCommand;
 
         public ICommand SaveAndCloseCommand
@@ -178,7 +177,7 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
             try
             {
                 System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.WaitCursor;
-                SaxoConfigEntry.SaveToFile(this.Entries, this.configFile);
+                SaxoConfigEntry.SaveToFile(this.Entries, dataProvider.ConfigFile);
                 Task.Delay(500).Wait();
             }
             catch (Exception ex)
