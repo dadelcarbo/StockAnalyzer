@@ -2091,7 +2091,7 @@ namespace StockAnalyzerApp
         {
             // Clean existing menus
             this.secondarySerieMenuItem.DropDownItems.Clear();
-            var validGroups = StockDictionary.Instance.GetValidGroups().Select(g => g.ToString());
+            var validGroups = StockDictionary.GetValidGroups().Select(g => g.ToString());
             ToolStripMenuItem[] groupMenuItems = new ToolStripMenuItem[validGroups.Count()];
 
             int i = 0;
@@ -2758,7 +2758,7 @@ namespace StockAnalyzerApp
 
                 var stokPeriod = alertDef.Stok == 0 ? 35 : alertDef.Stok;
 
-                var alerts = StockDictionary.Instance.MatchAlert(alertDef);
+                var alerts = StockDictionary.MatchAlert(alertDef);
 
                 StockSplashScreen.ProgressVal = 0;
                 StockSplashScreen.ProgressMax = alerts.Count();
@@ -3783,7 +3783,7 @@ namespace StockAnalyzerApp
                 if (ViewModel.Instrument.BelongsToGroup(Groups.BREADTH))
                 {
                     string[] fields = this.ViewModel.Instrument.DisplayName.Split('.');
-                    if (fields.Length > 1 && StockDictionary.Instance.ContainsKey(fields[1]))
+                    if (fields.Length > 1)
                     {
                         this.graphCloseControl.SecondaryFloatSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(fields[1], this.ViewModel.BarDuration);
                     }

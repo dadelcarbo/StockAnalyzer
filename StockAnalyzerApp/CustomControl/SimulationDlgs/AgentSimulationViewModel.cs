@@ -34,7 +34,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.ViewModel.Instrument.Group;
         }
-        public IEnumerable<Groups> Groups => StockDictionary.Instance.GetValidGroups();
+        public IEnumerable<Groups> Groups => StockDictionary.GetValidGroups();
         public Groups Group { get; set; }
 
         private BarDuration barDuration;

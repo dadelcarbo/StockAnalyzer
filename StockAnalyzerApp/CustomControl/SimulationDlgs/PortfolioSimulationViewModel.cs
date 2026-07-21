@@ -48,7 +48,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
 
         public PositionManagement PositionManagement { get; set; }
-        static public IEnumerable<Groups> Groups => StockDictionary.Instance.GetValidGroups();
+        static public IEnumerable<Groups> Groups => StockDictionary.GetValidGroups();
         public Groups Group { get; set; }
         public IList<BarDuration> Durations => StockBarDuration.BarDurations;
         public BarDuration Duration { get; set; }

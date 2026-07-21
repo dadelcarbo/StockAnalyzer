@@ -108,7 +108,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         private Groups group;
         public Groups Group { get => group; set => SetProperty(ref group, value); }
 
-        static public IEnumerable<Groups> Groups => StockDictionary.Instance.GetValidGroups();
+        static public IEnumerable<Groups> Groups => StockDictionary.GetValidGroups();
 
         private string theme;
         public string Theme { get => theme; set => SetProperty(ref theme, value); }
@@ -445,7 +445,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     foreach (var alertDef in alertDefs)
                     {
                         CurrentAlert = alertDef;
-                        foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
+                        foreach (var alert in StockDictionary.MatchAlert(alertDef))
                         {
                             this.Alerts.Add(alert.GetAlertValue());
                         }
@@ -482,7 +482,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     foreach (var alertDef in alertDefs)
                     {
                         CurrentAlert = alertDef;
-                        foreach (var alert in StockDictionary.Instance.MatchAlert(alertDef))
+                        foreach (var alert in StockDictionary.MatchAlert(alertDef))
                         {
                             this.Alerts.Add(alert.GetAlertValue());
                         }

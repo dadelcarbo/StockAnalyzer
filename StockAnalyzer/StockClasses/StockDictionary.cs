@@ -37,7 +37,7 @@ namespace StockAnalyzer.StockClasses
         }
 
         private static List<Groups> validGroups = null;
-        public List<Groups> GetValidGroups()
+        static public List<Groups> GetValidGroups()
         {
             if (validGroups == null)
             {
@@ -1313,11 +1313,10 @@ namespace StockAnalyzer.StockClasses
         {
             return Instruments.Values.FirstOrDefault(i => string.Compare(i.Name, name, true) == 0);
         }
-        Stopwatch sw;
-        public List<StockAlert> MatchAlert(StockAlertDef alertDef)
+        static public List<StockAlert> MatchAlert(StockAlertDef alertDef)
         {
-            using MethodLogger ml = new MethodLogger(this, true, $"AlertDef: {alertDef.Title}");
-            sw = Stopwatch.StartNew();
+            using MethodLogger ml = new MethodLogger(typeof(StockDictionary), true, $"AlertDef: {alertDef.Title}");
+            var sw = Stopwatch.StartNew();
 
             var alerts = new List<StockAlert>();
             try

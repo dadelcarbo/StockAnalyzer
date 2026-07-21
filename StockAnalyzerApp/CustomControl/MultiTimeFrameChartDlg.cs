@@ -76,14 +76,10 @@ namespace StockAnalyzerApp.CustomControl
             stockNameComboBox.Items.Clear();
             stockNameComboBox.SelectedItem = string.Empty;
 
-            var stocks = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(this.selectedGroup)).Select(s => s.StockName);
-            foreach (string stockName in stocks)
+            var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
+            foreach (var instrument in instruments)
             {
-                if (StockDictionary.Instance.Keys.Contains(stockName))
-                {
-                    StockSerie stockSerie = StockDictionary.Instance[stockName];
-                    stockNameComboBox.Items.Add(stockName);
-                }
+                    stockNameComboBox.Items.Add(instrument.DisplayName);
             }
             stockNameComboBox.SelectedItem = this.instrument.DisplayName;
         }

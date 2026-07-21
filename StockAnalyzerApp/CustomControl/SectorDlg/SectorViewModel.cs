@@ -27,7 +27,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         Groups group;
         public Groups Group { get => group; set => SetProperty(ref group, value); }
 
-        public List<Groups> Groups => StockDictionary.Instance.GetValidGroups();
+        public List<Groups> Groups => StockDictionary.GetValidGroups();
 
         public void Perform(string param)
         {

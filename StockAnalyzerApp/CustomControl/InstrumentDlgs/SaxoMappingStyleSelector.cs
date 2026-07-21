@@ -30,19 +30,19 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             }
             else
             {
-                var instrument = item as SaxoInstrument;
-                if (instrument == null)
+                var saxoInstrument = item as SaxoInstrument;
+                if (saxoInstrument == null)
                     return null;
 
-                if (string.IsNullOrEmpty(instrument.Isin))
+                if (string.IsNullOrEmpty(saxoInstrument.Isin))
                 {
-                    if (!string.IsNullOrEmpty(instrument.Symbol))
+                    if (!string.IsNullOrEmpty(saxoInstrument.Symbol))
                     {
-                        var symbol = instrument.Symbol.Split(':')[0];
-                        var stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => s.Symbol == symbol);
-                        if (stockSerie != null)
+                        var symbol = saxoInstrument.Symbol.Split(':')[0];
+                        var instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Symbol == symbol);
+                        if (instrument != null)
                         {
-                            instrument.Isin = stockSerie.ISIN;
+                            saxoInstrument.Isin = instrument.Isin;
                         }
                     }
                     return NotFoundStyle;
