@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using Newtonsoft.Json.Linq;
 using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using StockAnalyzerSettings;
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Saxo.OpenAPI.TradingServices
@@ -16,7 +17,7 @@ namespace Saxo.OpenAPI.TradingServices
         {
             if (File.Exists(Folders.SaxoInstruments))
             {
-                InstrumentCache = JsonConvert.DeserializeObject<List<SaxoInstrument>>(File.ReadAllText(Folders.SaxoInstruments));
+                InstrumentCache = JsonSerializer.Deserialize<List<SaxoInstrument>>(File.ReadAllText(Folders.SaxoInstruments));
             }
             else
             {
@@ -117,7 +118,7 @@ namespace Saxo.OpenAPI.TradingServices
         public static void SaveCache()
         {
             // Save Cache
-            File.WriteAllText(Folders.SaxoInstruments, JsonConvert.SerializeObject(InstrumentCache, Formatting.Indented));
+            File.WriteAllText(Folders.SaxoInstruments, JsonSerializer.Serialize(InstrumentCache, JsonSerializerOptions.Default));
         }
 
         private static readonly SortedDictionary<long, InstrumentDetails> InstrumentDetailsCache = new SortedDictionary<long, InstrumentDetails>();

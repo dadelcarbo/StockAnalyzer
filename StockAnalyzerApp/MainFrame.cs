@@ -651,7 +651,8 @@ namespace StockAnalyzerApp
                 StockTimer.CreateRefreshTimer(startTime, endTime, new TimeSpan(0, 1, 0), RefreshTimer_Tick);
             }
 
-            searchCombo.Items.AddRange(StockDictionary.Instruments.Select(p => p.Value.DisplayName).ToArray());
+            var group = this.ViewModel.Instrument == null ? Groups.CAC40 : this.ViewModel.Instrument.Group;
+            searchCombo.Items.AddRange(StockDictionary.Instruments.Values.Where(i => i.Group == group).Select(p => p.DisplayName).ToArray());
 
             // Ready to start
             StockSplashScreen.CloseForm(true);
@@ -915,7 +916,8 @@ namespace StockAnalyzerApp
                 {
                     StockLog.Write("Cond0");
                     this.searchCombo.Items.Clear();
-                    this.searchCombo.Items.AddRange(StockDictionary.Instruments.Select(p => p.Value.DisplayName).ToArray());
+                    var group = this.ViewModel.Instrument == null ? Groups.CAC40 : this.ViewModel.Instrument.Group;
+                    searchCombo.Items.AddRange(StockDictionary.Instruments.Values.Where(i => i.Group == group).Select(p => p.DisplayName).ToArray());
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
                     typedSearch = null;
                     return;
