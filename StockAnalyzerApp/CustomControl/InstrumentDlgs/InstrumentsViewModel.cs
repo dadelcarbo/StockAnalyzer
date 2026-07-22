@@ -7,6 +7,7 @@ using StockAnalyzer.StockData.DataProviders.SaxoTurbos;
 using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio.Saxo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -291,6 +292,18 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         {
             InstrumentService.SaveCache();
         }
+        #endregion
+
+        #region Instrument Mappings
+
+        InstrumentService instrumentService = new InstrumentService();
+        public IEnumerable<SaxoMappingViewModel> SaxoMappings => SaxoToInstrumentMapping.GetSaxoToInstrumentMappings()
+            .Select(m => new SaxoMappingViewModel
+            {
+                SaxoInstrument = instrumentService.GetInstrumentById(m.Key),
+                Instrument = StockDictionary.Instruments.ContainsKey(m.Value) ? StockDictionary.Instruments[m.Value] : null
+            });
+
         #endregion
     }
 }

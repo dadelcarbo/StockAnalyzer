@@ -424,6 +424,7 @@
     <Compile Include="StockPortfolio\SaxoPosition.cs" />
     <Compile Include="StockPortfolio\Saxo\SaxoPortfolio.cs" />
     <Compile Include="StockPortfolio\SaxoPositionChange.cs" />
+    <Compile Include="StockPortfolio\Saxo\SaxoToInstrumentMapping.cs" />
     <Compile Include="StockPortfolio\StockOpenedOrder.cs" />
     <Compile Include="StockPortfolio\StockOrderBase.cs" />
     <Compile Include="StockPortfolio\StockPositionBase.cs" />

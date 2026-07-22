@@ -17,6 +17,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows;
 using StockAnalyzer.StockData.DataProviders;
+using StockAnalyzer.StockPortfolio.Saxo;
 
 namespace StockAnalyzer.StockPortfolio
 {
@@ -381,67 +382,36 @@ namespace StockAnalyzer.StockPortfolio
 
         #region SAXO Integration Management
 
-        private static readonly SortedDictionary<long, StockInstrument> UicToSerieCache = new SortedDictionary<long, StockInstrument>();
-
         public StockInstrument GetInstrumentFromUic(long uic)
         {
             using var ml = new MethodLogger(this);
-            if (UicToSerieCache.ContainsKey(uic))
-                return UicToSerieCache[uic];
 
             StockInstrument instrument = null;
+
+            var instrumentId = SaxoToInstrumentMapping.GetInstrumentId(uic);
+            if (!string.IsNullOrEmpty(instrumentId))
+            {
+                if (StockDictionary.Instruments.TryGetValue(instrumentId, out instrument))
+                {
+                    return instrument;
+                }
+            }
+
             var saxoInstrument = instrumentService.GetInstrumentById(uic);
             if (saxoInstrument == null)
             {
-                throw new NotImplementedException("GetInstrumentFromUic instrument null");
-                //instrument = new StockSerie(uic.ToString(), uic.ToString(), Groups.ALL, StockDataProvider.Generated, BarDuration.Daily);
-                //UicToSerieCache.Add(uic, instrument);
-                //StockLog.Write($"Instrument: {uic} not found !");
-                //return instrument;
-            }
-
-            // Find Instrument by ISIN
-            if (!string.IsNullOrEmpty(saxoInstrument.Isin))
-            {
-                instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == saxoInstrument.Isin);
-                if (instrument != null)
-                {
-                    UicToSerieCache.Add(uic, instrument);
-                    return instrument;
-                }
-                instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == saxoInstrument.Isin);
-                if (instrument != null)
-                {
-                    UicToSerieCache.Add(uic, instrument);
-                    return instrument;
-                }
+                throw new KeyNotFoundException($"Saxo with UIC={uic} not found at Saxo");
             }
 
             // Find instrument in stock Dictionnary by Symbol
             var symbol = saxoInstrument.Symbol.Split(':')[0];
             var stockName = saxoInstrument.Description.ToUpper().Replace("SA", "").Replace("SCA", "").Trim();
             instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => (s.Symbol == symbol) || s.Name == stockName);
-            if (instrument == null)
+            
+            if (instrument != null)
             {
-                //throw new NotImplementedException("GetInstrumentFromUic instrument null");
-                if (saxoInstrument.ExchangeId == "CATS_SAXO" || saxoInstrument.AssetType == "WarrantOpenEndKnockOut")
-                {
-                    instrument = new StockInstrument()
-                    {
-                        Id = symbol,
-                        Name = saxoInstrument.Description,
-                        Symbol = symbol,
-                        Group = Groups.TURBO,
-                        Provider = DataProvider.SaxoTurbo
-                    };
-                }
+                SaxoToInstrumentMapping.AddMapping(uic, instrument.Id);
             }
-            if (string.IsNullOrEmpty(saxoInstrument.Isin) && !string.IsNullOrEmpty(instrument?.Isin))
-            {
-                saxoInstrument.Isin = instrument.Isin;
-                instrumentService.GetInstrumentByIsin(saxoInstrument.Isin);
-            }
-            UicToSerieCache.Add(uic, instrument);
             return instrument;
         }
 
@@ -1137,7 +1107,7 @@ namespace StockAnalyzer.StockPortfolio
             return null;
         }
 
-        public InstrumentDetails GetInstrumentDetails(StockInstrument stockInstrument)
+        public InstrumentDetails GetInstrumentDetails(StockInstrument instrument)
         {
             using var ml = new MethodLogger(this, true, this.Name);
             try
@@ -1145,17 +1115,28 @@ namespace StockAnalyzer.StockPortfolio
                 if (!this.SaxoSilentLogin())
                     return null;
 
-                var saxoInstrument = instrumentService.GetInstrumentByIsin(stockInstrument.Isin == null ? stockInstrument.Symbol : stockInstrument.Isin);
-                if (saxoInstrument == null)
+                SaxoInstrument saxoInstrument = null;
+                var saxoId = SaxoToInstrumentMapping.GetSaxoId(instrument.Id);
+                if (saxoId <= 0)
                 {
-                    MessageBox.Show($"Instrument: {stockInstrument.DisplayName}:{stockInstrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return null;
+                    saxoInstrument = instrumentService.GetInstrumentByIsin(instrument.Isin == null ? instrument.Symbol : instrument.Isin);
+                    if (saxoInstrument == null)
+                    {
+                        MessageBox.Show($"Instrument: {instrument.DisplayName}:{instrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
+                    }
+
+                    SaxoToInstrumentMapping.AddMapping(saxoInstrument.Identifier, instrument.Id);
+                }
+                else
+                {
+                    saxoInstrument = instrumentService.GetInstrumentById(saxoId);
                 }
 
                 var instrumentDetail = instrumentService.GetInstrumentDetailsById(saxoInstrument.Identifier, saxoInstrument.AssetType, account);
                 if (instrumentDetail == null)
                 {
-                    MessageBox.Show($"InstrumentDetails: {stockInstrument.DisplayName}:{stockInstrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"InstrumentDetails: {instrument.DisplayName}:{instrument.Isin} not found !", "Buy order exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     return null;
                 }
                 return instrumentDetail;

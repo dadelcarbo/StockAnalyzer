@@ -88,8 +88,8 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             // Find instrument in stock Dictionnary by Symbol
             var symbol = saxoInstrument.Symbol.Split(':')[0];
             var stockName = saxoInstrument.Description.ToUpper().Replace("SA", "").Replace("SCA", "").Trim();
-            stockSerie = StockDictionary.Instance.Values.FirstOrDefault(s => (s.Symbol == symbol) || s.StockName == stockName);
-            if (stockSerie == null)
+            var instrument  = StockDictionary.Instruments.Values.FirstOrDefault(s => (s.Symbol == symbol) || s.Name == stockName);
+            if (instrument == null)
             {
                 if (saxoInstrument.ExchangeId == "CATS_SAXO" || saxoInstrument.AssetType == "WarrantOpenEndKnockOut")
                 {
@@ -97,10 +97,14 @@ namespace StockAnalyzer.StockPortfolio.Saxo
                     stockSerie.ISIN = symbol;
                 }
             }
-            if (string.IsNullOrEmpty(saxoInstrument.Isin) && !string.IsNullOrEmpty(stockSerie?.ISIN))
+            if (string.IsNullOrEmpty(saxoInstrument.Isin) && !string.IsNullOrEmpty(instrument?.Isin))
             {
                 saxoInstrument.Isin = stockSerie.ISIN;
                 instrumentService.GetInstrumentByIsin(saxoInstrument.Isin);
+
+                SaxoToInstrumentMapping.AddMapping(saxoInstrument.Identifier, instrument.Id);
+
+
             }
             UicToSerieCache.Add(uic, stockSerie);
             return stockSerie;

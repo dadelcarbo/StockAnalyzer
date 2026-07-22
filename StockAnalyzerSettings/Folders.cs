@@ -41,6 +41,7 @@ namespace StockAnalyzerSettings
         public static string Saxo => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"UltimateChartist\Saxo");
 
         public static string SaxoInstruments => Path.Combine(Portfolio, "InstrumentCache.json");
+        public static string SaxoToInstrumentMapFile => Path.Combine(Portfolio, "SaxoToInstrumentMapping.txt");
 
         public static string DataFolder { get { return Settings.Default.DataFolder; } set { if (value != Settings.Default.DataFolder) Settings.Default.DataFolder = value; } }
         public static string PersonalFolder { get { return Settings.Default.PersonalFolder; } set { if (value != Settings.Default.PersonalFolder) Settings.Default.PersonalFolder = value; } }

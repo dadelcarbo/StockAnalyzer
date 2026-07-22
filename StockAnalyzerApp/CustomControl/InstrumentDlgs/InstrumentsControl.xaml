@@ -130,6 +130,32 @@
                     </telerik:RadGridView>
                 </Grid>
             </TabItem>
+            <TabItem Header="Saxo Instrument Mapping">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <!--Place holder for buttons ...-->
+                    </StackPanel>
+                    <telerik:RadGridView FontSize="9" Grid.Row="1" ItemsSource="{Binding SaxoMappings}" Margin="4,4,4,4" RowIndicatorVisibility="Collapsed"
+                             SelectionUnit="Cell" SelectionMode="Single" ShowGroupPanel="False" AutoGenerateColumns="false" SelectedCellsChanged="RadGridView_SelectedCellsChanged">
+                        <telerik:RadGridView.Columns>
+                            <telerik:GridViewDataColumn Header="Uic" DataMemberBinding="{Binding SaxoInstrument.Identifier}" ColumnGroupName="Saxo"/>
+                            <telerik:GridViewDataColumn Header="AssetType" DataMemberBinding="{Binding SaxoInstrument.AssetType}" ColumnGroupName="Saxo"/>
+                            <telerik:GridViewDataColumn Header="Description" DataMemberBinding="{Binding SaxoInstrument.Description}" ColumnGroupName="Saxo"/>
+                            <telerik:GridViewDataColumn Header="ExchangeId" DataMemberBinding="{Binding SaxoInstrument.ExchangeId}" ColumnGroupName="Saxo"/>
+                            <telerik:GridViewDataColumn Header="Symbol" DataMemberBinding="{Binding SaxoInstrument.Symbol}" ColumnGroupName="Saxo"/>
+
+                            <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Instrument.Id}" ColumnGroupName="Instrument"/>
+                            <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Instrument.DisplayName}" ColumnGroupName="Instrument"/>
+                            <telerik:GridViewDataColumn Header="Symbol" DataMemberBinding="{Binding Instrument.Symbol}" ColumnGroupName="Instrument"/>
+                        </telerik:RadGridView.Columns>
+                    </telerik:RadGridView>
+                </Grid>
+            </TabItem>
+
         </TabControl>
     </Grid>
 </UserControl>
