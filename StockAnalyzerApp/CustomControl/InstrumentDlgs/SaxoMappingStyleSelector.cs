@@ -1,5 +1,6 @@
 using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockPortfolio.Saxo;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +10,9 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
     public class SaxoMappingStyleSelector : StyleSelector
     {
         public Style NotFoundStyle { get; set; }
+        public Style NoMappingStyle { get; set; }
+
+        InstrumentService instrumentService = new InstrumentService();
         public override Style SelectStyle(object item, DependencyObject container)
         {
             if (item == null)
@@ -28,30 +32,32 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                     return NotFoundStyle;
                 }
             }
-            else
+            else if (item is SaxoInstrument saxoInstrument)
             {
-                var saxoInstrument = item as SaxoInstrument;
-                if (saxoInstrument == null)
-                    return null;
+                if (string.IsNullOrEmpty(saxoInstrument.AssetType))
+                    return NotFoundStyle;
 
-                if (string.IsNullOrEmpty(saxoInstrument.Isin))
+                var instrument = SaxoToInstrumentMapping.GetInstrument(saxoInstrument.Identifier);
+                if (instrument == null)
                 {
                     if (!string.IsNullOrEmpty(saxoInstrument.Symbol))
                     {
                         var symbol = saxoInstrument.Symbol.Split(':')[0];
-                        var instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Symbol == symbol);
+                        instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Symbol == symbol);
                         if (instrument != null)
                         {
-                            saxoInstrument.Isin = instrument.Isin;
+                            SaxoToInstrumentMapping.AddMapping(saxoInstrument.Identifier, instrument.Id);
+                            return base.SelectStyle(item, container);
+                        }
+                        else
+                        {
+                            return NoMappingStyle;
                         }
                     }
                     return NotFoundStyle;
                 }
-                else
-                {
-                    return base.SelectStyle(item, container);
-                }
             }
+            return base.SelectStyle(item, container);
         }
     }
 }

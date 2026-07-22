@@ -13,13 +13,33 @@
     <UserControl.Resources>
         <telerik:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <helpers:FloatToCurrencyConverter x:Key="FloatToCurrencyConverter"/>
-        <local:SaxoMappingStyleSelector x:Key="SaxoMappingStyleSelector" >
+        <local:SaxoMappingStyleSelector x:Key="SaxoMappingCellStyleSelector" >
             <local:SaxoMappingStyleSelector.NotFoundStyle>
                 <Style TargetType="telerik:GridViewCell">
-                    <Setter Property="Background" Value="LightCoral"/>
+                    <Setter Property="Background" Value="DarkRed"/>
                     <Setter Property="Foreground" Value="White"/>
                 </Style>
             </local:SaxoMappingStyleSelector.NotFoundStyle>
+            <local:SaxoMappingStyleSelector.NoMappingStyle>
+                <Style TargetType="telerik:GridViewCell">
+                    <Setter Property="Background" Value="Orange"/>
+                    <Setter Property="Foreground" Value="DarkRed"/>
+                </Style>
+            </local:SaxoMappingStyleSelector.NoMappingStyle>
+        </local:SaxoMappingStyleSelector>
+        <local:SaxoMappingStyleSelector x:Key="SaxoMappingRowStyleSelector" >
+            <local:SaxoMappingStyleSelector.NotFoundStyle>
+                <Style TargetType="telerik:GridViewRow">
+                    <Setter Property="Background" Value="DarkRed"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Style>
+            </local:SaxoMappingStyleSelector.NotFoundStyle>
+            <local:SaxoMappingStyleSelector.NoMappingStyle>
+                <Style TargetType="telerik:GridViewRow">
+                    <Setter Property="Background" Value="Orange"/>
+                    <Setter Property="Foreground" Value="DarkRed"/>
+                </Style>
+            </local:SaxoMappingStyleSelector.NoMappingStyle>
         </local:SaxoMappingStyleSelector>
     </UserControl.Resources>
     <Grid>
@@ -107,8 +127,8 @@
                         <telerik:RadGridView.Columns>
                             <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Id}" IsReadOnly="True"/>
                             <telerik:GridViewDataColumn Header="Saxo Name" DataMemberBinding="{Binding SaxoName}" IsReadOnly="True"/>
-                            <telerik:GridViewDataColumn Header="Instrument Id" DataMemberBinding="{Binding InstrumentId}" CellStyleSelector="{StaticResource SaxoMappingStyleSelector}"/>
-                            <telerik:GridViewDataColumn Header="Instrument Name" DataMemberBinding="{Binding InstrumentName}" IsReadOnly="True" CellStyleSelector="{StaticResource SaxoMappingStyleSelector}"/>
+                            <telerik:GridViewDataColumn Header="Instrument Id" DataMemberBinding="{Binding InstrumentId}" CellStyleSelector="{StaticResource SaxoMappingCellStyleSelector}"/>
+                            <telerik:GridViewDataColumn Header="Instrument Name" DataMemberBinding="{Binding InstrumentName}" IsReadOnly="True" CellStyleSelector="{StaticResource SaxoMappingCellStyleSelector}"/>
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>
@@ -122,11 +142,9 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Grid.Row="0"  Command="{Binding SaveInstrumentsCommand}" HorizontalAlignment="Right"  Margin="4">Save</Button>
                     </StackPanel>
-                    <telerik:RadGridView FontSize="9" Grid.Row="1" ItemsSource="{Binding Instruments}" Margin="4,4,4,4" RowIndicatorVisibility="Collapsed"
+                    <telerik:RadGridView FontSize="9" Grid.Row="1" ItemsSource="{Binding Instruments}" Margin="4,4,4,4" RowIndicatorVisibility="Collapsed" RowStyleSelector="{StaticResource SaxoMappingRowStyleSelector}"
                              SelectionUnit="Cell" SelectionMode="Single" ShowGroupPanel="False" AutoGenerateColumns="true" SelectedCellsChanged="RadGridView_SelectedCellsChanged">
-                        <telerik:RadGridView.Columns>
-                            <telerik:GridViewDataColumn Header="Isin" DataMemberBinding="{Binding Isin}" CellStyleSelector="{StaticResource SaxoMappingStyleSelector}"/>
-                        </telerik:RadGridView.Columns>
+                        
                     </telerik:RadGridView>
                 </Grid>
             </TabItem>

@@ -1,4 +1,6 @@
 ﻿using Saxo.OpenAPI.TradingServices;
+using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockData.DataProviders.SaxoTurbos;
 using StockAnalyzerSettings;
 using System;
@@ -41,6 +43,18 @@ namespace StockAnalyzer.StockPortfolio.Saxo
             if (saxoToInstrumentMappings.TryGetValue(saxoId, out var instrumentId))
             {
                 return instrumentId;
+            }
+            return null;
+        }
+
+        public static StockInstrument GetInstrument(long saxoId)
+        {
+            if (saxoToInstrumentMappings.TryGetValue(saxoId, out var instrumentId))
+            {
+                if (StockDictionary.Instruments.TryGetValue(instrumentId, out var instrument))
+                {
+                    return instrument;
+                }
             }
             return null;
         }

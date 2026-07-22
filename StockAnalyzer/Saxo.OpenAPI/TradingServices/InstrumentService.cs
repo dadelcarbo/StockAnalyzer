@@ -28,48 +28,41 @@ namespace Saxo.OpenAPI.TradingServices
 
         static readonly string ASSET_TYPES = "MutualFund%2CCertificateUncappedCapitalProtection%2CCertificateCappedCapitalProtected%2CCertificateDiscount%2CCertificateCappedOutperformance%2CCertificateCappedBonus%2CCertificateExpress%2CCertificateTracker%2CCertificateUncappedOutperformance%2CCertificateBonus%2CCertificateConstantLeverage%2CStock%2CEtf%2CEtc%2CEtn%2CFund%2CRights%2CMiniFuture%2CWarrantKnockOut%2CWarrantOpenEndKnockOut%2CWarrantDoubleKnockOut%2CIpoOnStock%2CCompanyWarrant%2CStockIndex"; // %2CSrdOnStock%2CSrdOnEtf
 
-        public SaxoInstrument GetInstrumentByIsin(string isin)
+        public SaxoInstrument GetInstrumentByKeyword(string keyword)
         {
             try
             {
-                var instrument = InstrumentCache.FirstOrDefault(i => i.Isin == isin);
-                if (instrument != null)
+                SaxoInstrument instrument;
+                var method = $"ref/v1/instruments/?keywords={keyword}&AssetTypes={ASSET_TYPES}&includeNonTradable=true";
+                var instruments = Get<Instruments>(method);
+                if (instruments.Data.Length == 0)
                 {
-                    return instrument;
+                    return null;
+                }
+                if (instruments.Data.Length > 1)
+                {
+                    instrument = instruments.Data.FirstOrDefault(i => i.ExchangeId.StartsWith("PAR"));
+                    instrument ??= instruments.Data.FirstOrDefault(i => i.AssetType == "Stock");
+                    instrument ??= instruments.Data[0];
+                    InstrumentCache.Add(instrument);
+                    SaveCache();
                 }
                 else
                 {
-                    var method = $"ref/v1/instruments/?keywords={isin}&AssetTypes={ASSET_TYPES}&includeNonTradable=true";
-                    var instruments = Get<Instruments>(method);
-                    if (instruments.Data.Length == 0)
+                    instrument = instruments.Data.First();
+
+                    var cacheInstrument = InstrumentCache.FirstOrDefault(i => i.Identifier == instrument.Identifier);
+                    if (cacheInstrument == null)
                     {
-                        return null;
-                    }
-                    else if (instruments.Data.Length > 1)
-                    {
-                        instrument = instruments.Data.FirstOrDefault(i => i.ExchangeId.StartsWith("PAR"));
-                        instrument ??= instruments.Data.FirstOrDefault(i => i.AssetType == "Stock");
-                        instrument ??= instruments.Data[0];
                         InstrumentCache.Add(instrument);
+                        SaveCache();
                     }
-                    else if (instruments.Data.Length == 1)
+                    else
                     {
-                        instrument = instruments.Data.First();
-
-                        var cacheInstrument = InstrumentCache.FirstOrDefault(i => i.Identifier == instrument.Identifier);
-                        if (cacheInstrument == null)
-                        {
-                            InstrumentCache.Add(instrument);
-                        }
-                        else
-                        {
-                            instrument = cacheInstrument;
-                            instrument.Isin = isin;
-                        }
+                        instrument = cacheInstrument;
                     }
-
-                    SaveCache();
                 }
+
                 return instrument;
             }
             catch (Exception ex)
@@ -99,7 +92,6 @@ namespace Saxo.OpenAPI.TradingServices
                         instrument = new SaxoInstrument
                         {
                             Identifier = uic,
-                            Symbol = uic.ToString(),
                             Description = $"Not found: {uic}"
                         };
                     }
@@ -115,10 +107,11 @@ namespace Saxo.OpenAPI.TradingServices
             }
         }
 
+        static JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
         public static void SaveCache()
         {
             // Save Cache
-            File.WriteAllText(Folders.SaxoInstruments, JsonSerializer.Serialize(InstrumentCache, JsonSerializerOptions.Default));
+            File.WriteAllText(Folders.SaxoInstruments, JsonSerializer.Serialize(InstrumentCache, jsonOptions));
         }
 
         private static readonly SortedDictionary<long, InstrumentDetails> InstrumentDetailsCache = new SortedDictionary<long, InstrumentDetails>();
@@ -181,7 +174,6 @@ namespace Saxo.OpenAPI.TradingServices
         public string ExchangeId { get; set; }
         public long GroupId { get; set; }
         public long Identifier { get; set; }
-        public string Isin { get; set; }
         public string SummaryType { get; set; }
         public string Symbol { get; set; }
         public string[] TradableAs { get; set; }

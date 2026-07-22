@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Telerik.Windows.Controls;
+using StockAnalyzer.StockPortfolio.Saxo;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
@@ -156,7 +157,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                     {
                         var previousInstrument = MainFrameViewModel.Instance.Instrument;
                         this.Form.TopMost = true;
-                        StockAnalyzerForm.MainFrame.searchCombo.Text = saxoUnderlying.SaxoName.Split(' ')[0].Replace('/','-');
+                        StockAnalyzerForm.MainFrame.searchCombo.Text = saxoUnderlying.SaxoName.Split(' ')[0].Replace('/', '-');
                         StockAnalyzerForm.MainFrame.searchCombo.Focus();
 
                         if (MainFrameViewModel.Instance.Instrument != previousInstrument)
@@ -171,10 +172,8 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 else if (e.AddedCells[0].Item is SaxoInstrument)
                 {
                     var saxoInstrument = e.AddedCells[0].Item as SaxoInstrument;
-                    if (string.IsNullOrEmpty(saxoInstrument.Isin))
-                        return;
 
-                    var instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Isin == saxoInstrument.Isin);
+                    var instrument = SaxoToInstrumentMapping.GetInstrument(saxoInstrument.Identifier);
                     if (instrument == null)
                         return;
 

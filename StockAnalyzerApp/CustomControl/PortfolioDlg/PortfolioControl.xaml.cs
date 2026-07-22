@@ -61,49 +61,49 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                         {
                             var item = row.Item as StockTradeOperation;
 
-                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var stockSerie))
+                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var instrument))
                             {
-                                stockSerie = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
+                                instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
                             }
-                            if (stockSerie == null) return;
-                            SelectionChanged(stockSerie.Name, stockSerie.Isin);
+                            if (instrument == null) return;
+                            SelectionChanged(instrument.Name, instrument.Isin);
                         }
                         break;
                     case "StockPositionBaseViewModel":
                         {
                             var item = row.Item as StockPositionBaseViewModel;
 
-                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var stockSerie))
+                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var instrument))
                             {
-                                stockSerie = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
+                                instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
                             }
-                            if (stockSerie == null) return;
-                            SelectionChanged(stockSerie.Name, stockSerie.Isin, item.BarDuration, item.Theme);
+                            if (instrument == null) return;
+                            SelectionChanged(instrument.Name, instrument.Isin, item.BarDuration, item.Theme);
                         }
                         break;
                     case "StockOpenedOrder":
                         {
                             var item = row.Item as StockOpenedOrder;
 
-                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var stockSerie))
+                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var instrument))
                             {
-                                stockSerie = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
+                                instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
                             }
 
-                            if (stockSerie == null) return;
-                            SelectionChanged(stockSerie.Name, stockSerie.Isin, item.BarDuration, item.Theme);
+                            if (instrument == null) return;
+                            SelectionChanged(instrument.Name, instrument.Isin, item.BarDuration, item.Theme);
                         }
                         break;
                     case "OrderViewModel":
                         {
                             var item = row.Item as OrderViewModel;
 
-                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var stockSerie))
+                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var instrument))
                             {
-                                stockSerie = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
+                                instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
                             }
-                            if (stockSerie == null) return;
-                            SelectionChanged(stockSerie.Name, null);
+                            if (instrument == null) return;
+                            SelectionChanged(instrument.Name, null);
                         }
                         break;
                     default:
