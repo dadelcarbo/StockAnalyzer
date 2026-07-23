@@ -27,13 +27,14 @@ namespace StockAnalyzer.StockData.DataProviders
     {
         public static SortedDictionary<DataProvider, IDataProvider> DataProviders { get; } = new SortedDictionary<DataProvider, IDataProvider>()
         {
-            {DataProvider.ABC, new AbcBourse.AbcDataProvider() },
-            {DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider()},
-            {DataProvider.Vontobel, new Vontobel.VontobelDataProvider()},
-            {DataProvider.SocGen, new SocGen.SocGenDataProvider()},
-            {DataProvider.Yahoo, new Yahoo.YahooDataProvider()},
-            {DataProvider.Cnn, new Cnn.CnnDataProvider()},
-            {DataProvider.SaxoPortfolio, new SaxoPortfolio.SaxoPortfolioDataProvider()}
+            { DataProvider.ABC, new AbcBourse.AbcDataProvider() },
+            { DataProvider.SaxoTurbo, new SaxoTurbos.SaxoTurboDataProvider() },
+            { DataProvider.Vontobel, new Vontobel.VontobelDataProvider() },
+            { DataProvider.SocGen, new SocGen.SocGenDataProvider() },
+            { DataProvider.Yahoo, new Yahoo.YahooDataProvider() },
+            { DataProvider.Cnn, new Cnn.CnnDataProvider() },
+            { DataProvider.SaxoPortfolio, new SaxoPortfolio.SaxoPortfolioDataProvider() },
+            { DataProvider.Breadth, new Breadth.BreadthDataProvider() }
         };
 
 

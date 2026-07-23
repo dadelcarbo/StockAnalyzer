@@ -278,6 +278,7 @@
     <Compile Include="StockData\DataProviders\AbcBourse\AbcDataProvider.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\ABCGroup.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\AbcGroupDownloadHistory.cs" />
+    <Compile Include="StockData\DataProviders\Breadth\BreadthDataProvider.cs" />
     <Compile Include="StockData\DataProviders\Cnn\CnnDataClient.cs" />
     <Compile Include="StockData\DataProviders\Cnn\CnnDataProvider.cs" />
     <Compile Include="StockData\DataProviders\Cnn\CnnJson.cs" />
