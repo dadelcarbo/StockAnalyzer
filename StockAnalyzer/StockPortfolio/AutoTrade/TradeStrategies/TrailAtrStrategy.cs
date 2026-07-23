@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockPortfolio.AutoTrade.TradeStrategies
         {
             if (index == 0) return null;
 
-            var trailStop = dataSerie.GetTrailStop($"TRAILATR({12},6,0.75,-0.25,EMA)");
+            var trailStop = dataSerie.GetTrailStop($"TRAILATR({period},6,0.75,-0.25,EMA)");
 
             var brokenUpEvents = trailStop.GetEvents("BrokenUp");
 

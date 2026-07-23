@@ -514,19 +514,6 @@ namespace StockAnalyzerApp
 
             var cac40DataSerie = StockDictionary.GetInstrumentByName("CAC40").GetDefaultDataSerie();
 
-            // Generate breadth 
-            if (Settings.Default.GenerateBreadth)
-            {
-                throw new NotImplementedException("Breadth data generation not implemented yet");
-                //foreach (var instrument in StockDictionary.Instruments.Values.Where(s => s.Provider == DataProvider.Breadth))
-                //{
-                //    StockSplashScreen.ProgressText = "Generating breadth data " + instrument.DisplayName;
-                //    var dataSerie = instrument.GetDefaultDataSerie();
-                //    if (!BreadthDataProvider.NeedGenerate)
-                //        break;
-                //}
-            }
-
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portfolio data...";
 

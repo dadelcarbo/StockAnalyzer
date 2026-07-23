@@ -1,6 +1,8 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.UltimatePortfolio;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,17 +99,41 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
 
         private StockDailyValue[] GenerateBreath(StockInstrument instrument, DateTime startDate)
         {
+            if (!Settings.Default.GenerateBreadth)
+                return null;
+            var fields = instrument.Id.Split('.');
+            var breadthFields = fields[0].Split('_');
+
+            switch (breadthFields[0])
+            {
+                case "AD":
+                    break;
+                case "EMA":
+                    var period = int.Parse(breadthFields[1]);
+                    return GenerateCountBreadthSerie(instrument, fields[1], startDate, (serie, d) =>
+                    {
+                        var index = serie.IndexOf(d);
+                        if (index == -1)
+                            return false;
+
+                        var emaIndicator = serie.GetIndicator($"EMA({period})")?.Series[0];
+                        return emaIndicator != null && serie.Values[index].CLOSE > emaIndicator[index];
+
+                    });
+                default:
+                    break;
+            }
+
             var bars = new List<StockDailyValue>();
 
             return bars.ToArray();
         }
 
-        public StockDailyValue[] GenerateEMABreadthSerie(StockInstrument instrument, string indexName, BarDuration barDuration, string destinationFolder, string archiveFolder)
+        public StockDailyValue[] GenerateCountBreadthSerie(StockInstrument instrument, string groupName, DateTime startDate, Func<DataSerie, DateTime, bool> match)
         {
-            int period = int.Parse(instrument.DisplayName.Split('.')[0].Split('_')[1]);
-
-            indexName = indexName == "USA" ? "S&P 500" : "CAC40";
-            if (!StockDictionary.Instruments.TryGetValue(indexName, out var indiceInstrument))
+            var indexName = groupName == "USA" ? "S&P 500" : "CAC40";
+            var indiceInstrument = StockDictionary.GetInstrumentByName(indexName);
+            if (indiceInstrument == null)
             {
                 return null;
             }
@@ -116,98 +142,43 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
             if (indiceSerie == null || indiceSerie.Values.Length == 0)
                 return null;
 
-            var indexComponents = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(indexName)).ToArray();
+            if (indiceSerie.LastCompleteValue.DATE == startDate)
+                return null;
+
+            var indexComponents = StockDictionary.Instruments.Values
+                .Where(s => s.BelongsToGroup(groupName))
+                .Select(s => s.GetDataSerie(indiceSerie.BarDuration))
+                .Where(d => d != null & d.Count > 0).ToArray();
+
             if (indexComponents.Length == 0)
                 return null;
 
             DateTime lastIndiceDate = indiceSerie.LastValue.DATE;
             DateTime lastBreadthDate = DateTime.MinValue;
 
-            return null;
-            // Check if serie has been already generated
-            //if (breadthSerie.Count > 0)
-            //{
-            //    lastBreadthDate = breadthSerie.LastValue.DATE;
-            //    if (lastIndiceDate <= lastBreadthDate)
-            //    {
-            //        // The breadth serie is up to date
-            //        return true;
-            //    }
-            //    // Check if latest value is intraday data
-            //    if (lastIndiceDate.TimeOfDay > TimeSpan.Zero)
-            //    {
-            //        // this are intraday data, remove the breadth latest data to avoid creating multiple bars on the same day
-            //        if (lastIndiceDate.Date == lastBreadthDate.Date)
-            //        {
-            //            breadthSerie.RemoveLast();
-            //            lastBreadthDate = breadthSerie.LastValue.DATE;
-            //        }
-            //    }
-            //}
-            //#region Load component series
-            //foreach (StockSerie serie in indexComponents)
-            //{
-            //    if (this.ReportProgress != null)
-            //    {
-            //        this.ReportProgress("Loading data for " + serie.StockName);
-            //    }
-            //    serie.Initialise();
-            //    serie.BarDuration = barDuration;
-            //}
-            //#endregion
-            //long vol;
-            //float val, count;
-            //foreach (StockDailyValue value in indiceSerie.Values)
-            //{
-            //    if (value.DATE <= lastBreadthDate)
-            //    {
-            //        continue;
-            //    }
-            //    vol = 0; val = 0; count = 0;
-            //    if (this.ReportProgress != null)
-            //    {
-            //        this.ReportProgress(value.DATE.ToShortDateString());
-            //    }
-            //    int index = -1;
-            //    foreach (StockSerie serie in indexComponents.Where(s => s.IsInitialised && s.Count > 50))
-            //    {
-            //        index = serie.IndexOf(value.DATE);
-            //        if (index != -1)
-            //        {
-            //            IStockEvent emaIndicator = serie.GetTrailStop("TRAILEMA(" + period + ",1)");
-            //            if (emaIndicator != null && emaIndicator.Events[0].Count > 0)
-            //            {
-            //                if (emaIndicator.Events[6][index])
-            //                {
-            //                    val++;
-            //                }
-            //                count++;
-            //            }
-            //        }
-            //    }
-            //    if (count != 0)
-            //    {
-            //        val /= count;
-            //        val = (val - 0.5f) * 2.0f;
-            //        breadthSerie.Add(value.DATE, new StockDailyValue(val, val, val, val, vol, value.DATE));
-            //    }
-            //}
-            //if (breadthSerie.Count == 0)
-            //{
-            //    this.Remove(breadthSerie.StockName);
-            //}
-            //else
-            //{
-            //    if (!string.IsNullOrEmpty(destinationFolder))
-            //    {
-            //        breadthSerie.SaveToCSV(destinationFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, false);
-            //    }
-            //    if (!string.IsNullOrEmpty(archiveFolder) && lastBreadthDate < ArchiveEndDate)
-            //    {
-            //        breadthSerie.SaveToCSV(archiveFolder + "\\" + breadthSerie.Symbol + "_" + breadthSerie.StockName + "_BREADTH.csv", ArchiveEndDate, true);
-            //    }
-            //}
-            //return true;
+            var bars = new List<StockDailyValue>();
+
+            float val;
+            int count;
+            foreach (var value in indiceSerie.Values.Where(v => v.DATE > lastBreadthDate))
+            {
+                val = 0; count = 0;
+                this.NotifyProgress($"Generating {instrument.DisplayName} {value.DATE.ToShortDateString()}");
+
+                foreach (var serie in indexComponents)
+                {
+                    if (match(serie, value.DATE))
+                        val++;
+                    count++;
+                }
+                if (count != 0)
+                {
+                    val /= count;
+                    val = (val - 0.5f) * 2.0f;
+                    bars.Add(new StockDailyValue(val, val, val, val, count, value.DATE));
+                }
+            }
+            return bars.ToArray();
         }
     }
 }
