@@ -11,7 +11,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
         YahooIntraday,
         InvestingIntraday,
         SocGenIntraday,
-        Portfolio,
         Generated,
         Replay,
         Investing,

@@ -98,8 +98,6 @@ namespace StockAnalyzerApp
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         public static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
 
-        public List<StockPortfolio> Portfolios => StockAnalyzer.StockClasses.StockDataProviders.PortfolioDataProvider.Portfolios;
-
         public ToolStripProgressBar ProgressBar => this.progressBar;
 
         public GraphCloseControl GraphCloseControl => this.graphCloseControl;
@@ -532,10 +530,8 @@ namespace StockAnalyzerApp
             // Deserialize saved orders
             StockSplashScreen.ProgressText = "Reading portfolio data...";
 
-            var portfolioDataProvider = StockAnalyzer.StockClasses.StockDataProviders.PortfolioDataProvider.GetDataProvider(StockAnalyzer.StockClasses.StockDataProviders.StockDataProvider.Portfolio);
-            portfolioDataProvider.InitDictionary(StockDictionary.Instance, false);
             InitialisePortfolioCombo();
-            Portfolio = StockAnalyzer.StockClasses.StockDataProviders.PortfolioDataProvider.Portfolios.First();
+            Portfolio = StockPortfolio.Portfolios.First();
 
             // Initialise dico
             StockSplashScreen.ProgressText = "Initialising menu items...";
@@ -584,7 +580,7 @@ namespace StockAnalyzerApp
             this.graphIndicator1Control.MouseClick += new MouseEventHandler(graphIndicator1Control.GraphControl_MouseClick);
             this.graphVolumeControl.MouseClick += new MouseEventHandler(graphVolumeControl.GraphControl_MouseClick);
 
-            foreach (var portfolio in this.Portfolios)
+            foreach (var portfolio in StockPortfolio.Portfolios)
             {
                 var logingStatus = portfolio.SaxoSilentLogin();
                 if (this.portfolio == portfolio)
@@ -2293,7 +2289,7 @@ namespace StockAnalyzerApp
         {
             if (Settings.Default.PortfolioOnline)
             {
-                foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
+                foreach (var p in StockPortfolio.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
                 {
                     if (!p.SaxoLogin())
                     {
@@ -2305,7 +2301,7 @@ namespace StockAnalyzerApp
                     }
                 }
             }
-            foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
+            foreach (var p in StockPortfolio.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
             {
                 this.GeneratePortfolioReportFile(p);
             }
@@ -3828,7 +3824,7 @@ namespace StockAnalyzerApp
             var refreshAll = Control.ModifierKeys == Keys.Control;
             if (refreshAll)
             {
-                foreach (var p in this.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
+                foreach (var p in StockPortfolio.Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoAccountId) && !p.IsSaxoSimu))
                 {
                     p.Refresh();
                     if (p.SaxoSilentLogin())
@@ -3888,7 +3884,7 @@ namespace StockAnalyzerApp
         private void InitialisePortfolioCombo()
         {
             // Initialise Combo values
-            portfolioComboBox.ComboBox.DataSource = StockAnalyzer.StockClasses.StockDataProviders.PortfolioDataProvider.Portfolios;
+            portfolioComboBox.ComboBox.DataSource = StockPortfolio.Portfolios;
             portfolioComboBox.ComboBox.DisplayMember = "Name";
             portfolioComboBox.ComboBox.ValueMember = "Name";
         }

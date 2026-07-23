@@ -287,6 +287,7 @@
     <Compile Include="StockClasses\StockAlertValue.cs" />
     <Compile Include="StockData\DataProviders\InstrumentDownloadHistory.cs" />
     <Compile Include="StockData\DataProviders\MarketHours.cs" />
+    <Compile Include="StockData\DataProviders\SaxoPortfolio\SaxoPortfolioDataProvider.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoTurboDataClient.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoHttpClient.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoJSon.cs" />
@@ -431,7 +432,6 @@
     <Compile Include="StockPortfolio\StockTradeOperation.cs" />
     <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />
     <Compile Include="StockClasses\StockDataSource.cs" />
-    <Compile Include="StockClasses\StockDataProviders\PortfolioDataProvider.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -44,7 +44,9 @@ namespace StockAnalyzer.StockPortfolio
         public static StockPortfolio SimulationPortfolio { get; private set; }
         public static StockPortfolio ReplayPortfolio { get; private set; }
         public static IStockPriceProvider PriceProvider { get; set; }
-        public static List<StockPortfolio> Portfolios { get; private set; }
+
+        static List<StockPortfolio> portfolios;
+        public static List<StockPortfolio> Portfolios => portfolios ??= LoadPortfolios(Folders.Portfolio);
         static public StockPortfolio CreateSimulationPortfolio()
         {
             return new StockPortfolio() { Name = SIMU_P + "_" + instanceCount++, InitialBalance = 10000, IsSimu = true };
@@ -196,21 +198,24 @@ namespace StockAnalyzer.StockPortfolio
             using var ml = new MethodLogger(typeof(StockPortfolio));
             return JsonConvert.DeserializeObject<StockPortfolio>(File.ReadAllText(filepath), jsonSerializerSettings);
         }
-        public static List<StockPortfolio> LoadPortfolios(string folder)
+        private static List<StockPortfolio> LoadPortfolios(string folder)
         {
             using var ml = new MethodLogger(typeof(StockPortfolio));
             try
             {
+                if (portfolios != null)
+                    return portfolios;
+
                 // Load saved portfolio
-                StockPortfolio.Portfolios = new List<StockPortfolio>();
+                portfolios = new List<StockPortfolio>();
                 foreach (var portfolio in Directory.EnumerateFiles(folder, "*" + PORTFOLIO_FILE_EXT).OrderBy(s => s).Select(s => StockPortfolio.Deserialize(s)))
                 {
                     if (portfolio.LastSyncDate < portfolio.CreationDate)
                         portfolio.LastSyncDate = portfolio.CreationDate;
 
-                    StockPortfolio.Portfolios.Add(portfolio);
+                    portfolios.Add(portfolio);
                 }
-                foreach (var position in StockPortfolio.Portfolios.SelectMany(p => p.Positions))
+                foreach (var position in portfolios.SelectMany(p => p.Positions))
                 {
                     if (position.TrailStop == 0f && position.Stop != 0f)
                         position.TrailStop = position.Stop;
@@ -218,15 +223,17 @@ namespace StockAnalyzer.StockPortfolio
 
                 // Add simulation portfolio
                 SimulationPortfolio = new StockPortfolio() { Name = SIMU_P, InitialBalance = 10000, IsSimu = true };
-                StockPortfolio.Portfolios.Add(SimulationPortfolio);
+                portfolios.Add(SimulationPortfolio);
                 ReplayPortfolio = new StockPortfolio() { Name = REPLAY_P, InitialBalance = 10000, IsSimu = true };
-                StockPortfolio.Portfolios.Add(ReplayPortfolio);
+                portfolios.Add(ReplayPortfolio);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error loading portfolio file", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            return StockPortfolio.Portfolios.OrderBy(p => p.Name).ToList();
+
+            portfolios = portfolios.OrderBy(p => p.Name).ToList();
+            return portfolios;
         }
         #endregion
 

@@ -145,9 +145,6 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 IStockDataProvider dataProvider = null;
                 switch (dataProviderType)
                 {
-                    case StockDataProvider.Portfolio:
-                        dataProvider = new PortfolioDataProvider();
-                        break;
                     default:
                         break;
                 }
@@ -184,7 +181,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 try
                 {
                     IStockDataProvider dataProvider = GetDataProvider(dataProviderType);
-                    if (dataProvider != null && !(dataProvider is PortfolioDataProvider))
+                    if (dataProvider != null )
                     {
                         dataProvider.DownloadStarted += downloadListener;
                         dataProvider.InitDictionary(stockDictionary, download);
