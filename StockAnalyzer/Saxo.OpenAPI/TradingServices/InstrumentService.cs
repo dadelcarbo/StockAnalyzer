@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using StockAnalyzer.Saxo.OpenAPI.TradingServices;
+﻿using StockAnalyzer.Saxo.OpenAPI.TradingServices;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;

@@ -1,13 +1,9 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.UltimatePortfolio;
-using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StockAnalyzer.StockData.DataProviders.SaxoPortfolio
 {

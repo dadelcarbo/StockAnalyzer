@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
 using StockAnalyzerSettings;
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;

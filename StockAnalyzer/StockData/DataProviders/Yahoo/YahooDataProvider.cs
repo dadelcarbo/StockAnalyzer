@@ -36,7 +36,7 @@ namespace StockAnalyzer.StockData.DataProviders.Yahoo
         {
             if (stockInstrument.Provider == DataProvider.Yahoo)
             {
-                Process.Start($"https://finance.yahoo.com/quote/{stockInstrument.StockSerie.Symbol}");
+                Process.Start($"https://finance.yahoo.com/quote/{stockInstrument.Symbol}");
             }
             else
             {
@@ -54,8 +54,5 @@ namespace StockAnalyzer.StockData.DataProviders.Yahoo
                 }
             }
         }
-
-
-
     }
 }

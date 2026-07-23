@@ -316,7 +316,6 @@
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoJson.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\ConfigDialog\SaxoProduct.cs" />
     <Compile Include="StockData\DataProviders\SaxoTurbos\SaxoUnderlying.cs" />
-    <Compile Include="StockClasses\StockSerieLocker.cs" />
     <Compile Include="StockClasses\StockSortedDictionary.cs" />
     <Compile Include="StockClasses\StockSplit.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_BOXEMABREAKOUT.cs" />
@@ -430,7 +429,6 @@
     <Compile Include="StockPortfolio\StockOrderBase.cs" />
     <Compile Include="StockPortfolio\StockPositionBase.cs" />
     <Compile Include="StockPortfolio\StockTradeOperation.cs" />
-    <Compile Include="StockClasses\StockDataProviders\SectorCode.cs" />
     <Compile Include="StockClasses\StockDataSource.cs" />
     <Compile Include="StockClasses\IStockPriceProvider.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
@@ -452,11 +450,9 @@
     <Compile Include="StockClasses\StockAlert.cs" />
     <Compile Include="StockClasses\BarDuration.cs" />
     <Compile Include="StockClasses\StockDataProviders\BreadthDataProvider.cs" />
-    <Compile Include="StockClasses\StockDataProviders\StockDataProviderBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockText.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockEvent.cs" />
     <Compile Include="StockClasses\StockViewableItems\IStockViewableSeries.cs" />
-    <Compile Include="StockClasses\StockDataProviders\IStockDataProvider.cs" />
     <Compile Include="StockClasses\StockAnalysis.cs" />
     <Compile Include="StockClasses\StockDailyValue.cs" />
     <Compile Include="StockClasses\StockDictionary.cs" />
@@ -601,7 +597,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\Parameterizable.cs" />
     <Compile Include="StockClasses\StockSerie.cs" />
-    <Compile Include="StockClasses\StockStatistics.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\IStockTrailStop.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopBase.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockTrailStops\StockTrailStopManager.cs" />

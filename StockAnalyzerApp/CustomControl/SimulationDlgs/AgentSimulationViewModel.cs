@@ -1,7 +1,6 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio;
@@ -328,29 +327,21 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
 
         private void RunAgentEngineOnGroup(object sender, DoWorkEventArgs e)
         {
-            try
+            Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
+            Thread.CurrentThread.CurrentCulture = StockAnalyzerForm.EnglishCulture;
+            engine.ProgressChanged += (s, evt) =>
             {
-                StockDataProviderBase.IntradayDownloadSuspended = true;
-                Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
-                Thread.CurrentThread.CurrentCulture = StockAnalyzerForm.EnglishCulture;
-                engine.ProgressChanged += (s, evt) =>
-                {
-                    this.ProgressValue = evt.ProgressPercentage;
-                };
+                this.ProgressValue = evt.ProgressPercentage;
+            };
 
-                var instrumetns = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group));
-                if (this.RunAgentEngine(instrumetns))
-                {
-                    e.Cancel = false;
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            }
-            finally
+            var instrumetns = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group));
+            if (this.RunAgentEngine(instrumetns))
             {
-                StockDataProviderBase.IntradayDownloadSuspended = false;
+                e.Cancel = false;
+            }
+            else
+            {
+                e.Cancel = true;
             }
         }
 

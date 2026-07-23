@@ -227,10 +227,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 }
             }
         }
-        public bool LoadFromCSV(StockSerie stockSerie)
-        {
-            return true;
-        }
 
         List<AbcGroupDownloadHistory> groupDownloadHistory;
 
@@ -593,8 +589,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                         var abcSuffix = id.Length > 12 ? id[12] : 'p';
                         var instrument = new StockInstrument()
                         {
-                            StockSerie = null,
-
                             Id = id,
                             Name = stockName,
                             Isin = isin,

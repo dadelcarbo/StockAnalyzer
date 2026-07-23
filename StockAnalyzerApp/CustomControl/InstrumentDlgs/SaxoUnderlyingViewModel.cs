@@ -2,7 +2,6 @@
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData;
 using StockAnalyzer.StockData.DataProviders.SaxoTurbos;
-using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
 
 namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {

@@ -1,7 +1,5 @@
-﻿using StockAnalyzer.StockClasses.StockDataProviders;
-using StockAnalyzer.StockLogging;
+﻿using StockAnalyzer.StockLogging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;

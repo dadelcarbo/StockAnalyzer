@@ -2,7 +2,6 @@
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockAgent.Agents;
 using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockClasses.StockDataProviders;
 using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
@@ -307,30 +306,22 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
         private void RunAgentEngineOnGroup(object sender, DoWorkEventArgs e)
         {
-            try
+            Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
+            Thread.CurrentThread.CurrentCulture = StockAnalyzerForm.EnglishCulture;
+            engine.ProgressChanged += (s, evt) =>
             {
-                StockDataProviderBase.IntradayDownloadSuspended = true;
-                Thread.CurrentThread.CurrentUICulture = StockAnalyzerForm.EnglishCulture;
-                Thread.CurrentThread.CurrentCulture = StockAnalyzerForm.EnglishCulture;
-                engine.ProgressChanged += (s, evt) =>
-                {
-                    this.ProgressValue = evt.ProgressPercentage;
-                };
+                this.ProgressValue = evt.ProgressPercentage;
+            };
 
-                var series = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group));
+            var series = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group));
 
-                if (this.RunAgentEngine(series))
-                {
-                    e.Cancel = false;
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
+            if (this.RunAgentEngine(series))
+            {
+                e.Cancel = false;
             }
-            finally
+            else
             {
-                StockDataProviderBase.IntradayDownloadSuspended = false;
+                e.Cancel = true;
             }
         }
         private bool RunAgentEngine(IEnumerable<StockInstrument> instruments)

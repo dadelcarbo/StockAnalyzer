@@ -78,8 +78,6 @@ namespace StockAnalyzer.StockData
         public long SaxoId { get; set; }
         public StockAnalysis StockAnalysis { get; set; }
 
-        public StockSerie StockSerie { get; set; }
-
         public StockInstrument()
         {
             this.StockAnalysis = new StockAnalysis();
