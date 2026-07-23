@@ -388,6 +388,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 int year = DateTime.Today.Year;
                 for (year = DateTime.Today.Year - 1; year >= Settings.Default.LoadStartYear; year--)
                 {
+                    NotifyProgress($"Downloading {instrument.Group} - {instrument.DisplayName} year {year}");
                     fileName = filePattern.Replace("*", year.ToString());
                     if (!AbcClient.DownloadIsinYear(Path.Combine(ABC_TMP_FOLDER, fileName), year, instrument.Id))
                     {
