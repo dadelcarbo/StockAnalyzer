@@ -269,7 +269,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 this.Report = "Performing";
 
-                if (string.IsNullOrEmpty(this.PositionManagement.RegimeIndice) || !StockDictionary.Instance.Keys.Any(k => k == this.PositionManagement.RegimeIndice))
+                if (string.IsNullOrEmpty(this.PositionManagement.RegimeIndice) || !StockDictionary.Instruments.Keys.Any(k => k == this.PositionManagement.RegimeIndice))
                 {
                     MessageBox.Show("Regime filter not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;

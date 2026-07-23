@@ -19,7 +19,9 @@ namespace StockAnalyzer.StockData.DataProviders
         Vontobel,
         SocGen,
         Yahoo,
-        Cnn
+        Cnn,
+        Portfolio,
+        Breadth
     }
     public abstract class DataProviderBase : IDataProvider
     {

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace StockAnalyzer.StockClasses
 {
-    public class StockDictionary : SortedDictionary<string, StockSerie>, IStockPriceProvider
+    public class StockDictionary : IStockPriceProvider
     {
         static private SortedDictionary<string, StockInstrument> instruments = new SortedDictionary<string, StockInstrument>();
         static public SortedDictionary<string, StockInstrument> Instruments => instruments;

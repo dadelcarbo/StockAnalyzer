@@ -33,7 +33,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
         {
             try
             {
-                var sectorSeries = StockDictionary.Instance.Values.Where(s => s.BelongsToGroup(Group)).Take(20);
+                var sectorSeries = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(Group)).Take(20);
                 var refSerie = sectorSeries.FirstOrDefault();
                 #region Sanity checks
                 if (refSerie == null)
@@ -41,15 +41,16 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                     MessageBox.Show("No sector series found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                if (!refSerie.Initialise())
+                var refDataSerie = refSerie.GetDefaultDataSerie();
+                if (refDataSerie == null || refDataSerie.Count == 0)
                 {
-                    MessageBox.Show($"Error initialising {refSerie.StockName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Error initialising {refSerie.DisplayName}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 #endregion
 
                 DateTime startDate = DateTime.MinValue;
-                DateTime endDate = refSerie.LastValue.DATE;
+                DateTime endDate = refDataSerie.LastValue.DATE;
                 switch (param)
                 {
                     case "1W": startDate = endDate.AddDays(-7); break;
@@ -61,7 +62,7 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                     case "YTD": startDate = new DateTime(endDate.Year, 1, 1); break;
                     case "1Y": startDate = endDate.AddYears(-1); break;
                     case "2Y": startDate = endDate.AddYears(-2); break;
-                    case "Max": startDate = refSerie.FirstValue.DATE; break;
+                    case "Max": startDate = refDataSerie.Values[0].DATE; break;
                     default:
                         MessageBox.Show($"Invalid period parameter {param}.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
@@ -74,27 +75,26 @@ namespace StockAnalyzerApp.CustomControl.SectorDlg
                 float max = float.MinValue;
                 foreach (var sectorSerie in sectorSeries)
                 {
-                    if (!sectorSerie.Initialise())
+                    var sectorDataSerie = sectorSerie.GetDataSerie(this.BarDuration);
+                    if (sectorDataSerie == null || sectorDataSerie.Count == 0)
                     {
-                        StockLog.Write($"{sectorSerie.StockName}: Initialisation failed !");
+                        StockLog.Write($"{sectorSerie.DisplayName}: Initialisation failed !");
                         continue;
                     }
 
+                    var sectorData = new SectorData() { Name = sectorSerie.DisplayName, ShortName = sectorSerie.DisplayName.Replace("STOXX EUROPE 600 ", "") };
 
-                    var sectorData = new SectorData() { Name = sectorSerie.StockName, ShortName = sectorSerie.StockName.Replace("STOXX EUROPE 600 ", "") };
-                    sectorSerie.BarDuration = this.BarDuration;
-
-                    var startIndex = sectorSerie.IndexOfFirstGreaterOrEquals(startDate);
+                    var startIndex = sectorDataSerie.IndexOfFirstGreaterOrEquals(startDate);
                     if (startIndex < 0)
                         continue;
-                    var closeSerie = sectorSerie.GetSerie(StockDataType.CLOSE);
+                    var closeSerie = sectorDataSerie.GetSerie(StockDataType.CLOSE);
                     float ratio = closeSerie[startIndex] / 100f;
-                    SectorPoint[] points = new SectorPoint[sectorSerie.Count - startIndex];
+                    SectorPoint[] points = new SectorPoint[sectorDataSerie.Count - startIndex];
                     points[0] = new SectorPoint { X = 0, Y = 100f };
-                    for (int i = startIndex; i <= sectorSerie.LastIndex; i++)
+                    for (int i = startIndex; i <= sectorDataSerie.LastIndex; i++)
                     {
                         var val = closeSerie[i] / ratio;
-                        points[i - startIndex] = new SectorPoint { X = i - startIndex, Y = val, Date = sectorSerie.Keys.ElementAt(i) };
+                        points[i - startIndex] = new SectorPoint { X = i - startIndex, Y = val, Date = sectorDataSerie.Values[i].DATE };
                         if (val < min) min = val;
                         if (val > max) max = val;
                     }

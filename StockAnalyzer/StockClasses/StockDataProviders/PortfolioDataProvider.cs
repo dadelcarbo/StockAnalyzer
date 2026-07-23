@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -23,7 +24,7 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 else
                 {
                     // Copy Saxo App Id files.
-                    foreach(var file in Directory.GetFiles(Folders.Portfolio, "app*.json"))
+                    foreach (var file in Directory.GetFiles(Folders.Portfolio, "app*.json"))
                     {
                         var destFile = Path.Combine(Folders.Saxo, Path.GetFileName(file));
                         if (!File.Exists(destFile) || File.GetLastWriteTime(destFile) < File.GetLastWriteTime(file))
@@ -55,8 +56,16 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                 Portfolios = StockPortfolio.StockPortfolio.LoadPortfolios(Folders.Portfolio);
                 foreach (var p in Portfolios.Where(p => !string.IsNullOrEmpty(p.SaxoClientId)))
                 {
-                    var stockSerie = new StockSerie(p.Name, p.SaxoClientId, Groups.Portfolio, StockDataProvider.Portfolio, BarDuration.Daily);
-                    stockDictionary.Add(p.Name, stockSerie);
+                    var instrument = new StockInstrument
+                    {
+                        Id = p.Name,
+                        Name = p.Name,
+                        Symbol = p.SaxoClientId,
+                        Group = Groups.Portfolio,
+                        Provider = DataProvider.Portfolio,
+                        Market = Market.TURBO
+                    };
+                    StockDictionary.Instruments.Add(p.Name, instrument);
                 }
             }
             catch (Exception ex)

@@ -68,10 +68,13 @@ namespace StockAnalyzer.StockData
             }
         }
 
-        public void AddBar(StockDailyValue stockDailyValue)
+        public void AddBar(StockDailyValue bar)
         {
             this.ResetAllCache();
-            this.Values = this.Values.Append(stockDailyValue).ToArray();
+            var previousBar = this.LastValue;
+            this.Values = this.Values.Append(bar).ToArray();
+
+            bar.VARIATION = (bar.CLOSE - previousBar.CLOSE) / previousBar.CLOSE;
         }
 
         protected DateTime[] dateSerie;
@@ -2045,6 +2048,23 @@ namespace StockAnalyzer.StockData
             {
                 if (Values[index].DATE <= date)
                     break;
+            }
+            return index;
+        }
+
+
+        public int IndexOfFirstGreaterOrEquals(DateTime date)
+        {
+            if (this.Count == 0)
+            {
+                return -1;
+            }
+
+            if (date > LastValue.DATE) { return -1; }
+            int index = -1;
+            for (index = 0; index < this.Values.Length; index++)
+            {
+                if (Values[index].DATE >= date.Date) break;
             }
             return index;
         }

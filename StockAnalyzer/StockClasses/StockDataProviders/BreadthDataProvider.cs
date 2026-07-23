@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockLogging;
 using StockAnalyzerSettings;
 using System;
@@ -48,17 +49,30 @@ namespace StockAnalyzer.StockClasses.StockDataProviders
                         string[] row = line.Split(',');
                         string longName = row[0];
 
-                        if (!stockDictionary.ContainsKey(longName))
+
+                        var instrument = new StockInstrument
                         {
-                            stockDictionary.Add(longName, new StockSerie(longName, row[0], (Groups)Enum.Parse(typeof(Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
-                            if (longName.StartsWith("AD."))
-                            {
-                                var stockName = longName.Replace("AD.", "McClellan.");
-                                stockDictionary.Add(stockName, new StockSerie(stockName, stockName, Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
-                                stockName = longName.Replace("AD.", "McClellanSum.");
-                                stockDictionary.Add(stockName, new StockSerie(stockName, stockName, Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
-                            }
-                        }
+                            Id = longName,
+                            Name = longName,
+                            Symbol = longName,
+                            Group = Groups.BREADTH,
+                            Provider = DataProvider.Breadth,
+                            Market = Market.NYSE
+                        };
+
+                        StockDictionary.Instruments.Add(longName, instrument);
+
+                        //if (!stockDictionary.ContainsKey(longName))
+                        //{
+                        //    stockDictionary.Add(longName, new StockSerie(longName, row[0], (Groups)Enum.Parse(typeof(Groups), row[1]), StockDataProvider.Breadth, BarDuration.Daily));
+                        //    if (longName.StartsWith("AD."))
+                        //    {
+                        //        var stockName = longName.Replace("AD.", "McClellan.");
+                        //        stockDictionary.Add(stockName, new StockSerie(stockName, stockName, Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
+                        //        stockName = longName.Replace("AD.", "McClellanSum.");
+                        //        stockDictionary.Add(stockName, new StockSerie(stockName, stockName, Groups.BREADTH, StockDataProvider.Breadth, BarDuration.Daily));
+                        //    }
+                        //}
                     }
                 }
             }
