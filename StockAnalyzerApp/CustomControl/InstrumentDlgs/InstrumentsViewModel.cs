@@ -221,15 +221,17 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
         private void Refresh()
         {
-            var jsonData = SaxoHttpClient.HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
-
-            if (string.IsNullOrEmpty(jsonData))
-            {
-                MessageBox.Show("Error retrieving data from Saxo Turbo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
             try
             {
+                InstrumentDlg.Instance.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+
+                var jsonData = SaxoHttpClient.HttpGetFromSaxo("https://fr-be.structured-products.saxo/page-api/products/BE/activeProducts?locale=fr_BE");
+
+                if (string.IsNullOrEmpty(jsonData))
+                {
+                    MessageBox.Show("Error retrieving data from Saxo Turbo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 var result = JsonSerializer.Deserialize<UnderlyingRoot>(jsonData);
                 var underlyings = result?.data?.filters?.firstLevel?.underlying?.list?.Values?.ToList();
 
@@ -238,6 +240,8 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                     MessageBox.Show("Error parsing data from Saxo Turbo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
+
+                Task.Delay(5000).Wait();
 
                 // Detect Removed Underlyings
                 var toBeRemoved = new List<SaxoUnderlyingViewModel>();
@@ -253,8 +257,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 }
                 if (toBeRemoved.Count > 0)
                 {
-                    MessageBox.Show(toBeRemoved.Select(u => $"{u.Id} - {u.SaxoName}").Aggregate((i, j) => i + Environment.NewLine + j),
-                        "Removed Underlyings");
+                    MessageBox.Show(toBeRemoved.Select(u => $"{u.Id} - {u.SaxoName}").Aggregate((i, j) => i + Environment.NewLine + j), "Removed Underlyings");
                 }
 
                 // Detect Added underlyings
@@ -268,16 +271,19 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                         this.SaxoUnderlyings.Add(newUnderlying);
                     }
                 }
+
                 if (toBeAdded.Count > 0)
                 {
-                    MessageBox.Show(toBeAdded.Select(u => $"{u.Id} - {u.SaxoName} - {u.InstrumentName}").Aggregate((i, j) => i + Environment.NewLine + j),
-                        "New Underlyings");
+                    MessageBox.Show(toBeAdded.Select(u => $"{u.Id} - {u.SaxoName} - {u.InstrumentName}").Aggregate((i, j) => i + Environment.NewLine + j), "New Underlyings");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error parsing data from Saxo Turbo: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
+            }
+            finally
+            {
+                InstrumentDlg.Instance.Cursor = System.Windows.Forms.Cursors.Default;
             }
         }
 

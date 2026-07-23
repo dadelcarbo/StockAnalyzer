@@ -6,8 +6,10 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 {
     public partial class InstrumentDlg : Form
     {
+        public static InstrumentDlg Instance { get; private set; }
         public InstrumentDlg()
         {
+            Instance = this;
             InitializeComponent();
 
             this.instrumentsControl1.KeyDown += Control_KeyDown;
