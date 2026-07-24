@@ -76,7 +76,8 @@ namespace StockAnalyzerApp
         {
             if (notifyPropertyChanged)
             {
-                this.BarDuration = bd;
+                this.barDuration = bd;
+                this.OnPropertyChanged(nameof(BarDuration));
             }
             else
             {
@@ -96,7 +97,8 @@ namespace StockAnalyzerApp
         {
             if (notifyPropertyChanged)
             {
-                this.Theme = newTheme;
+                this.theme = newTheme;
+                this.OnPropertyChanged(nameof(Theme));
             }
             else
             {
@@ -114,7 +116,8 @@ namespace StockAnalyzerApp
         {
             if (notifyPropertyChanged)
             {
-                this.Instrument = instrument;
+                this.instrument = instrument;
+                this.OnPropertyChanged(nameof(Instrument));
             }
             else
             {

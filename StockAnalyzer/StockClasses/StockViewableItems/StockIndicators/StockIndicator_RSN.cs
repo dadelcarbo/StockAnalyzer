@@ -1,6 +1,7 @@
 ﻿using System;
 using StockAnalyzer.StockData;
 using System.Drawing;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -18,13 +19,23 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
 
-        public override void ApplyTo(DataSerie stockSerie)
+        public override void ApplyTo(DataSerie dataSerie)
         {
-            this.CreateEventSeries(stockSerie.Count);
-            var closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
+            this.CreateEventSeries(dataSerie.Count);
+            var closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie indexCloseSerie;
 
             var period = (int)this.parameters[1];
-            var indexCloseSerie = stockSerie.GenerateSecondarySerieFromOtherSerie(this.parameters[0] as string, stockSerie.BarDuration);
+
+            var instrument = StockDictionary.GetInstrumentByName(this.parameters[0] as string);
+            if (instrument != null)
+            {
+                indexCloseSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(instrument, dataSerie.BarDuration);
+            }
+            else
+            {
+                indexCloseSerie = closeSerie;
+            }
 
             var rsSerie = (closeSerie / indexCloseSerie).CalculateZScore(period);
 

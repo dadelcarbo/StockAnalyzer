@@ -1916,7 +1916,6 @@ namespace StockAnalyzerApp
 
         public string GetStockSnapshotAsHtml(StockInstrument instrument, string theme, bool mainGraphOnly, BarDuration duration, int nbBars = 0)
         {
-
             if (!string.IsNullOrEmpty(theme) && this.themeComboBox.Items.Contains(theme))
             {
                 this.ViewModel.SetTheme(theme, false);
@@ -2076,25 +2075,25 @@ namespace StockAnalyzerApp
         {
             // Clean existing menus
             this.secondarySerieMenuItem.DropDownItems.Clear();
-            var validGroups = StockDictionary.GetValidGroups().Select(g => g.ToString());
+            var validGroups = StockDictionary.GetValidGroups();
             ToolStripMenuItem[] groupMenuItems = new ToolStripMenuItem[validGroups.Count()];
 
             int i = 0;
-            foreach (string group in validGroups)
+            foreach (var group in validGroups)
             {
-                groupMenuItems[i] = new ToolStripMenuItem(group);
+                groupMenuItems[i] = new ToolStripMenuItem(group.ToString());
 
                 // 
-                var groupInstruments = StockDictionary.Instruments.Values.Where(s => s.Group.ToString() == group);
+                var groupInstruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(group)).OrderBy(i => i.Name);
                 if (groupInstruments.Count() != 0)
                 {
                     ToolStripMenuItem[] secondarySerieMenuItems = new ToolStripMenuItem[groupInstruments.Count()];
                     ToolStripMenuItem secondarySerieSubMenuItem;
 
                     int n = 0;
-                    foreach (var instruments in groupInstruments)
+                    foreach (var instrument in groupInstruments)
                     {
-                        secondarySerieSubMenuItem = new ToolStripMenuItem(instruments.DisplayName);
+                        secondarySerieSubMenuItem = new ToolStripMenuItem(instrument.DisplayName) { Tag = instrument };
                         secondarySerieSubMenuItem.Click += new EventHandler(secondarySerieMenuItem_Click);
                         secondarySerieMenuItems[n++] = secondarySerieSubMenuItem;
                     }
@@ -3114,39 +3113,30 @@ namespace StockAnalyzerApp
             this.graphCloseControl.SecondaryFloatSerie = null;
             this.OnNeedReinitialise(false);
         }
-        private void CheckSecondarySerieMenu(string stockName)
+        private void CheckSecondarySerieMenu(StockInstrument instrument)
         {
-            var instrument = StockDictionary.GetInstrumentByName(stockName);
-            if (instrument != null)
+            foreach (ToolStripMenuItem groupMenuItem in this.secondarySerieMenuItem.DropDownItems)
             {
-                foreach (ToolStripMenuItem groupMenuItem in this.secondarySerieMenuItem.DropDownItems)
+                if (groupMenuItem.Tag == instrument)
                 {
-                    if (groupMenuItem.Text == instrument.Group.ToString())
+                    groupMenuItem.Checked = true;
+                }
+                else
+                {
+                    groupMenuItem.Checked = false;
+                }
+                foreach (ToolStripMenuItem subMenuItem in groupMenuItem.DropDownItems)
+                {
+                    if (subMenuItem.Tag == instrument)
                     {
-                        groupMenuItem.Checked = true;
+                        subMenuItem.Checked = true;
                     }
                     else
                     {
-                        groupMenuItem.Checked = false;
-                    }
-                    foreach (ToolStripMenuItem subMenuItem in groupMenuItem.DropDownItems)
-                    {
-                        if (subMenuItem.Text == instrument.DisplayName)
-                        {
-                            subMenuItem.Checked = true;
-                        }
-                        else
-                        {
-                            subMenuItem.Checked = false;
-                        }
+                        subMenuItem.Checked = false;
                     }
                 }
             }
-            else
-            {
-                ClearSecondarySerieMenu();
-            }
-        }
         private void ClearSecondarySerieMenu()
         {
             this.secondarySerieMenuItem.Checked = false;
@@ -3161,19 +3151,17 @@ namespace StockAnalyzerApp
         }
         private void secondarySerieMenuItem_Click(object sender, EventArgs e)
         {
+            var secondaryInstrument = ((sender as ToolStripMenuItem)?.Tag) as StockInstrument;
+            if (secondaryInstrument == null)
+                return;
+
             var dataSerie = this.ViewModel.Instrument?.GetDataSerie(this.ViewModel.BarDuration);
             if (dataSerie == null)
-            {
                 return;
-            }
+
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
             menuItem.Checked = !menuItem.Checked;
 
-            FloatSerie secondarySerie = dataSerie.GenerateSecondarySerieFromOtherSerie(sender.ToString(), this.ViewModel.BarDuration);
-            if (menuItem.Checked && secondarySerie == null)
-            {
-                menuItem.Checked = false;
-            }
             ((ToolStripMenuItem)menuItem.OwnerItem).Checked = menuItem.Checked;
             foreach (ToolStripMenuItem otherMenuItem in this.secondarySerieMenuItem.DropDownItems)
             {
@@ -3205,8 +3193,7 @@ namespace StockAnalyzerApp
             this.themeDictionary[WORK_THEME]["CloseGraph"].RemoveAll(s => s.StartsWith("SECONDARY"));
             if (menuItem.Checked)
             {
-                this.graphCloseControl.SecondaryFloatSerie = secondarySerie;
-                this.themeDictionary[WORK_THEME]["CloseGraph"].Add("SECONDARY|" + sender.ToString());
+                this.themeDictionary[WORK_THEME]["CloseGraph"].Add("SECONDARY|" + secondaryInstrument.Id);
             }
             else
             {
@@ -3438,8 +3425,9 @@ namespace StockAnalyzerApp
         {
             // Apply new working theme
             this.themeDictionary[WORK_THEME] = themeDico;
-            this.ViewModel.Theme = WORK_THEME;
+            this.ViewModel.SetTheme(WORK_THEME, true);
         }
+
         public delegate void OnStrategyChangedHandler(string currentStrategy);
         public delegate void OnThemeChangedHandler(string currentTheme);
         public delegate void OnThemeEditedHandler(Dictionary<string, List<string>> themeDico);
@@ -3498,7 +3486,7 @@ namespace StockAnalyzerApp
 
         public void ApplyTheme()
         {
-            if (this.ViewModel.Instrument == null || !GraphControl.IsStarted || this.ViewModel.Theme == null)
+            if (!GraphControl.IsStarted || this.ViewModel.Instrument == null || this.ViewModel.Theme == null)
                 return;
 
             using var ml = new MethodLogger(this, showTimerDebug);
@@ -3530,19 +3518,6 @@ namespace StockAnalyzerApp
 
                 // Add to browsing history
                 this.ViewModel.AddHistory(this.ViewModel.Instrument, this.ViewModel.Theme);
-
-                // Force resetting the secondary serie.
-                if (themeDictionary[this.ViewModel.Theme]["CloseGraph"].FindIndex(s => s.StartsWith("SECONDARY")) == -1)
-                {
-                    if (this.graphCloseControl.SecondaryFloatSerie != null)
-                    {
-                        themeDictionary[this.ViewModel.Theme]["CloseGraph"].Add("SECONDARY|" + this.graphCloseControl.SecondaryFloatSerie.Name);
-                    }
-                    else
-                    {
-                        themeDictionary[this.ViewModel.Theme]["CloseGraph"].Add("SECONDARY|NONE");
-                    }
-                }
 
                 GraphCurveTypeList curveList;
                 bool skipEntry = false;
@@ -3634,17 +3609,17 @@ namespace StockAnalyzerApp
                                         }
                                         break;
                                     case "SECONDARY":
-                                        if (fields[1].ToUpper() == "NONE" || !StockDictionary.Instruments.ContainsKey(fields[1]))
+                                        if (fields[1].ToUpper() == "NONE")
                                         {
                                             ClearSecondarySerieMenu();
                                             this.graphCloseControl.SecondaryFloatSerie = null;
                                         }
                                         else
                                         {
-                                            if (StockDictionary.Instruments.ContainsKey(fields[1]))
+                                            if (StockDictionary.Instruments.TryGetValue(fields[1], out var instrument))
                                             {
                                                 CheckSecondarySerieMenu(fields[1]);
-                                                this.graphCloseControl.SecondaryFloatSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(fields[1], this.ViewModel.BarDuration);
+                                                this.graphCloseControl.SecondaryFloatSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(instrument, this.ViewModel.BarDuration);
                                             }
                                         }
                                         break;
@@ -3770,7 +3745,11 @@ namespace StockAnalyzerApp
                     string[] fields = this.ViewModel.Instrument.DisplayName.Split('.');
                     if (fields.Length > 1)
                     {
-                        this.graphCloseControl.SecondaryFloatSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(fields[1], this.ViewModel.BarDuration);
+                        var instrument = StockDictionary.GetInstrumentByName(fields[1]);
+                        if (instrument != null)
+                        {
+                            this.graphCloseControl.SecondaryFloatSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(instrument, this.ViewModel.BarDuration);
+                        }
                     }
                 }
 

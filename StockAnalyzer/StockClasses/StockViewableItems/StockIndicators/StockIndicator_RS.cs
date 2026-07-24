@@ -1,5 +1,7 @@
 ﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
 using System;
+using System.Diagnostics.Metrics;
 using System.Drawing;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
@@ -22,9 +24,19 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         {
             this.CreateEventSeries(dataSerie.Count);
             var closeSerie = dataSerie.GetSerie(StockDataType.CLOSE);
+            FloatSerie indexCloseSerie;
 
-            var indexCloseSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(this.parameters[0] as string, dataSerie.BarDuration);
+            var period = (int)this.parameters[1];
 
+            var instrument = StockDictionary.GetInstrumentByName(this.parameters[0] as string);
+            if (instrument != null)
+            {
+                indexCloseSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(instrument, dataSerie.BarDuration);
+            }
+            else
+            {
+                indexCloseSerie = closeSerie;
+            }
             var rsSerie = 100.0f * closeSerie / indexCloseSerie;
 
             this.series[0] = rsSerie;

@@ -1941,17 +1941,11 @@ namespace StockAnalyzer.StockData
 
         #endregion
 
-        public FloatSerie GenerateSecondarySerieFromOtherSerie(string instrumentId, BarDuration duration)
+        public FloatSerie GenerateSecondarySerieFromOtherSerie(StockInstrument instrument, BarDuration duration)
         {
-            if (!StockDictionary.Instruments.TryGetValue(instrumentId, out var instrument))
-            {
-                return null;
-            }
             var otherSerie = instrument.GetDataSerie(duration);
             if (otherSerie == null)
-            {
                 return null;
-            }
 
             FloatSerie newSerie = new FloatSerie(this.Count);
             newSerie.Name = otherSerie.StockName;
