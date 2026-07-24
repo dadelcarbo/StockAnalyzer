@@ -2002,6 +2002,7 @@ namespace StockAnalyzerApp
         {
             var dp = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
             dp.Remove(new[] { this.ViewModel.Instrument });
+            this.ViewModel.Instrument = null;
         }
 
         private void saxoTurboButton_Click(object sender, EventArgs e)
@@ -3137,6 +3138,7 @@ namespace StockAnalyzerApp
                     }
                 }
             }
+        }
         private void ClearSecondarySerieMenu()
         {
             this.secondarySerieMenuItem.Checked = false;
@@ -3618,7 +3620,7 @@ namespace StockAnalyzerApp
                                         {
                                             if (StockDictionary.Instruments.TryGetValue(fields[1], out var instrument))
                                             {
-                                                CheckSecondarySerieMenu(fields[1]);
+                                                CheckSecondarySerieMenu(instrument);
                                                 this.graphCloseControl.SecondaryFloatSerie = dataSerie.GenerateSecondarySerieFromOtherSerie(instrument, this.ViewModel.BarDuration);
                                             }
                                         }

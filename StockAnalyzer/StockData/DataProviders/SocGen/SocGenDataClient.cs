@@ -46,6 +46,10 @@ namespace StockAnalyzer.StockData.DataProviders.SocGen
                         bar.IsComplete = false;
                     }
                 }
+                else
+                {
+                    bars.Last().IsComplete = true;
+                }
 
                 return bars;
             }
