@@ -18,9 +18,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
-        public override string[] SerieNames => new string[] { $"STO({this.Parameters[0]},{this.Parameters[1]})" };
+        public override string[] SerieNames => new string[] { $"STOK({this.Parameters[0]},{this.Parameters[1]})" };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Default") };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main") };
 
         public override void ApplyTo(DataSerie stockSerie)
         {

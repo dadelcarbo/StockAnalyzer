@@ -1,13 +1,9 @@
 ﻿using StockAnalyzer.StockClasses;
-using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.UltimatePortfolio;
 using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace StockAnalyzer.StockData.DataProviders.Breadth
@@ -107,19 +103,45 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
             switch (breadthFields[0])
             {
                 case "AD":
-                    break;
-                case "EMA":
-                    var period = int.Parse(breadthFields[1]);
-                    return GenerateCountBreadthSerie(instrument, fields[1], startDate, (serie, d) =>
                     {
-                        var index = serie.IndexOf(d);
-                        if (index == -1)
-                            return false;
+                        return GenerateCountIfBreadthSerie(instrument, fields[1], startDate, (serie, d) =>
+                        {
+                            var index = serie.IndexOf(d);
+                            if (index == -1)
+                                return false;
 
-                        var emaIndicator = serie.GetIndicator($"EMA({period})")?.Series[0];
-                        return emaIndicator != null && serie.Values[index].CLOSE > emaIndicator[index];
+                            return serie.Values[index].VARIATION > 0;
 
-                    });
+                        });
+                    }
+                case "EMA":
+                    {
+                        var period = int.Parse(breadthFields[1]);
+                        return GenerateCountIfBreadthSerie(instrument, fields[1], startDate, (serie, d) =>
+                        {
+                            var index = serie.IndexOf(d);
+                            if (index == -1)
+                                return false;
+
+                            var emaIndicator = serie.GetIndicator($"EMA({period})")?.Series[0];
+                            return emaIndicator != null && serie.Values[index].CLOSE > emaIndicator[index];
+
+                        });
+                    }
+                case "STOK":
+                    {
+                        var period = int.Parse(breadthFields[1]);
+                        return GenerateAverageBreadthSerie(instrument, fields[1], startDate, (serie, d) =>
+                        {
+                            var index = serie.IndexOf(d);
+                            if (index == -1)
+                                return float.NaN;
+
+                            var emaIndicator = serie.GetIndicator($"STOKTURTLE({period},{period},6)")?.Series[0];
+                            return emaIndicator != null ? (emaIndicator[index] - 50f)/50f : float.NaN;
+
+                        });
+                    }
                 default:
                     break;
             }
@@ -129,7 +151,7 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
             return bars.ToArray();
         }
 
-        public StockDailyValue[] GenerateCountBreadthSerie(StockInstrument instrument, string groupName, DateTime startDate, Func<DataSerie, DateTime, bool> match)
+        public StockDailyValue[] GenerateCountIfBreadthSerie(StockInstrument instrument, string groupName, DateTime startDate, Func<DataSerie, DateTime, bool> predicate)
         {
             var indexName = groupName == "USA" ? "S&P 500" : "CAC40";
             var indiceInstrument = StockDictionary.GetInstrumentByName(indexName);
@@ -160,22 +182,75 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
 
             float val;
             int count;
-            foreach (var value in indiceSerie.Values.Where(v => v.DATE > lastBreadthDate))
+            foreach (var bar in indiceSerie.Values.Where(v => v.DATE > lastBreadthDate))
             {
                 val = 0; count = 0;
-                this.NotifyProgress($"Generating {instrument.DisplayName} {value.DATE.ToShortDateString()}");
+                this.NotifyProgress($"Generating {instrument.DisplayName} {bar.DATE.ToShortDateString()}");
 
                 foreach (var serie in indexComponents)
                 {
-                    if (match(serie, value.DATE))
+                    if (predicate(serie, bar.DATE))
                         val++;
                     count++;
                 }
                 if (count != 0)
                 {
-                    val /= count;
-                    val = (val - 0.5f) * 2.0f;
-                    bars.Add(new StockDailyValue(val, val, val, val, count, value.DATE));
+                    val /= (float)count;
+                    bars.Add(new StockDailyValue(val, val, val, val, count, bar.DATE));
+                }
+            }
+            return bars.ToArray();
+        }
+
+
+        public StockDailyValue[] GenerateAverageBreadthSerie(StockInstrument instrument, string groupName, DateTime startDate, Func<DataSerie, DateTime, float> indicator)
+        {
+            var indexName = groupName == "USA" ? "S&P 500" : "CAC40";
+            var indiceInstrument = StockDictionary.GetInstrumentByName(indexName);
+            if (indiceInstrument == null)
+            {
+                return null;
+            }
+
+            DataSerie indiceSerie = indiceInstrument.GetDefaultDataSerie();
+            if (indiceSerie == null || indiceSerie.Values.Length == 0)
+                return null;
+
+            if (indiceSerie.LastCompleteValue.DATE == startDate)
+                return null;
+
+            var indexComponents = StockDictionary.Instruments.Values
+                .Where(s => s.BelongsToGroup(groupName))
+                .Select(s => s.GetDataSerie(indiceSerie.BarDuration))
+                .Where(d => d != null & d.Count > 0).ToArray();
+
+            if (indexComponents.Length == 0)
+                return null;
+
+            DateTime lastIndiceDate = indiceSerie.LastValue.DATE;
+            DateTime lastBreadthDate = DateTime.MinValue;
+
+            var bars = new List<StockDailyValue>();
+
+            float val;
+            int count;
+            foreach (var bar in indiceSerie.Values.Where(v => v.DATE > lastBreadthDate))
+            {
+                val = 0; count = 0;
+                this.NotifyProgress($"Generating {instrument.DisplayName} {bar.DATE.ToShortDateString()}");
+
+                foreach (var serie in indexComponents)
+                {
+                    var v = indicator(serie, bar.DATE);
+                    if (float.IsNaN(v))
+                        continue;
+                    val += v;
+                    count++;
+                }
+                if (count != 0)
+                {
+                    val /= (float)count;
+                    bars.Add(new StockDailyValue(val, val, val, val, count, bar.DATE));
                 }
             }
             return bars.ToArray();

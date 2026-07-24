@@ -1,5 +1,6 @@
-﻿using StockAnalyzer.StockMath;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 
@@ -20,20 +21,14 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] SerieNames => new string[] { "SlowK(" + this.Parameters[0].ToString() + ")", "SlowD(" + this.Parameters[1].ToString() + ")" };
 
 
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Green), new Pen(Color.Red) };
-                return seriePens;
-            }
-        }
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Fast"), ColorManager.GetPen("Indicator.Slow") };
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] {
             new HLine(50, new Pen(Color.LightGray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
             new HLine(25f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
             new HLine(75f, new Pen(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash }),
         };
+
         public override void ApplyTo(DataSerie stockSerie)
         {
             FloatSerie fastK = stockSerie.CalculateFastOscillator((int)this.parameters[0], InputType.Body);
