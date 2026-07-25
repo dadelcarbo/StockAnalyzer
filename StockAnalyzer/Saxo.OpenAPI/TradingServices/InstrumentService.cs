@@ -107,7 +107,7 @@ namespace Saxo.OpenAPI.TradingServices
         }
 
         static JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-        public static void SaveCache()
+        private static void SaveCache()
         {
             // Save Cache
             File.WriteAllText(Folders.SaxoInstruments, JsonSerializer.Serialize(InstrumentCache, jsonOptions));

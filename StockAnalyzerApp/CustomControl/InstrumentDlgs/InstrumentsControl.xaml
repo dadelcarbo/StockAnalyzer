@@ -102,12 +102,6 @@
                             <telerik:GridViewDataColumn Header="Last Date" DataMemberBinding="{Binding LastValue.DATE}"/>
                             <telerik:GridViewDataColumn Header="First Date" DataMemberBinding="{Binding FirstValue.DATE}"/>
 
-                            <telerik:GridViewDataColumn Header="SaxoId" DataMemberBinding="{Binding Instrument.StockSerie.SaxoId}"/>
-                            <telerik:GridViewDataColumn Header="Uic" DataMemberBinding="{Binding Instrument.StockSerie.Uic}"/>
-
-                            <telerik:GridViewDataColumn Header="Underlying" DataMemberBinding="{Binding Instrument.StockSerie.Underlying}"/>
-                            <telerik:GridViewDataColumn Header="Url" DataMemberBinding="{Binding Instrument.StockSerie.Url}"/>
-
                         </telerik:RadGridView.Columns>
                     </telerik:RadGridView>
                 </Grid>
@@ -140,11 +134,19 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Grid.Row="0"  Command="{Binding SaveInstrumentsCommand}" HorizontalAlignment="Right"  Margin="4">Save</Button>
+                        <Label Content="Saxo Instrument:"/>
+                        <Label Content="{Binding SelectedSaxoId}"/>
+                        <Label Content="Instrument:"/>
+                        <TextBox Text="{Binding SelectedInstrumentId}" VerticalContentAlignment="Center" Width="90"/>
+                        <Label Content="{Binding SelectedInstrument.Name}" MinWidth="240"/>
+                        <Button Grid.Row="0"  Command="{Binding BindInstrumentsCommand}" HorizontalAlignment="Right"  Margin="4">Bind</Button>
                     </StackPanel>
-                    <telerik:RadGridView FontSize="9" Grid.Row="1" ItemsSource="{Binding Instruments}" Margin="4,4,4,4" RowIndicatorVisibility="Collapsed" RowStyleSelector="{StaticResource SaxoMappingRowStyleSelector}"
-                             SelectionUnit="Cell" SelectionMode="Single" ShowGroupPanel="False" AutoGenerateColumns="true" SelectedCellsChanged="RadGridView_SelectedCellsChanged">
-                        
+                    <telerik:RadGridView FontSize="9" Grid.Row="1" Margin="4,4,4,4" 
+                                         ItemsSource="{Binding Instruments}" IsReadOnly="True"
+                                         RowIndicatorVisibility="Collapsed" RowStyleSelector="{StaticResource SaxoMappingRowStyleSelector}"
+                                         SelectionUnit="Cell" SelectionMode="Single" ShowGroupPanel="False" 
+                                         AutoGenerateColumns="true" SelectedCellsChanged="RadGridView_SelectedCellsChanged">
+
                     </telerik:RadGridView>
                 </Grid>
             </TabItem>

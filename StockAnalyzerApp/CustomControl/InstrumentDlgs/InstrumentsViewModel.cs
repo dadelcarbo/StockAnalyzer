@@ -107,6 +107,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 }
             }
         }
+
         private Visibility progressVisibility;
         public Visibility ProgressVisibility
         {
@@ -287,16 +288,73 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             }
         }
 
-        #region Instruments
+        #region Saxo Instruments
 
         public List<SaxoInstrument> Instruments => InstrumentService.InstrumentCache;
 
-        private CommandBase saveInstrumentsCommand;
-        public ICommand SaveInstrumentsCommand => saveInstrumentsCommand ??= new CommandBase(SaveInstruments);
+        private CommandBase bindInstrumentsCommand;
+        public ICommand BindInstrumentsCommand => bindInstrumentsCommand ??= new CommandBase(BindInstruments);
 
-        private void SaveInstruments()
+
+        private StockInstrument selectedInstrument;
+        public StockInstrument SelectedInstrument { get => selectedInstrument; set => SetProperty(ref selectedInstrument, value); }
+
+        private string selectedInstrumentId;
+        public string SelectedInstrumentId
         {
-            InstrumentService.SaveCache();
+            get => selectedInstrumentId;
+            set
+            {
+                if (value != selectedInstrumentId)
+                {
+                    this.selectedInstrumentId = value;
+                    if (selectedInstrumentId != null)
+                    {
+                        StockDictionary.Instruments.TryGetValue(selectedInstrumentId, out this.selectedInstrument);
+                        this.OnPropertyChanged(nameof(SelectedInstrument));
+                    }
+                    else
+                    {
+                        this.SelectedInstrument = null;
+                    }
+                    this.OnPropertyChanged(nameof(SelectedInstrumentId));
+                }
+            }
+        }
+
+        private long selectedSaxoId;
+        public long SelectedSaxoId
+        {
+            get => selectedSaxoId;
+            set
+            {
+                if (this.selectedSaxoId != value)
+                {
+                    this.selectedSaxoId = value;
+                    var instrument = SaxoToInstrumentMapping.GetInstrument(this.selectedSaxoId);
+
+                    this.SelectedInstrumentId = instrument?.Id;
+
+                    this.OnPropertyChanged(nameof(SelectedSaxoId));
+                }
+            }
+        }
+
+        private void BindInstruments()
+        {
+            if (this.SelectedInstrument == null)
+            {
+                return;
+            }
+
+            if (MessageBox.Show($"Binding Saxo:{SelectedSaxoId} with {SelectedInstrument.DisplayName}", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                SaxoToInstrumentMapping.AddMapping(this.SelectedSaxoId, this.SelectedInstrumentId);
+
+                this.OnPropertyChanged(nameof(this.SaxoMappings));
+                this.OnPropertyChanged(nameof(this.Instruments));
+            }
+
         }
         #endregion
 

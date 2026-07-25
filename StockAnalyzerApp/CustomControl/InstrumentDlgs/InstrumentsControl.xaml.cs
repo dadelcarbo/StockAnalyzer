@@ -173,15 +173,17 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 {
                     var saxoInstrument = e.AddedCells[0].Item as SaxoInstrument;
 
-                    var instrument = SaxoToInstrumentMapping.GetInstrument(saxoInstrument.Identifier);
-                    if (instrument == null)
-                        return;
+                    this.ViewModel.SelectedSaxoId = saxoInstrument.Identifier;
 
-                    this.Form.TopMost = true;
-                    StockAnalyzerForm.MainFrame.Activate();
-                    this.SelectedInstrumentChanged(instrument, true);
+                    if (this.ViewModel.SelectedInstrument != null)
+                    {
 
-                    this.Form.TopMost = false;
+                        this.Form.TopMost = true;
+                        StockAnalyzerForm.MainFrame.Activate();
+                        this.SelectedInstrumentChanged(this.ViewModel.SelectedInstrument, true);
+
+                        this.Form.TopMost = false;
+                    }
                 }
             }
         }
