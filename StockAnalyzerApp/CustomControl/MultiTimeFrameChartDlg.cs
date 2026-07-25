@@ -57,31 +57,20 @@ namespace StockAnalyzerApp.CustomControl
 
         private void StockNameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            StockInstrument instrument = null;
-            if (StockDictionary.Instruments.ContainsKey(stockNameComboBox.SelectedItem.ToString()))
-            {
-                instrument = StockDictionary.Instruments[stockNameComboBox.SelectedItem.ToString()];
-            }
-            else
-            {
-                throw new ApplicationException("Data for " + stockNameComboBox.SelectedItem.ToString() + "does not exist");
-            }
-            // Set the new selected serie
-            Instrument = instrument;
+            Instrument = stockNameComboBox.SelectedItem as StockInstrument;
         }
 
         private void InitialiseStockCombo()
         {
             // Initialise Combo values
             stockNameComboBox.Items.Clear();
-            stockNameComboBox.SelectedItem = string.Empty;
 
             var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.selectedGroup));
             foreach (var instrument in instruments)
             {
-                    stockNameComboBox.Items.Add(instrument.DisplayName);
+                stockNameComboBox.Items.Add(instrument);
             }
-            stockNameComboBox.SelectedItem = this.instrument.DisplayName;
+            stockNameComboBox.SelectedItem = this.instrument;
         }
 
         private StockInstrument instrument;

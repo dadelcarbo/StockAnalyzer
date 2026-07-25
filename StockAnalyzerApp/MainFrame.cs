@@ -12,7 +12,6 @@ using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
-using StockAnalyzer.StockMath;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockPortfolio.AutoTrade;
 using StockAnalyzerApp.CustomControl;

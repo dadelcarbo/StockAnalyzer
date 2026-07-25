@@ -318,9 +318,9 @@ namespace StockAnalyzer.StockData
 
         #endregion
 
-        public string ToDef()
+        public override string ToString()
         {
-            return $"{Id},{Name},{Isin},{Symbol},{Ticker},{Group},{Market}";
+            return DisplayName;
         }
     }
 }
