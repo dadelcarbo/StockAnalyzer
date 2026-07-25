@@ -687,6 +687,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 }
                 this.treeView1.SelectedNode = decoratorNode;
                 decoratorNode.Expand();
+
+                ThemeEdited?.Invoke(this.GetTheme());
             }
         }
         void addTrailToolStripMenuItem_Click(object sender, EventArgs e)
@@ -743,6 +745,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 }
                 this.treeView1.SelectedNode = trailNode;
                 trailNode.Expand();
+
+                ThemeEdited?.Invoke(this.GetTheme());
             }
         }
         void addIndicatorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -826,6 +830,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     }
                 }
                 this.treeView1.SelectedNode = indicatorNode;
+
+                ThemeEdited?.Invoke(this.GetTheme());
             }
         }
         void addCloudToolStripMenuItem_Click(object sender, EventArgs e)
@@ -873,6 +879,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 }
                 cloudNode.Expand();
                 this.treeView1.SelectedNode = cloudNode;
+
+                ThemeEdited?.Invoke(this.GetTheme());
             }
         }
         void addHorizontalLineToolStripMenuItem_Click(object sender, EventArgs e)
@@ -880,6 +888,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
             LineNode stockNode = new LineNode("LINE_0", this.indicatorMenuStrip, new Pen(Color.Black), 0);
             this.treeView1.SelectedNode.Nodes.Add(stockNode);
             this.treeView1.SelectedNode = stockNode;
+
+            ThemeEdited?.Invoke(this.GetTheme());
         }
         #region Curve Config Methods
         private void ActivateCurveConfigPanel(CurveNode curveNode)
@@ -1667,6 +1677,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                     }
                 }
             }
+
+            ThemeEdited?.Invoke(this.GetTheme());
         }
         #endregion
         #region Indicator1 Config
@@ -2032,6 +2044,8 @@ namespace StockAnalyzerApp.CustomControl.IndicatorDlgs
                 }
                 this.treeView1.SelectedNode = autoDrawingNode;
                 autoDrawingNode.Expand();
+
+                ThemeEdited?.Invoke(this.GetTheme());
             }
         }
         private void addTrailStopsToolStripMenuItem_Click(object sender, EventArgs e)
