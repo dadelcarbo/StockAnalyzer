@@ -16,8 +16,23 @@ namespace StockAnalyzer.StockPortfolio.Saxo
 
         static public void AddMapping(long saxoId, string instrumentId)
         {
-            saxoToInstrumentMappings.Add(saxoId, instrumentId);
-            instrumentToSaxoMappings.Add(instrumentId, saxoId);
+            if (!saxoToInstrumentMappings.ContainsKey(saxoId))
+            {
+                saxoToInstrumentMappings.Add(saxoId, instrumentId);
+            }
+            else
+            {
+                saxoToInstrumentMappings[saxoId] = instrumentId;
+            }
+
+            if (!instrumentToSaxoMappings.ContainsKey(instrumentId))
+            {
+                instrumentToSaxoMappings.Add(instrumentId, saxoId);
+            }
+            else
+            {
+                instrumentToSaxoMappings[instrumentId] = saxoId;
+            }
 
             Save();
         }
