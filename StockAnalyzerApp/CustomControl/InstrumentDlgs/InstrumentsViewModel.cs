@@ -1,4 +1,5 @@
-﻿using Saxo.OpenAPI.TradingServices;
+﻿using Saxo.OpenAPI.AuthenticationServices;
+using Saxo.OpenAPI.TradingServices;
 using StockAnalyzer;
 using StockAnalyzer.StockClasses;
 using StockAnalyzer.StockData;
@@ -11,8 +12,11 @@ using StockAnalyzer.StockPortfolio.Saxo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -130,6 +134,8 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             this.SaxoUnderlyings = new ObservableCollection<SaxoUnderlyingViewModel>(SaxoUnderlying.Load().Select(s => new SaxoUnderlyingViewModel(s)));
 
             ProgressVisibility = Visibility.Collapsed;
+
+            InitVariables();
         }
 
         private IEnumerable<LineViewModel> GetLines()
@@ -369,5 +375,107 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             });
 
         #endregion
+
+        #region Saxo POSTMAN
+
+        private string serviceUrl = "chart/v3/charts?AssetType=Stock&Horizon=120&Uic=13185";
+        public string ServiceUrl
+        {
+            get => serviceUrl; set
+            {
+                SetProperty(ref serviceUrl, value);
+
+                // Extract all variables between { and }
+                var matches = Regex.Matches(serviceUrl, @"\{([^}]+)\}").Cast<Match>().Select(match => match.Groups[1].Value);
+
+                var transient = Variables.Where(v => v.Persist == false).ToList();
+                foreach (var v in transient)
+                {
+                    if (!matches.Contains(v.Name))
+                        this.Variables.Remove(v);
+                }
+
+                // Create a list of Variable objects
+                foreach (var match in matches.Where(m => !Variables.Any(v => v.Name == m)))
+                {
+                    Variables.Add(new Variable
+                    {
+                        Name = match,
+                        Value = string.Empty
+                    });
+                }
+
+            }
+        }
+
+        private string httpResult;
+        public string HttpResult { get => httpResult; set => SetProperty(ref httpResult, value); }
+
+        public ObservableCollection<Variable> Variables { get; set; } = new ObservableCollection<Variable>();
+
+        private CommandBase httpGetCommand;
+        public ICommand HttpGetCommand => httpGetCommand ??= new CommandBase(HttpGet);
+
+        private void HttpGet()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(serviceUrl))
+                {
+                    this.HttpResult = "Invalid service Url";
+                    return;
+                }
+                var service = serviceUrl;
+                foreach (var variable in Variables)
+                {
+                    service = service.Replace("{" + variable.Name + "}", variable.Value);
+                }
+                var result = TestSaxoService.HttpGet(service);
+                JsonDocument jsonDocument = JsonDocument.Parse(result);
+
+                // Write to a stream with indentation
+                using (var stream = new MemoryStream())
+                {
+                    using (var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true }))
+                    {
+                        jsonDocument.WriteTo(writer);
+                    }
+                    this.HttpResult = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+                }
+            }
+            catch (Exception ex)
+            {
+                this.HttpResult = ex.Message;
+            }
+        }
+
+        void InitVariables()
+        {
+            this.Variables.Add(new Variable("AssetTypes", "MutualFund%2CCertificateUncappedCapitalProtection%2CCertificateCappedCapitalProtected%2CCertificateDiscount%2CCertificateCappedOutperformance%2CCertificateCappedBonus%2CCertificateExpress%2CCertificateTracker%2CCertificateUncappedOutperformance%2CCertificateBonus%2CCertificateConstantLeverage%2CStock%2CEtf%2CEtc%2CEtn%2CFund%2CRights%2CMiniFuture%2CWarrantKnockOut%2CWarrantOpenEndKnockOut%2CWarrantDoubleKnockOut%2CIpoOnStock%2CCompanyWarrant%2CStockIndex", true));
+            this.Variables.Add(new Variable("ClientKey", TestSaxoService.GetClientKey(), true));
+            this.Variables.Add(new Variable("AccountKey", TestSaxoService.GetAccountKey(), true));
+        }
+
+
+        #endregion
+    }
+
+    public class Variable
+    {
+        public Variable()
+        {
+
+        }
+        public Variable(string name, string value, bool persist)
+        {
+            Name = name;
+            Value = value;
+            this.Persist = persist;
+        }
+
+        public string Name { get; set; }
+        public string Value { get; set; }
+
+        public bool Persist { get; set; }
     }
 }

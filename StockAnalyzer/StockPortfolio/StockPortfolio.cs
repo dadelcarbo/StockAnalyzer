@@ -408,6 +408,8 @@ namespace StockAnalyzer.StockPortfolio
             {
                 throw new KeyNotFoundException($"Saxo with UIC={uic} not found at Saxo");
             }
+            if (string.IsNullOrEmpty(saxoInstrument.Symbol))
+                return null; // Not Found UIC.
 
             // Find instrument in stock Dictionnary by Symbol
             var symbol = saxoInstrument.Symbol.Split(':')[0];

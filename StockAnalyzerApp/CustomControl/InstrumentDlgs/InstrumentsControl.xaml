@@ -175,7 +175,34 @@
                     </telerik:RadGridView>
                 </Grid>
             </TabItem>
+            <TabItem Header="Saxo Postman">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
+                                 FontSize="14" Margin="2" Height="24"
+                                  Text="{Binding ServiceUrl}"/>
+                        <Button Grid.Column="1" Content=" Get " Command="{Binding HttpGetCommand}" Margin="2"/>
+                    </Grid>
+                    <Grid Grid.Row="1" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBox Text="{Binding HttpResult}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="2"/>
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Variables}" CanUserAddRows="false" CanUserDeleteRows="False" Margin="2"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>
