@@ -405,6 +405,11 @@ namespace StockAnalyzer.StockPortfolio
             // Find instrument in stock Dictionnary by name
             var stockName = saxoInstrument.Description.Replace(" SA", "").Replace(" SE", "").Replace(" SCA", "").Trim();
             instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => string.Compare(s.Name, stockName, true) == 0);
+            if (instrument == null && saxoInstrument.ExchangeId == "CATS_SAXO")
+            {
+                var isin = saxoInstrument.Symbol.Split(':')[0];
+                instrument = StockDictionary.Instruments.Values.FirstOrDefault(i => i.Isin == isin);
+            }
 
             if (instrument != null)
             {

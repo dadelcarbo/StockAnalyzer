@@ -195,12 +195,37 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                     }
                     else
                     {
-                        var symbol = saxoInstrument.Symbol.Split(':')[0];
-                        var instrument = StockDictionary.Instruments.Values.FirstOrDefault(i => i.Symbol == symbol);
-                        if (instrument != null)
+                        if (saxoInstrument.ExchangeId == "CATS_SAXO")
                         {
-                            this.ViewModel.SelectedInstrumentId = instrument.Id;
+                            var isin = saxoInstrument.Symbol.Split(':')[0];
+                            var instrument = StockDictionary.Instruments.Values.FirstOrDefault(i => i.Isin == isin);
+                            if (instrument != null)
+                            {
+                                this.ViewModel.SelectedInstrumentId = instrument.Id;
+                            }
                         }
+                        else if (!string.IsNullOrEmpty(saxoInstrument.Symbol))
+                        {
+                            var symbol = saxoInstrument.Symbol.Split(':')[0];
+                            var instrument = StockDictionary.Instruments.Values.FirstOrDefault(i => i.Symbol == symbol);
+                            if (instrument != null)
+                            {
+                                this.ViewModel.SelectedInstrumentId = instrument.Id;
+                            }
+                        }
+                    }
+                }
+                else if (e.AddedCells[0].Item is SaxoMappingViewModel)
+                {
+                    var saxoMapping = e.AddedCells[0].Item as SaxoMappingViewModel;
+
+                    if (saxoMapping.Instrument != null)
+                    {
+                        this.Form.TopMost = true;
+                        StockAnalyzerForm.MainFrame.Activate();
+                        this.SelectedInstrumentChanged(saxoMapping.Instrument, true);
+
+                        this.Form.TopMost = false;
                     }
                 }
             }
