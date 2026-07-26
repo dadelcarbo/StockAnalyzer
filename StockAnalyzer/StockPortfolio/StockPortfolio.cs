@@ -392,29 +392,19 @@ namespace StockAnalyzer.StockPortfolio
         {
             using var ml = new MethodLogger(this);
 
-            StockInstrument instrument = null;
-
-            var instrumentId = SaxoToInstrumentMapping.GetInstrumentId(uic);
-            if (!string.IsNullOrEmpty(instrumentId))
+            var instrument = SaxoToInstrumentMapping.GetInstrument(uic);
+            if (instrument != null)
             {
-                if (StockDictionary.Instruments.TryGetValue(instrumentId, out instrument))
-                {
-                    return instrument;
-                }
+                return instrument;
             }
 
             var saxoInstrument = instrumentService.GetInstrumentById(uic);
-            if (saxoInstrument == null)
-            {
-                throw new KeyNotFoundException($"Saxo with UIC={uic} not found at Saxo");
-            }
             if (string.IsNullOrEmpty(saxoInstrument.Symbol))
                 return null; // Not Found UIC.
 
-            // Find instrument in stock Dictionnary by Symbol
-            var symbol = saxoInstrument.Symbol.Split(':')[0];
-            var stockName = saxoInstrument.Description.ToUpper().Replace("SA", "").Replace("SCA", "").Trim();
-            instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => (s.Symbol == symbol) || s.Name == stockName);
+            // Find instrument in stock Dictionnary by name
+            var stockName = saxoInstrument.Description.Replace(" SA", "").Replace(" SE", "").Replace(" SCA", "").Trim();
+            instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => string.Compare(s.Name, stockName, true) == 0);
 
             if (instrument != null)
             {

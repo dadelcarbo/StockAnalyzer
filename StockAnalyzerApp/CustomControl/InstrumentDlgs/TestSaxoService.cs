@@ -20,13 +20,27 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             return instance.Get(method);
         }
 
-        public static string GetClientKey()
+        public static string GetClientKey(string saxoAccountId)
         {
-            return accountService.GetAccounts()?.FirstOrDefault()?.ClientKey;
+            try
+            {
+                return accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == saxoAccountId)?.ClientKey;
+            }
+            catch
+            {
+                return null;
+            }
         }
-        public static string GetAccountKey()
+        public static string GetAccountKey(string saxoAccountId)
         {
-            return accountService.GetAccounts()?.FirstOrDefault()?.AccountKey;
+            try
+            {
+                return accountService.GetAccounts()?.FirstOrDefault(a => a.AccountId == saxoAccountId)?.AccountKey;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

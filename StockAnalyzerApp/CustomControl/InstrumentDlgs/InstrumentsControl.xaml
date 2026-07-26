@@ -139,13 +139,14 @@
                         <Label Content="Instrument:"/>
                         <TextBox Text="{Binding SelectedInstrumentId}" VerticalContentAlignment="Center" Width="90"/>
                         <Label Content="{Binding SelectedInstrument.Name}" MinWidth="240"/>
-                        <Button Grid.Row="0"  Command="{Binding BindInstrumentsCommand}" HorizontalAlignment="Right"  Margin="4">Bind</Button>
+                        <Button HorizontalAlignment="Right"  Margin="4">?</Button>
+                        <Button Command="{Binding BindInstrumentsCommand}" HorizontalAlignment="Right"  Margin="4">Bind</Button>
                     </StackPanel>
-                    <telerik:RadGridView FontSize="9" Grid.Row="1" Margin="4,4,4,4" 
+                    <telerik:RadGridView Name="SaxoInstrumentGrid" FontSize="9" Grid.Row="1" Margin="4,4,4,4" 
                                          ItemsSource="{Binding Instruments}" IsReadOnly="True"
                                          RowIndicatorVisibility="Collapsed" RowStyleSelector="{StaticResource SaxoMappingRowStyleSelector}"
                                          SelectionUnit="Cell" SelectionMode="Single" ShowGroupPanel="False" 
-                                         AutoGenerateColumns="true" SelectedCellsChanged="RadGridView_SelectedCellsChanged">
+                                         AutoGenerateColumns="true" SelectedCellsChanged="RadGridView_SelectedCellsChanged" PreviewKeyDown="SaxoInstrumentGrid_PreviewKeyDown">
 
                     </telerik:RadGridView>
                 </Grid>
@@ -183,14 +184,26 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0" >
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Label Content="Portfolio"/>
+                            <ComboBox ItemsSource="{Binding Portfolios}" SelectedItem="{Binding Portfolio}"/>
+                            <Label Content="Connected "/>
+                            <Label Content="{Binding IsConnected}"/>
+                        </StackPanel>
+                        <TextBox Grid.Column="0" Grid.Row="1" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" 
                                  FontSize="14" Margin="2" Height="24"
                                   Text="{Binding ServiceUrl}"/>
-                        <Button Grid.Column="1" Content=" Get " Command="{Binding HttpGetCommand}" Margin="2"/>
+                        <Button Grid.Column="1" Grid.Row="1" Content=" Get " Command="{Binding HttpGetCommand}" Margin="2"/>
                     </Grid>
                     <Grid Grid.Row="1" >
                         <Grid.RowDefinitions>

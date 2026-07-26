@@ -8,7 +8,9 @@ using StockAnalyzer.StockData.DataProviders.SaxoTurbos;
 using StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockPortfolio;
 using StockAnalyzer.StockPortfolio.Saxo;
+using StockAnalyzer.UltimatePortfolio;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -348,19 +350,14 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
         private void BindInstruments()
         {
-            if (this.SelectedInstrument == null)
+            if (this.SelectedInstrument == null || string.IsNullOrEmpty(this.selectedInstrumentId) || this.selectedSaxoId == 0)
             {
                 return;
             }
+            SaxoToInstrumentMapping.AddMapping(this.SelectedSaxoId, this.SelectedInstrumentId);
 
-            if (MessageBox.Show($"Binding Saxo:{SelectedSaxoId} with {SelectedInstrument.DisplayName}", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                SaxoToInstrumentMapping.AddMapping(this.SelectedSaxoId, this.SelectedInstrumentId);
-
-                this.OnPropertyChanged(nameof(this.SaxoMappings));
-                this.OnPropertyChanged(nameof(this.Instruments));
-            }
-
+            this.OnPropertyChanged(nameof(this.SaxoMappings));
+            this.OnPropertyChanged(nameof(this.Instruments));
         }
         #endregion
 
@@ -378,7 +375,31 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
         #region Saxo POSTMAN
 
-        private string serviceUrl = "chart/v3/charts?AssetType=Stock&Horizon=120&Uic=13185";
+        public IEnumerable<StockPortfolio> Portfolios => StockPortfolio.Portfolios;
+
+        StockPortfolio portfolio;
+        public StockPortfolio Portfolio
+        {
+            get => portfolio;
+            set
+            {
+                if (portfolio != value)
+                {
+                    this.portfolio = value;
+                    OnPropertyChanged(nameof(Portfolio));
+
+                    OnPropertyChanged(nameof(IsConnected));
+
+                    this.Variables.Clear();
+
+                    this.InitVariables();
+                }
+            }
+        }
+
+        public bool IsConnected => this.portfolio == null ? false : this.portfolio.SaxoSilentLogin();
+
+        private string serviceUrl = "port/v1/closedpositions?AccountKey={AccountKey}&ClientKey={ClientKey}";
         public string ServiceUrl
         {
             get => serviceUrl; set
@@ -420,6 +441,16 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         {
             try
             {
+                if (this.portfolio == null)
+                {
+                    this.HttpResult = "Select a portfolio first";
+                    return;
+                }
+                if (!this.portfolio.SaxoSilentLogin())
+                {
+                    this.HttpResult = "Portfolio not connected";
+                    return;
+                }
                 if (string.IsNullOrEmpty(serviceUrl))
                 {
                     this.HttpResult = "Invalid service Url";
@@ -452,10 +483,13 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
         void InitVariables()
         {
             this.Variables.Add(new Variable("AssetTypes", "MutualFund%2CCertificateUncappedCapitalProtection%2CCertificateCappedCapitalProtected%2CCertificateDiscount%2CCertificateCappedOutperformance%2CCertificateCappedBonus%2CCertificateExpress%2CCertificateTracker%2CCertificateUncappedOutperformance%2CCertificateBonus%2CCertificateConstantLeverage%2CStock%2CEtf%2CEtc%2CEtn%2CFund%2CRights%2CMiniFuture%2CWarrantKnockOut%2CWarrantOpenEndKnockOut%2CWarrantDoubleKnockOut%2CIpoOnStock%2CCompanyWarrant%2CStockIndex", true));
-            this.Variables.Add(new Variable("ClientKey", TestSaxoService.GetClientKey(), true));
-            this.Variables.Add(new Variable("AccountKey", TestSaxoService.GetAccountKey(), true));
-        }
 
+            if (this.portfolio != null && this.portfolio.SaxoSilentLogin())
+            {
+                this.Variables.Add(new Variable("ClientKey", TestSaxoService.GetClientKey(this.portfolio?.SaxoAccountId), true));
+                this.Variables.Add(new Variable("AccountKey", TestSaxoService.GetAccountKey(this.portfolio?.SaxoAccountId), true));
+            }
+        }
 
         #endregion
     }

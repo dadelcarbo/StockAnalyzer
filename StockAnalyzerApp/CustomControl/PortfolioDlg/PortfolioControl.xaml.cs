@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockPortfolio;
 using System;
 using System.Threading.Tasks;
@@ -55,55 +56,52 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 if (row?.Item == null)
                     return;
                 var itemName = row.Item.GetType().Name;
+
+                StockInstrument instrument = null;
                 switch (itemName)
                 {
                     case "StockTradeOperation":
                         {
                             var item = row.Item as StockTradeOperation;
 
-                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var instrument))
-                            {
-                                instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
-                            }
-                            if (instrument == null) return;
-                            SelectionChanged(instrument.Name, instrument.Isin);
+                            instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
+                            if (instrument == null)
+                                return;
+
+                            SelectionChanged(instrument);
                         }
                         break;
                     case "StockPositionBaseViewModel":
                         {
                             var item = row.Item as StockPositionBaseViewModel;
 
-                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var instrument))
-                            {
-                                instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
-                            }
-                            if (instrument == null) return;
-                            SelectionChanged(instrument.Name, instrument.Isin, item.BarDuration, item.Theme);
+                            instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
+                            if (instrument == null)
+                                return;
+
+                            SelectionChanged(instrument, item.BarDuration, item.Theme);
                         }
                         break;
                     case "StockOpenedOrder":
                         {
                             var item = row.Item as StockOpenedOrder;
 
-                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var instrument))
-                            {
-                                instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
-                            }
+                            instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
+                            if (instrument == null)
+                                return;
 
-                            if (instrument == null) return;
-                            SelectionChanged(instrument.Name, instrument.Isin, item.BarDuration, item.Theme);
+                            SelectionChanged(instrument, item.BarDuration, item.Theme);
                         }
                         break;
                     case "OrderViewModel":
                         {
                             var item = row.Item as OrderViewModel;
 
-                            if (!StockDictionary.Instruments.TryGetValue(item.StockName, out var instrument))
-                            {
-                                instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
-                            }
-                            if (instrument == null) return;
-                            SelectionChanged(instrument.Name, null);
+                            instrument = viewModel.Portfolio.GetInstrumentFromUic(item.Uic);
+                            if (instrument == null)
+                                return;
+
+                            SelectionChanged(instrument, null);
                         }
                         break;
                     default:
@@ -128,26 +126,22 @@ namespace StockAnalyzerApp.CustomControl.PortfolioDlg
                 e.DefaultOperator2 = Telerik.Windows.Data.FilterOperator.Contains;
             }
         }
-        private void SelectionChanged(string stockName, string isin, BarDuration? duration = null, string theme = null)
+        private void SelectionChanged(StockInstrument instrument, BarDuration? duration = null, string theme = null)
         {
-            if (MainFrameViewModel.Instance.Instrument?.DisplayName == stockName)
+            if (MainFrameViewModel.Instance.Instrument.Id == instrument.Id)
                 return;
 
-            var instrument = StockDictionary.GetInstrument(stockName, isin);
-            if (instrument != null)
+            this.Form.TopMost = true;
+            StockAnalyzerForm.MainFrame.Activate();
+            if (duration != null)
             {
-                this.Form.TopMost = true;
-                StockAnalyzerForm.MainFrame.Activate();
-                if (duration != null)
-                {
-                    this.SelectedInstrumentAndDurationChanged(instrument, duration.Value, theme, true);
-                }
-                else
-                {
-                    this.SelectedInstrumentChanged(instrument, true);
-                }
-                this.Form.TopMost = false;
+                this.SelectedInstrumentAndDurationChanged(instrument, duration.Value, theme, true);
             }
+            else
+            {
+                this.SelectedInstrumentChanged(instrument, true);
+            }
+            this.Form.TopMost = false;
         }
         private void savePortfolioButton_Click(object sender, RoutedEventArgs e)
         {

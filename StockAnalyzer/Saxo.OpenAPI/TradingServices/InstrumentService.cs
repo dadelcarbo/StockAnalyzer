@@ -69,6 +69,12 @@ namespace Saxo.OpenAPI.TradingServices
                 throw new HttpRequestException("Error requesting data from the OpenApi: " + ex.Message, ex);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uic"></param>
+        /// <returns>instrument matching uic. Cannot return null. In case of error exception is thrown</returns>
+        /// <exception cref="HttpRequestException"></exception>
         public SaxoInstrument GetInstrumentById(long uic)
         {
             var method = $"ref/v1/instruments/?Uics={uic}&AssetTypes={ASSET_TYPES}";

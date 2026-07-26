@@ -16,6 +16,16 @@ namespace StockAnalyzer.StockPortfolio.Saxo
 
         static public void AddMapping(long saxoId, string instrumentId)
         {
+            // Check if instrumentId is already mapped
+            if (instrumentToSaxoMappings.ContainsKey(instrumentId))
+            {
+                if (instrumentToSaxoMappings[instrumentId] == saxoId)
+                    return;
+                else
+                    throw new StockAnalyzerException($"Instrument already mapped");
+            }
+
+
             if (!saxoToInstrumentMappings.ContainsKey(saxoId))
             {
                 saxoToInstrumentMappings.Add(saxoId, instrumentId);

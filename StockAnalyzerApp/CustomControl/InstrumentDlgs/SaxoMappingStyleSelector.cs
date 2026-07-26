@@ -42,17 +42,7 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
                 {
                     if (!string.IsNullOrEmpty(saxoInstrument.Symbol))
                     {
-                        var symbol = saxoInstrument.Symbol.Split(':')[0];
-                        instrument = StockDictionary.Instruments.Values.FirstOrDefault(s => s.Symbol == symbol);
-                        if (instrument != null)
-                        {
-                            SaxoToInstrumentMapping.AddMapping(saxoInstrument.Identifier, instrument.Id);
-                            return base.SelectStyle(item, container);
-                        }
-                        else
-                        {
-                            return NoMappingStyle;
-                        }
+                        return NoMappingStyle;
                     }
                     return NotFoundStyle;
                 }

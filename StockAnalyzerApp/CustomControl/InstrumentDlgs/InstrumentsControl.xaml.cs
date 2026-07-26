@@ -34,6 +34,16 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             {
                 this.DataContext = this.ViewModel = new InstrumentViewModel();
             }
+
+            this.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(this.ViewModel.Instruments))
+            {
+                this.SaxoInstrumentGrid.Rebind();
+            }
         }
 
         private async void CalculateBtn_OnClick(object sender, RoutedEventArgs e)
@@ -177,13 +187,33 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
 
                     if (this.ViewModel.SelectedInstrument != null)
                     {
-
                         this.Form.TopMost = true;
                         StockAnalyzerForm.MainFrame.Activate();
                         this.SelectedInstrumentChanged(this.ViewModel.SelectedInstrument, true);
 
                         this.Form.TopMost = false;
                     }
+                    else
+                    {
+                        var symbol = saxoInstrument.Symbol.Split(':')[0];
+                        var instrument = StockDictionary.Instruments.Values.FirstOrDefault(i => i.Symbol == symbol);
+                        if (instrument != null)
+                        {
+                            this.ViewModel.SelectedInstrumentId = instrument.Id;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SaxoInstrumentGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.B && !e.Handled)
+            {
+                if (this.ViewModel.BindInstrumentsCommand.CanExecute(null))
+                {
+                    this.ViewModel.BindInstrumentsCommand.Execute(null);
+                    e.Handled = true; // Mark as handled to prevent further processing
                 }
             }
         }
