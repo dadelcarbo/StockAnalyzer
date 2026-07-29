@@ -93,29 +93,11 @@ namespace StockAnalyzer.StockData
         public int Count => Values == null ? 0 : Values.Length;
 
         bool? hasVolume = null;
-        public bool HasVolume => hasVolume ??= LastValue?.VOLUME > 0;
-        /// <summary>
-        /// Indicates if a stock has good liquitiy on the last (period) bars by average a exchange in million of Euro.
-        /// </summary>
-        /// <param name="trigger">0.1 indicates 100K€</param>
-        /// <returns></returns>
-        public bool HasLiquidity(float trigger, int period)
-        {
-            float value = GetExchanged(period);
-            return value > trigger;
-        }
-        public float GetExchanged(int period)
-        {
-            if (this.LastCompleteIndex < period)
-                return 0f;
+        public bool HasVolume => hasVolume ??= LastCompleteValue?.VOLUME > 0;
 
-            float value = 0;
-            for (int i = this.LastCompleteIndex - period; i <= this.LastCompleteIndex; i++)
-            {
-                value += this.Values[i].EXCHANGED;
-            }
-            value /= period * 1000000f;
-            return value;
+        public float GetExchangedAverage(int period)
+        {
+            return this.Values.Reverse().Take(period).Average(v=>v.EXCHANGED);
         }
 
         public FloatSerie[] ValueSeries { get; set; }

@@ -251,6 +251,9 @@ namespace StockAnalyzer.StockData
                                 if (dataSerie == null)
                                     return false;
 
+                                if (dataSerie.GetExchangedAverage(5) < (stockAlert.MinLiquidity * 1000000f))
+                                    return false;
+
                                 indicator = StockViewableItemsManager.GetViewableItem(stockAlert.IndicatorFullName);
                                 if (dataSerie.HasVolume || !indicator.RequiresVolumeData)
                                 {
