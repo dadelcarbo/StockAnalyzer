@@ -46,7 +46,7 @@
                             </telerik:GridViewColumn>
                             <telerik:GridViewDataColumn Header="Id" DataMemberBinding="{Binding Agent.AgentDef.Id}" ColumnGroupName="Definition"/>
                             <telerik:GridViewDataColumn Header="Strategy" DataMemberBinding="{Binding Agent.Strategy.Name}" ColumnGroupName="Definition"/>
-                            <telerik:GridViewDataColumn Header="Instrument" DataMemberBinding="{Binding Agent.StockSerie.StockName}" ColumnGroupName="Definition"/>
+                            <telerik:GridViewDataColumn Header="Instrument" DataMemberBinding="{Binding Agent.Instrument.DisplayName}" ColumnGroupName="Definition"/>
                             <telerik:GridViewDataColumn Header="Duration" DataMemberBinding="{Binding Agent.AgentDef.BarDuration}" ColumnGroupName="Definition"/>
                             <telerik:GridViewDataColumn Header="Theme" DataMemberBinding="{Binding Agent.AgentDef.Theme}" ColumnGroupName="Definition"/>
                             <telerik:GridViewDataColumn Header="Portfolio" DataMemberBinding="{Binding Agent.Portfolio.Name}" ColumnGroupName="Portfolio"/>

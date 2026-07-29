@@ -681,7 +681,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="StockAgent\StockAgentEngine.cd" />
     <None Include="StockPortfolio\PortfolioDiagram.cd" />
     <None Include="UltimateChartist.pfx" />
   </ItemGroup>

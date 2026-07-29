@@ -30,8 +30,8 @@
                              AutoGenerateColumns="False" FilterOperatorsLoading="grid_FilterOperatorsLoading" 
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged">
             <telerik:RadGridView.Columns>
-                <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding StockSerie.StockGroup}"/>
-                <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding StockSerie.StockName}"/>
+                <telerik:GridViewDataColumn Header="Group" DataMemberBinding="{Binding Instrument.Group}"/>
+                <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Instrument.DisplayName}"/>
                 <telerik:GridViewDataColumn Header="Start" DataMemberBinding="{Binding StartDate, StringFormat=\{0:d\},ConverterCulture=en-GB}"/>
                 <telerik:GridViewDataColumn Header="End" DataMemberBinding="{Binding EndDate, StringFormat=\{0:d\},ConverterCulture=en-GB}"/>
                 <telerik:GridViewDataColumn Header="Value" DataMemberBinding="{Binding Value}"/>
