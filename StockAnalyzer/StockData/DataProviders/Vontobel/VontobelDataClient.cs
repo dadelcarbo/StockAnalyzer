@@ -71,7 +71,7 @@ namespace StockAnalyzer.StockData.DataProviders.Vontobel
 
                 var vontobelData = JsonSerializer.Deserialize<VontobelJSon>(jsonData);
 
-                if (vontobelData == null || !vontobelData.isSuccess || vontobelData.payload == null)
+                if (vontobelData == null || !vontobelData.isSuccess || vontobelData.payload == null || vontobelData.payload.series.Length > 0)
                     return null;
 
                 var startDateUnix = (startDate - refDate).TotalMilliseconds;

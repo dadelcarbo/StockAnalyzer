@@ -685,7 +685,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                 string fileName = Path.Combine(ABC_DAILY_CFG_GROUP_FOLDER, $"{abcGroup.AbcGroup}.csv");
                 if (File.Exists(fileName))
                 {
-                    groupSeries[group] = groupList = new SortedSet<string>(File.ReadAllLines(fileName)
+                    groupSeries[group] = groupList = new SortedSet<string>(File.ReadAllLines(fileName).Skip(1)
                         .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
                         .Select(line => line.Split(';')[0]));
 
