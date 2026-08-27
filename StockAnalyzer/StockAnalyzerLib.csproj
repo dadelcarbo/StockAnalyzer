@@ -274,6 +274,7 @@
     <Compile Include="StockAgent\StockPortfolioAgentBase.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DEMA.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\AbcClient.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\AbcDataProvider.cs" />
     <Compile Include="StockData\DataProviders\AbcBourse\ABCGroup.cs" />
@@ -335,7 +336,6 @@
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_ATH.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DDLINE.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DRAWDOWNADR.cs" />
-    <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMA2SR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DDADR.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_RSN.cs" />
