@@ -125,6 +125,7 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             {
                 File.Copy(source, dest, true);
             }
+            File.SetLastWriteTimeUtc(dest, DateTime.UtcNow);
 
             if (!File.Exists(configPath))
             {
