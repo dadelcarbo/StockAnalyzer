@@ -114,19 +114,9 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             return null;
         }
 
-        static string spiricaCsv => "spirica.csv";
         static List<ABCGroup> abcGroupConfig = null;
         protected override void PostInitDictionary(bool download)
         {
-            // Copy spirica file if newer
-            var dest = Path.Combine(ABC_DAILY_CFG_GROUP_FOLDER, spiricaCsv);
-            var source = Path.Combine(Folders.PersonalFolder, spiricaCsv);
-            if (!File.Exists(dest) || File.GetLastWriteTime(source) > File.GetLastWriteTime(dest))
-            {
-                File.Copy(source, dest, true);
-            }
-            File.SetLastWriteTimeUtc(dest, DateTime.UtcNow);
-
             if (!File.Exists(configPath))
             {
                 MessageBox.Show("The default ABC configuration file is missing in:" + Environment.NewLine + configPath, "ABC Configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -689,11 +679,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
                     groupSeries[group] = groupList = new SortedSet<string>(File.ReadAllLines(fileName).Skip(1)
                         .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
                         .Select(line => line.Split(';')[0]));
-
-                    if (group == Groups.SPIRICA)
-                    {
-                        groupSeries[group] = groupList = new SortedSet<string>(StockDictionary.Instruments.Values.Where(i => groupList.Contains(i.Isin)).Select(i => i.Id));
-                    }
                 }
                 else
                 {

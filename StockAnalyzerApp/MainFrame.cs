@@ -489,19 +489,6 @@ namespace StockAnalyzerApp
             DataProviderBase.DownloadStarted += Notifiy_SplashProgressChanged;
             DataProviderBase.Initialize(download);
 
-
-            //foreach( var group in StockDictionary.Instruments.Values.Where(i=>i.Provider != DataProvider.ABC).GroupBy(i=>i.Provider))
-            //{
-            //    Console.WriteLine(group.ToString());
-
-            //    foreach(var i in group)
-            //    {
-            //        Console.WriteLine(i.ToDef());
-            //    }
-            //}
-
-            //StockDataProviderBase.InitStockDictionary(StockDictionary.Instance, download, new DownloadingStockEventHandler(Notifiy_SplashProgressChanged));
-
             //
             InitialiseThemeCombo();
 
@@ -1303,7 +1290,26 @@ namespace StockAnalyzerApp
                     watchList.StockList.RemoveAll(s => StockDictionary.GetInstrumentByName(s) == null);
                 }
             }
+
+            // Import Spirica as watchlist
+            var spricaCsv = Path.Combine(Folders.PersonalFolder, spiricaCsv);
+            var spiricaWatchlist = StockWatchList.WatchLists.FirstOrDefault(wl => wl.Name == "Spirica");
+            if (File.Exists(spricaCsv) && (spiricaWatchlist == null || File.GetLastWriteTime(watchListsFileName) < File.GetLastWriteTime(spricaCsv)))
+            {
+                var isins = new SortedSet<string>(File.ReadAllLines(spricaCsv).Skip(1).Select(l => l.Split(';')[0]));
+
+                if (spiricaWatchlist == null)
+                {
+                    spiricaWatchlist = new StockWatchList("Spirica") { Report = true };
+                    StockWatchList.WatchLists.Add(spiricaWatchlist);
+                }
+
+                spiricaWatchlist.StockList = StockDictionary.Instruments.Values.Where(i => isins.Contains(i.Isin)).OrderBy(i => i.DisplayName).Select(i => i.Id).ToList();
+
+                StockWatchList.Save(watchListsFileName);
+            }
         }
+        static string spiricaCsv => "spirica.csv";
 
         private void LoadAnalysis(string analysisFileName)
         {

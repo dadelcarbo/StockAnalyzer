@@ -38,7 +38,6 @@ namespace StockAnalyzer.StockData
         CANADA,
         USA,
         SAXO,
-        SPIRICA,
         INDICES,
         INDICATOR,
         SECTORS,
