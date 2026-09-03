@@ -39,13 +39,50 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 if (value != group)
                 {
                     group = value;
+                    if (group != StockAnalyzer.StockData.Groups.NONE)
+                    {
+                        this.watchlist = Watchlists.First();
+                    }
+
                     OnPropertyChanged("Group");
                     this.Lines?.Clear();
                     OnPropertyChanged("Lines");
                     OnPropertyChanged("ExportEnabled");
+                    OnPropertyChanged("Watchlist");
                 }
             }
         }
+
+        static IEnumerable<StockWatchList> watchlists;
+        static public IEnumerable<StockWatchList> Watchlists => watchlists ??= StockWatchList.WatchLists.Prepend(new StockWatchList(""));
+
+        private StockWatchList watchlist;
+        public StockWatchList Watchlist
+        {
+            get { return watchlist; }
+            set
+            {
+                if (value != watchlist)
+                {
+                    watchlist = value;
+                    if (string.IsNullOrEmpty(watchlist?.Name))
+                    {
+                        this.group = StockAnalyzer.StockData.Groups.PEA_EURONEXT;
+                    }
+                    else
+                    {
+                        this.group = StockAnalyzer.StockData.Groups.NONE;
+                    }
+
+                    OnPropertyChanged("Watchlist");
+                    this.Lines?.Clear();
+                    OnPropertyChanged("Lines");
+                    OnPropertyChanged("ExportEnabled");
+                    OnPropertyChanged("Group");
+                }
+            }
+        }
+
 
         private BarDuration barDuration;
         public BarDuration BarDuration
@@ -500,12 +537,21 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 OnPropertyChanged("Lines");
                 await Task.Delay(10);
 
-                var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.group)).ToList();
+                List<StockInstrument> instruments = null;
+                if (string.IsNullOrEmpty(this.watchlist?.Name))
+                {
+                    instruments = StockDictionary.GetInstrumentsByGroup(this.group);
+                }
+                else
+                {
+                    instruments = StockDictionary.GetInstrumentsByWatchlist(this.watchlist);
+                }
                 if (instruments.Count == 0)
                 {
-                    MessageBox.Show($"No instruments found in group {this.group}", "Error", MessageBoxButton.OK);
+                    MessageBox.Show($"No instrument found !!!", "Error", MessageBoxButton.OK);
                     return;
                 }
+
                 this.Progress = 0;
                 this.NbStocks = instruments.Count;
                 int count = 0;
@@ -721,6 +767,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 var palmaresSettings = (PalmaresSettings)serializer.Deserialize(xmlReader);
 
                 this.Group = palmaresSettings.Group;
+                this.Watchlist = StockWatchList.WatchLists.FirstOrDefault(w => w.Name == palmaresSettings.Watchlist);
                 this.BarDuration = palmaresSettings.BarDuration;
 
                 this.Indicator1 = palmaresSettings.Indicator1;

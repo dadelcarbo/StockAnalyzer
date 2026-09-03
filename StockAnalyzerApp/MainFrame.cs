@@ -799,16 +799,16 @@ namespace StockAnalyzerApp
 
             var tableRows = string.Empty;
 
-            foreach (string stockName in watchlist.StockList)
+            foreach (string id in watchlist.StockList)
             {
-                var instrument = StockDictionary.GetInstrumentByName(stockName);
+                var instrument = StockDictionary.GetInstrument(id);
                 if (instrument != null)
                 {
                     var duration = BarDuration.Daily;
                     var theme = REPORT_THEME;
                     var nbBars = 75;
                     var bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
-                    string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                    string data = $"\r\n    <h3>{instrument.DisplayName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                     var row = TABLE_ROW_TEMPLATE_WATCHLIST.Replace("%%Daily%%", data);
 
@@ -816,7 +816,7 @@ namespace StockAnalyzerApp
                     theme = REPORT_THEME;
                     nbBars = 75;
                     bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
-                    data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                    data = $"\r\n    <h3>{instrument.DisplayName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
 
                     row = row.Replace("%%Weekly%%", data);
 
@@ -1282,14 +1282,6 @@ namespace StockAnalyzerApp
                 StockWatchList.WatchLists.Add(new StockWatchList("New"));
                 StockWatchList.Save(watchListsFileName);
             }
-            else
-            {
-                // Cleanup missing stocks
-                foreach (var watchList in StockWatchList.WatchLists)
-                {
-                    watchList.StockList.RemoveAll(s => StockDictionary.GetInstrumentByName(s) == null);
-                }
-            }
 
             // Import Spirica as watchlist
             var spricaCsv = Path.Combine(Folders.PersonalFolder, spiricaCsv);
@@ -1304,7 +1296,7 @@ namespace StockAnalyzerApp
                     StockWatchList.WatchLists.Add(spiricaWatchlist);
                 }
 
-                spiricaWatchlist.StockList = StockDictionary.Instruments.Values.Where(i => isins.Contains(i.Isin)).OrderBy(i => i.DisplayName).Select(i => i.Id).ToList();
+                spiricaWatchlist.StockList = new SortedSet<string>(StockDictionary.Instruments.Values.Where(i => isins.Contains(i.Isin)).OrderBy(i => i.DisplayName).Select(i => i.Id));
 
                 StockWatchList.Save(watchListsFileName);
             }
@@ -1558,8 +1550,8 @@ namespace StockAnalyzerApp
 
         private void addToWatchListSubMenuItem_Click(object sender, EventArgs e)
         {
-            StockWatchList watchList = StockWatchList.WatchLists.Find(wl => wl.Name == sender.ToString());
-            if (!watchList.StockList.Contains(this.ViewModel.Instrument.DisplayName))
+            StockWatchList watchList = StockWatchList.WatchLists.FirstOrDefault(wl => wl.Name == sender.ToString());
+            if (watchList != null && !watchList.StockList.Contains(this.ViewModel.Instrument.Id))
             {
                 watchList.StockList.Add(this.ViewModel.Instrument.DisplayName);
                 this.SaveWatchList();
@@ -1842,12 +1834,6 @@ namespace StockAnalyzerApp
         private void SaveWatchList()
         {
             string watchListsFileName = Path.Combine(Folders.PersonalFolder, "WatchLists.json");
-
-            foreach (StockWatchList watchList in StockWatchList.WatchLists)
-            {
-                watchList.StockList.RemoveAll(s => !StockDictionary.Instruments.ContainsKey(s));
-                watchList.StockList.Sort();
-            }
 
             StockWatchList.Save(watchListsFileName);
         }

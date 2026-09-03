@@ -1313,6 +1313,16 @@ namespace StockAnalyzer.StockClasses
         {
             return Instruments.Values.FirstOrDefault(i => string.Compare(i.Name, name, true) == 0);
         }
+
+        public static List<StockInstrument> GetInstrumentsByGroup(Groups group)
+        {
+            return Instruments.Values.Where(s => s.BelongsToGroup(group)).ToList();
+        }
+        public static List<StockInstrument> GetInstrumentsByWatchlist(StockWatchList watchlist)
+        {
+            return Instruments.Values.Where(s => watchlist.StockList.Contains(s.Id)).ToList();
+        }
+
         static public List<StockAlert> MatchAlert(StockAlertDef alertDef)
         {
             using MethodLogger ml = new MethodLogger(typeof(StockDictionary), true, $"AlertDef: {alertDef.Title}");

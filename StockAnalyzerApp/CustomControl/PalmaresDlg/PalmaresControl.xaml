@@ -25,8 +25,12 @@
             <GroupBox Header="Config">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="Group " Width="50"/>
-                        <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group}" Width="120" VerticalAlignment="Center"/>
+                        <Label Content="Group " Width="45"/>
+                        <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding Group, Mode=TwoWay}" Width="120" VerticalAlignment="Center"/>
+
+                        <Label Content="Watchlist " Width="55"/>
+                        <ComboBox ItemsSource="{Binding Watchlists}" SelectedValue="{Binding Watchlist, Mode=TwoWay}" DisplayMemberPath="Name" Width="120" VerticalAlignment="Center"/>
+
                         <Label>Duration</Label>
                         <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" 
                                   ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" 

@@ -9,17 +9,17 @@ namespace StockAnalyzer.StockClasses
     {
         public string Name { get; set; }
         public bool Report { get; set; }
-        public List<string> StockList { get; set; }
+        public SortedSet<string> StockList { get; set; }
 
         public StockWatchList()
         {
             this.Name = string.Empty;
-            this.StockList = new List<string>();
+            this.StockList = new SortedSet<string>();
         }
         public StockWatchList(string name)
         {
             this.Name = name;
-            this.StockList = new List<string>();
+            this.StockList = new SortedSet<string>();
         }
 
         static public List<StockWatchList> WatchLists { get; private set; }

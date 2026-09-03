@@ -316,6 +316,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 foreach (FilterSetting setting in savedSettings)
                 {
                     Telerik.Windows.Controls.GridViewColumn column = grid.Columns[setting.ColumnUniqueName];
+                    if (column == null)
+                        continue;
                     column.IsVisible = true;
                     column.Header = setting.DisplayName;
 
@@ -375,6 +377,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     FilterSettings = filters,
                     Group = this.ViewModel.Group,
+                    Watchlist = this.ViewModel.Watchlist?.Name,
                     BarDuration = this.ViewModel.BarDuration,
 
                     Indicator1 = this.ViewModel.Indicator1,
@@ -453,8 +456,8 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 {
                     // Use FloatToCurrencyConverter for Exchanged values
                     dataColumn.DataMemberBinding.Converter = new FloatToCurrencyConverter();
+                }
             }
         }
     }
-}
 }
