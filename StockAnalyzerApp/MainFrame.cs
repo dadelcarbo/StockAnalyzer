@@ -1550,7 +1550,7 @@ namespace StockAnalyzerApp
             StockWatchList watchList = StockWatchList.WatchLists.FirstOrDefault(wl => wl.Name == sender.ToString());
             if (watchList != null && !watchList.StockList.Contains(this.ViewModel.Instrument.Id))
             {
-                watchList.StockList.Add(this.ViewModel.Instrument.DisplayName);
+                watchList.StockList.Add(this.ViewModel.Instrument.Id);
                 this.SaveWatchList();
             }
         }
