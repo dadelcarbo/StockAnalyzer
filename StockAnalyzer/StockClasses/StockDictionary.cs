@@ -1331,7 +1331,18 @@ namespace StockAnalyzer.StockClasses
             var alerts = new List<StockAlert>();
             try
             {
-                foreach (var instrument in Instruments.Values.Where(s => s.BelongsToGroup(alertDef.Group)))
+                List<StockInstrument> instruments = null;
+                if (string.IsNullOrEmpty(alertDef.Watchlist))
+                {
+                    instruments = StockDictionary.GetInstrumentsByGroup(alertDef.Group);
+                }
+                else
+                {
+                    var wl = StockWatchList.WatchLists.FirstOrDefault(w => w.Name == alertDef.Watchlist);
+                    instruments = StockDictionary.GetInstrumentsByWatchlist(wl);
+                }
+
+                foreach (var instrument in instruments)
                 {
                     var alert = instrument.MatchAlertDef(alertDef);
                     if (alert != null)

@@ -3,6 +3,7 @@ using StockAnalyzer.StockClasses.StockViewableItems;
 using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockData.DataProviders.AbcBourse;
 using StockAnalyzer.StockLogging;
+using StockAnalyzer.StockScripting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -206,17 +207,18 @@ namespace StockAnalyzer.StockData
                 switch (stockAlert.Type)
                 {
                     case AlertType.Group:
+                    case AlertType.Watchlist:
                     case AlertType.Stock:
                         {
-                            //if (!string.IsNullOrEmpty(stockAlert.Script))
-                            //{
-                            //    var screener = StockScriptManager.Instance.CreateStockFilterInstance(stockAlert.Script);
-                            //    if (screener != null)
-                            //    {
-                            //        if (!screener.MatchFilter(this, stockAlert.BarDuration))
-                            //            return false;
-                            //    }
-                            //}
+                            if (!string.IsNullOrEmpty(stockAlert.Script))
+                            {
+                                var screener = StockScriptManager.Instance.CreateStockFilterInstance(stockAlert.Script);
+                                if (screener != null)
+                                {
+                                    if (!screener.MatchFilter(this, stockAlert.BarDuration))
+                                        return false;
+                                }
+                            }
                             if (!string.IsNullOrEmpty(stockAlert.FilterFullName))
                             {
                                 var dataSerie = this.GetDataSerie(stockAlert.FilterDuration);

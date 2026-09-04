@@ -6,6 +6,8 @@ namespace StockAnalyzer.StockScripting
     public interface IStockFilter
     {
         bool MatchFilter(DataSerie dataSerie);
+
+        bool MatchFilter(StockInstrument instrument, BarDuration duration);
     }
     public abstract class StockFilterBase : IStockFilter
     {
@@ -18,6 +20,14 @@ namespace StockAnalyzer.StockScripting
 
             return MatchFilter(dataSerie, currentBar);
         }
+
+        public bool MatchFilter(StockInstrument instrument, BarDuration duration)
+        {
+            var dataSerie = instrument.GetDataSerie(duration);
+
+            return MatchFilter(dataSerie);
+        }
+
         protected abstract bool MatchFilter(DataSerie dataSerie, StockDailyValue lastBar);
     }
 }

@@ -2613,7 +2613,7 @@ namespace StockAnalyzerApp
 
             CleanReportFolder(folderName);
 
-            if (!File.Exists(Folders.ReportTemplate) || alertDefs.Count(a => a.InReport && a.Type == AlertType.Group) == 0)
+            if (!File.Exists(Folders.ReportTemplate) || alertDefs.Count(a => a.InReport && (a.Type == AlertType.Group || a.Type == AlertType.Watchlist)) == 0)
                 return;
             var htmlReportTemplate = File.ReadAllText(Folders.ReportTemplate);
 
@@ -2636,7 +2636,7 @@ namespace StockAnalyzerApp
                 StockSplashScreen.ShowSplashScreen();
 
                 string htmlAlerts = string.Empty;
-                foreach (var alertDef in alertDefs.Where(a => a.InReport && a.Type == AlertType.Group && a.Title != "Watchlist"))
+                foreach (var alertDef in alertDefs.Where(a => a.InReport))
                 {
                     htmlAlerts += GenerateAlertTable(alertDef, nbLeaders);
                 }
@@ -2704,13 +2704,13 @@ namespace StockAnalyzerApp
         const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
         const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h3><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
 
+
         private string GenerateAlertTable(StockAlertDef alertDef, int nbStocks)
         {
-            return GenerateReportTable(alertDef, nbStocks);
-        }
+            // Generate only alerts for Group and Watchlist types
+            if (alertDef.Type != AlertType.Group && alertDef.Type != AlertType.Watchlist)
+                return string.Empty;
 
-        private string GenerateReportTable(StockAlertDef alertDef, int nbStocks)
-        {
             const string rowTemplate = @"
          <tr>
              <td style=""font-size:11px;"">%COL1%</td>

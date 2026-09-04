@@ -63,6 +63,17 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                 case AlertType.Group:
                     this.Title = alertDef.Title;
                     this.Group = alertDef.Group;
+                    this.Watchlist = null;
+                    this.TriggerName = alertDef.IndicatorFullName;
+                    this.TriggerEvent = alertDef.EventName;
+                    this.FilterName = alertDef.FilterFullName;
+                    this.FilterEvent = alertDef.FilterEventName;
+                    this.FilterDuration = alertDef.FilterDuration;
+                    break;
+                case AlertType.Watchlist:
+                    this.Title = alertDef.Title;
+                    this.Group = StockAnalyzer.StockData.Groups.NONE;
+                    this.Watchlist = alertDef.Watchlist == null ? null : StockWatchList.WatchLists.FirstOrDefault(w => w.Name == alertDef.Watchlist);
                     this.TriggerName = alertDef.IndicatorFullName;
                     this.TriggerEvent = alertDef.EventName;
                     this.FilterName = alertDef.FilterFullName;
@@ -109,6 +120,11 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
         public Groups Group { get => group; set => SetProperty(ref group, value); }
 
         static public IEnumerable<Groups> Groups => StockDictionary.GetValidGroups();
+
+        private StockWatchList watchlist;
+        public StockWatchList Watchlist { get => watchlist; set => SetProperty(ref watchlist, value); }
+
+        public IEnumerable<StockWatchList> Watchlists => StockWatchList.WatchLists;
 
         private string theme;
         public string Theme { get => theme; set => SetProperty(ref theme, value); }
@@ -311,6 +327,19 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                 case AlertType.Group:
                     alertDef.Title = this.Title;
                     alertDef.Group = this.Group;
+                    alertDef.Watchlist = null;
+                    alertDef.IndicatorType = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[0];
+                    alertDef.IndicatorName = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[1];
+                    alertDef.EventName = triggerEvent;
+                    alertDef.FilterType = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[0];
+                    alertDef.FilterName = string.IsNullOrEmpty(filterName) ? null : filterName.Split('|')[1];
+                    alertDef.FilterEventName = filterEvent;
+                    alertDef.FilterDuration = filterDuration;
+                    break;
+                case AlertType.Watchlist:
+                    alertDef.Title = this.Title;
+                    alertDef.Group = StockAnalyzer.StockData.Groups.NONE;
+                    alertDef.Watchlist = this.Watchlist?.Name;
                     alertDef.IndicatorType = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[0];
                     alertDef.IndicatorName = string.IsNullOrEmpty(triggerName) ? null : triggerName.Split('|')[1];
                     alertDef.EventName = triggerEvent;

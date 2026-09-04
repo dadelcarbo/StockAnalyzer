@@ -13,9 +13,11 @@ namespace StockAnalyzer.StockClasses
     public enum AlertType
     {
         Group,
+        Watchlist,
         Stock,
         Price
     }
+
     public class StockAlertDef
     {
         public StockAlertDef()
@@ -91,6 +93,7 @@ namespace StockAnalyzer.StockClasses
         public string Theme { get; set; }
         public string Title { get; set; }
         public Groups Group { get; set; }
+        public string Watchlist { get; set; }
         public DateTime CreationDate { get; set; }
         public string StockName { get; set; }
         public float PriceTrigger { get; set; }
