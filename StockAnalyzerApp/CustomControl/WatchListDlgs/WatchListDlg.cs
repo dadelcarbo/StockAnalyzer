@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,15 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
         public event StockAnalyzerForm.StockWatchListsChangedEventHandler StockWatchListsChanged;
         public event StockAnalyzerForm.SelectedInstrumentChangedEventHandler SelectedInstrumentChanged;
 
-        public WatchListDlg(List<StockWatchList> wl)
+        public WatchListDlg(List<StockWatchList> wls)
         {
             InitializeComponent();
-            watchLists = wl;
+            watchLists = wls;
             this.stockWatchListsBindingSource.DataSource = watchLists;
-            this.stockListBindingSource.DataSource = watchLists.First().StockList;
-            this.watchlistBindingSource.DataSource = watchLists.First();
+
+            var wl = watchLists.FirstOrDefault();
+            this.stockListBindingSource.DataSource = StockDictionary.GetInstrumentsByWatchlist(wl);
+            this.watchlistBindingSource.DataSource = wl;
         }
 
 
@@ -41,8 +44,9 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             {
                 if (watchLists.Count != 0)
                 {
-                    this.stockListBindingSource.DataSource = watchLists.First().StockList;
-                    this.watchlistBindingSource.DataSource = watchLists.First();
+                    var wl = watchLists.FirstOrDefault();
+                    this.stockListBindingSource.DataSource = StockDictionary.GetInstrumentsByWatchlist(wl);
+                    this.watchlistBindingSource.DataSource = wl;
                 }
                 else
                 {
@@ -53,7 +57,7 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
             else
             {
                 var wl = watchLists.First(wl => wl == this.watchListComboBox.SelectedItem);
-                this.stockListBindingSource.DataSource = wl.StockList;
+                this.stockListBindingSource.DataSource = StockDictionary.GetInstrumentsByWatchlist(wl);
                 this.watchlistBindingSource.DataSource = wl;
             }
         }
@@ -99,7 +103,7 @@ namespace StockAnalyzerApp.CustomControl.WatchlistDlgs
         {
             if (this.SelectedInstrumentChanged != null && this.stockListBox.SelectedItem != null)
             {
-                var instrument = StockDictionary.GetInstrument(this.stockListBox.SelectedItem.ToString());
+                var instrument = this.stockListBox.SelectedItem as StockInstrument;
                 if (instrument != null)
                 {
                     this.SelectedInstrumentChanged(instrument, false);

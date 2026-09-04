@@ -1320,6 +1320,10 @@ namespace StockAnalyzer.StockClasses
         }
         public static List<StockInstrument> GetInstrumentsByWatchlist(StockWatchList watchlist)
         {
+            if (watchlist == null || watchlist.StockList == null || watchlist.StockList.Count == 0)
+            {
+                return new List<StockInstrument>();
+            }
             return Instruments.Values.Where(s => watchlist.StockList.Contains(s.Id)).ToList();
         }
 

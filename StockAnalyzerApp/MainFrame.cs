@@ -599,9 +599,6 @@ namespace StockAnalyzerApp
                     showAlertDefDialogMenuItem_Click(this, null);
                     stockAlertManagerViewModel.RunFullAlert();
 
-                    //GenerateReport(BarDuration.Daily);
-                    //GenerateReport(BarDuration.Weekly);
-
                     File.WriteAllText(fileName, cac40DataSerie.LastValue.DATE.ToString(CultureInfo.InvariantCulture));
                 }
             }
