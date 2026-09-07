@@ -1,6 +1,7 @@
-﻿using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 
@@ -18,10 +19,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] SerieNames => new string[] { "EMA", "High", "Low", "Mid" };
 
         public override Pen[] SeriePens => seriePens ??= new Pen[] {
-                    new Pen(Color.DarkGray) { Width = 2},
-                    new Pen(Color.DarkGreen) { Width = 2},
-                    new Pen(Color.DarkRed)  { Width = 2},
-                    new Pen(Color.LightBlue)  { Width = 2}};
+            ColorManager.GetPen("Indicator.Band.Mid"),
+            ColorManager.GetPen("Indicator.Band.Up"),
+            ColorManager.GetPen("Indicator.Band.Down"),
+            ColorManager.GetPen("Indicator.Band.Signal")
+        };
 
         public override Area[] Areas => areas ??= new Area[]
             {

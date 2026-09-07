@@ -1,5 +1,6 @@
-﻿using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockDrawing;
+using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,10 +27,16 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "ATRBANDUp", "ATRBANDDown", this.parameters[4] + "(" + (int)this.parameters[0] + ")", "Signal" };
 
+        public override Pen[] SeriePens => seriePens ??= new Pen[] {
+            ColorManager.GetPen("Indicator.Band.Up"),
+            ColorManager.GetPen("Indicator.Band.Down"),
+            ColorManager.GetPen("Indicator.Band.Mid"),
+            ColorManager.GetPen("Indicator.Band.Signal")
+        };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.DarkRed) };
-
-        public override Area[] Areas => areas ??= new Area[] { new Area { Color = Color.FromArgb(64, Color.Blue) } };
+        public override Area[] Areas => areas ??= new Area[] {
+            new Area { Color = ColorManager.GetColor("Indicator.Band.Fill") }
+        };
 
         public override void ApplyTo(DataSerie stockSerie)
         {

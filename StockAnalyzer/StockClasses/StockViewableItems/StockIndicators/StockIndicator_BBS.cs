@@ -8,7 +8,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_BBS : StockIndicatorBase
     {
-        public override string Definition => "Implement Bollinger Bands from a smoothed data, better for highly volitile serie (VIX)";
+        public override string Definition => "Implement Bollinger Bands from a smoothed data, better for highly volatile serie (VIX)";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] { "Period", "NbUpDev", "NbDownDev", "Smoothing" };
 

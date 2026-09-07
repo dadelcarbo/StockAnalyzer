@@ -689,8 +689,6 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
         }
 
         TimeSpan closeTime = new TimeSpan(17, 35, 0);
-        TimeSpan openTime = new TimeSpan(09, 0, 0);
-        TimeSpan delay = new TimeSpan(0, 0, 5);
 
         public override bool NeedDownload(StockInstrument instrument)
         {
