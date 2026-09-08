@@ -200,7 +200,6 @@ namespace StockAnalyzer.StockData.DataProviders
                         else
                         {
                             needDownload = false;
-                            break;
                         }
                     }
                     else
