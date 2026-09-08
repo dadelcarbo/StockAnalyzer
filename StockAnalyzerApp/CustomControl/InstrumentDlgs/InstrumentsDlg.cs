@@ -12,23 +12,12 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             Instance = this;
             InitializeComponent();
 
-            this.instrumentsControl1.KeyDown += Control_KeyDown;
-
             this.Shown += FormShown;
         }
 
         private void FormShown(object sender, EventArgs e)
         {
             TileWindows();
-        }
-
-        private void Control_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.T)
-            {
-                TileWindows();
-                e.Handled = true; // Mark the event as handled
-            }
         }
 
         private void TileWindows()
