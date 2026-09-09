@@ -105,16 +105,18 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             StockSplashScreen.ProgressMin = 0;
             StockSplashScreen.ShowSplashScreen();
 
-            try
+            foreach (var instrument in this.gridView.Items.Cast<LineViewModel>().Select(l => l.Instrument))
             {
-                foreach (var instrument in this.gridView.Items.Cast<StockInstrument>())
+                try
                 {
                     StockSplashScreen.ProgressText = "Downloading " + instrument.Group + " - " + instrument.DisplayName;
 
-                    // DataProviderBase.ForceDownloadData(instrument);
+                    var dataProvider = DataProviderBase.GetDataProvider(instrument.Provider);
+
+                    dataProvider.ForceDownloadData(instrument);
                 }
+                catch { }
             }
-            catch { }
 
             StockSplashScreen.CloseForm(true);
             this.Cursor = Cursors.Arrow;
