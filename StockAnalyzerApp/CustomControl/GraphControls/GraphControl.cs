@@ -206,7 +206,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             this.IsInitialized = false;
             this.ScaleInvisible = false;
             this.graphBackgroundDirty = true;
-            this.graphBackgroundDirty = true;
+            this.ForegroundDirty = true;
 
             // Pens
             framePen = ColorManager.GetPen("Graph.Frame");

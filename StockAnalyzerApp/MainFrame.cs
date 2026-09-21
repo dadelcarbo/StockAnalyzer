@@ -39,6 +39,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -906,15 +907,16 @@ namespace StockAnalyzerApp
 
                 if (match.Length == 1)
                 {
-                    StockLog.Write("Cond3");
+                    StockLog.Write($"Cond3: Text:{searchCombo.Text} name:{name}");
+                    int index = searchCombo.Text.Length;
                     searchCombo.Text = name;
                     this.searchCombo.DroppedDown = false;
-                    this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
+                    this.searchCombo.SelectionStart = index;
                     this.SetCurrentInstrument(match.First());
                 }
                 else
                 {
-                    StockLog.Write("Cond4");
+                    StockLog.Write($"Cond4: Text:{searchCombo.Text} name:{name}");
                     this.searchCombo.Items.Clear();
                     this.searchCombo.Items.AddRange(match);
                     this.searchCombo.DroppedDown = true;
@@ -924,8 +926,6 @@ namespace StockAnalyzerApp
                     Cursor = Cursors.Default;
                     // Automatically pop up drop-down
                 }
-
-                StockLog.Write("Cond5");
             }
             catch (Exception exception)
             {
