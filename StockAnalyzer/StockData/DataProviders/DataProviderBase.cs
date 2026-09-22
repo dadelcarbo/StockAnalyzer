@@ -293,6 +293,22 @@ namespace StockAnalyzer.StockData.DataProviders
             this.DownloadData(instrument);
         }
 
+
+        public virtual void ClearData(StockInstrument instrument)
+        {
+            StockLog.Write($"ClearData{instrument.DisplayName}");
+
+            var history = GetDownloadHistory(instrument);
+            history.LastDate = history.DownloadDate = DateTime.MinValue;
+
+            if (File.Exists(GetInstrumentFilePath(instrument)))
+            {
+                File.Delete(GetInstrumentFilePath(instrument));
+            }
+
+            instrument.ClearCache();
+        }
+
         protected IDataHttpClient dataClient;
         public virtual DataSerie DownloadData(StockInstrument instrument)
         {

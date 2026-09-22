@@ -122,6 +122,35 @@ namespace StockAnalyzerApp.CustomControl.InstrumentDlgs
             this.Cursor = Cursors.Arrow;
 
         }
+
+
+        private void ClearDataBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = Cursors.Wait;
+
+            StockSplashScreen.FadeInOutSpeed = 0.25;
+            StockSplashScreen.ProgressVal = 0;
+            StockSplashScreen.ProgressMax = 100;
+            StockSplashScreen.ProgressMin = 0;
+            StockSplashScreen.ShowSplashScreen();
+
+            foreach (var instrument in this.gridView.Items.Cast<LineViewModel>().Select(l => l.Instrument))
+            {
+                try
+                {
+                    StockSplashScreen.ProgressText = "Clearing data for " + instrument.Group + " - " + instrument.DisplayName;
+
+                    var dataProvider = DataProviderBase.GetDataProvider(instrument.Provider);
+
+                    dataProvider.ClearData(instrument);
+                }
+                catch { }
+            }
+
+            StockSplashScreen.CloseForm(true);
+            this.Cursor = Cursors.Arrow;
+
+        }
         private void ExcludeSelectedBtn_OnClick(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;

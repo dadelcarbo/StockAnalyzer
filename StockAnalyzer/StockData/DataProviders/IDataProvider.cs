@@ -56,6 +56,12 @@ namespace StockAnalyzer.StockData.DataProviders
         void ForceDownloadData(StockInstrument instrument);
 
         /// <summary>
+        /// Clear all data for a given instrument
+        /// </summary>
+        /// <param name="instrument"></param>
+        void ClearData(StockInstrument instrument);
+
+        /// <summary>
         /// Download data in intraday (used for UI refresh)
         /// </summary>
         /// <param name="instrument"></param>
