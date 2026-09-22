@@ -106,7 +106,7 @@ namespace StockAnalyzer.StockData.DataProviders.SaxoTurbos.ConfigDialog
                         {
                             Underlying = this.underlying.value,
                             ISIN = p.isin.value,
-                            StockName = p.name.value,
+                            StockName = p.name.value.Replace(",", "."),
                             Type = p.type.value,
                             Ratio = p.ratioCalculated.value,
                             Leverage = p.leverage?.value,

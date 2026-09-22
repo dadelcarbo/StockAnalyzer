@@ -11,10 +11,10 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
     {
         public override string Definition => base.Definition + Environment.NewLine + "Display the highest, lowest lines for the specified period of a EMA over defined period. This is for InvestingZen Turtle strategy";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
-        public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "EMAPeriod" };
-        public override Object[] ParameterDefaultValues => new Object[] { 35, 35, 6 };
+        public override string[] ParameterNames => new string[] { "HighPeriod", "LowPeriod", "EMAPeriod", "MidRatio" };
+        public override Object[] ParameterDefaultValues => new Object[] { 35, 35, 6, 0.5f };
 
-        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
+        public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeInt(1, 500), new ParamRangeFloat(0.0f, 1.0f) };
 
         public override string[] SerieNames => new string[] { "Signal", "High", "Low", "Mid" };
 
@@ -68,7 +68,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.series[++count] = downLine;
             this.Series[count].Name = this.SerieNames[count];
 
-            FloatSerie midLine = (upLine + downLine) / 2.0f;
+
+            var ratio = (float)this.parameters[3];
+            FloatSerie midLine = (upLine * ratio + downLine * (1.0f - ratio));
             this.series[++count] = midLine;
             this.Series[count].Name = this.SerieNames[count];
 

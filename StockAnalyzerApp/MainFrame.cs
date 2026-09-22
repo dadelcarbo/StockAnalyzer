@@ -924,7 +924,6 @@ namespace StockAnalyzerApp
                     searchCombo.Text = name;
                     this.searchCombo.SelectionStart = this.searchCombo.Text.Length;
                     Cursor = Cursors.Default;
-                    // Automatically pop up drop-down
                 }
             }
             catch (Exception exception)
