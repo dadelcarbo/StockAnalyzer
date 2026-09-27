@@ -1200,6 +1200,7 @@ namespace StockAnalyzerApp
                 {
                     this.Activate();
                 }
+                this.searchCombo.Text = null;
             }
         }
 

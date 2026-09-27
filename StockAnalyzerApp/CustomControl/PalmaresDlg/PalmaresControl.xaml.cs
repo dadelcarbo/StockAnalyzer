@@ -152,9 +152,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         private void RadGridView_SelectionChanged(object sender, SelectionChangeEventArgs e)
         {
             // Open on the alert stock
-            var line = ((RadGridView)sender).SelectedItem as PalmaresLine;
-
-            if (line == null) return;
+            if (!(((RadGridView)sender).SelectedItem is PalmaresLine line)) return;
 
             if (mtg != null)
             {
