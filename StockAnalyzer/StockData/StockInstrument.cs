@@ -53,7 +53,6 @@ namespace StockAnalyzer.StockData
         BOND,
         INTRADAY,
         TURBO,
-        TURBO_5M,
         Portfolio,
         Replay,
         ALL_STOCKS,

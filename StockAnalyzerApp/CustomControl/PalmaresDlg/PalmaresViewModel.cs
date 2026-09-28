@@ -564,7 +564,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     count++;
                     if (count % 10 == 0)
                         this.Progress = count;
-                    if (this.DownloadIntraday && (this.group == StockAnalyzer.StockData.Groups.TURBO_5M || this.group == StockAnalyzer.StockData.Groups.TURBO))
+                    if (this.DownloadIntraday && this.group == StockAnalyzer.StockData.Groups.TURBO)
                     {
                         throw new NotImplementedException("DownloadIntraday for TURBO not implemented yet");
                         //StockDataProviderBase.DownloadSerieData(instrument);

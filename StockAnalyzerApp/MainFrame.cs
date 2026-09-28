@@ -299,11 +299,10 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + this.ViewModel.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                if (ViewModel.Instrument.BelongsToGroup(Groups.TURBO) || ViewModel.Instrument.BelongsToGroup(Groups.TURBO_5M))
+                var dp = DataProviderBase.GetDataProvider(ViewModel.Instrument.Provider);
+                if (dp != null && dp.SupportsDuration(BarDuration.H_1))
                 {
-                    this.statusLabel.Text = ("Downloading data not implemented...");
-                    this.Refresh();
-                    this.Cursor = Cursors.WaitCursor;
+                    dp.DownloadData(ViewModel.Instrument);
                 }
 
                 this.InitialiseBarDurationComboBox();

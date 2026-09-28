@@ -356,7 +356,7 @@ namespace StockAnalyzer.StockData.DataProviders
 
         TimeSpan closeTime = new TimeSpan(22, 00, 0);
         TimeSpan openTime = new TimeSpan(08, 0, 0);
-        TimeSpan longDelay = new TimeSpan(2, 0, 0);
+        TimeSpan longDelay = new TimeSpan(0, 15, 0);
 
         public virtual bool NeedDownload(StockInstrument instrument)
         {
