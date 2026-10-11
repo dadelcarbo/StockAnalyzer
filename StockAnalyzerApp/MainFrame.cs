@@ -299,10 +299,14 @@ namespace StockAnalyzerApp
                 this.Text = "Ultimate Chartist - " + this.ViewModel.AnalysisFile.Split('\\').Last() + " - " + id;
                 #endregion
 
-                var dp = DataProviderBase.GetDataProvider(ViewModel.Instrument.Provider);
-                if (dp != null && dp.SupportsDuration(BarDuration.H_1))
+
+                if (this.ViewModel.Instrument != null && Settings.Default.SupportIntraday)
                 {
-                    dp.DownloadData(ViewModel.Instrument);
+                    var dp = DataProviderBase.GetDataProvider(ViewModel.Instrument.Provider);
+                    if (dp != null && dp.SupportsDuration(BarDuration.H_1))
+                    {
+                        dp.DownloadData(ViewModel.Instrument);
+                    }
                 }
 
                 this.InitialiseBarDurationComboBox();
@@ -989,6 +993,16 @@ namespace StockAnalyzerApp
             refreshing = true;
 
             LoginService.RefreshSessions();
+
+            if (this.ViewModel.Instrument != null && Settings.Default.SupportIntraday)
+            {
+                var dp = DataProviderBase.GetDataProvider(ViewModel.Instrument.Provider);
+                if (dp != null && dp.SupportsDuration(BarDuration.H_1))
+                {
+                    dp.DownloadData(ViewModel.Instrument);
+                }
+            }
+
 
             refreshing = false;
 

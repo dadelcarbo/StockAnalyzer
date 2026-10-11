@@ -1697,7 +1697,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                 case GraphDrawMode.AddBox:
                     if (this.DrawingStep == GraphDrawingStep.ItemSelected)
                     {
-                        DrawTmpItem(this.foregroundGraphic, new Resistance(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y)), true);
+                        DrawTmpItem(this.foregroundGraphic, new Box(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y)), true);
                     }
                     break;
                 case GraphDrawMode.AddWinRatio:
@@ -1945,7 +1945,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                         case GraphDrawingStep.ItemSelected: // Selecting second point
                             try
                             {
-                                var newArea = new Resistance(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y));
+                                var newArea = new Box(new PointF((int)point1.X, point1.Y), new PointF((int)point2.X, point2.Y));
                                 drawingItems.Add(newArea);
                                 drawingItems.RefDate = this.dataSerie.DateSerie[(int)point1.X];
                                 drawingItems.RefDateIndex = (int)point1.X;
