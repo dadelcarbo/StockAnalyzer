@@ -714,7 +714,7 @@ namespace StockAnalyzerApp
 
                 foreach (var duration in new[] { BarDuration.Daily, BarDuration.Weekly, BarDuration.Monthly })
                 {
-                    // GenerateAlertReport(duration);
+                    GenerateAlertReport(duration);
                 }
             }
             catch (Exception ex)
