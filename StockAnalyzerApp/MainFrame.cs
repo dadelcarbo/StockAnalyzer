@@ -715,11 +715,12 @@ namespace StockAnalyzerApp
                 }
                 #endregion
 
-
+                #region ALERT REPORT
                 foreach (var duration in new[] { BarDuration.Daily, BarDuration.Weekly, BarDuration.Monthly })
                 {
                     GenerateAlertReport(duration);
                 }
+                #endregion
             }
             catch (Exception ex)
             {
@@ -2610,7 +2611,7 @@ namespace StockAnalyzerApp
             }
         }
 
-        public void GenerateAlertReport(BarDuration duration, List<StockAlertDef> alertDefs = null)
+        public void GenerateAlertReport(BarDuration duration, List<StockAlertDef> alertDefs = null, bool force = false)
         {
             StockSplashScreen.ProgressText = $"Generating alert report - {duration}";
 
@@ -2625,91 +2626,55 @@ namespace StockAnalyzerApp
 
             if (!File.Exists(Folders.ReportTemplate) || alertDefs.Count(a => a.InReport && (a.Type == AlertType.Group || a.Type == AlertType.Watchlist)) == 0)
                 return;
-            var htmlReportTemplate = File.ReadAllText(Folders.ReportTemplate);
 
-            using var cp = new MainViewModelContextPersister();
-            try
+            string reportFileName = Path.Combine(folderName, $"AlertReport_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
+            var reportDate = File.Exists(reportFileName) ? File.GetLastWriteTime(reportFileName) : DateTime.MinValue;
+            if (force || reportDate <= File.GetLastWriteTime(Folders.ReportTemplate))
             {
-                string fileName = Path.Combine(folderName, $"Report_{DateTime.Today.ToString("yyyy_MM_dd")}.html");
-                string htmlBody = $"<h1 style=\"text-align: center;\">{duration} Report - {DateTime.Today.ToShortDateString()} {DateTime.Now.ToShortTimeString()}</h1>";
+                var htmlReportTemplate = File.ReadAllText(Folders.ReportTemplate);
 
-                #region Report Alerts
-
-                var previousState = this.WindowState;
-                var previousSize = this.Size;
-                this.Size = new Size(600, 600);
-                this.WindowState = FormWindowState.Normal;
-
-                int nbLeaders = 40;
-                StockSplashScreen.FadeInOutSpeed = 0.25;
-                StockSplashScreen.ProgressVal = 0;
-                StockSplashScreen.ShowSplashScreen();
-
-                string htmlAlerts = string.Empty;
-                foreach (var alertDef in alertDefs.Where(a => a.InReport))
+                using var cp = new MainViewModelContextPersister();
+                try
                 {
-                    htmlAlerts += GenerateAlertTable(alertDef, nbLeaders);
-                }
-                htmlBody += htmlAlerts;
+                    string htmlBody = $"<h1 style=\"text-align: center;\">{duration} Report - {DateTime.Today.ToShortDateString()} {DateTime.Now.ToShortTimeString()}</h1>";
 
-                // Generate EURO_A Summation Index
-                if (StockDictionary.Instruments.ContainsKey("McClellanSum.EURO_A"))
+                    #region Report Alerts
+
+                    var previousState = this.WindowState;
+                    var previousSize = this.Size;
+                    this.Size = new Size(600, 600);
+                    this.WindowState = FormWindowState.Normal;
+
+                    int nbLeaders = 40;
+                    StockSplashScreen.FadeInOutSpeed = 0.25;
+                    StockSplashScreen.ProgressVal = 0;
+
+                    string htmlAlerts = string.Empty;
+                    foreach (var alertDef in alertDefs.Where(a => a.InReport))
+                    {
+                        htmlAlerts += GenerateAlertTable(alertDef, nbLeaders);
+                    }
+                    htmlBody += htmlAlerts;
+
+                    #endregion
+
+                    this.Size = previousSize;
+                    this.WindowState = previousState;
+
+                    var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", $"{duration} Report").Replace("%HTML_BODY%", htmlBody);
+                    using (StreamWriter sw = new StreamWriter(reportFileName))
+                    {
+                        sw.Write(htmlReport);
+                    }
+
+                    Process.Start(reportFileName);
+                }
+                catch (Exception ex)
                 {
-                    this.Size = new Size(950, 800);
-
-                    var bitmapString = this.GetStockSnapshotAsHtml(StockDictionary.Instruments["McClellanSum.EURO_A"], "EUROA_SUM", false, BarDuration.Daily, 770);
-                    htmlReportTemplate = htmlReportTemplate.Replace("%EURO_A_IMG%", bitmapString);
+                    StockAnalyzerException.MessageBox(ex);
                 }
-
-                #region Report embedded definitions
-
-                // Find Pattern
-                string pattern = @"§§.*?§§";
-
-                // Instantiate the regular expression object.
-                Regex regex = new Regex(pattern);
-
-                // Match the regular expression pattern against the input string.
-                MatchCollection matches = regex.Matches(htmlReportTemplate);
-
-                foreach (Match match in matches)
-                {
-                    var fields = match.Value.Replace("§§", "").Split('|');
-                    var stockName = fields[0];
-                    var barDuration = (BarDuration)Enum.Parse(typeof(BarDuration), fields[1]);
-                    var theme = fields[2];
-                    var nbBars = int.Parse(fields[3]);
-
-                    var stockInstrument = StockDictionary.GetInstrumentByName(stockName);
-                    if (stockInstrument == null)
-                        continue;
-                    var bitmapString = this.GetStockSnapshotAsHtml(stockInstrument, theme, true, barDuration, nbBars);
-                    string data = $"\r\n    <h3>{stockName}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
-
-                    htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
-                }
-                #endregion
-
-                StockSplashScreen.CloseForm(true);
-                #endregion
-
-                this.Size = previousSize;
-                this.WindowState = previousState;
-
-                var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", $"{duration} Report").Replace("%HTML_BODY%", htmlBody);
-                using (StreamWriter sw = new StreamWriter(fileName))
-                {
-                    sw.Write(htmlReport);
-                }
-
-                Process.Start(fileName);
-            }
-            catch (Exception ex)
-            {
-                StockAnalyzerException.MessageBox(ex);
             }
         }
-
         const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
         const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
         const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h3><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
@@ -2837,7 +2802,7 @@ namespace StockAnalyzerApp
                 {
                     Directory.Delete(directory, true);
                 }
-                foreach (string file in (Directory.EnumerateFiles(folderName)))
+                foreach (string file in Directory.EnumerateFiles(folderName).Where(f => File.GetCreationTime(f) < DateTime.Today))
                 {
                     File.Delete(file);
                 }

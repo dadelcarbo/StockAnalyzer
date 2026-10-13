@@ -727,8 +727,10 @@ namespace StockAnalyzer.StockData.DataProviders.AbcBourse
             if (dataSerie == null)
                 return false;
 
-            dataSerie.AddBar(dailyValue);
-
+            if (dailyValue.DATE > dataSerie.LastValue.DATE)
+            {
+                dataSerie.AddBar(dailyValue);
+            }
             return true;
         }
 
