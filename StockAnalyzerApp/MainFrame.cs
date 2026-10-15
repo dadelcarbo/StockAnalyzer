@@ -28,6 +28,7 @@ using StockAnalyzerApp.CustomControl.PalmaresDlg;
 using StockAnalyzerApp.CustomControl.PortfolioDlg;
 using StockAnalyzerApp.CustomControl.PortfolioDlg.SaxoPortfolioDlg;
 using StockAnalyzerApp.CustomControl.SectorDlg;
+using StockAnalyzerApp.CustomControl.ShareValuationDlg;
 using StockAnalyzerApp.CustomControl.SimulationDlgs;
 using StockAnalyzerApp.CustomControl.SplitDlg;
 using StockAnalyzerApp.CustomControl.TrendDlgs;
@@ -2853,6 +2854,14 @@ namespace StockAnalyzerApp
             {
                 this.ApplyTheme();
             }
+        }
+        #endregion
+        #region Share Valuation Dlg
+        private ShareValuationDlg shareValuationDlg = null;
+        private void shareValuationMenuItem_Click(object sender, EventArgs e)
+        {
+            var shareValuationDlg = new ShareValuationDlg() { StartPosition = FormStartPosition.CenterScreen };
+            shareValuationDlg.ShowDialog();
         }
         #endregion
 

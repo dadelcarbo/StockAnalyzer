@@ -75,6 +75,7 @@ namespace StockAnalyzerApp
             this.secondarySerieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stockSplitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.shareValuationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.palmaresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.instrumentsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -521,6 +522,7 @@ namespace StockAnalyzerApp
             // analysisMenuItem
             // 
             this.analysisMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.shareValuationMenuItem,
                 this.stockSplitMenuItem,
                 this.toolStripSeparator19,
                 this.palmaresMenuItem,
@@ -544,6 +546,13 @@ namespace StockAnalyzerApp
             this.stockSplitMenuItem.Size = new System.Drawing.Size(240, 22);
             this.stockSplitMenuItem.Text = "Stock Split";
             this.stockSplitMenuItem.Click += new System.EventHandler(this.stockSplitMenuItem_Click);
+            // 
+            // shareValuationMenuItem
+            // 
+            this.shareValuationMenuItem.Name = "shareValuationMenuItem";
+            this.shareValuationMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.shareValuationMenuItem.Text = "Share Valuation";
+            this.shareValuationMenuItem.Click += new System.EventHandler(this.shareValuationMenuItem_Click);
             // 
             // toolStripSeparator19
             // 
@@ -1549,6 +1558,7 @@ namespace StockAnalyzerApp
         private ToolStripMenuItem eraseDrawingsToolStripMenuItem;
         private ToolStripMenuItem eraseAllDrawingsToolStripMenuItem;
         private ToolStripMenuItem stockSplitMenuItem;
+        private ToolStripMenuItem shareValuationMenuItem;
         private ToolStripSeparator toolStripSeparator18;
         private ToolStripMenuItem saveThemeMenuItem;
         private ToolStripMenuItem newAnalysisMenuItem;
