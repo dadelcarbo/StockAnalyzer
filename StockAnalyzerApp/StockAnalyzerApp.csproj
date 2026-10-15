@@ -466,6 +466,7 @@
     <Compile Include="CustomControl\ShareValuationDlg\ShareValuationDlg.Designer.cs">
       <DependentUpon>ShareValuationDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\ShareValuationDlg\ShareValuationViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\BackTestViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\BackTestDlg.cs">
       <SubType>Form</SubType>
