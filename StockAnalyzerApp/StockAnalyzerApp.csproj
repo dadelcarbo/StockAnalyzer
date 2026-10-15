@@ -457,6 +457,15 @@
     <Compile Include="CustomControl\PalmaresDlg\PalmaresLine.cs" />
     <Compile Include="CustomControl\PalmaresDlg\PalmaresViewModel.cs" />
     <Compile Include="CustomControl\PropertyAttribute.cs" />
+    <Compile Include="CustomControl\ShareValuationDlg\ShareValuationControl.xaml.cs">
+      <DependentUpon>ShareValuationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\ShareValuationDlg\ShareValuationDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\ShareValuationDlg\ShareValuationDlg.Designer.cs">
+      <DependentUpon>ShareValuationDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\SimulationDlgs\BackTestViewModel.cs" />
     <Compile Include="CustomControl\SimulationDlgs\BackTestDlg.cs">
       <SubType>Form</SubType>
@@ -740,6 +749,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerDlg.resx">
       <DependentUpon>TradeManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\ShareValuationDlg\ShareValuationDlg.resx">
+      <DependentUpon>ShareValuationDlg.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\SimulationDlgs\BackTestDlg.resx">
       <DependentUpon>BackTestDlg.cs</DependentUpon>
@@ -1119,6 +1131,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControl\ShareValuationDlg\ShareValuationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
