@@ -23,14 +23,40 @@
     </UserControl.Resources>
     <Grid Background="#FFF3F5F8">
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Margin="20">
+            <StackPanel Margin="5">
                 <TextBlock Text="Share Valuation"
                            FontSize="24"
                            FontWeight="SemiBold"
                            Margin="4,0,4,2" />
-                <TextBlock Text="Review market inputs and adjust the valuation assumptions."
+                <TextBlock Text="Discounted cash flow method"
                            Foreground="Gray"
                            Margin="4,0,4,16" />
+                
+                <GroupBox Grid.Column="0" Header="Share" Margin="4" Padding="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="1.2*" />
+                            <ColumnDefinition Width="0.1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Company" Margin="4" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding StockName, Mode=OneWay}" IsReadOnly="True" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="TradingView symbol" Margin="4" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TradingViewSymbol, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                        <Button Grid.Row="1" Grid.Column="2" Content="⟳" FontSize="24" FontWeight="Bold" Height="32"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0"
+                                Command="{Binding LoadFromTradingViewCmd}"/>
+                    </Grid>
+                </GroupBox>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -38,7 +64,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Share data" Margin="4" Padding="10">
+                    <GroupBox Grid.Column="0" Header="Share data" Margin="2" Padding="5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -53,10 +79,6 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Company" Margin="4" />
-                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding StockName, Mode=OneWay}" IsReadOnly="True" />
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="TradingView symbol" Margin="4" />
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TradingViewSymbol, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Close price" Margin="4" />
                             <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding ClosePrice, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="Free cash flow per share" Margin="4" />
@@ -68,35 +90,39 @@
                         </Grid>
                     </GroupBox>
 
-                    <GroupBox Grid.Column="1" Header="Valuation assumptions" Margin="4" Padding="10">
+                    <GroupBox Grid.Column="1" Header="Valuation assumptions" Margin="2" Padding="5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="1.2*" />
+                                <ColumnDefinition Width="0.2*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Discount rate (decimal)" Margin="4" />
-                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DiscountRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Default growth rate (decimal)" Margin="4" />
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DefaultGrowthRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Growth rate (decimal)" Margin="4" />
-                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding GrowthRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Discount rate" Margin="4" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DiscountRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat={}{0:P}}" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Growth rate" Margin="4" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding GrowthRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat={}{0:P}}" />
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="Intrinsic value per share" Margin="4" />
-                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding IntrinsicValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding IntrinsicValue, Mode=OneWay, StringFormat={}{0:F2}}" IsReadOnly="True" BorderThickness="2" BorderBrush="SlateGray"/>
+
+                            <Button Grid.Row="3" Grid.Column="2" Content="⟳" FontSize="24" FontWeight="Bold" Height="32"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0"
+                                Command="{Binding PerformDcfCalculationCmd}"/>
+                            
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Premium/Discount" Margin="4" />
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding PremiumDiscount, Mode=OneWay, StringFormat={}{0:P2}}" IsReadOnly="True" BorderThickness="2" BorderBrush="SlateGray"/>
+
                         </Grid>
                     </GroupBox>
                 </Grid>
-
-                <TextBlock Text="Enter rates as decimals (for example, 0.06 represents 6%). Share metrics use the listing currency."
-                           Foreground="Gray"
-                           TextWrapping="Wrap"
-                           Margin="8,8,8,0" />
             </StackPanel>
         </ScrollViewer>
     </Grid>
