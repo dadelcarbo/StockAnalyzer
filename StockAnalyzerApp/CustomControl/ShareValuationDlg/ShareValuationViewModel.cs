@@ -4,6 +4,8 @@ using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerSettings;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -31,6 +33,8 @@ namespace StockAnalyzerApp.CustomControl.ShareValuationDlg
 
         private string tradingViewSymbol = string.Empty;
         public string TradingViewSymbol { get => tradingViewSymbol; set => SetProperty(ref tradingViewSymbol, value); }
+        private string tradingViewCountry = string.Empty;
+        public string TradingViewCountry { get => tradingViewCountry; set => SetProperty(ref tradingViewCountry, value); }
 
         private float closePrice = 0f;
         [JsonIgnore]
@@ -68,11 +72,14 @@ namespace StockAnalyzerApp.CustomControl.ShareValuationDlg
         [JsonIgnore]
         public bool CanSave { get => canSave; set => SetProperty(ref canSave, value); }
 
+        #endregion
         private async void PerformLoadFromTradingViewCmd()
         {
             try
             {
-                var res = await TradingViewFundamentalDataProvider.GetFundamentalsAsync(this.TradingViewSymbol, TradingViewFundamentalDataProvider.DcfPerShare);
+                if (string.IsNullOrEmpty(this.tradingViewSymbol))
+                    return;
+                var res = await TradingViewFundamentalDataProvider.GetFundamentalsAsync(instrument, TradingViewFundamentalDataProvider.DcfPerShare);
                 if (res != null)
                 {
                     this.FreeCashFlowPerShare = res["free_cash_flow_per_share_fy"];
@@ -126,21 +133,26 @@ namespace StockAnalyzerApp.CustomControl.ShareValuationDlg
 
         private CommandBase saveCmd;
         [JsonIgnore]
-        public ICommand SaveCmd => saveCmd ??= new CommandBase(PerformSaveCmd, () => this.CanSave, this, new[] { nameof(CanSave)});
+        public ICommand SaveCmd => saveCmd ??= new CommandBase(PerformSaveCmd, () => this.CanSave, this, new[] { nameof(CanSave) });
 
         private void PerformSaveCmd()
         {
             var filePath = Path.Combine(Folders.DCF, $"{this.isin}.json");
 
             File.WriteAllText(filePath, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true }));
+
+            this.CanSave = false;
         }
 
+        private StockInstrument instrument;
         internal void Initialize(StockInstrument instrument)
         {
+            this.instrument = instrument;
             if (instrument == null) return;
 
             this.StockName = instrument.DisplayName;
-            this.TradingViewSymbol = $"{instrument.Market}:{instrument.Symbol}";
+            this.TradingViewSymbol = $"{TradingViewFundamentalDataProvider.GetTradingViewSymbol(instrument)}";
+            this.TradingViewCountry = $"{TradingViewFundamentalDataProvider.GetTradingViewCountry(instrument)}";
             this.isin = instrument.Isin;
 
             this.ClosePrice = instrument.GetDefaultDataSerie().LastValue.CLOSE;
@@ -165,6 +177,5 @@ namespace StockAnalyzerApp.CustomControl.ShareValuationDlg
                 }
             }
         }
-        #endregion
     }
 }
