@@ -153,6 +153,7 @@ namespace StockAnalyzerApp.CustomControl.ShareValuationDlg
             this.StockName = instrument.DisplayName;
             this.TradingViewSymbol = $"{TradingViewFundamentalDataProvider.GetTradingViewSymbol(instrument)}";
             this.TradingViewCountry = $"{TradingViewFundamentalDataProvider.GetTradingViewCountry(instrument)}";
+
             this.isin = instrument.Isin;
 
             this.ClosePrice = instrument.GetDefaultDataSerie().LastValue.CLOSE;
@@ -174,6 +175,13 @@ namespace StockAnalyzerApp.CustomControl.ShareValuationDlg
                     this.CalculationDate = savedData.CalculationDate;
 
                     this.PremiumDiscount = (this.IntrinsicValue - this.ClosePrice) / this.ClosePrice;
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(this.TradingViewSymbol) && !string.IsNullOrEmpty(this.TradingViewCountry))
+                {
+                    this.PerformLoadFromTradingViewCmd();
                 }
             }
         }
