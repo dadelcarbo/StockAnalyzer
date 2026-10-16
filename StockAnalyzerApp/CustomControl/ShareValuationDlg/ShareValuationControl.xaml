@@ -5,8 +5,99 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.ShareValuationDlg"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=local:ShareValuationViewModel, IsDesignTimeCreatable=True}">
+    <UserControl.DataContext>
+        <local:ShareValuationViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Margin" Value="4,3" />
+            <Setter Property="Padding" Value="6,4" />
+            <Setter Property="MinWidth" Value="150" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="#FFF3F5F8">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="20">
+                <TextBlock Text="Share Valuation"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           Margin="4,0,4,2" />
+                <TextBlock Text="Review market inputs and adjust the valuation assumptions."
+                           Foreground="Gray"
+                           Margin="4,0,4,16" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0" Header="Share data" Margin="4" Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="1.2*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Company" Margin="4" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding StockName, Mode=OneWay}" IsReadOnly="True" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="TradingView symbol" Margin="4" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TradingViewSymbol, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Close price" Margin="4" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding ClosePrice, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Free cash flow per share" Margin="4" />
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding FreeCashFlowPerShare, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Debt per share" Margin="4" />
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding DebtPerShare, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Cash per share" Margin="4" />
+                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding CashPerShare, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Grid.Column="1" Header="Valuation assumptions" Margin="4" Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="1.2*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Discount rate (decimal)" Margin="4" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DiscountRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Default growth rate (decimal)" Margin="4" />
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DefaultGrowthRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Growth rate (decimal)" Margin="4" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding GrowthRate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Intrinsic value per share" Margin="4" />
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding IntrinsicValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+
+                <TextBlock Text="Enter rates as decimals (for example, 0.06 represents 6%). Share metrics use the listing currency."
+                           Foreground="Gray"
+                           TextWrapping="Wrap"
+                           Margin="8,8,8,0" />
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>
