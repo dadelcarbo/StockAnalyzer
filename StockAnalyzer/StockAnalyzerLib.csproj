@@ -298,6 +298,7 @@
     <Compile Include="StockData\DataProviders\SocGen\SocGenDatum.cs" />
     <Compile Include="StockData\DataProviders\SocGen\SocGenDataClient.cs" />
     <Compile Include="StockData\DataProviders\SocGen\SocGenDataProvider.cs" />
+    <Compile Include="StockData\DataProviders\TradingViewFundamentalDataProvider.cs" />
     <Compile Include="StockData\DataProviders\Vontobel\VontobelDataClient.cs" />
     <Compile Include="StockData\DataProviders\Vontobel\VontobelDataProvider.cs" />
     <Compile Include="StockData\DataProviders\Vontobel\VontobelModel.cs" />

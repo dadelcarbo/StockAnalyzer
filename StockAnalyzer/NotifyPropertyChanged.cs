@@ -1,14 +1,17 @@
 using StockAnalyzer.StockLogging;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Windows.Threading;
 
 namespace StockAnalyzer
 {
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
+        [JsonIgnore]
         public Dispatcher Dispatcher { get; set; }
 
+        [JsonIgnore]
         public bool UseLog { get; protected set; }
 
         protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)

@@ -26,6 +26,8 @@ namespace StockAnalyzerSettings
         [AutoCreate]
         public static string AlertDef => Path.Combine(Settings.Default.PersonalFolder, "Alert");
         [AutoCreate]
+        public static string DCF => Path.Combine(Settings.Default.PersonalFolder, "Valuation\\DCF");
+        [AutoCreate]
         public static string AutoTrade => Path.Combine(Settings.Default.PersonalFolder, "AutoTrade");
         [AutoCreate]
         public static string ReportTemplates => Path.Combine(Settings.Default.PersonalFolder, "ReportTemplates");

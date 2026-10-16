@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,16 @@ namespace StockAnalyzerApp.CustomControl.ShareValuationDlg
         public ShareValuationControl()
         {
             InitializeComponent();
+
+            this.Loaded += ShareValuationControl_Loaded;
+        }
+
+        private void ShareValuationControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext is ShareValuationViewModel viewModel)
+            {
+                viewModel.Initialize(MainFrameViewModel.Instance.Instrument);
+            }
         }
     }
 }

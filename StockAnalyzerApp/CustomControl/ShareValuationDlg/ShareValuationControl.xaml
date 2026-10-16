@@ -31,7 +31,20 @@
                 <TextBlock Text="Discounted cash flow method"
                            Foreground="Gray"
                            Margin="4,0,4,16" />
-                
+                <Button HorizontalAlignment="Right"      Padding="6,2" Margin="0,0,20,0" Command="{Binding SaveCmd}">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="M3,1 L13,1 L15,3 L15,13 A1,1 0 0 1 14,14 L2,14 A1,1 0 0 1 1,13 L1,2 A1,1 0 0 1 2,1 Z
+                      M4,1 L4,5 L11,5 L11,1 Z
+                      M5,8 L11,8 L11,13 L5,13 Z"
+              Fill="Gray"
+              Stroke="DarkSlateGray"
+              StrokeThickness="0.6"
+              Width="16" Height="16"
+              Margin="0,0,5,0"/>
+                        <TextBlock Text="Save" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
                 <GroupBox Grid.Column="0" Header="Share" Margin="4" Padding="10">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -53,7 +66,7 @@
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="TradingView symbol" Margin="4" />
                         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TradingViewSymbol, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                         <Button Grid.Row="1" Grid.Column="2" Content="⟳" FontSize="24" FontWeight="Bold" Height="32"
-                                HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,-5,0,0"
                                 Command="{Binding LoadFromTradingViewCmd}"/>
                     </Grid>
                 </GroupBox>
@@ -77,6 +90,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Close price" Margin="4" />
@@ -87,6 +101,11 @@
                             <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding DebtPerShare, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                             <TextBlock Grid.Row="5" Grid.Column="0" Text="Cash per share" Margin="4" />
                             <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding CashPerShare, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Download Date" Margin="4" />
+                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding FundamentalDate, Mode=OneWay, StringFormat={}{0:yyyy-MM-dd}}" IsReadOnly="True" BorderThickness="2" BorderBrush="SlateGray"/>
+
+
                         </Grid>
                     </GroupBox>
 
@@ -114,11 +133,15 @@
                             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding IntrinsicValue, Mode=OneWay, StringFormat={}{0:F2}}" IsReadOnly="True" BorderThickness="2" BorderBrush="SlateGray"/>
 
                             <Button Grid.Row="3" Grid.Column="2" Content="⟳" FontSize="24" FontWeight="Bold" Height="32"
-                                HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0,-5,0,0"
                                 Command="{Binding PerformDcfCalculationCmd}"/>
                             
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="Premium/Discount" Margin="4" />
                             <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding PremiumDiscount, Mode=OneWay, StringFormat={}{0:P2}}" IsReadOnly="True" BorderThickness="2" BorderBrush="SlateGray"/>
+
+
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Calculation Date" Margin="4" />
+                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding CalculationDate, Mode=OneWay, StringFormat={}{0:yyyy-MM-dd}}" IsReadOnly="True" BorderThickness="2" BorderBrush="SlateGray"/>
 
                         </Grid>
                     </GroupBox>
