@@ -125,7 +125,6 @@ namespace StockAnalyzer.StockData.DataProviders
             SaxoTurbos.SaxoTurboDataProvider.InitSaxoIds();
         }
 
-
         /// <summary>
         /// DataSerie used to check id new download is required. If the last bar of the RefSerie is older than the last bar of the instrument, then a new download is required.
         /// </summary>
