@@ -114,6 +114,41 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
 
                         });
                     }
+                case "ADSUM":
+                    {
+                        return GenerateSumIfBreadthSerie(instrument, fields[1], startDate, (serie, d) =>
+                        {
+                            var index = serie.IndexOf(d);
+                            if (index == -1)
+                                return false;
+
+                            return serie.Values[index].VARIATION > 0;
+                        });
+                    }
+                case "MC":
+                    {
+                        var adInstrument = StockDictionary.GetInstrumentByName("AD." + fields[1]);
+                        if (adInstrument == null)
+                            return null;
+                        var adSerie = adInstrument.GetDefaultDataSerie();
+                        var ema19 = adSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(19);
+                        var ema39 = adSerie.GetSerie(StockDataType.CLOSE).CalculateEMA(39);
+                        var val = ema19 - ema39;
+                        int i = 0;
+                        return adSerie.Values.Select(v => new StockDailyValue(val[i], val[i], val[i], val[i++], 0, v.DATE)).ToArray();
+                    }
+                case "MCSUM":
+                    {
+                        var mcInstrument = StockDictionary.GetInstrumentByName("MC." + fields[1]);
+                        if (mcInstrument == null)
+                            return null;
+                        var val = mcInstrument.GetDefaultDataSerie();
+                        if (val == null)
+                            return null;
+
+                        float sum = 0f;
+                        return val.Values.Select(v => new StockDailyValue(sum += v.CLOSE, sum, sum, sum, 0, v.DATE)).ToArray();
+                    }
                 case "EMA":
                     {
                         var period = int.Parse(breadthFields[1]);
@@ -138,7 +173,7 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
                                 return float.NaN;
 
                             var emaIndicator = serie.GetIndicator($"STOKTURTLE({period},{period},6)")?.Series[0];
-                            return emaIndicator != null ? (emaIndicator[index] - 50f)/50f : float.NaN;
+                            return emaIndicator != null ? (emaIndicator[index] - 50f) / 50f : float.NaN;
 
                         });
                     }
@@ -146,11 +181,17 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
                     break;
             }
 
-            var bars = new List<StockDailyValue>();
-
-            return bars.ToArray();
+            return null;
         }
 
+        /// <summary>
+        /// Generate breadth serie to count number of instruments matching a predicate (e.g. number of instrument clse > EMA200)
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <param name="groupName"></param>
+        /// <param name="startDate"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public StockDailyValue[] GenerateCountIfBreadthSerie(StockInstrument instrument, string groupName, DateTime startDate, Func<DataSerie, DateTime, bool> predicate)
         {
             var indexName = groupName == "USA" ? "S&P 500" : "CAC40";
@@ -203,6 +244,75 @@ namespace StockAnalyzer.StockData.DataProviders.Breadth
         }
 
 
+        /// <summary>
+        /// Generate breadth serie to sum number of instruments matching a predicate (1 if matching, -1 if not matching) (e.g. number of instrument clse > EMA200)
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <param name="groupName"></param>
+        /// <param name="startDate"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public StockDailyValue[] GenerateSumIfBreadthSerie(StockInstrument instrument, string groupName, DateTime startDate, Func<DataSerie, DateTime, bool> predicate)
+        {
+            var indexName = groupName == "USA" ? "S&P 500" : "CAC40";
+            var indiceInstrument = StockDictionary.GetInstrumentByName(indexName);
+            if (indiceInstrument == null)
+            {
+                return null;
+            }
+
+            DataSerie indiceSerie = indiceInstrument.GetDefaultDataSerie();
+            if (indiceSerie == null || indiceSerie.Values.Length == 0)
+                return null;
+
+            if (indiceSerie.LastCompleteValue.DATE == startDate)
+                return null;
+
+            var indexComponents = StockDictionary.Instruments.Values
+                .Where(s => s.BelongsToGroup(groupName))
+                .Select(s => s.GetDataSerie(indiceSerie.BarDuration))
+                .Where(d => d != null & d.Count > 0).ToArray();
+
+            if (indexComponents.Length == 0)
+                return null;
+
+            DateTime lastIndiceDate = indiceSerie.LastValue.DATE;
+            DateTime lastBreadthDate = DateTime.MinValue;
+
+            var bars = new List<StockDailyValue>();
+
+            float val, summation = 0;
+            int count;
+            foreach (var bar in indiceSerie.Values.Where(v => v.DATE > lastBreadthDate))
+            {
+                val = 0; count = 0;
+                this.NotifyProgress($"Generating {instrument.DisplayName} {bar.DATE.ToShortDateString()}");
+
+                foreach (var serie in indexComponents)
+                {
+                    if (predicate(serie, bar.DATE))
+                        val++;
+                    else
+                        val--;
+                    count++;
+                }
+                if (count != 0)
+                {
+                    summation += val / (float)count;
+                    bars.Add(new StockDailyValue(summation, summation, summation, summation, count, bar.DATE));
+                }
+            }
+            return bars.ToArray();
+        }
+
+        /// <summary>
+        /// Generate breadth serie as an average value for an insdicator (e.g. average on RSI value)
+        /// </summary>
+        /// <param name="instrument"></param>
+        /// <param name="groupName"></param>
+        /// <param name="startDate"></param>
+        /// <param name="indicator"></param>
+        /// <returns></returns>
         public StockDailyValue[] GenerateAverageBreadthSerie(StockInstrument instrument, string groupName, DateTime startDate, Func<DataSerie, DateTime, float> indicator)
         {
             var indexName = groupName == "USA" ? "S&P 500" : "CAC40";

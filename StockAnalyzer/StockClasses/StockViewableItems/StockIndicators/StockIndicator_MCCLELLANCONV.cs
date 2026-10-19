@@ -15,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
 
         public override string[] SerieNames => new string[] { "OSC UNCH", $"EMA({parameters[0]})", $"EMA({parameters[1]})", "SUM/10" };
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Red), new Pen(Color.Green), new Pen(Color.DarkRed) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Green), new Pen(Color.LawnGreen), new Pen(Color.Cyan), new Pen(Color.DarkRed) };
 
         public override Area[] Areas => areas ??= new Area[]
             {
