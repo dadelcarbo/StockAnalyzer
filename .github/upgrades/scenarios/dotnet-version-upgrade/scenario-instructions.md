@@ -39,3 +39,12 @@
 - Dependency Injection: Migrate to Built-in DI Container
 - Assembly Binding Redirects: Document and Review Before Removing
 - Nullable Reference Types: Leave Disabled
+
+## Build Tool Decisions
+- **StockAnalyzerSettings.csproj**: Visual Studio IDE build tool (full MSBuild; SDK-style project still targeting .NET Framework 4.8).
+- **StockAnalyzerLib.csproj**: Visual Studio IDE build tool (full MSBuild required for WPF and .NET Framework 4.8).
+- **StockAnalyzerApp.csproj**: Visual Studio IDE build tool (full MSBuild required for WPF, WinForms resources, and .NET Framework 4.8).
+
+## Decisions
+- SDK conversion of `StockAnalyzerLib` and `StockAnalyzerApp` incorrectly interpreted local Telerik DLL hint paths as package IDs `2025` and `2026`; retained the local assembly references instead. Their legacy licensing hint paths were absent, and the checked-in Telerik 2026 assembly version 1.6.40.0 was required by the current controls, so both references now target that existing assembly.
+- `StockAnalyzerLib` uses `AssemblyVersion("1.0.*")`; SDK default deterministic compilation rejects the existing wildcard. Set `Deterministic` to false to retain the pre-conversion assembly-version behavior.
