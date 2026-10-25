@@ -2695,10 +2695,10 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"/></a>";
+
+        const string stockNameTemplate = "<a class=\"tooltip\" href=\"ultimate-chartist://open?instrument=%INSTRUMENT%&duration=%DURATION%&theme=%THEME%\">%MSG%<span><img src=\"%IMG%\"/></a>";
         const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
         const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h3><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
-
 
         private string GenerateAlertTable(StockAlertDef alertDef, int nbStocks)
         {
@@ -2773,7 +2773,13 @@ namespace StockAnalyzerApp
                 {
                     var bitmapString = this.GetStockSnapshotAsHtml(alertValue.Instrument, alertValue.AlertDef.Theme, false, alertValue.AlertDef.BarDuration, 100);
 
-                    var stockName = stockNameTemplate.Replace("%MSG%", alertValue.Instrument.DisplayName).Replace("%IMG%", bitmapString) + "\r\n";
+                    var stockName = stockNameTemplate
+                        .Replace("%MSG%", alertValue.Instrument.DisplayName)
+                        .Replace("%IMG%", bitmapString)
+                        .Replace("%INSTRUMENT%", alertValue.Instrument.Id)
+                        .Replace("%DURATION%", alertValue.AlertDef.BarDuration.ToString())
+                        .Replace("%THEME%", alertValue.AlertDef.Theme) + "\r\n";
+
                     var stokValue = alertValue.Stok;
                     if (float.IsNaN(alertValue.Stop))
                     {
