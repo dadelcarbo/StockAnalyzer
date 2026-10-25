@@ -4,12 +4,9 @@ using StockAnalyzer.StockData.DataProviders;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzerSettings;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace StockAnalyzerApp.CustomControl.ShareValuationDlg

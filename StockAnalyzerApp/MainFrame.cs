@@ -47,6 +47,7 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -160,7 +161,7 @@ namespace StockAnalyzerApp
         #endregion
         #region STARTUP methods
 
-        public StockAnalyzerForm()
+        public StockAnalyzerForm(string[] args)
         {
             InitializeComponent();
 
@@ -247,6 +248,32 @@ namespace StockAnalyzerApp
             Settings.Default.PropertyChanged += (sender, args) => Settings.Default.Save();
 
             previousState = this.WindowState;
+        }
+
+        public bool HandleUriParameters(Dictionary<string, string> parameters)
+        {
+            // Retrieve instrument
+            var instrumentId = parameters.ContainsKey("instrument") ? parameters["instrument"] : null;
+            if (string.IsNullOrEmpty(instrumentId))
+                return false;
+
+            var instrument = StockDictionary.GetInstrument(instrumentId);
+            if (instrument == null)
+                return false;
+
+            // Retrieve duration
+            var durationStr = parameters.ContainsKey("duration") ? parameters["duration"] : null;
+            if (string.IsNullOrEmpty(durationStr) || !Enum.TryParse(durationStr, out BarDuration duration))
+                duration = instrument.SupportedDurations.FirstOrDefault();
+
+            // Retrieve theme
+            var theme = parameters.ContainsKey("theme") ? parameters["theme"] : null;
+            if (string.IsNullOrEmpty(theme) || !this.themeDictionary.ContainsKey(theme))
+                theme = EMPTY_THEME;
+
+            this.OnSelectedInstrumentAndDurationAndThemeChanged(instrument, duration, theme, true);
+
+            return true;
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -773,7 +800,7 @@ namespace StockAnalyzerApp
                 if (instrument != null)
                 {
                     var bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
-                    string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                    string data = $"\r\n    <h3>{stockName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\"/>\r\n    </a>";
 
                     htmlReportTemplate = htmlReportTemplate.Replace(match.Value, data);
                 }
@@ -811,7 +838,7 @@ namespace StockAnalyzerApp
                     var theme = REPORT_THEME;
                     var nbBars = 75;
                     var bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
-                    string data = $"\r\n    <h3>{instrument.DisplayName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                    string data = $"\r\n    <h3>{instrument.DisplayName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\"/>\r\n    </a>";
 
                     var row = TABLE_ROW_TEMPLATE_WATCHLIST.Replace("%%Daily%%", data);
 
@@ -819,7 +846,7 @@ namespace StockAnalyzerApp
                     theme = REPORT_THEME;
                     nbBars = 75;
                     bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
-                    data = $"\r\n    <h3>{instrument.DisplayName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\">\r\n    </a>";
+                    data = $"\r\n    <h3>{instrument.DisplayName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\"/>\r\n    </a>";
 
                     row = row.Replace("%%Weekly%%", data);
 
@@ -859,7 +886,7 @@ namespace StockAnalyzerApp
                 var nbBars = 75;
                 var bitmapString = this.GetStockSnapshotAsHtml(line.Instrument, theme, true, duration, nbBars);
 
-                string row = $"<tr><td style=\"font-size:11px;\"><a class=\"tooltip\">{line.Name}<span><img src=\"{bitmapString}\"></span></a></td> <td style=\"font-size:11px;\">{line.Group}</td> <td>{line.Value}</td> <td>{ToNaNString(line.Indicator1)}</td> <td>{ToNaNString(line.Indicator2)}</td> <td>{ToNaNString(line.Indicator3)}</td> <td>{line.Stok}</td> <td>{line.Highest}</td> <td>{line.LastDate.ToShortDateString()}</td> </tr>";
+                string row = $"<tr><td style=\"font-size:11px;\"><a class=\"tooltip\" href=\"ultimate-chartist://open?instrument={line.Instrument.Id}&duration={duration}&theme={theme}\">{line.Name}<span><img src=\"{bitmapString}\"/></span></a></td> <td style=\"font-size:11px;\">{line.Group}</td> <td>{line.Value}</td> <td>{ToNaNString(line.Indicator1)}</td> <td>{ToNaNString(line.Indicator2)}</td> <td>{ToNaNString(line.Indicator3)}</td> <td>{line.Stok}</td> <td>{line.Highest}</td> <td>{line.LastDate.ToShortDateString()}</td> </tr>";
 
                 tableRows += row;
             }
@@ -2641,11 +2668,6 @@ namespace StockAnalyzerApp
 
                     #region Report Alerts
 
-                    var previousState = this.WindowState;
-                    var previousSize = this.Size;
-                    this.Size = new Size(600, 600);
-                    this.WindowState = FormWindowState.Normal;
-
                     int nbLeaders = 40;
                     StockSplashScreen.FadeInOutSpeed = 0.25;
                     StockSplashScreen.ProgressVal = 0;
@@ -2658,9 +2680,6 @@ namespace StockAnalyzerApp
                     htmlBody += htmlAlerts;
 
                     #endregion
-
-                    this.Size = previousSize;
-                    this.WindowState = previousState;
 
                     var htmlReport = htmlReportTemplate.Replace("%HTML_TILE%", $"{duration} Report").Replace("%HTML_BODY%", htmlBody);
                     using (StreamWriter sw = new StreamWriter(reportFileName))
@@ -2676,7 +2695,7 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"></a>";
+        const string stockNameTemplate = "<a class=\"tooltip\">%MSG%<span><img src=\"%IMG%\"/></a>";
         const string stockNamePortfolioTemplate = "<a href=\"#%STOCKNAME%\">%STOCKNAME%</a>";
         const string stockPictureTemplate = "<br/><h2 id=\"%STOCKNAME%\"><a href=\"#PAGE_TOP\">%STOCKNAME% - %DURATION%</a></h3><img alt=\"%STOCKNAME% - %DURATION% - Chart missing\" src=\"%IMG%\"/>";
 
