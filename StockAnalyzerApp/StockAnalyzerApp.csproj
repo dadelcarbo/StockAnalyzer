@@ -115,6 +115,248 @@
     <Compile Update="CustomControl\ToolStripCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControl\SectorDlg\SectorDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\SectorDlg\SectorDlg.Designer.cs">
+      <DependentUpon>SectorDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SectorDlg\SectorUserControl.xaml.cs">
+      <DependentUpon>SectorUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\SectorDlg\SectorViewModel.cs" />
+    <Compile Include="CustomControl\TrendDlgs\BestTrendUserControl.xaml.cs">
+      <DependentUpon>BestTrendUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendDlg.Designer.cs">
+      <DependentUpon>BestTrendDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControl\TrendDlgs\BestTrendViewModel.cs" />
+    <Compile Include="CustomControl\TrendDlgs\MomentumViewModel.cs" />
+    <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\WatchListDlgs\WatchListDlg.Designer.cs">
+      <DependentUpon>WatchListDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainFrameViewModel.cs" />
+    <Compile Include="CustomControl\PreferenceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControl\PreferenceDialog.Designer.cs">
+      <DependentUpon>PreferenceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainFrame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainFrame.Designer.cs">
+      <DependentUpon>MainFrame.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Localisation\UltimateChartistStrings.fr-FR.Designer.cs">
+      <DependentUpon>UltimateChartistStrings.fr-FR.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Localisation\UltimateChartistStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UltimateChartistStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PipeServer.cs" />
+    <Compile Include="StockAnalyzerApp.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StockSplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StockSplashScreen.Designer.cs">
+      <DependentUpon>StockSplashScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TelerikLicense.cs" />
+    <Compile Include="ViewModel\MainFrameViewModel.cs" />
+    <EmbeddedResource Include="AboutBox.fr-FR.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\AlertDialog\StockAlertDialog\StockAlertManagerDlg.resx">
+      <DependentUpon>StockAlertManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\AutoTradeDlg\AutoTradeDlg.resx">
+      <DependentUpon>AutoTradeDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\ColorPalette\PaletteManagerDlg.resx">
+      <DependentUpon>PaletteManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\InstrumentDlgs\InstrumentsDlg.resx">
+      <DependentUpon>InstrumentsDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\PortfolioDlg.resx">
+      <DependentUpon>PortfolioDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\DrawingDlg\DrawingDlg.resx">
+      <DependentUpon>DrawingDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GraphControls\FullGraphUserControl.resx">
+      <DependentUpon>FullGraphUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\SaxoPortfolioDlg\SaxoPortfolioDlg.resx">
+      <DependentUpon>SaxoPortfolioDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\ClosePositionDlg.resx">
+      <DependentUpon>ClosePositionDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\OpenPositionDlg.resx">
+      <DependentUpon>OpenPositionDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddCloudDlg.fr-FR.resx">
+      <DependentUpon>AddCloudDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddCloudDlg.resx">
+      <DependentUpon>AddCloudDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddAutoDrawingDlg.fr-FR.resx">
+      <DependentUpon>AddAutoDrawingDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddAutoDrawingDlg.resx">
+      <DependentUpon>AddAutoDrawingDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddTrailDlg.fr-FR.resx">
+      <DependentUpon>AddTrailDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddTrailDlg.resx">
+      <DependentUpon>AddTrailDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\MarketReplay\MarketReplayDlg.resx">
+      <DependentUpon>MarketReplayDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\MultiTimeFrameChartDlg.resx">
+      <DependentUpon>MultiTimeFrameChartDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PalmaresDlg\PalmaresDlg.resx">
+      <DependentUpon>PalmaresDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PortfolioDlg\TradeDlgs\TradeManager\TradeManagerDlg.resx">
+      <DependentUpon>TradeManagerDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\ShareValuationDlg\ShareValuationDlg.resx">
+      <DependentUpon>ShareValuationDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\BackTestDlg.resx">
+      <DependentUpon>BackTestDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\PortfolioSimulationDlg.resx">
+      <DependentUpon>PortfolioSimulationDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SimulationDlgs\AgentSimulationDlg.resx">
+      <DependentUpon>AgentSimulationDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\DrawingStyleForm.fr-FR.resx">
+      <DependentUpon>DrawingStyleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\DrawingStyleForm.resx">
+      <DependentUpon>DrawingStyleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GetLicenseForm.fr-FR.resx">
+      <DependentUpon>GetLicenseForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GetLicenseForm.resx">
+      <DependentUpon>GetLicenseForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddDecoratorDlg.fr-FR.resx">
+      <DependentUpon>AddDecoratorDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddIndicatorDlg.fr-FR.resx">
+      <DependentUpon>AddIndicatorDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddIndicatorDlg.resx">
+      <DependentUpon>AddIndicatorDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddTrailStopDlg.fr-FR.resx">
+      <DependentUpon>AddTrailStopDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddTrailStopDlg.resx">
+      <DependentUpon>AddTrailStopDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\AddDecoratorDlg.resx">
+      <DependentUpon>AddDecoratorDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\IndicatorDlgs.fr-FR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IndicatorDlgs.fr-FR.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\ParametrizableControl.resx">
+      <DependentUpon>ParametrizableControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\IndicatorDlgs.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IndicatorDlgs.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\StockIndicatorSelectorDlg.fr-FR.resx">
+      <DependentUpon>StockIndicatorSelectorDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\IndicatorDlgs\StockIndicatorSelectorDlg.resx">
+      <DependentUpon>StockIndicatorSelectorDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GraphControls\GraphCloseControl.resx">
+      <DependentUpon>GraphCloseControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\GraphControls\GraphControl.resx">
+      <DependentUpon>GraphControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PreferenceDialog.fr-FR.resx">
+      <DependentUpon>PreferenceDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SaveThemeForm.fr-FR.resx">
+      <DependentUpon>SaveThemeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SaveThemeForm.resx">
+      <DependentUpon>SaveThemeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\PreferenceDialog.resx">
+      <DependentUpon>PreferenceDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SplitDlg\StockSplitDlg.resx">
+      <DependentUpon>StockSplitDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\SectorDlg\SectorDlg.resx">
+      <DependentUpon>SectorDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\TrendDlgs\BestTrendDlg.resx">
+      <DependentUpon>BestTrendDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\WatchListDlgs\WatchListDlg.resx">
+      <DependentUpon>WatchListDlg.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainFrame.resx">
+      <DependentUpon>MainFrame.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Licenses.licx" />
   </ItemGroup>
   <ItemGroup>
