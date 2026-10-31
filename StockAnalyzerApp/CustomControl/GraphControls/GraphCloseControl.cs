@@ -1098,12 +1098,12 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 graphTitle += " " + (this.CurveList.AutoDrawing.Name);
             }
-            float right = this.DrawString(gr, graphTitle, this.axisFont, this.TextForegroundBrush, this.TextBackgroundBrush, new PointF(1, 1), true);
+            float right = this.DrawString(gr, graphTitle, this.titleFont, this.TextForegroundBrush, this.TextBackgroundBrush, new PointF(1, 1), true);
             if (this.SecondaryFloatSerie != null)
             {
                 graphTitle = this.SecondaryFloatSerie.Name;
                 Brush textBrush = ColorManager.GetBrush("Graph.Secondary");
-                this.DrawString(gr, graphTitle, this.axisFont, textBrush, this.BackgroundBrush, new PointF(right + 16, 1), true);
+                this.DrawString(gr, graphTitle, this.titleFont, textBrush, this.BackgroundBrush, new PointF(right + 16, 1), true);
             }
         }
         private void PaintExecutedOrders(Graphics graphic)

@@ -160,6 +160,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         // Resources
         protected Font axisFont;
+        protected Font titleFont;
         protected Font toolTipFont;
         protected Pen framePen;
         protected Pen textFramePen;
@@ -214,6 +215,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             axisPen = new Pen(Color.Black, 1.0f);
             axisDashPen = new Pen(Color.FromArgb(0x60, 0x60, 0x60), 1.0f) { DashStyle = DashStyle.Dash };
             axisFont = new Font(FontFamily.GenericSansSerif, 7);
+            titleFont = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
             toolTipFont = new Font(FontFamily.GenericMonospace, 8);
             mousePen = new Pen(Color.Black, 1.0f);
             HigherHighPen = new Pen(Color.Green, 1.0f);
@@ -462,7 +464,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 Graphics gr = this.CreateGraphics();
                 gr.Clear(BackgroundColor);
-                gr.DrawString(this.alternateString, axisFont, legendBrush, 10, 10);
+                gr.DrawString(this.alternateString, titleFont, legendBrush, 10, 10);
             }
         }
 
@@ -724,7 +726,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 graphTitle += "  " + stockIndicator.Name;
             }
-            this.DrawString(aGraphic, graphTitle, this.axisFont, TextForegroundBrush, this.TextBackgroundBrush, new PointF(1, 1), true);
+            this.DrawString(aGraphic, graphTitle, this.titleFont, TextForegroundBrush, this.TextBackgroundBrush, new PointF(1, 1), true);
         }
         protected virtual void PaintDailyBox(PointF mousePoint)
         {
@@ -1151,9 +1153,14 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
 
             // Display tooltip
+            StockLog.Write($"initialValue.X: {initialValue.X} newValue.X: {newValue.X}");
+            int startIndex = Math.Max(Math.Min((int)Math.Round(initialValue.X), this.EndIndex), this.StartIndex);
+            int endIndex = Math.Max(Math.Min((int)Math.Round(newValue.X), this.EndIndex), this.StartIndex);
+            var nbBars = Math.Abs(endIndex - startIndex);
+
             string diffString = diff.ToString("0.####");
             this.DrawString(foregroundGraphic,
-                "Bars:\t" + ((int)(newValue.X - initialValue.X)).ToString() + Environment.NewLine +
+                "Bars:\t" + nbBars.ToString() + Environment.NewLine +
                 "Var:\t" + variation.ToString("P2") + "     " + Environment.NewLine +
                 "Diff:\t" + diffString,
                 toolTipFont, legendBrush, this.BackgroundBrush, new PointF(x + width + 4, y), true);

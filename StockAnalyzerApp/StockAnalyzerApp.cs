@@ -30,6 +30,7 @@ namespace StockAnalyzerApp
                 const string mutexName = "UltimateChartist_SingleInstance";
                 using var mutex = new Mutex(true, mutexName, out bool isFirstInstance);
 
+#if !DEBUG
                 if (!isFirstInstance)
                 {
                     string uri = Array.Find(args, a => a.StartsWith("ultimate-chartist://", StringComparison.OrdinalIgnoreCase));
@@ -42,6 +43,7 @@ namespace StockAnalyzerApp
                 {
                     PipeServer.StartPipeServer();
                 }
+#endif
 
                 var culture = new CultureInfo("en-GB");
                 Thread.CurrentThread.CurrentCulture = culture;
