@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzerSettings;
+using System;
 using System.Drawing;
 using System.Linq;
 
@@ -6,15 +7,13 @@ namespace StockAnalyzer.StockDrawing
 {
     public class Box : Rectangle2D
     {
-        static readonly Brush fillBrush = new SolidBrush(Color.FromArgb(32, Color.LightGreen));
+        static protected Brush TextForegroundBrush => ColorManager.GetBrush("Graph.TextForeground");
+        static protected Brush TextBackgroundBrush => ColorManager.GetBrush("Graph.TextBackground");
 
-        public Box(PointF p1, PointF p2) : this(p1, p2, false)
-        {
-        }
-        public Box(PointF p1, PointF p2, bool isOpened) : base(p1, p2)
+        public Box(PointF p1, PointF p2) : base(p1, p2)
         {
             this.Fill = true;
-            this.Pen = new Pen(Color.Green) { Width = 1 };
+            this.Pen = RedPen;
         }
 
         public override void Draw(Graphics g, Pen pen, System.Drawing.Drawing2D.Matrix matrixValueToScreen, Rectangle2D graphRectangle, bool isLog)
@@ -30,11 +29,11 @@ namespace StockAnalyzer.StockDrawing
                 g.DrawLine(pen, points[0].X, mid, points[1].X, mid);
                 if (this.Fill)
                 {
-                    g.FillPolygon(fillBrush, points);
+                    g.FillPolygon(GreenBrush, points);
                     var range = (this.Bottom - this.Top) / this.Bottom; // Top and Botton inversed
                     var left = points.Max(p => p.X);
                     var text = $"Bars: {Right - Left}\r\nVar:{range.ToString("P2")}";
-                    this.DrawText(g, text, font, Brushes.Black, Brushes.White, new PointF(left - 40, points[0].Y + 2), false, Pens.Black);
+                    this.DrawText(g, text, font, TextForegroundBrush, TextBackgroundBrush, new PointF(left - 40, points[0].Y + 2));
                 }
             }
         }

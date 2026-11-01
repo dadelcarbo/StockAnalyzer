@@ -63,21 +63,20 @@ namespace StockAnalyzerSettings
 
         static SortedDictionary<string, Brush> brushCache = new SortedDictionary<string, Brush>();
 
-
-        public static Brush GetBrush(string name)
+        public static Brush GetBrush(string name, byte? alfa = null)
         {
-            return GetBrush(name, Settings.Default.DarkMode ? ColorScheme.Dark : ColorScheme.Light);
+            return GetBrush(name, Settings.Default.DarkMode ? ColorScheme.Dark : ColorScheme.Light, alfa);
         }
 
-        public static Brush GetBrush(string name, ColorScheme scheme)
+        public static Brush GetBrush(string name, ColorScheme scheme, byte? alfa = null)
         {
             if (!Palette.PaletteItems.ContainsKey(name))
                 Palette.PaletteItems.Add(name, new PaletteItem { Dark = "#FFFF43D8", Light = "#FFFF43D8" }); // Default to pink if not defined
-            string brushName = $"{name}_{scheme}";
+            string brushName = $"{name}_{scheme}_{alfa}";
             if (!brushCache.ContainsKey(brushName))
             {
                 var colorHex = scheme == ColorScheme.Dark ? palette.PaletteItems[name].Dark : palette.PaletteItems[name].Light;
-                var brush = new SolidBrush(FromHex(colorHex));
+                var brush = new SolidBrush(FromHex(colorHex, alfa));
                 brushCache[brushName] = brush;
             }
             return brushCache[brushName];
@@ -125,6 +124,12 @@ namespace StockAnalyzerSettings
         static public Color FromHex(string hex)
         {
             return Color.FromArgb(Convert.ToInt32(hex.Substring(1, 2), 16), Convert.ToInt32(hex.Substring(3, 2), 16), Convert.ToInt32(hex.Substring(5, 2), 16), Convert.ToInt32(hex.Substring(7, 2), 16));
+        }
+        static public Color FromHex(string hex, byte? alfa = null)
+        {
+            return alfa == null ?
+                FromHex(hex) :
+                Color.FromArgb(alfa.Value, Convert.ToInt32(hex.Substring(3, 2), 16), Convert.ToInt32(hex.Substring(5, 2), 16), Convert.ToInt32(hex.Substring(7, 2), 16));
         }
 
     }

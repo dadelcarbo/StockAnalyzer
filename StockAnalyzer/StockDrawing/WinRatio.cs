@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzerSettings;
+using System;
 using System.Drawing;
 using System.Linq;
 
@@ -6,13 +7,8 @@ namespace StockAnalyzer.StockDrawing
 {
     public class WinRatio : DrawingItem
     {
-        static readonly SolidBrush RedBrush = new SolidBrush(Color.FromArgb(50, Color.Red));
-        static readonly SolidBrush GreenBrush = new SolidBrush(Color.FromArgb(50, Color.Green));
-
         public PointF Stop { get; set; }
         public PointF Entry { get; set; }
-
-        PointF p3 = PointF.Empty;
         public PointF Exit { get; set; }
 
         public WinRatio(PointF stop, PointF entry, PointF exit)
@@ -23,12 +19,8 @@ namespace StockAnalyzer.StockDrawing
             this.IsPersistent = false;
         }
 
-        public WinRatio(float startX, float endX, float entry, float stop, float exit)
+        public WinRatio(float startX, float endX, float entry, float stop, float exit) : this(new PointF(startX, stop), new PointF(startX, entry), new PointF(endX, exit))
         {
-            this.Stop = new PointF(startX, stop);
-            this.Entry = new PointF(startX, entry);
-            this.Exit = new PointF(endX, exit);
-            this.IsPersistent = false;
         }
         public bool Contains(PointF point)
         {
@@ -50,7 +42,7 @@ namespace StockAnalyzer.StockDrawing
                     {
                         var loss = Math.Abs(points[0].Y - points[1].Y);
                         g.FillRectangle(RedBrush, left, Math.Min(points[0].Y, points[1].Y), width, Math.Abs(points[0].Y - points[1].Y));
-                        g.DrawRectangle(Pens.Red, left, Math.Min(points[0].Y, points[1].Y), width, loss);
+                        g.DrawRectangle(RedPen, left, Math.Min(points[0].Y, points[1].Y), width, loss);
                     }
                     break;
                 case 3:
@@ -62,11 +54,11 @@ namespace StockAnalyzer.StockDrawing
                         var loss = Math.Abs(points[0].Y - points[1].Y);
                         g.FillRectangle(RedBrush, left, Math.Min(points[0].Y, points[1].Y), width, loss);
                         g.FillRectangle(ratio > 0 ? GreenBrush : RedBrush, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
-                        g.DrawRectangle(Pens.Red, left, Math.Min(points[0].Y, points[1].Y), width, loss);
-                        g.DrawRectangle(ratio > 0 ? Pens.Green : Pens.Red, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
+                        g.DrawRectangle(RedPen, left, Math.Min(points[0].Y, points[1].Y), width, loss);
+                        g.DrawRectangle(ratio > 0 ? GreenPen : RedPen, left, Math.Min(points[1].Y, points[2].Y), width, Math.Abs(points[1].Y - points[2].Y));
                         if (ratio > 0)
                         {
-                            this.DrawText(g, $"R={ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 35, points[0].Y + 2), true, Pens.Black);
+                            this.DrawText(g, $"R={ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 35, points[0].Y + 2), Pens.Black);
 
                             if (ratio > 1f)
                             {
@@ -78,13 +70,13 @@ namespace StockAnalyzer.StockDrawing
                                 this.Transform(matrixValueToScreen, isLog, rPoints);
                                 for (int i = 0; i < (int)ratio; i++)
                                 {
-                                    g.DrawLine(Pens.Green, left, rPoints[i].Y, right, rPoints[i].Y);
+                                    g.DrawLine(GreenPen, left, rPoints[i].Y, right, rPoints[i].Y);
                                 }
                             }
                         }
                         else
                         {
-                            this.DrawText(g, $"R= {ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 40, points[1].Y - 13), true, Pens.Black);
+                            this.DrawText(g, $"R= {ratio.ToString("0.##")}", font, Brushes.Black, Brushes.White, new PointF(left - 40, points[1].Y - 13), Pens.Black);
 
                             if (ratio < -1f)
                             {
@@ -96,7 +88,7 @@ namespace StockAnalyzer.StockDrawing
                                 this.Transform(matrixValueToScreen, isLog, rPoints);
                                 for (int i = 0; i < (int)-ratio; i++)
                                 {
-                                    g.DrawLine(Pens.Red, left, rPoints[i].Y, right, rPoints[i].Y);
+                                    g.DrawLine(RedPen, left, rPoints[i].Y, right, rPoints[i].Y);
                                 }
                             }
                         }

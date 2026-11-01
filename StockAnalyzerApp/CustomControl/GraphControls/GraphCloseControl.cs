@@ -1530,7 +1530,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         }
         override public void GraphControl_MouseClick(object sender, MouseEventArgs e)
         {
-            if (!this.Focused) this.Focus();
+            if (!this.Focused)
+                this.Focus();
 
             if (!this.IsInitialized || this.curveList == null)
             {

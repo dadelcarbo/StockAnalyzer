@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockAnalyzerSettings;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -9,6 +10,15 @@ namespace StockAnalyzer.StockDrawing
     [Serializable]
     public abstract class DrawingItem : IXmlSerializable
     {
+        [XmlIgnore]
+        protected Brush GreenBrush => ColorManager.GetBrush("Graph.Green", 80);
+        [XmlIgnore]
+        protected Brush RedBrush => ColorManager.GetBrush("Graph.Red", 80);
+        [XmlIgnore]
+        protected Pen GreenPen => ColorManager.GetPen("Graph.Green");
+        [XmlIgnore]
+        protected Pen RedPen => ColorManager.GetPen("Graph.Red");
+
         public static bool CreatePersistent = true;
         public static bool KeepTransient = false;
         [XmlIgnore]
@@ -50,17 +60,23 @@ namespace StockAnalyzer.StockDrawing
             };
         }
 
-        public void DrawText(Graphics g, string text, Font font, Brush brush, Brush backgroundBrush, PointF location, bool drawFrame, Pen pen)
+        public void DrawText(Graphics g, string text, Font font, Brush brush, Brush backgroundBrush, PointF location, Pen framePen)
         {
             string trimmedText = text.Trim();
             Size size = TextRenderer.MeasureText(trimmedText, font);
 
             RectangleF rect = new RectangleF(location.X, location.Y, size.Width, size.Height);
-            if (drawFrame)
-            {
-                g.FillRectangle(backgroundBrush, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
-                g.DrawRectangle(pen, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
-            }
+
+            g.FillRectangle(backgroundBrush, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
+            g.DrawRectangle(framePen, location.X - 1, location.Y - 1, size.Width - 6, size.Height + 1);
+            g.DrawString(trimmedText, font, brush, rect);
+        }
+        public void DrawText(Graphics g, string text, Font font, Brush brush, Brush backgroundBrush, PointF location)
+        {
+            string trimmedText = text.Trim();
+            Size size = TextRenderer.MeasureText(trimmedText, font);
+
+            RectangleF rect = new RectangleF(location.X, location.Y, size.Width, size.Height);
             g.DrawString(trimmedText, font, brush, rect);
         }
         #region XML SERIALISATION

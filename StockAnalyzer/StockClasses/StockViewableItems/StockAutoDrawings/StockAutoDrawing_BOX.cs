@@ -1,5 +1,6 @@
 ﻿using StockAnalyzer.StockData;
 using StockAnalyzer.StockDrawing;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 
@@ -30,7 +31,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         static readonly bool[] isEvent = new bool[] { true };
         public override bool[] IsEvent => isEvent;
 
-        public override Pen[] SeriePens => seriePens ?? new Pen[] { new Pen(Color.Green) { Width = 1 } };
+        public override Pen[] SeriePens => seriePens ?? new Pen[] { ColorManager.GetPen("Graph.Green") };
 
         public override void ApplyTo(DataSerie stockSerie)
         {

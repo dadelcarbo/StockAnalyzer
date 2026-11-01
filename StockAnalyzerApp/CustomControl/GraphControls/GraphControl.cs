@@ -175,8 +175,8 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         static protected Pen RedPen => ColorManager.GetPen("Graph.Red");
         static protected Pen GreenPen => ColorManager.GetPen("Graph.Green");
 
-        static protected Brush RedBrush => ColorManager.GetBrush("Graph.Red");
-        static protected Brush GreenBrush => ColorManager.GetBrush("Graph.Green");
+        static protected Brush RedBrush => ColorManager.GetBrush("Graph.Red", 80);
+        static protected Brush GreenBrush => ColorManager.GetBrush("Graph.Green", 80);
 
         protected bool mouseDown = false;
 
