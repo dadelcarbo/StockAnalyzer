@@ -1153,7 +1153,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             }
 
             // Display tooltip
-            StockLog.Write($"initialValue.X: {initialValue.X} newValue.X: {newValue.X}");
             int startIndex = Math.Max(Math.Min((int)Math.Round(initialValue.X), this.EndIndex), this.StartIndex);
             int endIndex = Math.Max(Math.Min((int)Math.Round(newValue.X), this.EndIndex), this.StartIndex);
             var nbBars = Math.Abs(endIndex - startIndex);

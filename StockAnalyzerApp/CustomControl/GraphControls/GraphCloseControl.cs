@@ -1079,7 +1079,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
 
         protected override void PaintGraphTitle(Graphics gr)
         {
-            string graphTitle = this.dataSerie.Instrument.Group + " - " + this.dataSerie?.StockName;
+            string graphTitle = $"{this.dataSerie?.StockName} - {this.dataSerie?.Instrument.Group}             "; 
 
             // Add SR, Trail...
             foreach (IStockIndicator indicator in this.CurveList.Indicators)

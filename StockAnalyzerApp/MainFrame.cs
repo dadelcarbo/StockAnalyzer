@@ -4032,8 +4032,8 @@ namespace StockAnalyzerApp
                 }
             }
 
-            this.themeComboBox.SelectedItem = EMPTY_THEME;
             this.themeComboBox.Items.Remove(this.ViewModel.Theme);
+            this.themeComboBox.SelectedItem = EMPTY_THEME;
         }
         #endregion
 
