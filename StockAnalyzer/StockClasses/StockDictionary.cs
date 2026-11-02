@@ -1346,7 +1346,7 @@ namespace StockAnalyzer.StockClasses
                     instruments = StockDictionary.GetInstrumentsByWatchlist(wl);
                 }
 
-                foreach (var instrument in instruments)
+                foreach (var instrument in instruments.OrderBy(i => i.DisplayName))
                 {
                     var alert = instrument.MatchAlertDef(alertDef);
                     if (alert != null)

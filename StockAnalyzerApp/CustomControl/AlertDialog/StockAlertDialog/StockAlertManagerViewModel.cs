@@ -277,7 +277,12 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
             }
         }
 
-        public ObservableCollection<StockAlertValue> Alerts { get; set; } = new ObservableCollection<StockAlertValue>();
+        private ObservableCollection<StockAlertValue> alerts = new ObservableCollection<StockAlertValue>();
+        public ObservableCollection<StockAlertValue> Alerts
+        {
+            get => alerts;
+            set => SetProperty(ref alerts, value);
+        }
 
         public IEnumerable<SelectedAlertDef> SelectedAlerts { get; set; }
 
@@ -471,15 +476,15 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
                     this.ProgressValue = 0;
                     this.ProgressMax = alertDefs.Count;
 
+                    var alertValues = new List<StockAlertValue>();
                     foreach (var alertDef in alertDefs)
                     {
                         CurrentAlert = alertDef;
-                        foreach (var alert in StockDictionary.MatchAlert(alertDef))
-                        {
-                            this.Alerts.Add(alert.GetAlertValue());
-                        }
+                        alertValues.AddRange(StockDictionary.MatchAlert(alertDef).Select(a => a.GetAlertValue()));
                         this.ProgressValue++;
                     }
+                    alertValues.Sort((a, b) => a.Speed > b.Speed ? -1 : a.Speed < b.Speed ? 1 : 0);
+                    this.Alerts = new ObservableCollection<StockAlertValue>(alertValues);
                 }
                 catch (Exception ex)
                 {
@@ -608,7 +613,7 @@ namespace StockAnalyzerApp.CustomControl.AlertDialog.StockAlertDialog
 
         private void PerformGenerateReport()
         {
-            StockAnalyzerForm.MainFrame.GenerateAlertReport(this.BarDuration);
+            StockAnalyzerForm.MainFrame.GenerateAlertReport(this.BarDuration, null, true);
         }
 
         private int progressMax;
