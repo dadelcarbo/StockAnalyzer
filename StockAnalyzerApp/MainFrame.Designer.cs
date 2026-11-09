@@ -564,7 +564,7 @@ namespace StockAnalyzerApp
             this.palmaresMenuItem.Name = "palmaresMenuItem";
             this.palmaresMenuItem.Size = new System.Drawing.Size(240, 22);
             this.palmaresMenuItem.Text = "Palmares";
-            this.palmaresMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.palmaresMenuItem.ShortcutKeys = System.Windows.Forms.Keys.P | System.Windows.Forms.Keys.Control;
             this.palmaresMenuItem.Click += new System.EventHandler(this.palmaresMenuItem_Click);
             // 
             // instrumentsMenuItem
@@ -572,7 +572,7 @@ namespace StockAnalyzerApp
             this.instrumentsMenuItem.Name = "instrumentsMenuItem";
             this.instrumentsMenuItem.Size = new System.Drawing.Size(240, 22);
             this.instrumentsMenuItem.Text = "Instruments";
-            this.instrumentsMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F7;
+            this.instrumentsMenuItem.ShortcutKeys = System.Windows.Forms.Keys.I | System.Windows.Forms.Keys.Control;
             this.instrumentsMenuItem.Click += new System.EventHandler(this.instrumentsMenuItem_Click);
             // 
             // toolStripSeparator10

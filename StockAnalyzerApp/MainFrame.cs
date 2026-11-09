@@ -81,6 +81,13 @@ namespace StockAnalyzerApp
 
         public delegate void StockWatchListsChangedEventHandler();
 
+        public delegate void NextItemCommandHandler();
+
+        public delegate void PreviousItemCommandHandler();
+
+        public event NextItemCommandHandler NextItemCommand;
+        public event PreviousItemCommandHandler PreviousItemCommand;
+
         public delegate void AlertDetectedHandler();
         public event AlertDetectedHandler AlertDetected;
 
@@ -2152,6 +2159,10 @@ namespace StockAnalyzerApp
                 palmaresDlg.FormClosing += new FormClosingEventHandler(palmaresDlg_FormClosing);
                 palmaresDlg.palmaresControl1.SelectedInstrumentChanged += OnSelectedInstrumentAndDurationChanged;
                 palmaresDlg.palmaresControl1.SelectedInstrumentAndThemeChanged += OnSelectedInstrumentAndDurationAndThemeChanged;
+
+                this.NextItemCommand += palmaresDlg.palmaresControl1.OnNextItemCommand;
+                this.PreviousItemCommand += palmaresDlg.palmaresControl1.OnPreviousItemCommand;
+
                 palmaresDlg.Show();
             }
             else
@@ -2960,6 +2971,16 @@ namespace StockAnalyzerApp
                         break;
                     case Keys.Control | Keys.L:
                         logScaleBtn_Click(null, null);
+                        break;
+                    case Keys.Alt | Keys.Up:
+                        {
+                            this.PreviousItemCommand?.Invoke();
+                        }
+                        break;
+                    case Keys.Alt | Keys.Down:
+                        {
+                            this.NextItemCommand?.Invoke();
+                        }
                         break;
                     case Keys.Control | Keys.Left:
                         {

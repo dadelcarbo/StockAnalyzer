@@ -457,5 +457,25 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+
+        internal void OnNextItemCommand()
+        {
+            var nextLine = gridView.Items.Cast<PalmaresLine>().SkipWhile(item => item != gridView.SelectedItem).Skip(1).FirstOrDefault();
+            if (nextLine != null)
+            {
+                gridView.SelectedItem = nextLine;
+                gridView.Focus();
+            }
+        }
+
+        internal void OnPreviousItemCommand()
+        {
+            var previousLine = gridView.Items.Cast<PalmaresLine>().Reverse().SkipWhile(item => item != gridView.SelectedItem).Skip(1).FirstOrDefault();
+            if (previousLine != null)
+            {
+                gridView.SelectedItem = previousLine;
+                gridView.Focus();
+            }
+        }
     }
 }

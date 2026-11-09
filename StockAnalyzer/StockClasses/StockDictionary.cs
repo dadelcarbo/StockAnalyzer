@@ -1324,7 +1324,7 @@ namespace StockAnalyzer.StockClasses
             {
                 return new List<StockInstrument>();
             }
-            return Instruments.Values.Where(s => watchlist.StockList.Contains(s.Id)).ToList();
+            return watchlist.StockList.Select(id => GetInstrument(id)).Where(s => s != null).ToList();
         }
 
         static public List<StockAlert> MatchAlert(StockAlertDef alertDef)
