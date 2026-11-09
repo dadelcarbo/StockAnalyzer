@@ -28,9 +28,9 @@ namespace StockAnalyzer.StockData.DataProviders.Vontobel
             return new StockInstrument()
             {
                 Id = row[0],
-                Name = row[1],
+                Name = row[2],
                 Isin = row[0],
-                Symbol = row[2],
+                Symbol = row[1],
                 Group = Groups.TURBO,
                 Provider = DataProvider.Vontobel,
                 Market = Market.TURBO
