@@ -57,7 +57,7 @@
                 <telerik:RadGridView FontSize="9" ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged"  ClipboardCopyMode="All" ShowColumnFooters="True">
                     <telerik:RadGridView.Columns>
-                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}" Width="200">
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Instrument.DisplayName}" Width="200">
                             <telerik:GridViewDataColumn.AggregateFunctions>
                                 <telerik:CountFunction Caption="Nb trades: " />
                             </telerik:GridViewDataColumn.AggregateFunctions>

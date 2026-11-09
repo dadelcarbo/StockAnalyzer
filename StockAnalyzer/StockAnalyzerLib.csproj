@@ -16,6 +16,7 @@
     <LangVersion>8.0</LangVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,7 +29,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -253,6 +253,7 @@
     <Compile Include="StockAgent\Agents\TrailSTOKAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTATRAgent.cs" />
     <Compile Include="StockAgent\Agents\TrendBodyMidUpAgent.cs" />
+    <Compile Include="StockAgent\BackTests\TrendFollowBackTest.cs" />
     <Compile Include="StockAgent\BackTests\BBStopBackTest.cs" />
     <Compile Include="StockAgent\BackTests\IBackTest.cs" />
     <Compile Include="StockAgent\EntryStops\StockEntryStop_ATR.cs" />
