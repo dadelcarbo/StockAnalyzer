@@ -253,6 +253,7 @@
     <Compile Include="StockAgent\Agents\TrailSTOKAgent.cs" />
     <Compile Include="StockAgent\Agents\TrailHIGHESTATRAgent.cs" />
     <Compile Include="StockAgent\Agents\TrendBodyMidUpAgent.cs" />
+    <Compile Include="StockAgent\BackTests\TrendFollowBackTest.cs" />
     <Compile Include="StockAgent\BackTests\BBStopBackTest.cs" />
     <Compile Include="StockAgent\BackTests\IBackTest.cs" />
     <Compile Include="StockAgent\EntryStops\StockEntryStop_ATR.cs" />
