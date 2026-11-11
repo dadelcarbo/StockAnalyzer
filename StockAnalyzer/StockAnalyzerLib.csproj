@@ -16,6 +16,7 @@
     <LangVersion>8.0</LangVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,7 +29,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -289,6 +289,7 @@
     <Compile Include="StockAgent\StockPortfolioAgentBase.cs" />
     <Compile Include="StockAgent\StockAgentParam.cs" />
     <Compile Include="StockAgent\StockPortfolioAgentEngine.cs" />
+    <Compile Include="StockClasses\StockViewableItems\StockAutoDrawings\StockAutoDrawing_MCCLELLAN.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_DEMA.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_EMABAND.cs" />
     <Compile Include="StockClasses\StockViewableItems\StockIndicators\StockIndicator_TOPEMA2.cs" />

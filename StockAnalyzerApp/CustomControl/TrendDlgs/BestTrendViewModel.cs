@@ -15,8 +15,8 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             this.Period = 100;
         }
 
-        string group;
-        public string Group
+        Groups group;
+        public Groups Group
         {
             get { return group; }
             set
@@ -28,6 +28,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
                 }
             }
         }
+        public List<Groups> Groups => StockDictionary.GetValidGroups();
 
         static public IList<BarDuration> BarDurations => StockBarDuration.BarDurations;
         private BarDuration barDuration;
@@ -44,7 +45,6 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
             }
         }
 
-        public List<Groups> Groups => StockDictionary.GetValidGroups();
 
         private int period;
 
@@ -73,20 +73,29 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
                     if (dataSerie == null || dataSerie.Count < period)
                         continue;
 
-                    var indicatorSerie = dataSerie.GetIndicator($"ROR({this.period})").Series[0];
-                    var maxIndex = indicatorSerie.FindMaxIndex(period, dataSerie.Count - 1);
-                    var minIndex = dataSerie.GetSerie(StockDataType.CLOSE).FindMinIndex(maxIndex - period, maxIndex);
-
-                    BestTrends.Add(new MomentumViewModel
+                    var emaSerie = dataSerie.GetIndicator($"EMA({this.period})").Series[0];
+                    for (int i = period; i < dataSerie.Count; i++)
                     {
-                        Instrument = instrument,
-                        BarDuration = this.barDuration,
-                        StartIndex = minIndex,
-                        EndIndex = maxIndex,
-                        EndDate = dataSerie.Values[maxIndex].DATE,
-                        StartDate = dataSerie.Values[minIndex].DATE,
-                        Value = indicatorSerie[maxIndex]
-                    });
+                        if (dataSerie.Values[i - 1].CLOSE < emaSerie[i - 1] && dataSerie.Values[i].CLOSE > emaSerie[i])
+                        {
+                            int minIndex = i;
+                            while (i < dataSerie.Count - 1 && dataSerie.Values[i + 1].CLOSE > emaSerie[i + 1])
+                            {
+                                i++;
+                            }
+
+                            BestTrends.Add(new MomentumViewModel
+                            {
+                                Instrument = instrument,
+                                BarDuration = this.barDuration,
+                                StartIndex = minIndex,
+                                EndIndex = i,
+                                EndDate = dataSerie.Values[i].DATE,
+                                StartDate = dataSerie.Values[minIndex].DATE,
+                                Value = (dataSerie.Values[i].CLOSE - dataSerie.Values[minIndex].CLOSE) / dataSerie.Values[minIndex].CLOSE
+                            });
+                        }
+                    }
                 }
             }
             catch (Exception e)

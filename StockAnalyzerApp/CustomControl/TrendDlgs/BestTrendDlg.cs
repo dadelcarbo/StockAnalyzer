@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using System;
 using System.Windows.Forms;
 
@@ -6,7 +7,7 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
 {
     public partial class BestTrendDlg : Form
     {
-        public BestTrendDlg(string group, BarDuration barDuration)
+        public BestTrendDlg(Groups group, BarDuration barDuration)
         {
             InitializeComponent();
 

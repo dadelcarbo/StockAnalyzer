@@ -3270,7 +3270,7 @@ namespace StockAnalyzerApp
         {
             if (bestTrendDlg == null)
             {
-                bestTrendDlg = new BestTrendDlg(this.ViewModel.Instrument.Group.ToString(), this.ViewModel.BarDuration);
+                bestTrendDlg = new BestTrendDlg(this.ViewModel.Instrument.Group, this.ViewModel.BarDuration);
                 bestTrendDlg.Disposed += bestrendDialog_Disposed;
                 bestTrendDlg.bestTrend1.SelectedInstrumentChanged += OnSelectedInstrumentAndDurationAndIndexChanged;
                 bestTrendDlg.Show();

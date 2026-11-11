@@ -17,9 +17,9 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
             <Label Margin="2">Group</Label>
-            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
+            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group, Mode=TwoWay}"/>
             <Label Margin="2">Duration</Label>
-            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding BarDurations}" SelectedItem="{Binding BarDuration}"/>
+            <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding BarDurations}" SelectedItem="{Binding BarDuration, Mode=TwoWay}"/>
             <Label Content="Period" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="160" Text="{Binding Period}"/>
             <Label Margin="2">Indicator</Label>
