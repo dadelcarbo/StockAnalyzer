@@ -1,6 +1,7 @@
-﻿using StockAnalyzer.StockDrawing;
-using StockAnalyzer.StockData;
+﻿using StockAnalyzer.StockData;
+using StockAnalyzer.StockDrawing;
 using StockAnalyzer.StockMath;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 
@@ -24,7 +25,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "BBUp", "BBDown", "MA(" + (int)this.parameters[0] + ")", "Smoothed" };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.Blue), new Pen(Color.DarkRed) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] {
+            ColorManager.GetPen("Indicator.Band.Up"),
+            ColorManager.GetPen("Indicator.Band.Down"),
+            ColorManager.GetPen("Indicator.Band.Mid"),
+            ColorManager.GetPen("Indicator.Band.Signal")
+        };
 
         public override Area[] Areas => areas ??= new Area[] { new Area { Color = Color.FromArgb(32, Color.Blue) } };
 
