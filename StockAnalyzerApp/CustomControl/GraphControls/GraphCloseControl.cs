@@ -1850,7 +1850,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             {
                 textPos.X -= 15;
                 textPos.Y -= 16;
-                if (cupHandle.Point1.X == 1)
+                if (cupHandle.Point1.X == 0)
                 {
                     text = "ATH - " + ((int)cupHandle.Point2.X - cupHandle.Pivot.X).ToString();
                 }

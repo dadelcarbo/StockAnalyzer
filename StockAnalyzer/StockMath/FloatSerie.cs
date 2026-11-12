@@ -1812,7 +1812,7 @@ namespace StockAnalyzer.StockMath
 
             // recalculate startIndex based on pivot value.
             startIndex = pivot.Index - period + 1;
-            while (--startIndex > 0 && this[startIndex] < pivot.Value) ;
+            while (--startIndex > 0 && this[startIndex] < pivot.Value);
 
             return new CupHandle2D()
             {

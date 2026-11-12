@@ -79,8 +79,10 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
                                 BarDuration = this.barDuration,
                                 StartIndex = i,
                                 StartDate = dataSerie.Values[i].DATE,
+                                StartValue = entryValue,
                                 EndIndex = j,
                                 EndDate = dataSerie.Values[j].DATE,
+                                EndValue = exitValue,
                                 Value = (exitValue - entryValue) / entryValue
                             });
                         }

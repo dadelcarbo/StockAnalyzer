@@ -30,6 +30,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
             var brokenUpEvents = this.Events[Array.IndexOf(this.EventNames, "BrokenUp")];
+            var athEvents = this.Events[Array.IndexOf(this.EventNames, "ATH")];
 
             FloatSerie closeSerie = stockSerie.GetSerie(StockDataType.CLOSE);
             if (lastOnly)
@@ -40,6 +41,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                     if (cupHandle != null)
                     {
                         brokenUpEvents[i] = true;
+                        athEvents[i] = cupHandle.Point1.X == 0;
                         this.DrawingItems.Insert(0, cupHandle);
                         return;
                     }
@@ -53,6 +55,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
                     if (cupHandle != null)
                     {
                         brokenUpEvents[i] = true;
+                        athEvents[i] = cupHandle.Point1.X == 0;
                         this.DrawingItems.Insert(0, cupHandle);
                     }
                 }
@@ -64,11 +67,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
         {
             get
             {
-                eventNames ??= new string[] { "BrokenUp" };
+                eventNames ??= new string[] { "BrokenUp", "ATH" };
                 return eventNames;
             }
         }
-        static readonly bool[] isEvent = new bool[] { true };
+        static readonly bool[] isEvent = new bool[] { true, true };
         public override bool[] IsEvent => isEvent;
     }
 }
