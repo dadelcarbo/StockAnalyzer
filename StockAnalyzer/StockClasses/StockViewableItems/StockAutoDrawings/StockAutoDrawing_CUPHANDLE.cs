@@ -14,7 +14,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockAutoDrawings
 
         public override string[] ParameterNames => new string[] { "Period", "Right HL", "Last Only" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 3, true, true };
+        public override Object[] ParameterDefaultValues => new Object[] { 12, true, true };
 
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(2, 500), new ParamRangeBool(), new ParamRangeBool() };
 

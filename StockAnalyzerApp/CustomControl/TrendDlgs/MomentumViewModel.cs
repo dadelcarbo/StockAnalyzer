@@ -10,6 +10,8 @@ namespace StockAnalyzerApp.CustomControl.TrendDlgs
         public StockInstrument Instrument { get; set; }
         public int StartIndex { get; set; }
         public int EndIndex { get; set; }
+        public float StartValue { get; set; }
+        public float EndValue { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public float Value { get; set; }
