@@ -66,7 +66,15 @@ namespace StockAnalyzerApp
 
                 Application.Run(new StockAnalyzerForm(args));
 
-                try { mutex.ReleaseMutex(); } catch { }
+                try
+                {
+                    mutex.ReleaseMutex();
+                }
+                catch (Exception ex)
+                {
+                    StockLog.Write(ex);
+                }
+
             }
             catch (Exception ex)
             {
