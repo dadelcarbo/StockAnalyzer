@@ -20,33 +20,12 @@ namespace StockAnalyzer.StockDrawing
             this.LeftLow = leftLow;
             this.RightLow = rightLow;
             this.Inverse = inverse;
-            this.IsOpened = isOpened;
         }
 
         public PointF Pivot { get; set; }
         public PointF RightLow { get; set; }
         public PointF LeftLow { get; set; }
         public bool Inverse { get; set; }
-
-        #region IOpenedDrawing
-        public bool IsOpened { get; set; }
-        public bool TryClose(FloatSerie closeSerie)
-        {
-            if (!this.IsOpened)
-                return false;
-            if (this.Point2.X > closeSerie.LastIndex)
-                return false;
-            for (int i = (int)this.Point2.X; i < closeSerie.Count; i++)
-            {
-                if (closeSerie[i] > this.Point2.Y)
-                {
-                    this.IsOpened = false;
-                    return true;
-                }
-            }
-            return false;
-        }
-        #endregion
 
         const int PIVOT_SIZE = 6;
 

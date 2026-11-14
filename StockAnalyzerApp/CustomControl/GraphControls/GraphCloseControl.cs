@@ -1781,7 +1781,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         {
             if (index == previousCupIndex)
                 return previousCupHandle;
-            previousCupHandle = closeCurveType.DataSerie.DetectCupHandle(index, 3, true);
+            previousCupHandle = closeCurveType.DataSerie.DetectCupHandle(index, 3, false);
             previousCupIndex = index;
             return previousCupHandle;
         }
