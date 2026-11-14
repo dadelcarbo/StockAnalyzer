@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using StockAnalyzer;
 using StockAnalyzer.StockLogging;
+using StockAnalyzerSettings.Properties;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,15 +34,28 @@ namespace StockAnalyzerApp
 #if !DEBUG
                 if (!isFirstInstance)
                 {
+                    StockLog.Write("Another instance is already running. Forwarding URI to the running instance.");
                     string uri = Array.Find(args, a => a.StartsWith("ultimate-chartist://", StringComparison.OrdinalIgnoreCase));
-
                     if (uri != null)
+                    {
+                        StockLog.Write($"Forwarding URI to running instance: {uri}");
                         PipeServer.ForwardUriToRunningInstance(uri);
+                    }
                     return; // second instance exits immediately
                 }
                 else
                 {
+                    EnsureRegistered();
+
+                    StockLog.Write("This is the first instance. Starting pipe server to listen for URIs.");
                     PipeServer.StartPipeServer();
+
+                    string uri = Array.Find(args, a => a.StartsWith("ultimate-chartist://", StringComparison.OrdinalIgnoreCase));
+                    if (uri != null)
+                    {
+                        Settings.Default.LastInstrument = uri.Split('?')[1].Split('&')[0].Split('=')[1];
+                        Settings.Default.SelectedTheme = uri.Split('?')[1].Split('&')[2].Split('=')[1];
+                    }
                 }
 #endif
 
@@ -51,24 +65,15 @@ namespace StockAnalyzerApp
                 CultureInfo.DefaultThreadCurrentCulture = culture;
                 CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-                EnsureRegistered();
-
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                // Parse command line arguments for ultimate-chartist:// protocol
-                if (args.Length > 0 && args[0].StartsWith("ultimate-chartist://"))
-                {
-                    string url = args[0];
-                    // Handle the URL as needed
-                    MessageBox.Show($"Received URL: {url}", "URL Protocol Handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                Application.Run(new StockAnalyzerForm(args));
+                Application.Run(new StockAnalyzerForm());
 
                 try
                 {
-                    mutex.ReleaseMutex();
+                    if (isFirstInstance)
+                        mutex.ReleaseMutex();
                 }
                 catch (Exception ex)
                 {

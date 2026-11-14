@@ -13,6 +13,9 @@ namespace StockAnalyzerSettings
 
     public static class Folders
     {
+        public static string HTML_RESOURCES_FOLDER = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\Html");
+
+
         [AutoCreate]
         public static string Theme => Path.Combine(Settings.Default.PersonalFolder, "Themes");
         [AutoCreate]
