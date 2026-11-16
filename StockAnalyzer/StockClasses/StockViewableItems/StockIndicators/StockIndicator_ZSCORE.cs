@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockData;
+using StockAnalyzerSettings;
 using System;
 using System.Drawing;
 
@@ -6,6 +7,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_ZSCORE : StockIndicatorBase
     {
+        public override string Definition => "Displays the Z-Score of the stock price.\n\r Z-Score is a measure of how many standard deviations an element is from the mean";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
         public override string[] ParameterNames => new string[] { "SlowPeriod", "FastPeriod" };
 
@@ -13,7 +15,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500), new ParamRangeInt(1, 500) };
         public override string[] SerieNames => new string[] { $"ZSCORE({parameters[0]},{parameters[1]})" };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.LightGreen)  };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main") };
 
         public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, new Pen(Color.Gray)) };
 
