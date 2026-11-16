@@ -101,8 +101,6 @@ namespace StockAnalyzerApp
         public MainFrameViewModel ViewModel { get; private set; }
         public bool IsClosing { get; set; }
 
-        private const string HTML_RESOURCES_FOLDER = @"Resources\Html";
-
         public static CultureInfo EnglishCulture = CultureInfo.GetCultureInfo("en-GB");
         public static CultureInfo FrenchCulture = CultureInfo.GetCultureInfo("fr-FR");
         public static CultureInfo usCulture = CultureInfo.GetCultureInfo("en-US");
@@ -168,7 +166,7 @@ namespace StockAnalyzerApp
         #endregion
         #region STARTUP methods
 
-        public StockAnalyzerForm(string[] args)
+        public StockAnalyzerForm()
         {
             InitializeComponent();
 
@@ -505,7 +503,7 @@ namespace StockAnalyzerApp
             Folders.CreateDirectories();
 
             // Copy Html Resources
-            foreach (string file in Directory.GetFiles(HTML_RESOURCES_FOLDER))
+            foreach (string file in Directory.GetFiles(Folders.HTML_RESOURCES_FOLDER))
             {
                 string destFile = Path.Combine(Folders.Report, Path.GetFileName(file));
                 if (!File.Exists(destFile) || File.GetLastWriteTime(destFile) < File.GetLastWriteTime(file))
@@ -825,6 +823,7 @@ namespace StockAnalyzerApp
         }
 
         const string TABLE_ROW_TEMPLATE_WATCHLIST = @"<tr>
+            <td>%%Monthly%%</td>
             <td>%%Weekly%%</td>
             <td>%%Daily%%</td>
         </tr>";
@@ -843,19 +842,30 @@ namespace StockAnalyzerApp
                 {
                     var duration = BarDuration.Daily;
                     var theme = REPORT_THEME;
-                    var nbBars = 75;
+                    var nbBars = 80;
                     var bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
-                    string data = $"\r\n    <h3>{instrument.DisplayName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\"/>\r\n    </a>";
+                    var link = $"href=\"ultimate-chartist://open?instrument={instrument.Id}&duration={duration}&theme={theme}\"";
+                    string data = $"\r\n    <h3><a {link}>{instrument.DisplayName} - {duration}</a></h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\"/>\r\n    </a>";
 
-                    var row = TABLE_ROW_TEMPLATE_WATCHLIST.Replace("%%Daily%%", data);
+                    var row = TABLE_ROW_TEMPLATE_WATCHLIST.Replace($"%%{duration}%%", data);
 
                     duration = BarDuration.Weekly;
                     theme = REPORT_THEME;
-                    nbBars = 75;
+                    nbBars = 80;
                     bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
-                    data = $"\r\n    <h3>{instrument.DisplayName} - {duration}</h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\"/>\r\n    </a>";
+                    link = $"href=\"ultimate-chartist://open?instrument={instrument.Id}&duration={duration}&theme={theme}\"";
+                    data = $"\r\n    <h3><a {link}>{instrument.DisplayName} - {duration}</a></h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\"/>\r\n    </a>";
 
-                    row = row.Replace("%%Weekly%%", data);
+                    row = row.Replace($"%%{duration}%%", data);
+
+                    duration = BarDuration.Monthly;
+                    theme = REPORT_THEME;
+                    nbBars = 80;
+                    bitmapString = this.GetStockSnapshotAsHtml(instrument, theme, true, duration, nbBars);
+                    link = $"href=\"ultimate-chartist://open?instrument={instrument.Id}&duration={duration}&theme={theme}\"";
+                    data = $"\r\n    <h3><a {link}>{instrument.DisplayName} - {duration}</a></h3>\r\n    <a>\r\n        <img src=\"{bitmapString}\"/>\r\n    </a>";
+
+                    row = row.Replace($"%%{duration}%%", data);
 
                     tableRows += row;
                 }
@@ -892,8 +902,8 @@ namespace StockAnalyzerApp
                 var theme = palmaresViewModel.Theme;
                 var nbBars = 75;
                 var bitmapString = this.GetStockSnapshotAsHtml(line.Instrument, theme, true, duration, nbBars);
-
-                string row = $"<tr><td style=\"font-size:11px;\"><a class=\"tooltip\" href=\"ultimate-chartist://open?instrument={line.Instrument.Id}&duration={duration}&theme={theme}\">{line.Name}<span><img src=\"{bitmapString}\"/></span></a></td> <td style=\"font-size:11px;\">{line.Group}</td> <td>{line.Value}</td> <td>{ToNaNString(line.Indicator1)}</td> <td>{ToNaNString(line.Indicator2)}</td> <td>{ToNaNString(line.Indicator3)}</td> <td>{line.Stok}</td> <td>{line.Highest}</td> <td>{line.LastDate.ToShortDateString()}</td> </tr>";
+                var link = $"href=\"ultimate-chartist://open?instrument={line.Instrument.Id}&duration={duration}&theme={theme}\"";
+                string row = $"<tr><td style=\"font-size:11px;\"><a class=\"tooltip\" {link}>{line.Name}<span><img src=\"{bitmapString}\"/></span></a></td> <td style=\"font-size:11px;\">{line.Group}</td> <td>{line.Value}</td> <td>{ToNaNString(line.Indicator1)}</td> <td>{ToNaNString(line.Indicator2)}</td> <td>{ToNaNString(line.Indicator3)}</td> <td>{line.Stok}</td> <td>{line.Highest}</td> <td>{line.LastDate.ToShortDateString()}</td> </tr>";
 
                 tableRows += row;
             }
@@ -2672,7 +2682,6 @@ namespace StockAnalyzerApp
             {
                 var htmlReportTemplate = File.ReadAllText(Folders.ReportTemplate);
 
-                using var cp = new MainViewModelContextPersister();
                 try
                 {
                     string htmlBody = $"<h1 style=\"text-align: center;\">{duration} Report - {DateTime.Today.ToShortDateString()} {DateTime.Now.ToShortTimeString()}</h1>";

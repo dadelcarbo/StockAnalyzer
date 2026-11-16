@@ -164,7 +164,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
         protected Font toolTipFont;
         protected Pen framePen;
         protected Pen textFramePen;
-        protected Pen axisPen;
         protected Pen axisDashPen;
         protected Pen mousePen;
         protected Pen HigherHighPen;
@@ -212,7 +211,6 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
             // Pens
             framePen = ColorManager.GetPen("Graph.Frame");
             textFramePen = new Pen(Color.Black, 1.0f);
-            axisPen = new Pen(Color.Black, 1.0f);
             axisDashPen = new Pen(Color.FromArgb(0x60, 0x60, 0x60), 1.0f) { DashStyle = DashStyle.Dash };
             axisFont = new Font(FontFamily.GenericSansSerif, 7);
             titleFont = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
@@ -918,7 +916,7 @@ namespace StockAnalyzerApp.CustomControl.GraphControls
                     if (e.X > this.GraphRectangle.Left && e.X < this.GraphRectangle.Right)
                     {
                         var valuePoint = GetValuePointFromScreenPoint(mousePoint);
-                        DrawMouseValueCross(valuePoint, mouseOverThis, true, this.axisPen, mouseOverThis);
+                        DrawMouseValueCross(valuePoint, mouseOverThis, false, this.axisDashPen, mouseOverThis);
                         PaintForeground();
 
                         if (mouseOverThis && this.OnMouseValueChanged != null)

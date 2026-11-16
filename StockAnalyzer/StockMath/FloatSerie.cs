@@ -1760,6 +1760,13 @@ namespace StockAnalyzer.StockMath
             public float LowValue { get; set; }
         }
 
+        /// <summary>
+        /// Detect Cup and Handle
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="period"></param>
+        /// <param name="higherRightLow"></param>
+        /// <returns></returns>
         public CupHandle2D DetectCupHandle(int index, int period, bool higherRightLow)
         {
             if (period < 2 || index < period * 2 || index > LastIndex)
@@ -1813,6 +1820,83 @@ namespace StockAnalyzer.StockMath
             // recalculate startIndex based on pivot value.
             startIndex = pivot.Index - period + 1;
             while (--startIndex > 0 && this[startIndex] < pivot.Value);
+
+            if (lowIndex > pivot.Index)
+            {
+                low = pivot.Value;
+                for (int i = pivot.Index -1 ; i > startIndex; i--)
+                {
+                    var close = this[i];
+                    if (close < low)
+                    {
+                        low = close;
+                        lowIndex = i;
+                    }
+                }
+            }
+
+            return new CupHandle2D()
+            {
+                Point1 = new PointF(startIndex, pivot.Value),
+                Point2 = new PointF(index, pivot.Value),
+                Pivot = new PointF(pivot.Index, pivot.Value),
+                LeftLow = new PointF(lowIndex, low),
+                RightLow = new PointF(pivot.LowIndex, pivot.LowValue),
+            };
+        }
+        public CupHandle2D DetectCupHandle2(int index, int period, bool higherRightLow)
+        {
+            if (period < 2 || index < period * 2 || index > LastIndex)
+                return null;
+
+            var todayClose = this[index];
+            var yesterClose = this[index - 1];
+            if (todayClose < yesterClose)
+                return null;
+
+            // Search for start of Cup & Handle
+            int startIndex = 0;
+            List<Pivot> pivots = new List<Pivot>();
+            float low = yesterClose;
+            int lowIndex = index - 1;
+            for (int i = index - 2; i > 0; i--)
+            {
+                var close = this[i];
+                if (close < low)
+                {
+                    low = close;
+                    lowIndex = i;
+                }
+                else
+                {
+                    if (close > todayClose)
+                    {
+                        startIndex = i;
+                        break;
+                    }
+                    if (close > yesterClose && this.IsTop(i, period))
+                    {
+                        pivots.Add(new Pivot(i, close, lowIndex, low));
+                    }
+                }
+            }
+
+            // Filter pivots that are too close to start or end
+            pivots.RemoveAll(p => p.Index - startIndex < period || index - p.Index < period);
+            if (higherRightLow)
+            {
+                pivots.RemoveAll(p => p.Index < lowIndex);
+            }
+
+            if (pivots.Count == 0) // no pivot found
+                return null;
+
+            // Select highest pivot
+            Pivot pivot = pivots.OrderByDescending(p => p.Value).First();
+
+            // recalculate startIndex based on pivot value.
+            startIndex = pivot.Index - period + 1;
+            while (--startIndex > 0 && this[startIndex] < pivot.Value) ;
 
             return new CupHandle2D()
             {
