@@ -3,11 +3,13 @@ using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
 using System.Linq;
+using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_SPEED : StockIndicatorBase
     {
+        public override string Definition => "Draw speed by calculating the rate of change of an indicator over a period";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
 
         public override object[] ParameterDefaultValues => new Object[] { "EMA(20)", 1 };
@@ -16,27 +18,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] SerieNames => new string[] { "SPEED(" + this.Parameters[0].ToString() + "," + this.Parameters[1].ToString() + ")" };
 
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                if (seriePens == null)
-                {
-                    seriePens = new Pen[] { new Pen(Color.Black) };
-                    seriePens[0].DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
-                }
-                return seriePens;
-            }
-        }
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main") };
 
-        public override HLine[] HorizontalLines
-        {
-            get
-            {
-                lines ??= new HLine[] { new HLine(0, new Pen(Color.LightGray)) };
-                return lines;
-            }
-        }
+        public override HLine[] HorizontalLines => lines ??= new HLine[] { new HLine(0, ColorManager.GetPen("Indicator.HLine")) };
 
         public override void ApplyTo(DataSerie stockSerie)
         {

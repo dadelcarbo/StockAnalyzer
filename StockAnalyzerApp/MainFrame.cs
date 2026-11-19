@@ -4319,7 +4319,7 @@ namespace StockAnalyzerApp
                 File.WriteAllText(lastSyncPath, Environment.MachineName + " => " + DateTime.UtcNow.ToString("o"));
                 return;
             }
-
+#if !DEBUG
             var oneDriveSyncFolder = @"C:\ProgramData\UltimateChartist\OneDriveSync";
             var oneDriveSyncExe = Path.Combine(oneDriveSyncFolder, "UltimateChartistSync.exe");
             if (File.Exists(oneDriveSyncExe))
@@ -4337,6 +4337,7 @@ namespace StockAnalyzerApp
                 if (wait)
                     p.WaitForExit(60000);
             }
+#endif
         }
     }
 }
