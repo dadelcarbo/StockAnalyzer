@@ -288,6 +288,32 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                 }
             }
         }
+        private string nbBarIndicator;
+        public string NbBarIndicator
+        {
+            get { return nbBarIndicator; }
+            set
+            {
+                if (value != nbBarIndicator)
+                {
+                    nbBarIndicator = value;
+                    OnPropertyChanged("NbBarIndicator");
+                }
+            }
+        }
+        private string nbBarEvent;
+        public string NbBarEvent
+        {
+            get { return nbBarEvent; }
+            set
+            {
+                if (value != nbBarEvent)
+                {
+                    nbBarEvent = value;
+                    OnPropertyChanged("NbBarEvent");
+                }
+            }
+        }
         private bool screenerOnly;
         public bool ScreenerOnly
         {
@@ -527,6 +553,31 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     }
                     catch { }
                 }
+
+                IStockIndicator nbBarsIndicator = null;
+                int eventIndex = -1;
+                if (!string.IsNullOrEmpty(this.nbBarIndicator))
+                {
+                    try
+                    {
+                        nbBarsIndicator = StockViewableItemsManager.GetViewableItem("Indicator|" + this.nbBarIndicator) as IStockIndicator;
+                        if (nbBarsIndicator == null)
+                        {
+                            MessageBox.Show($"NbBarIndicator: {this.nbBarIndicator} not found", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+                        if (!string.IsNullOrEmpty(this.nbBarEvent))
+                        {
+                            eventIndex = nbBarsIndicator.EventNames.ToList().IndexOf(this.nbBarEvent);
+                            if (eventIndex == -1)
+                            {
+                                MessageBox.Show($"NbBarEvent: {this.nbBarEvent} not found", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                return;
+                            }
+                        }
+                    }
+                    catch { }
+                }
                 #endregion
                 if (this.DownloadIntraday)
                 {
@@ -657,6 +708,16 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
 
                     int highestIn = lastBar.VARIATION > 0 ? closeSerie.GetHighestIn(endIndex) : 0;
 
+                    int barsSince = 0;
+                    var fastEma = closeSerie.CalculateEMA(6);
+                    var slowEma = closeSerie.CalculateEMA(75);
+                    int index = endIndex;
+                    while (endIndex > 0 && fastEma[index] > slowEma[index])
+                    {
+                        barsSince++;
+                        index--;
+                    }
+
                     #region Calculate Indicators
                     float stockIndicator1 = float.NaN;
                     if (viewableSeries1 != null)
@@ -711,6 +772,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                         Name = instrument.DisplayName,
                         Value = lastValue,
                         Highest = highestIn,
+                        BarsSince = barsSince,
                         Exchanged = lastBar.EXCHANGED,
                         Indicator1 = stockIndicator1,
                         Indicator2 = stockIndicator2,

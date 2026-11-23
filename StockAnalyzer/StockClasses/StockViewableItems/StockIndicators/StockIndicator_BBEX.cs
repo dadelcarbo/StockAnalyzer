@@ -12,7 +12,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.PriceIndicator;
         public override string[] ParameterNames => new string[] { "Period", "NbUpDev", "NbDownDev", "MAType", "SignalPeriod" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { 20, 2.0f, -2.0f, "MA", 3 };
+        public override Object[] ParameterDefaultValues => new Object[] { 35, 2.0f, -2.0f, "EMA", 3 };
 
         public override ParamRange[] ParameterRanges => new ParamRange[]
                 {

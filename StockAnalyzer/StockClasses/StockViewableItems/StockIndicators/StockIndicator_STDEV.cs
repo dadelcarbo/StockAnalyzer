@@ -2,11 +2,13 @@
 using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
+using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
     public class StockIndicator_STDEV : StockIndicatorBase
     {
+        public override string Definition => "Normalized standard deviation";
         public override IndicatorDisplayTarget DisplayTarget => IndicatorDisplayTarget.NonRangedIndicator;
         public override object[] ParameterDefaultValues => new Object[] { 20 };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeInt(1, 500) };
@@ -15,14 +17,7 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         public override string[] SerieNames => new string[] { "STDEV(" + this.Parameters[0].ToString() + ")" };
         public override string[] SerieFormats => serieFormats ??= new string[] { "P2" };
 
-        public override Pen[] SeriePens
-        {
-            get
-            {
-                seriePens ??= new Pen[] { new Pen(Color.Blue) };
-                return seriePens;
-            }
-        }
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main") };
         public override HLine[] HorizontalLines => null;
 
         public override void ApplyTo(DataSerie stockSerie)

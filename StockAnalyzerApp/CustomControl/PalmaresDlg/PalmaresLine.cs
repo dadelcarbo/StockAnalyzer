@@ -17,6 +17,7 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
         public float BarVariation { get; set; }
         public float Exchanged { get; set; }
         public int Highest { get; set; }
+        public int BarsSince { get; set; }
         public float Indicator1 { get; set; }
         public float Indicator2 { get; set; }
         public float Indicator3 { get; set; }

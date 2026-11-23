@@ -2,6 +2,7 @@
 using StockAnalyzer.StockData;
 using System;
 using System.Drawing;
+using StockAnalyzerSettings;
 
 namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 {
@@ -12,12 +13,12 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override string[] ParameterNames => new string[] { "Indicator", "Event" };
 
-        public override Object[] ParameterDefaultValues => new Object[] { "TRAILSTOP>TRAILBB(50_1.75_-1.75_EMA)", "Bullish" };
+        public override Object[] ParameterDefaultValues => new Object[] { "INDICATOR>BB(35_0.75_-0.75_EMA_6)", "SignalAbove" };
         public override ParamRange[] ParameterRanges => new ParamRange[] { new ParamRangeViewableItem(), new ParamRangeString() };
 
         public override string[] SerieNames => new string[] { "BARS" };
 
-        public override Pen[] SeriePens => seriePens ??= new Pen[] { new Pen(Color.Black, 1) };
+        public override Pen[] SeriePens => seriePens ??= new Pen[] { ColorManager.GetPen("Indicator.Main") };
 
         public override void ApplyTo(DataSerie stockSerie)
         {

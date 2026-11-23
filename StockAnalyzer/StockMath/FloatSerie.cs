@@ -236,6 +236,29 @@ namespace StockAnalyzer.StockMath
             }
             return stdev;
         }
+
+        public FloatSerie CalculateStdev(FloatSerie ma, int period)
+        {
+            FloatSerie stdev = new FloatSerie(this.Count, "STDEV");
+            double avg;
+            double sum;
+            double spread;
+            int count;
+            for (int i = period; i < this.Count; i++)
+            {
+                count = 0;
+                sum = 0.0f;
+                avg = ma[i];
+                for (int j = i - period; j <= i; j++)
+                {
+                    count++;
+                    spread = this.Values[j] - avg;
+                    sum += spread * spread;
+                }
+                stdev[i] = (float)Math.Sqrt(sum / (double)count);
+            }
+            return stdev;
+        }
         public float CalculateStdev(int startIndex, int endIndex)
         {
             float avg = this.CalculateAVG(startIndex, endIndex);
@@ -293,40 +316,6 @@ namespace StockAnalyzer.StockMath
                 count++;
             }
 
-            if (sum != 0)
-            {
-                var stdev = (float)Math.Sqrt(sum / count);
-                return spread / stdev;
-            }
-            return 0;
-        }
-
-        public float CalculateZScore(int index, int period)
-        {
-            if (index >= this.Count)
-            {
-                throw new ArgumentOutOfRangeException("Index must be lower than sample size");
-            }
-
-            float avg = 0.0f;
-            int count = 0;
-            for (int i = Math.Max(0, index - period + 1); i <= index; i++)
-            {
-                avg += this.Values[i];
-                count++;
-            }
-            avg /= count;
-
-            float sum = 0.0f;
-            float spread = 0.0f;
-
-            count = 0;
-            for (int i = Math.Max(0, index - period + 1); i <= index; i++)
-            {
-                spread = this[i] - avg;
-                sum += spread * spread;
-                count++;
-            }
             if (sum != 0)
             {
                 var stdev = (float)Math.Sqrt(sum / count);
@@ -1819,12 +1808,12 @@ namespace StockAnalyzer.StockMath
 
             // recalculate startIndex based on pivot value.
             startIndex = pivot.Index - period + 1;
-            while (--startIndex > 0 && this[startIndex] < pivot.Value);
+            while (--startIndex > 0 && this[startIndex] < pivot.Value) ;
 
             if (lowIndex > pivot.Index)
             {
                 low = pivot.Value;
-                for (int i = pivot.Index -1 ; i > startIndex; i--)
+                for (int i = pivot.Index - 1; i > startIndex; i--)
                 {
                     var close = this[i];
                     if (close < low)

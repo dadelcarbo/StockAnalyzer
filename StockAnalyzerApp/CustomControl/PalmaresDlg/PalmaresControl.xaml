@@ -47,6 +47,12 @@
                         <Label>M€</Label>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
+                        <Label Content="Nb Bars:" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="70"/>
+                        <TextBox Text="{Binding NbBarIndicator}" Width="200" Height="20" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
+                        <Label>Event:</Label>
+                        <TextBox Text="{Binding NbBarEvent}" Width="200" Height="20" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
                         <CheckBox Content="Screener" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="70" IsChecked="{Binding ScreenerOnly}"/>
                         <ComboBox Name="ScreenerCbx" ItemsSource="{Binding Screeners}" SelectedItem="{Binding Screener}" DisplayMemberPath="Name"
                                   ToolTip="{Binding Screener.Description}" Background="Transparent"
