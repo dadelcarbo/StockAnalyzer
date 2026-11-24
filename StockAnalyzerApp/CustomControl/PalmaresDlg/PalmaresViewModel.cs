@@ -677,21 +677,22 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     float barVariation = (lastValue - firstValue) / firstValue;
 
                     float stopValue = float.NaN;
+                    int barsSince = -1;
                     if (trailStopSerie != null)
                     {
                         try
                         {
                             trailStopSerie = dataSerie.GetTrailStop(this.stop);
                             stopValue = trailStopSerie.Series[0][endIndex];
-                            if (float.IsNaN(stopValue))
+
+                            if (float.IsNaN(stopValue)) // Bear
                             {
                                 if (bullOnly)
                                     continue;
-                                stopValue = trailStopSerie.Series[1][endIndex];
                             }
-                            if (!float.IsNaN(stopValue))
+                            else // Bull, calculate how many bars
                             {
-                                stopValue = (lastValue - stopValue) / lastValue;
+                                for (barsSince = 1; barsSince < endIndex && trailStopSerie.Events[6][endIndex - barsSince]; barsSince++) ;
                             }
                         }
                         catch { }
@@ -707,16 +708,6 @@ namespace StockAnalyzerApp.CustomControl.PalmaresDlg
                     }
 
                     int highestIn = lastBar.VARIATION > 0 ? closeSerie.GetHighestIn(endIndex) : 0;
-
-                    int barsSince = 0;
-                    var fastEma = closeSerie.CalculateEMA(6);
-                    var slowEma = closeSerie.CalculateEMA(75);
-                    int index = endIndex;
-                    while (endIndex > 0 && fastEma[index] > slowEma[index])
-                    {
-                        barsSince++;
-                        index--;
-                    }
 
                     #region Calculate Indicators
                     float stockIndicator1 = float.NaN;

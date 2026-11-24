@@ -1087,7 +1087,7 @@ namespace StockAnalyzer.StockData
         }
 
         /// <summary>
-        /// Calculate a band trail based on upper band overshoting, without upper band to go up.
+        /// Calculate a band trail based on upper band overshooting, without upper band to go up.
         /// </summary>
         /// <param name="lowerBand"></param>
         /// <param name="upperBand"></param>

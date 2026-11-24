@@ -65,7 +65,6 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
-
             var signalCrossAboveEvents = this.Events[Array.IndexOf(this.EventNames, "SignalCrossAbove")];
             var signalAboveEvents = this.Events[Array.IndexOf(this.EventNames, "SignalAbove")];
             var signalCrossBelowEvents = this.Events[Array.IndexOf(this.EventNames, "SignalCrossBelow")];
