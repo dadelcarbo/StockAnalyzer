@@ -16,6 +16,8 @@ namespace StockAnalyzer.StockAgent
             this.TradeSummary = new StockTradeSummary();
         }
 
+        public string Name => this.GetType().Name.Replace("Agent", string.Empty);
+
         public virtual string DisplayIndicator => string.Empty;
 
         protected FloatSerie closeSerie;
@@ -30,6 +32,7 @@ namespace StockAnalyzer.StockAgent
         public StockInstrument Instrument { get; protected set; }
 
         static SortedDictionary<Type, List<string>> agentNameDicos = new SortedDictionary<Type, List<string>>();
+        static SortedDictionary<Type, List<object>> agentDicos = new SortedDictionary<Type, List<object>>();
         public static List<string> GetAgentNames(Type type)
         {
             if (!agentNameDicos.TryGetValue(type, out var agentNames))
@@ -37,22 +40,41 @@ namespace StockAnalyzer.StockAgent
                 agentNames = new List<string>();
                 agentNameDicos.Add(type, agentNames);
 
-                var suffix = type.Name.Substring(1);
-                foreach (Type t in type.Assembly.GetTypes())
+                var suffix = type.Name.Replace("IStock", "");
+                foreach (Type t in type.Assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && typeof(IStockAgent).IsAssignableFrom(t)))
                 {
-                    Type st = t.GetInterface(type.Name);
-                    if (st != null)
-                    {
-                        if (!t.Name.EndsWith("Base"))
-                        {
-                            agentNames.Add(t.Name.Replace(suffix, ""));
-                        }
-                    }
+                    agentNames.Add(t.Name.Replace(suffix, ""));
+
+                    // Add instance of the agent to the list of agents for later use
+                    agentDicos[type].Add(Activator.CreateInstance(t));
                 }
                 agentNames.Sort();
             }
             return agentNames;
         }
+        public static List<T> GetAgents<T>()
+        {
+            var type = typeof(T);
+            if (!agentNameDicos.TryGetValue(type, out var agentNames))
+            {
+                agentNames = new List<string>();
+                agentNameDicos.Add(type, agentNames);
+
+                var objects = new List<object>();
+
+                var suffix = type.Name.Replace("IStock", "");
+                foreach (Type t in type.Assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && typeof(IStockAgent).IsAssignableFrom(t)))
+                {
+                    agentNames.Add(t.Name.Replace(suffix, ""));
+
+                    // Add instance of the agent to the list of agents for later use
+                    objects.Add(Activator.CreateInstance(t));
+                }
+                agentDicos[type] = objects.OrderBy(o => o.GetType().Name).ToList();
+            }
+            return agentDicos[type].Cast<T>().ToList();
+        }
+
         static public IStockAgent CreateInstance(string shortName)
         {
             Type type = typeof(IStockAgent).Assembly.GetType($"StockAnalyzer.StockAgent.Agents.{shortName}Agent");
@@ -302,6 +324,7 @@ namespace StockAnalyzer.StockAgent
             }
             return parameters[type];
         }
+
         static public Dictionary<PropertyInfo, List<object>> GetParamRanges(Type type)
         {
             var res = new Dictionary<PropertyInfo, List<object>>();

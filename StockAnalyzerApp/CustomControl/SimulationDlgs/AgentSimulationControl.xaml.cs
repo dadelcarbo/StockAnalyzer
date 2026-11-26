@@ -20,7 +20,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             this.parent = parentForm;
             InitializeComponent();
 
-            this.ViewModel = (AgentSimulationViewModel)this.Resources["ViewModel"];
+            this.DataContext = this.ViewModel = new AgentSimulationViewModel();
         }
 
         private void performBtn_Click(object sender, RoutedEventArgs e)
@@ -53,6 +53,11 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 }
                 catch { }
             }
+        }
+
+        private void CopyLog_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetText(this.ViewModel.Stats);
         }
     }
 }

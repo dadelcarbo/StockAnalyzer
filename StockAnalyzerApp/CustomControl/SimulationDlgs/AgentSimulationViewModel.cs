@@ -1,15 +1,16 @@
 ﻿using StockAnalyzer;
 using StockAnalyzer.StockAgent;
 using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockData;
 using StockAnalyzer.StockHelpers;
 using StockAnalyzer.StockLogging;
 using StockAnalyzer.StockPortfolio;
 using StockAnalyzerApp.CustomControl.SimulationDlgs.ViewModels;
-using StockAnalyzer.StockData;
 using StockAnalyzerSettings;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -27,8 +28,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 return;
 
             Agent = Agents.FirstOrDefault();
-            EntryStop = EntryStops.FirstOrDefault();
-            EntryTarget = EntryTargets.FirstOrDefault();
+            EntryStop = "None";
+            EntryTarget = "None";
 
             this.BarDuration = StockAnalyzerForm.MainFrame.ViewModel.BarDuration;
             this.Group = StockAnalyzerForm.MainFrame.ViewModel.Instrument.Group;
@@ -52,10 +53,10 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
         }
 
         #region Agent
-        public List<string> Agents => StockAgentBase.GetAgentNames(typeof(IStockAgent));
+        public List<IStockAgent> Agents => StockAgentBase.GetAgents<IStockAgent>();
 
-        private string agent;
-        public string Agent
+        private IStockAgent agent;
+        public IStockAgent Agent
         {
             get => agent;
             set
@@ -68,11 +69,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 }
             }
         }
-
-        public string AgentDescription => StockAgentBase.CreateInstance(this.agent).Description;
-
-        private Type agentType => typeof(IStockAgent).Assembly.GetType("StockAnalyzer.StockAgent.Agents." + agent + "Agent");
-        public IEnumerable<ParameterRangeViewModel> AgentParameters => ParameterRangeViewModel.GetParameters(this.agentType);
+        public IEnumerable<ParameterRangeViewModel> AgentParameters => ParameterRangeViewModel.GetParameters(this.agent?.GetType());
         #endregion
 
         #region EntryStop
@@ -242,7 +239,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
             {
                 this.Report = "Performing";
 
-                this.Stats = this.Group.ToString() + "\t" + this.BarDuration.ToString() + "\t" + this.Agent + Environment.NewLine + Environment.NewLine;
+                this.Stats = this.Group.ToString() + "\t" + this.BarDuration.ToString() + "\t" + this.Agent.Name + Environment.NewLine + Environment.NewLine;
                 if (this.AgentParameters.Count() == 0)
                 {
                     this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerBar\t" + Environment.NewLine;
@@ -251,7 +248,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 {
                     this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerBar\t" + this.AgentParameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
                 }
-                engine = new StockAgentEngine(agentType, entryStopType, entryTargetType);
+                engine = new StockAgentEngine(this.agent?.GetType(), entryStopType, entryTargetType);
                 engine.BestAgentDetected += (bestAgent, bestEntryStop, bestEntryTarget) =>
                 {
                     this.BestAgent = bestAgent;
@@ -265,8 +262,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
                 engine.AgentPerformed += (agent, entryStop, entryTarget) =>
                 {
-                    this.Stats += (agent.TradeSummary.WinTradeRatio.ToString("P2") + "\t" + agent.TradeSummary.RiskRewardRatio.ToString("#.##") + "\t" + agent.TradeSummary.ExpectedGainPerBar.ToString("P3") + "\t" + agent.ToParamValueString() + Environment.NewLine)
-                    .Replace(".", ",");
+                    this.Stats += $"{agent.TradeSummary.WinTradeRatio.ToString("P2")}\t{agent.TradeSummary.RiskRewardRatio.ToString("#.###")}\t{agent.TradeSummary.ExpectedGainPerBar.ToString("P4")}\t{agent.ToParamValueString()}{Environment.NewLine}";
                 };
                 worker = new BackgroundWorker();
                 engine.Worker = worker;

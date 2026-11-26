@@ -188,8 +188,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
                 engine.AgentPerformed += (agent) =>
                 {
-                    this.Stats += (agent.TradeSummary.WinTradeRatio.ToString("P2") + "\t" + agent.TradeSummary.RiskRewardRatio.ToString("#.##") + "\t" + agent.TradeSummary.ExpectedGainPerBar.ToString("P3") + "\t" + agent.ToParamValueString() + Environment.NewLine)
-                    .Replace(".", ",");
+                    this.Stats += (agent.TradeSummary.WinTradeRatio.ToString("P2") + "\t" + agent.TradeSummary.RiskRewardRatio.ToString("#.##") + "\t" + agent.TradeSummary.ExpectedGainPerBar.ToString("P3") + "\t" + agent.ToParamValueString() + Environment.NewLine);
                 };
                 worker = new BackgroundWorker();
                 engine.Worker = worker;

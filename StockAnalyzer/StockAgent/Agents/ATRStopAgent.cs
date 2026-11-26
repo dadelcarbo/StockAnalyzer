@@ -19,7 +19,7 @@ namespace StockAnalyzer.StockAgent.Agents
         public float Width { get; set; }
 
 
-        public override string Description => "Buy according to TrailATRwith same up and down width";
+        public override string Description => "Buy according to TrailATR with same up and down width";
 
         public override string DisplayIndicator => $"TRAILSTOP|TRAILATR({Period},{Period},{Width},{-Width},EMA)";
 

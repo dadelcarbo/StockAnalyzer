@@ -19,6 +19,7 @@ namespace StockAnalyzer.StockAgent
 
     public interface IStockAgent : IStockParameterized
     {
+        string Name { get; }
         string Description { get; }
         string DisplayIndicator { get; }
         StockTradeSummary TradeSummary { get; }

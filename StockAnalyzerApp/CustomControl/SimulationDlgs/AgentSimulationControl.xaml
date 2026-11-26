@@ -6,13 +6,11 @@
              xmlns:local="clr-namespace:StockAnalyzerApp.CustomControl.SimulationDlgs" 
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
              xmlns:stockClasses="clr-namespace:StockAnalyzer.StockClasses;assembly=StockAnalyzer"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Language="en-UK"
              d:DesignHeight="450" d:DesignWidth="900" d:Background="AntiqueWhite"
+             d:DataContext="{d:DesignInstance Type=local:AgentSimulationViewModel, IsDesignTimeCreatable=False}"
              Height="450" Width="1000">
-    <UserControl.Resources>
-        <local:AgentSimulationViewModel x:Key="ViewModel"></local:AgentSimulationViewModel>
-    </UserControl.Resources>
-    <Grid DataContext="{Binding Mode=OneWay, Source={StaticResource ViewModel}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -24,7 +22,7 @@
                 <Label Margin="2">Group</Label>
                 <telerik:RadComboBox Margin="2" Width="100" ItemsSource="{Binding Groups}" SelectedItem="{Binding Group}"/>
                 <Label>Duration</Label>
-                <ComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
+                <telerik:RadComboBox SelectedItem="{Binding BarDuration, Mode=TwoWay}" ItemsSource="{Binding Source={x:Static stockClasses:StockBarDuration.BarDurations}}" Width="80"/>
                 <Label Margin="2">Selector</Label>
                 <telerik:RadComboBox Margin="1" Width="150" ItemsSource="{Binding Selectors}" SelectedItem="{Binding Selector}"/>
                 <Button Margin="20,2,2,2" Name="performBtn" Content="{Binding PerformText}" Click="performBtn_Click" Width="60"/>
@@ -40,7 +38,7 @@
                 <StackPanel Margin="2">
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Label>Agent</Label>
-                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" ToolTip="{Binding AgentDescription}"/>
+                        <telerik:RadComboBox Margin="2" Width="120" ItemsSource="{Binding Agents}" SelectedItem="{Binding Agent}" DisplayMemberPath="Name" ToolTip="{Binding Agent.Description}"/>
                     </StackPanel>
                     <telerik:RadGridView FontSize="9" ItemsSource="{Binding AgentParameters}" ShowGroupPanel="False" IsFilteringAllowed="False" RowIndicatorVisibility="Collapsed"></telerik:RadGridView>
                 </StackPanel>
@@ -68,14 +66,22 @@
             <TabItem Header="Report">
                 <TextBox Margin="2" Text="{Binding Report}" Background="White" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
             </TabItem>
-            <TabItem Header="Log">
+            <TabItem >
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Logs"/>
+                        <Button Click="CopyLog_Click" Padding="2" BorderThickness="0" Background="Transparent">
+                            <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="16" />
+                        </Button>
+                    </StackPanel>
+                </TabItem.Header>
                 <TextBox Margin="2" Text="{Binding Stats}" Background="White" VerticalScrollBarVisibility="Auto"/>
             </TabItem>
             <TabItem Header="Trades">
                 <telerik:RadGridView FontSize="9" ItemsSource="{Binding TradeSummary.Trades}" AutoGenerateColumns="False" RowIndicatorVisibility="Collapsed"
                              SelectionMode="Single" SelectionUnit="FullRow" SelectionChanged="grid_SelectionChanged"  ClipboardCopyMode="All" ShowColumnFooters="True">
                     <telerik:RadGridView.Columns>
-                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Serie.StockName}" Width="200">
+                        <telerik:GridViewDataColumn Header="Name" DataMemberBinding="{Binding Instrument.DisplayName}" Width="200">
                             <telerik:GridViewDataColumn.AggregateFunctions>
                                 <telerik:CountFunction Caption="Nb trades: " />
                             </telerik:GridViewDataColumn.AggregateFunctions>
