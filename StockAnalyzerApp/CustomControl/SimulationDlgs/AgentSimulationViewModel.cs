@@ -242,11 +242,11 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.Stats = this.Group.ToString() + "\t" + this.BarDuration.ToString() + "\t" + this.Agent.Name + Environment.NewLine + Environment.NewLine;
                 if (this.AgentParameters.Count() == 0)
                 {
-                    this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerBar\t" + Environment.NewLine;
+                    this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerYear\t" + Environment.NewLine;
                 }
                 else
                 {
-                    this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerBar\t" + this.AgentParameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
+                    this.Stats += "WinRatio\tRiskRewardRatio\tExpectedGainPerYear\t" + this.AgentParameters.Select(p => p.Name).Aggregate((i, j) => i + "\t" + j) + Environment.NewLine;
                 }
                 engine = new StockAgentEngine(this.agent?.GetType(), entryStopType, entryTargetType);
                 engine.BestAgentDetected += (bestAgent, bestEntryStop, bestEntryTarget) =>
@@ -262,7 +262,7 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 };
                 engine.AgentPerformed += (agent, entryStop, entryTarget) =>
                 {
-                    this.Stats += $"{agent.TradeSummary.WinTradeRatio.ToString("P2")}\t{agent.TradeSummary.RiskRewardRatio.ToString("#.###")}\t{agent.TradeSummary.ExpectedGainPerBar.ToString("P4")}\t{agent.ToParamValueString()}{Environment.NewLine}";
+                    this.Stats += $"{agent.TradeSummary.WinTradeRatio.ToString("P2")}\t{agent.TradeSummary.RiskRewardRatio.ToString("#.###")}\t{agent.TradeSummary.ExpectedGainPerYear(this.BarDuration).ToString("P3")}\t{agent.ToParamValueString()}{Environment.NewLine}";
                 };
                 worker = new BackgroundWorker();
                 engine.Worker = worker;

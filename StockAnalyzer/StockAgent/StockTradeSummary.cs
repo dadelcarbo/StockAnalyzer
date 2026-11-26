@@ -33,6 +33,18 @@ namespace StockAnalyzer.StockAgent
         public float MaxLoss => this.Trades.Count > 0 ? this.Trades.Min(t => t.Gain) : 0f;
         public float ExpectedReturn => this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) : 0f;
         public float ExpectedGainPerBar => this.Trades.Count > 0 ? this.Trades.Average(t => t.Gain) / this.Trades.Average(t => (float)t.Duration) : 0f;
+        public float ExpectedGainPerYear(BarDuration duration)
+        {
+            var gainPerBar = this.ExpectedGainPerBar;
+            if (duration == BarDuration.Daily)
+                return 260 * gainPerBar;
+            else if (duration == BarDuration.Weekly)
+                return 52 * gainPerBar;
+            else if (duration == BarDuration.Monthly)
+                return 12 * gainPerBar;
+            else
+                return float.NaN;
+        }
         public float CumulGain => this.Trades.Count > 0 ? this.Trades.Sum(t => t.Gain) : 0f;
 
         public int NbTrades => this.Trades.Count;
