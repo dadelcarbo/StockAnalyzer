@@ -2,7 +2,7 @@
 
 namespace StockAnalyzer.StockAgent.EntryStops
 {
-    class StockEntryStop_Percent : StockEntryStopBase
+    public class StockEntryStop_Percent : StockEntryStopBase
     {
         public override string Description => "Define the stop as a % from entry price";
 

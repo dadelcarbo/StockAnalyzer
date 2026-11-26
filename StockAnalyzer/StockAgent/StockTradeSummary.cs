@@ -76,14 +76,8 @@ namespace StockAnalyzer.StockAgent
             res += "Risk/Reward Ratio: " + this.RiskRewardRatio.ToString("#.##") + Environment.NewLine;
             res += "Win Rate: " + WinTradeRatio.ToString("P2") + Environment.NewLine;
             res += "Exp Gain: " + ExpectedReturn.ToString("P2") + Environment.NewLine;
-            res += "Exp Gain/Bar: " + ExpectedGainPerBar.ToString("P3") + Environment.NewLine;
-
-            if (duration == BarDuration.Daily)
-                res += "Exp Gain/Year: " + (260 * ExpectedGainPerBar).ToString("P3") + Environment.NewLine;
-            else if (duration == BarDuration.Weekly)
-                res += "Exp Gain/Year: " + (52 * ExpectedGainPerBar).ToString("P3") + Environment.NewLine;
-            else if (duration == BarDuration.Monthly)
-                res += "Exp Gain/Year: " + (12 * ExpectedGainPerBar).ToString("P3") + Environment.NewLine;
+            res += "Exp Gain/Bar: " + ExpectedGainPerBar.ToString("P4") + Environment.NewLine;
+            res += "Exp Gain/Year: " + ExpectedGainPerYear(duration).ToString("P3") + Environment.NewLine;
 
             res += "Kelly: " + Kelly.ToString("P3") + Environment.NewLine;
 

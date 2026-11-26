@@ -330,8 +330,8 @@ namespace StockAnalyzerApp.CustomControl.SimulationDlgs
                 this.ProgressValue = evt.ProgressPercentage;
             };
 
-            var instrumetns = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group));
-            if (this.RunAgentEngine(instrumetns))
+            var instruments = StockDictionary.Instruments.Values.Where(s => s.BelongsToGroup(this.Group));
+            if (this.RunAgentEngine(instruments))
             {
                 e.Cancel = false;
             }

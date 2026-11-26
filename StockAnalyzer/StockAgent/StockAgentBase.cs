@@ -289,6 +289,8 @@ namespace StockAnalyzer.StockAgent
         public string ToParamValueString()
         {
             var parameters = StockAgentBase.GetParams(this.GetType());
+            if (parameters.Count == 0)
+                return string.Empty;
             return parameters.Select(p => p.Key.GetValue(this, null).ToString()).Aggregate((i, j) => i + "\t" + j);
         }
         public string ToLog()
