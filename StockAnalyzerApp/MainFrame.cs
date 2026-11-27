@@ -356,7 +356,7 @@ namespace StockAnalyzerApp
                     return;
                 }
 
-                ApplyTheme();
+                ApplyTheme(true);
             }
 
             Settings.Default.LastInstrument = this.ViewModel.Instrument.Id;
@@ -425,7 +425,7 @@ namespace StockAnalyzerApp
             if (this.WindowState == FormWindowState.Minimized)
             {
                 SendMessage(this.Handle, WM_SYSCOMMAND, SC_RESTORE, IntPtr.Zero);
-                this.ResetZoom();
+                this.ResetZoom(false);
             }
             base.Activate();
         }
@@ -1124,7 +1124,7 @@ namespace StockAnalyzerApp
                 }
             }
         }
-        public void ResetZoom()
+        public void ResetZoom(bool resetZoom)
         {
             using (new MethodLogger(this))
             {
@@ -1141,7 +1141,14 @@ namespace StockAnalyzerApp
                     {
                         nbBars = dataSerie.Count - 1;
                     }
-                    ChangeZoom(Math.Max(0, dataSerie.Count - 1 - nbBars), dataSerie.Count - 1);
+                    if (resetZoom)
+                    {
+                        ChangeZoom(Math.Max(0, dataSerie.Count - 1 - nbBars), dataSerie.Count - 1);
+                    }
+                    else
+                    {
+                        ChangeZoom(startIndex, endIndex);
+                    }
                 }
             }
         }
@@ -3437,7 +3444,7 @@ namespace StockAnalyzerApp
                     this.themeDictionary[WORK_THEME] = indicatorSelectorDialog.GetTheme();
                     if (this.themeComboBox.SelectedItem.ToString() == WORK_THEME)
                     {
-                        this.ApplyTheme();
+                        this.ApplyTheme(false);
                     }
                     else
                     {
@@ -3512,11 +3519,11 @@ namespace StockAnalyzerApp
                 {
                     this.defaultThemeStripButton.CheckState = CheckState.Unchecked;
                 }
-                ApplyTheme();
+                ApplyTheme(false);
             }
         }
 
-        public void ApplyTheme()
+        public void ApplyTheme(bool resetZoom = true)
         {
             if (!GraphControl.IsStarted || this.ViewModel.Instrument == null || this.ViewModel.Theme == null)
                 return;
@@ -3788,7 +3795,7 @@ namespace StockAnalyzerApp
                 // Reinitialise zoom and hide useless indcators panels
                 var collapsedState1 = this.graphList.Select(g => g.IsCollapsed).ToList();
 
-                ResetZoom();
+                this.ResetZoom(resetZoom);
 
                 var collapsedState2 = this.graphList.Select(g => g.IsCollapsed).ToList();
                 var needCollapseReset = !collapsedState1.SequenceEqual(collapsedState2);
