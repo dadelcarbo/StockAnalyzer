@@ -127,7 +127,7 @@ namespace StockAnalyzer.StockAgent
         {
             if (this.Trade == null)
             {
-                if (volumeEuroSerie[index] < 0.5f)
+                if (closeSerie[index] > 0.5 && volumeEuroSerie[index] < 0.5f)
                     return TradeAction.Nothing;
                 var action = this.TryToOpenPosition(index);
                 if (action == TradeAction.Buy && this.EntryStopAgent != null)

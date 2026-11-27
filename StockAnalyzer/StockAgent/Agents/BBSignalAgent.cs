@@ -2,9 +2,9 @@
 
 namespace StockAnalyzer.StockAgent.Agents
 {
-    public class BBAgentSignal : StockAgentBase
+    public class BBSignalAgent : StockAgentBase
     {
-        public BBAgentSignal()
+        public BBSignalAgent()
         {
             Period = 35;
             UpWidth = 0.75f;
