@@ -22,8 +22,8 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
 
         public override Area[] Areas => areas ??= new Area[]
             {
-                new Area {Name="Bull", Color = Color.FromArgb(20, Color.Green), Visibility = false },
-                new Area {Name="Bear", Color = Color.FromArgb(20, Color.Red), Visibility = false }
+                new Area {Name="Bull", Color = ColorManager.GetColor("Indicator.Fill.Bull"), Visibility = false },
+                new Area {Name="Bear", Color = ColorManager.GetColor("Indicator.Fill.Bear"), Visibility = false }
             };
 
         protected void CalculateEvents(DataSerie stockSerie)

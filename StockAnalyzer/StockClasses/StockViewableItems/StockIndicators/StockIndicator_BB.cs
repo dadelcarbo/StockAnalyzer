@@ -34,7 +34,9 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
         };
 
         public override Area[] Areas => areas ??= new Area[] {
-            new Area { Color = ColorManager.GetColor("Indicator.Band.Fill") }
+            new Area { Name = "Band", Color = ColorManager.GetColor("Indicator.Band.Fill"), Visibility = true },
+            new Area {Name="Bull", Color = ColorManager.GetColor("Indicator.Fill.Bull"), Visibility = false },
+            new Area {Name="Bear", Color = ColorManager.GetColor("Indicator.Fill.Bear"), Visibility = false }
         };
 
         public override void ApplyTo(DataSerie stockSerie)
@@ -62,6 +64,11 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
             this.Areas[0].UpLine = upperBB;
             this.Areas[0].DownLine = lowerBB;
 
+            this.Areas[1].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[1].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[2].UpLine = new FloatSerie(stockSerie.Count, float.NaN);
+            this.Areas[2].DownLine = new FloatSerie(stockSerie.Count, float.NaN);
+
             // Detecting events
             this.CreateEventSeries(stockSerie.Count);
 
@@ -76,12 +83,18 @@ namespace StockAnalyzer.StockClasses.StockViewableItems.StockIndicators
                 {
                     signalAboveEvents[i] = true;
                     signalCrossAboveEvents[i] = !signalAboveEvents[i - 1];
+
+                    this.areas[1].UpLine[i] = signalSerie[i];
+                    this.areas[1].DownLine[i] = upperBB[i];
                 }
                 else
                     if (signalSerie[i] < lowerBB[i])
                     {
                         signalBelowEvents[i] = true;
                         signalCrossBelowEvents[i] = !signalBelowEvents[i - 1];
+
+                        this.areas[2].UpLine[i] = lowerBB[i];
+                        this.areas[2].DownLine[i] = signalSerie[i];
                     }
             }
         }
