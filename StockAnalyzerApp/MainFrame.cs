@@ -2054,6 +2054,8 @@ namespace StockAnalyzerApp
         #region ANALYSYS TOOLBAR HANDLERS
         private void excludeButton_Click(object sender, EventArgs e)
         {
+            if (this.ViewModel.Instrument == null)
+                return;
             var dp = DataProviderBase.GetDataProvider(this.ViewModel.Instrument.Provider);
             dp.Remove(new[] { this.ViewModel.Instrument });
             this.ViewModel.Instrument = null;

@@ -1,4 +1,5 @@
 ﻿using StockAnalyzer.StockClasses;
+using StockAnalyzer.StockMath;
 
 namespace StockAnalyzer.StockAgent.EntryStops
 {
@@ -9,15 +10,15 @@ namespace StockAnalyzer.StockAgent.EntryStops
         [StockAgentParam(0.05f, 0.1f, 0.1f)]
         public float Percent { get; set; }
 
-        StockMath.FloatSerie closeSerie;
+        FloatSerie openSerie;
         public override float GetStop(int index)
         {
-            return closeSerie[index] * (1f - Percent);
+            return openSerie[index + 1] * (1f - Percent);
         }
 
         protected override bool Init()
         {
-            this.closeSerie = DataSerie.GetSerie(StockDataType.CLOSE);
+            this.openSerie = DataSerie.GetSerie(StockDataType.OPEN);
             return true;
         }
     }

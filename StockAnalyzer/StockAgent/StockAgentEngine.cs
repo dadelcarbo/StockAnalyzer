@@ -185,8 +185,8 @@ namespace StockAnalyzer.StockAgent
                         continue;
                     }
 
-                    var size = this.Agent.DataSerie.LastIndex;
-                    for (int i = minIndex; i < size; i++)
+                    var size = this.Agent.DataSerie.LastIndex -1;
+                    for (int i = minIndex - 1; i < size; i++)
                     {
                         switch (this.Agent.Decide(i))
                         {
